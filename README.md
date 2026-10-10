@@ -2,11 +2,19 @@
 
 Исследовательский проект по плакату **«Правители государства с древнейших времен»**. Начат 10 октября 2026 года. Подготовлен к публичной публикации; фотография остаётся в закрытом Google Drive.
 
-## Public site (GitHub Pages)
+## Исторический атлас · GitHub Pages
 
-[**Soviet leadership: three parallel chronologies**](https://dmitry-dev-pet.github.io/rulers-chronology-audit/) — generated static HTML from the reviewed research data. The site becomes live after the first successful Pages deployment. [Deployment documentation](docs/PAGES.md) · [deployment workflow](.github/workflows/publish-pages.yml).
+**[Открыть сайт: Правители советского периода, 1917–1991](https://dmitry-dev-pet.github.io/rulers-chronology-audit/)**
 
-The image of the original poster remains in **private Google Drive** and is never uploaded to Pages.
+В новой версии доступны три переключаемых представления:
+
+- **Плакат — основной экран**: компактная таблица с буквальными строками 097–106 исходного листа. Исправления выделены, но оригинал не переписывается.
+- **Линии власти**: общая синхронизированная календарная ось для руководства партией, правительства и государственных органов. Пересекающиеся сроки отображаются одновременно.
+- **Исследование**: подробные записи, оговорки и ссылки на источники.
+
+[Описание интерфейса](docs/VIEW_MODES.md) · [GitHub Pages](docs/PAGES.md) · [workflow публикации](.github/workflows/publish-pages.yml).
+
+Сайт не содержит исходное фото: по договорённости оно остаётся в закрытом Google Drive. Успешная техническая проверка не означает независимой научной проверки дат.
 
 ## GitHub Actions
 
