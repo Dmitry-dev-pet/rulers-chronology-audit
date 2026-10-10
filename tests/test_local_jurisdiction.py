@@ -74,6 +74,21 @@ class JurisdictionResearchTests(unittest.TestCase):
         self.assertTrue(all("не" in p["limitation"].lower() for p in data.values()))
         self.assertFalse(any(p.get("geometry_verified") is True for p in data.values()))
 
+    def test_1991_law_filter_count_and_stable_controls(self):
+        records = self.cases["ussr-1991"]["territorial_evidence"]
+        counts = {nature: sum(p["nature"] == nature for p in records)
+                  for nature in transition_cases.GEO_NATURES}
+        self.assertEqual(counts["law"], 7)
+        self.assertEqual(counts["military"], 1)
+        self.assertEqual(counts["practice"], 1)
+        self.assertEqual(counts["claim"], 0)
+        js = (ROOT/"site/transition-view.js").read_text(encoding="utf-8")
+        self.assertIn("button.dataset.filter = kind", js)
+        self.assertIn("peer.dataset.filter === kind", js)
+        self.assertIn("tabs.querySelectorAll('button[data-filter]')", js)
+        filter_handler = js.split("button.dataset.filter = kind", 1)[1].split("tabs.appendChild(button)", 1)[0]
+        self.assertNotIn("renderFilters();", filter_handler)
+
     def test_invalid_polygons_false_provenance_and_orphan_events_rejected(self):
         input_data=atlas_db.read_json(ROOT / transition_cases.SOURCE)
         changes=[
