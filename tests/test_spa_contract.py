@@ -45,6 +45,9 @@ class SPAContract(unittest.TestCase):
         self.assertIn("database.html",self.js)
         self.assertIn("[data-atlas-database] a",self.js)
         self.assertIn(".spa-people-grid",self.css)
+        self.assertIn(".spa-people-grid[hidden]",self.css)
+        self.assertIn(".spa-people-tools[hidden]",self.css)
+        self.assertIn(".spa-person-detail[hidden]",self.css)
 
     def test_script_syntax_if_node_present(self):
         if shutil.which('node'):
