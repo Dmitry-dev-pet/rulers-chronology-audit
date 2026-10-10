@@ -48,15 +48,22 @@
   });
 
   const windows = {
-    all: [Date.UTC(1917, 0, 1), Date.UTC(1991, 11, 26)],
+    all: [Date.UTC(1817, 0, 1), Date.UTC(1991, 11, 26)],
+    imperial: [Date.UTC(1817, 0, 1), Date.UTC(1917, 10, 8)],
+    transition: [Date.UTC(1894, 0, 1), Date.UTC(1925, 11, 31)],
     early: [Date.UTC(1917, 0, 1), Date.UTC(1953, 11, 31)],
     middle: [Date.UTC(1953, 0, 1), Date.UTC(1982, 11, 31)],
     late: [Date.UTC(1982, 0, 1), Date.UTC(1991, 11, 26)],
   };
+  // Three conceptual roles, not three unchanging legal offices:
+  // monarchy -> party; ministries -> governments; advisory -> legislative bodies.
   const trackInfo = [
-    ['party', 'Партия', 'Политическое руководство', 'party'],
-    ['government', 'Правительство', 'СНК и Совет Министров', 'gov'],
-    ['state_institutions', 'Государство', 'Высшие государственные органы', 'state'],
+    ['authority', 'Император → партия', 'Монархическая и партийная политическая власть', 'party',
+      ['imperial_monarchy', 'party']],
+    ['government', 'Правительство', 'От Комитета министров до СНК СССР', 'gov',
+      ['imperial_government', 'government']],
+    ['state', 'Государственные органы', 'От Государственного совета и Думы до Президиума ВС', 'state',
+      ['imperial_institutions', 'state_institutions']],
   ];
   let currentEra = 'all';
   let selectedBar = null;
@@ -85,7 +92,7 @@
   function ticks(start, end) {
     const a = new Date(start).getUTCFullYear(), b = new Date(end).getUTCFullYear();
     const gap = b - a;
-    const step = gap <= 12 ? 2 : gap <= 35 ? 5 : 10;
+    const step = gap <= 12 ? 2 : gap <= 35 ? 5 : gap <= 120 ? 10 : 25;
     const years = [a];
     for (let y = Math.ceil(a / step) * step; y < b; y += step) if (y > a) years.push(y);
     if (years[years.length - 1] !== b) years.push(b);
@@ -134,8 +141,13 @@
       ruler.appendChild(tick);
     });
     let total = 0;
-    trackInfo.forEach(([key, label, caption, color]) => {
-      const entries = (data[key] || []).map(item => {
+    trackInfo.forEach(([key, label, caption, color, sourceKeys]) => {
+      const labelForEra = currentEra === 'imperial' && key === 'authority'
+        ? 'Император'
+        : currentEra !== 'all' && currentEra !== 'imperial' && key === 'authority'
+          ? 'Партия'
+          : label;
+      const entries = sourceKeys.flatMap(sourceKey => data[sourceKey] || []).map(item => {
         const from = bounds(item.from), to = bounds(item.to);
         return { item, a: from ? from.lower : null, b: to ? to.upper : null, partial: (from && from.partial) || (to && to.partial) };
       }).filter(x => x.a != null && x.b != null && x.a <= end && x.b >= start).sort((a, b) => a.a - b.a || a.b - b.b);
@@ -148,7 +160,7 @@
       total += entries.length;
       const section = el('div', 'time-track');
       section.dataset.track = key;
-      const side = el('div', 'track-name', label);
+      const side = el('div', 'track-name', labelForEra);
       side.append(el('small', null, caption + ' · ' + entries.length));
       const plot = el('div', 'track-plot');
       plot.style.height = Math.max(100, 23 + lanes.length * 39) + 'px';
@@ -167,7 +179,7 @@
         bar.style.left = left + '%';
         bar.style.width = (small ? 0.75 : width) + '%';
         bar.style.top = (14 + x.lane * 39) + 'px';
-        bar.addEventListener('click', () => select(x.item, label, bar));
+        bar.addEventListener('click', () => select(x.item, labelForEra, bar));
         plot.appendChild(bar);
       });
       section.append(side, plot);
@@ -186,7 +198,7 @@
   function fromHash() {
     const hash = decodeURIComponent(location.hash.slice(1));
     if (tabNames.has(hash)) return navigate(hash, false);
-    if (hash.startsWith('source-') || /^[PGSX]\d{2,}$/.test(hash)) {
+    if (hash.startsWith('source-') || /^[IPGSX]\d{2,}$/.test(hash)) {
       navigate('research', false);
       const target = document.getElementById(hash);
       if (target) {
