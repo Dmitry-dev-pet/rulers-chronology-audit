@@ -1,4 +1,4 @@
-name: Soviet chronology audit
+name: Historical atlas audit
 
 on:
   push:
@@ -17,7 +17,6 @@ concurrency:
 
 jobs:
   validate-and-build:
-    # Avoid spending private-repository quota. The public event starts the first build.
     if: ${{ github.event.repository.private == false }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -27,12 +26,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Test validator and renderer
+      - name: Test validators, migration contracts and renderers
         run: |
           python3 --version
           python3 -m unittest discover -s tests -v
+          python3 -m scripts.atlas_db validate
 
-      - name: Validate data and build report
+      - name: Build compatible report and normalized database
         env:
           SOURCE_REVISION: ${{ github.sha }}
         run: |
@@ -40,21 +40,23 @@ jobs:
           python3 -m scripts.extend_century
           python3 -m scripts.extend_romanovs
           python3 -m scripts.extend_muscovy
+          python3 -m scripts.atlas_db build
 
       - name: Record result in job summary
         run: |
           python3 - <<'PY'
           import json, os
           from pathlib import Path
-          r = json.loads(Path('dist/validation.json').read_text(encoding='utf-8'))
+          r = json.loads(Path('dist/atlas-manifest.json').read_text(encoding='utf-8'))
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as f:
-              f.write('# Historical atlas 1617–1991: structural validation passed\n\n')
-              f.write(f"Records: **{r['records']}**; sources: **{r['sources']}**; open questions: **{r['open_items']}**.\n\n")
-              f.write('This is NOT historical fact-checking. Uncertainty and parallel offices are preserved.\n\n')
-              f.write('Artifact: HTML report, JSON, seven CSV files, validation receipt and SHA256SUMS. No source photograph.\n')
+              f.write('# Historical atlas 1417–1991: structural validation passed\n\n')
+              for key, value in r['counts'].items():
+                  f.write(f'{key}: **{value}**  \n')
+              f.write('\nThis is NOT historical fact-checking. Uncertainty and parallel offices are preserved.\n\n')
+              f.write('Artifact: original-compatible report, normalized JSON, SQLite, database browser and checksums. No source photograph.\n')
           PY
 
-      - name: Upload report (without original photo)
+      - name: Upload report and database without original photo
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: soviet-chronology-report
