@@ -125,9 +125,10 @@
   const monthKey=(year,month)=>String(year)+'-'+String(month).padStart(2,'0');
   const exactMonth=(row)=>selectedMonth>0 &&
     row.date.precision!=='year'&&row.date.value.slice(0,7)===monthKey(currentYear(),selectedMonth);
-  const matchesSelectedPeriod=row=>whole||(
+  const matchesSelectedYearMonth=row=>
     Number(row.date.value.slice(0,4))===currentYear()&&
-    (selectedMonth===0||exactMonth(row)));
+    (selectedMonth===0||exactMonth(row));
+  const matchesSelectedPeriod=row=>whole||matchesSelectedYearMonth(row);
   function setMonth(month,push=true){
     if(!Number.isInteger(month)||month<0||month>12)return;
     selectedMonth=month;if(month>0)whole=false;
@@ -255,7 +256,7 @@
       svg.append(svgNode('line',{x1:p.x,y1:0,x2:p.x,y2:d.h}),svgNode('text',{x:p.x+4,y:d.h-8},lon+'° в. д.'));}
     for(let lat=50;lat<=61;lat+=step){const p=project({lon:view.lon,lat},d);if(p.y<0||p.y>d.h)continue;
       svg.append(svgNode('line',{x1:0,y1:p.y,x2:d.w,y2:p.y}),svgNode('text',{x:8,y:p.y-5},lat+'° с. ш.'));}
-    const visible=(comparison||matrixMode)?data.evidence.filter(e=>matchesSelectedPeriod(e)):records(true);
+    const visible=(comparison||matrixMode)?data.evidence.filter(e=>matchesSelectedYearMonth(e)):records(true);
     const counts=new Map(data.places.map(p=>[p.id,visible.filter(r=>p.evidence_ids.includes(r.id)).length]));
     let placed=data.places.map(p=>({...p,...project(p.reference_point,d),members:[p]}));
     // Nearby geographic anchors are clustered, NEVER shifted away from coordinates.
@@ -369,7 +370,9 @@
       legalSection.append(card);
     }
     detail.append(legalSection);
-    const present=data.evidence.filter(e=>matchesSelectedPeriod(e));
+    // A comparison is always time-scoped, even if the separate evidence
+    // browser is configured to show the whole 1598–1613 period.
+    const present=data.evidence.filter(e=>matchesSelectedYearMonth(e));
     const heading=el('h4',null,'Местное управление, военное присутствие и притязания');
     detail.append(heading);
     if(!present.length)detail.append(el('p','smuta-comparison-empty',
