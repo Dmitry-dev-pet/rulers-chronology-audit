@@ -1,4 +1,4 @@
-name: Publish Soviet chronology to GitHub Pages
+name: Publish historical atlas and database to GitHub Pages
 
 on:
   push:
@@ -9,6 +9,9 @@ on:
       - scripts/extend_century.py
       - scripts/extend_romanovs.py
       - scripts/extend_muscovy.py
+      - scripts/atlas_db.py
+      - schemas/**
+      - data/atlas/**
       - data/muscovy-chronology.json
       - data/muscovy-period-review.csv
       - research/muscovy-sources.md
@@ -24,9 +27,10 @@ on:
       - data/soviet-period-review.csv
       - data/poster-transcription.tsv
       - research/soviet-parallel-sources.md
+      - research/soviet-period-sources.md
   workflow_dispatch:
 
-# Pages writes cannot run on unreviewed pull request code.
+# Only reviewed main can publish. Neither build nor publication writes source data.
 permissions:
   contents: read
   pages: write
@@ -44,73 +48,80 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.publish.outputs.page_url }}
-
     steps:
       - name: Checkout reviewed main commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Validate chronology with offline tests
+      - name: Validate and build report and database
         shell: bash
         run: |
           set -euo pipefail
           python3 -m unittest discover -s tests -v
+          python3 -m scripts.atlas_db validate
           python3 scripts/soviet_audit.py --revision "$GITHUB_SHA"
           python3 -m scripts.extend_century
           python3 -m scripts.extend_romanovs
           python3 -m scripts.extend_muscovy
+          python3 -m scripts.atlas_db build
 
-      - name: Assert public output contains no private source images or Drive references
+      - name: Verify exact public allowlist, privacy, checksums and SQLite integrity
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import json
-          dist = Path("dist")
+          import hashlib, json, sqlite3
+          dist = Path('dist')
           expected = {
-              "index.html", "site.css", "site.js", "README.md",
-              "chronology.json", "sources.json", "validation.json",
-              "party.csv", "imperial.csv", "romanov.csv", "muscovy.csv", "government.csv", "state_institutions.csv",
-              "separate_records.csv", "SHA256SUMS",
+              'index.html', 'site.css', 'site.js', 'README.md',
+              'chronology.json', 'sources.json', 'validation.json',
+              'party.csv', 'imperial.csv', 'romanov.csv', 'muscovy.csv',
+              'government.csv', 'state_institutions.csv', 'separate_records.csv', 'SHA256SUMS',
+              'atlas.json', 'atlas.sqlite', 'atlas-manifest.json', 'atlas-schema.sql', 'database.html',
           }
           actual = {p.name for p in dist.iterdir() if p.is_file()}
-          assert actual == expected, f"Unexpected site files: {actual ^ expected}"
-          assert all(p.is_file() for p in dist.iterdir()), "Nested site artifacts are not allowed"
+          assert actual == expected, f'Unexpected site files: {actual ^ expected}'
+          assert all(p.is_file() for p in dist.iterdir()), 'No nested artifacts'
           for path in dist.iterdir():
-              content = path.read_text(encoding="utf-8-sig")
-              assert "drive.google.com" not in content, f"Drive reference in public site: {path}"
-              assert "1000428575.jpg" not in content, f"Source photo reference in public site: {path}"
-          check = json.loads((dist / "validation.json").read_text(encoding="utf-8"))
-          assert check["historical_truth_verified_by_ci"] is False
-          print("Site is a public, self-contained research report without source photo.")
+              content = path.read_bytes()
+              assert b'drive.google.com' not in content, f'Drive reference: {path}'
+              assert b'1000428575.jpg' not in content, f'Photo reference: {path}'
+              if path.suffix == '.sqlite':
+                  assert content.startswith(b'SQLite format 3\0')
+              else:
+                  content.decode('utf-8-sig')
+          for line in (dist/'SHA256SUMS').read_text().splitlines():
+              checksum, name = line.split('  ')
+              assert hashlib.sha256((dist/name).read_bytes()).hexdigest() == checksum
+          for name in ('validation.json', 'atlas-manifest.json'):
+              assert json.loads((dist/name).read_text())['historical_truth_verified_by_ci'] is False
+          con = sqlite3.connect(f'file:{(dist/"atlas.sqlite").resolve()}?mode=ro', uri=True)
+          assert con.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+          assert con.execute('PRAGMA foreign_key_check').fetchall() == []
+          con.close()
+          print('Public report and derived database checked; original photo excluded.')
           PY
 
       - name: Configure Pages for GitHub Actions
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
-
-      - name: Upload static website
+      - name: Upload static website and derived database
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: dist/
-
       - name: Deploy public site
         id: publish
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
-
-      - name: Write verified deployment URL in run summary
+      - name: Record deployment
         if: success()
         env:
           SITE_URL: ${{ steps.publish.outputs.page_url }}
         shell: bash
         run: |
-          set -euo pipefail
           {
-            echo "## Soviet chronology — published"
-            echo
+            echo '## Historical atlas and database published'
             echo "Site: ${SITE_URL}"
-            echo
-            echo "Research caveat: CI validates data structure, not the historical accuracy of claims."
-            echo "Original photograph remains private in Google Drive and is not included."
+            echo "Database browser: ${SITE_URL}database.html"
+            echo 'CI validates structure, not historical truth. Original photo remains private.'
           } >> "$GITHUB_STEP_SUMMARY"

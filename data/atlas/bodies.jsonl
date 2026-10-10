@@ -1,0 +1,20 @@
+{"id":"body-08ccf4e4f276522d","kind":"institution","memberships":[{"person_id":"person-7720af2ff3445d9d","record_id":"S05","relation":"initial_composition_only"},{"person_id":"person-0ee596fb65215c40","record_id":"S05","relation":"initial_composition_only"},{"person_id":"person-32fcdd0041f457d6","record_id":"S05","relation":"initial_composition_only"},{"person_id":"person-036c05d6218659ca","record_id":"S05","relation":"initial_composition_only"}],"name":"ЦИК СССР и его Президиум; коллегия председателей"}
+{"id":"body-0d7d8dc0bfec580e","kind":"group","memberships":[],"name":"Избранная рада"}
+{"id":"body-12257dbc8d605bfc","kind":"institution","memberships":[],"name":"Приказная система"}
+{"id":"body-13c1c561d2ea5aca","kind":"institution","memberships":[],"name":"Правительствующий Сенат"}
+{"id":"body-27c15a5dca0555e2","kind":"institution","memberships":[],"name":"Государственная дума"}
+{"id":"body-2d165457fb9f55a6","kind":"institution","memberships":[],"name":"Непременный совет"}
+{"id":"body-3d005fc02d6c52ec","kind":"institution","memberships":[],"name":"Верховный тайный совет"}
+{"id":"body-459e5f95ca7a5b54","kind":"institution","memberships":[],"name":"Коллегии"}
+{"id":"body-4a96aef7824f5d77","kind":"institution","memberships":[],"name":"Государственный совет"}
+{"id":"body-4bfed56049125f2c","kind":"group","memberships":[{"person_id":"person-db783067d71250b9","record_id":"G03","relation":"shared_functions"},{"person_id":"person-e271c748e0ce5752","record_id":"G03","relation":"shared_functions"},{"person_id":"person-a74325f597735e23","record_id":"G03","relation":"shared_functions"},{"person_id":"person-196a16821ba05da7","record_id":"G03","relation":"shared_functions"},{"person_id":"person-982492a1422e5272","record_id":"G03","relation":"shared_functions"}],"name":"Текущее руководство заместителями председателя СНК СССР"}
+{"id":"body-565f786160165472","kind":"institution","memberships":[],"name":"Опричнина"}
+{"id":"body-6524e6d210cd5484","kind":"institution","memberships":[],"name":"Конференция при Высочайшем дворе"}
+{"id":"body-76ff8b7fa8495cec","kind":"institution","memberships":[],"name":"Комитет министров"}
+{"id":"body-805c3a4bf39555f1","kind":"institution","memberships":[],"name":"Кабинет министров"}
+{"id":"body-8694ca6ba55952c5","kind":"group","memberships":[],"name":"Коллективное руководство ЦК и его органов"}
+{"id":"body-b43e65e384f45eb3","kind":"institution","memberships":[],"name":"Земщина"}
+{"id":"body-b93772480b4c5db8","kind":"institution","memberships":[],"name":"Московское патриаршество"}
+{"id":"body-ce5bdfce6ed05ed3","kind":"group","memberships":[],"name":"Боярские группировки Шуйских и Бельских"}
+{"id":"body-e225049a1b9053c7","kind":"group","memberships":[],"name":"Семибоярщина"}
+{"id":"body-f32257676b765f36","kind":"institution","memberships":[],"name":"Боярская дума"}
