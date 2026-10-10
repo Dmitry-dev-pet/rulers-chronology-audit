@@ -653,6 +653,15 @@
   const researchLink = document.querySelector('.topnav-links a[href="#research"]');
   if (researchLink) researchLink.href = '#/research';
 
+  // The public source/revision footer remains available in Research, but
+  // must not consume viewport height below the application work area.
+  const footer = document.querySelector('body > footer.footer');
+  const research = document.getElementById('panel-research');
+  if (footer && research) {
+    footer.classList.add('atlas-inline-footer');
+    research.appendChild(footer);
+  }
+
   // Biographies keep search/results visible beside the open profile on desktop.
   // Mobile displays the profile as its own screen with a back link.
   const search = people.querySelector('#spa-people-tools');
