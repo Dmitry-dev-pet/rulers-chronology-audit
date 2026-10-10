@@ -206,10 +206,16 @@
     for (const [kind, caption] of groups) {
       const button = make('button', 'atlas-transition-filter', caption);
       button.type = 'button';
+      button.dataset.filter = kind;
       button.setAttribute('aria-pressed', String(activeFilter === kind));
       button.addEventListener('click', () => {
+        // Keep filter DOM nodes stable while changing the selection.
+        // Replacing the entire filter row on pointerdown can shift controls
+        // in horizontally scrolled mobile/desktop layouts.
         activeFilter = kind;
-        renderFilters();
+        for (const peer of tabs.querySelectorAll('button[data-filter]')) {
+          peer.setAttribute('aria-pressed', String(peer.dataset.filter === kind));
+        }
         displayEntries();
       });
       tabs.appendChild(button);
