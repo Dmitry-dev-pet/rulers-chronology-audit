@@ -13,3 +13,7 @@ Read ../../docs/DATABASE.md before editing this directory.
 - Run python3 -m scripts.atlas_db validate, the full unittest suite, the four legacy build stages, then python3 -m scripts.atlas_db build.
 - Do not update source hashes blindly to silence a mismatch. Coordinate intentional old/new source changes explicitly.
 - Public exports must exclude the original image, private Drive URLs and secrets. Technical success is not historical attestation.
+
+- Transition-case `territorial_evidence` entries are place-level documentary observations, **not continuous control polygons**. Preserve the distinction between an official claim, a locally documented allegiance, military presence, resistance, and actually operating government.
+- Geography requires a sourced assertion, date with honest calendar/precision, a caveat about what it does *not* establish, linked event IDs, and `geometry_verified=false`. Do not add polygons or point coordinates without a separately reviewed cartographic procedure and versioned contract.
+- Primary laws from 1991 determine jurisdiction *asserted by the issuing authority*, not automatic evidence of implementation across an entire republic. No automatic federal control coloring. Source methodology: `research/territorial-jurisdiction-1608-1612-1991.md`.
