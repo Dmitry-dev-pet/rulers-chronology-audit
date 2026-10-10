@@ -36,6 +36,28 @@
   const mobileSwitch = button('Свидетельства', 'smuta-mobile-switch', () => setMobile(!work.classList.contains('show-details')));
   modebar.append(launch, leave, intro, mobileSwitch);
   panel.insertBefore(modebar, toolbar);
+  // The existing year slider stays canonical; month is a separately qualified
+  // sub-period. A year-only statement is NEVER silently assigned to any month.
+  const calendar=el('div','smuta-calendarbar');
+  calendar.id='smuta-calendarbar';
+  const monthLabel=el('label','smuta-month-label','Месяц');
+  const monthSelect=el('select','smuta-month-select');
+  monthSelect.id='smuta-month';
+  monthLabel.htmlFor=monthSelect.id;
+  const monthNames=['Весь год','Январь','Февраль','Март','Апрель','Май','Июнь',
+    'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  for(let i=0;i<monthNames.length;i++){
+    const o=el('option',null,monthNames[i]);o.value=String(i);monthSelect.append(o);
+  }
+  monthLabel.append(monthSelect);
+  const monthBack=button('‹','smuta-month-step',()=>stepMonth(-1));
+  const monthForward=button('›','smuta-month-step',()=>stepMonth(1));
+  monthBack.setAttribute('aria-label','Предыдущий месяц');
+  monthForward.setAttribute('aria-label','Следующий месяц');
+  const monthCaveat=el('span','smuta-month-caveat',
+    'Срез по записанной календарной дате; годовые записи не считаются месячными.');
+  calendar.append(monthLabel,monthBack,monthForward,monthCaveat);
+  panel.insertBefore(calendar,toolbar);
 
   const work = el('section', 'smuta-workspace'); work.hidden = true;
   work.id = 'smuta-map-workspace'; work.setAttribute('aria-label','Карта свидетельств о власти в Смуту');
@@ -72,7 +94,8 @@
   const modes=el('div','smuta-compare-modes');
   const evidenceMode=button('Свидетельства по месту','smuta-mode-evidence',()=>setComparison(false,true));
   const compareMode=button('Сравнить центры власти','smuta-mode-compare',()=>setComparison(true,true));
-  modes.append(evidenceMode,compareMode);
+  const matrixModeButton=button('Пробелы исследования','smuta-mode-matrix',()=>setMatrix(true,true));
+  modes.append(evidenceMode,compareMode,matrixModeButton);
   const filters=el('div','smuta-filters');
   const cityLabel=el('label',null,'Место'); const city=el('select','smuta-city'); city.id='smuta-city'; cityLabel.htmlFor=city.id; cityLabel.append(city);
   const kindLabel=el('label',null,'Тип свидетельства'); const kind=el('select','smuta-kind'); kind.id='smuta-kind'; kindLabel.htmlFor=kind.id;
@@ -94,17 +117,37 @@
   const research=document.getElementById('panel-research');
   if(oldFooter && research)research.append(oldFooter);
   function setMobile(show){work.classList.toggle('show-details',show);mobileSwitch.textContent=show?'← Карта':'Свидетельства';schedule();}
-  let data=null, error=null, enabled=false, selected='', category='all', whole=false, comparison=false, riversVisible=true;
+  let data=null, error=null, enabled=false, selected='', category='all', whole=false, comparison=false, matrixMode=false, riversVisible=true, selectedMonth=0;
   let sources=new Map(), events=new Map(), people=new Map(), mapped=new Map();
   let view={lon:40,lat:55.3,zoom:1};
   let frame=0, entering=false;
   const currentYear=()=>Number(slider.value);
+  const monthKey=(year,month)=>String(year)+'-'+String(month).padStart(2,'0');
+  const exactMonth=(row)=>selectedMonth>0 &&
+    row.date.precision!=='year'&&row.date.value.slice(0,7)===monthKey(currentYear(),selectedMonth);
+  const matchesSelectedPeriod=row=>whole||(
+    Number(row.date.value.slice(0,4))===currentYear()&&
+    (selectedMonth===0||exactMonth(row)));
+  function setMonth(month,push=true){
+    if(!Number.isInteger(month)||month<0||month>12)return;
+    selectedMonth=month;if(month>0)whole=false;
+    writeState(push);schedule();
+  }
+  function stepMonth(direction){
+    let next=selectedMonth===0?(direction<0?12:1):selectedMonth+direction;
+    let year=currentYear();
+    if(next===0){next=12;year--;}else if(next===13){next=1;year++;}
+    if(year<1598||year>1613)return;
+    if(year!==currentYear())setYear(year);
+    setMonth(next);
+  }
   const requestedYear=()=>Number(/^#\/timeline\/(\d{4})$/.exec(location.hash)?.[1]||1608);
   const qs=()=>new URL(location.href).searchParams;
   function writeState(push=false) {
     const u=new URL(location.href);
     if(enabled)u.searchParams.set('map','smuta');else u.searchParams.delete('map');
-    for(const [key,val] of [['place',selected],['kind',category==='all'?'':category],['scope',whole?'period':''],['compare',comparison?'1':''],['rivers',riversVisible?'':'0']]) {
+    for(const [key,val] of [['place',selected],['kind',category==='all'?'':category],['scope',whole?'period':''],['month',!whole&&selectedMonth?String(selectedMonth).padStart(2,'0'):''],
+      ['compare',comparison?'1':''],['matrix',matrixMode?'1':''],['rivers',riversVisible?'':'0']]) {
       if(enabled&&val)u.searchParams.set(key,val);else u.searchParams.delete(key);
     }
     const target=u.pathname+u.search+u.hash;
@@ -133,27 +176,39 @@
   }
   function readState() {
     const q=qs();selected=q.get('place')||'';category=names.has(q.get('kind'))?q.get('kind'):'all';whole=q.get('scope')==='period';
-    comparison=q.get('compare')==='1';riversVisible=q.get('rivers')!=='0';
+    comparison=q.get('compare')==='1';matrixMode=q.get('matrix')==='1';
+    if(matrixMode)comparison=false;
+    const rawMonth=q.get('month')||'';
+    selectedMonth=/^(0?[1-9]|1[0-2])$/.test(rawMonth)?Number(rawMonth):0;
+    if(whole)selectedMonth=0;
+    riversVisible=q.get('rivers')!=='0';
     if(data&&!data.places.some(p=>p.id===selected)&&selected!=='unlocated')selected='';
     if(q.get('map')==='smuta'&&!panel.hidden) {
       if(!enabled)enter(requestedYear(),true);else schedule();
     }else if(q.get('map')!=='smuta'&&enabled)exit(false);
   }
   function setComparison(flag,push=false){
-    comparison=flag;writeState(push);detail.scrollTop=0;schedule();
+    comparison=flag;if(flag)matrixMode=false;
+    writeState(push);detail.scrollTop=0;schedule();
+  }
+  function setMatrix(flag,push=false){
+    matrixMode=flag;
+    if(flag){comparison=false;selectedMonth=0;whole=false;}
+    writeState(push);detail.scrollTop=0;schedule();
   }
   function choosePlace(id,push=true) {
-    selected=id;comparison=false;city.value=id;writeState(push);detail.scrollTop=0;
+    selected=id;comparison=false;matrixMode=false;city.value=id;writeState(push);detail.scrollTop=0;
     if(window.matchMedia('(max-width: 760px)').matches)setMobile(true);
     schedule();
   }
   city.addEventListener('change',()=>choosePlace(city.value));
   kind.addEventListener('change',()=>{category=kind.value;writeState(true);schedule();});
-  all.addEventListener('change',()=>{whole=all.checked;writeState(true);schedule();});
+  all.addEventListener('change',()=>{whole=all.checked;if(whole)selectedMonth=0;writeState(true);schedule();});
+  monthSelect.addEventListener('change',()=>setMonth(Number(monthSelect.value)));
   waterCheck.addEventListener('change',()=>{riversVisible=waterCheck.checked;writeState(true);schedule();});
   function records(ignorePlace=false) {
     if(!data)return [];
-    return data.evidence.filter(e=>(whole||Number(e.date.value.slice(0,4))===currentYear())&&
+    return data.evidence.filter(e=>matchesSelectedPeriod(e)&&
       (category==='all'||e.nature===category)&&
       (ignorePlace||!selected||(selected==='unlocated'?!mapped.has(e.id):mapped.get(e.id)===selected)));
   }
@@ -199,7 +254,7 @@
       svg.append(svgNode('line',{x1:p.x,y1:0,x2:p.x,y2:d.h}),svgNode('text',{x:p.x+4,y:d.h-8},lon+'° в. д.'));}
     for(let lat=50;lat<=61;lat+=step){const p=project({lon:view.lon,lat},d);if(p.y<0||p.y>d.h)continue;
       svg.append(svgNode('line',{x1:0,y1:p.y,x2:d.w,y2:p.y}),svgNode('text',{x:8,y:p.y-5},lat+'° с. ш.'));}
-    const visible=comparison?data.evidence.filter(e=>Number(e.date.value.slice(0,4))===currentYear()):records(true);
+    const visible=(comparison||matrixMode)?data.evidence.filter(e=>matchesSelectedPeriod(e)):records(true);
     const counts=new Map(data.places.map(p=>[p.id,visible.filter(r=>p.evidence_ids.includes(r.id)).length]));
     let placed=data.places.map(p=>({...p,...project(p.reference_point,d),members:[p]}));
     // Nearby geographic anchors are clustered, NEVER shifted away from coordinates.
