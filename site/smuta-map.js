@@ -199,7 +199,8 @@
       svg.append(svgNode('line',{x1:p.x,y1:0,x2:p.x,y2:d.h}),svgNode('text',{x:p.x+4,y:d.h-8},lon+'° в. д.'));}
     for(let lat=50;lat<=61;lat+=step){const p=project({lon:view.lon,lat},d);if(p.y<0||p.y>d.h)continue;
       svg.append(svgNode('line',{x1:0,y1:p.y,x2:d.w,y2:p.y}),svgNode('text',{x:8,y:p.y-5},lat+'° с. ш.'));}
-    const visible=records(true), counts=new Map(data.places.map(p=>[p.id,visible.filter(r=>p.evidence_ids.includes(r.id)).length]));
+    const visible=comparison?data.evidence.filter(e=>Number(e.date.value.slice(0,4))===currentYear()):records(true);
+    const counts=new Map(data.places.map(p=>[p.id,visible.filter(r=>p.evidence_ids.includes(r.id)).length]));
     let placed=data.places.map(p=>({...p,...project(p.reference_point,d),members:[p]}));
     // Nearby geographic anchors are clustered, NEVER shifted away from coordinates.
     const a=placed.find(p=>p.id==='moscow'),b=placed.find(p=>p.id==='tushino');
@@ -216,17 +217,88 @@
       pin.setAttribute('aria-pressed',String(p.members.some(m=>m.id===selected)));
       const dot=el('span','smuta-pin-dot',isCluster?'2':n||'');
       const label=el('span','smuta-pin-label',p.name);if(p.x>d.w-170)label.classList.add('left');
-      pin.append(dot,label);pins.append(pin);
+      pin.append(dot,label);
+      const kinds=[...new Set(p.members.flatMap(m=>
+        visible.filter(e=>m.evidence_ids.includes(e.id)).map(e=>e.nature)))];
+      if(kinds.length){
+        const chips=el('span','smuta-pin-kinds');
+        for(const type of kinds)chips.appendChild(el('span','smuta-kind-dot '+type,'●'));
+        pin.appendChild(chips);
+      }
+      pins.append(pin);
     }
   }
   function cite(node,ids){for(const id of [...new Set(ids)]){const src=sources.get(id);if(src&&safe(src.url)){const a=link(id,src.url,true);a.title=src.title;node.append(a);}}}
   function date(d){const unit={day:'',month:' · месяц',year:' · только год'}[d.precision]||'';return d.value+unit+' · '+({julian:'ст. ст.',gregorian:'н. ст.',unspecified:'календарь не уточнён'}[d.calendar]||'');}
+  function renderComparison(){
+    const year=currentYear();
+    const lead=el('div','smuta-comparison-lead');
+    lead.append(el('h3',null,'Центры власти · '+year),
+      el('p',null,'Показаны только юридические сроки, пересекающие выбранный год, и документированные местные свидетельства именно за этот год. Годовые пересечения не доказывают одновременность, а должность — фактический контроль всей территории.'));
+    detail.append(lead);
+    const formal=(data.formal_year_overlaps||[]).filter(t=>
+      Number(t.start.value.slice(0,4))<=year&&Number(t.end.value.slice(0,4))>=year);
+    const legalSection=el('section','smuta-comparison-legal');
+    legalSection.append(el('h4',null,'Юридический престол · пересечение с годом'));
+    if(!formal.length)legalSection.append(el('p','smuta-comparison-empty','Для этого года нет отдельного подтверждённого срока в исследованной базе.'));
+    for(const term of formal){
+      const card=el('article','smuta-center legal');
+      card.append(el('small',null,term.start.value+' — '+term.end.value+' · '+term.status),
+        el('h5',null,term.name),el('p',null,term.description),
+        el('p','smuta-limit','Годовой срез не является утверждением, что этот правитель осуществлял власть весь год или над всеми городами.'));
+      if(term.verification==='imported_not_rechecked')
+        card.append(el('p','smuta-comparison-warning','Срок ещё требует независимой документальной сверки.'));
+      const citations=el('div','smuta-citations');cite(citations,term.sources);card.append(citations);
+      card.append(link('Открыть биографию','#/people/'+term.person_id));
+      legalSection.append(card);
+    }
+    detail.append(legalSection);
+    const present=data.evidence.filter(e=>Number(e.date.value.slice(0,4))===year);
+    const heading=el('h4',null,'Местное управление, военное присутствие и притязания');
+    detail.append(heading);
+    if(!present.length)detail.append(el('p','smuta-comparison-empty',
+      'За этот год отдельных свидетельств о местах пока нет. Не означает отсутствия политических центров или непрерывности прежней власти.'));
+    const groups=new Map();
+    for(const e of present){
+      if(!groups.has(e.authority))groups.set(e.authority,[]);
+      groups.get(e.authority).push(e);
+    }
+    for(const [actor,observations] of groups){
+      const card=el('article','smuta-center');
+      card.append(el('h5',null,actor),
+        el('p','smuta-comparison-description',observations.length+' местных свидетельств в '+year+' году.'));
+      for(const e of observations){
+        const row=el('div','smuta-center-observation');
+        row.dataset.nature=e.nature;row.dataset.sourceEvent=e.id;
+        row.append(el('small',null,date(e.date)+' · '+names.get(e.nature)),
+          el('h6',null,e.place),
+          el('p',null,e.statement),
+          el('p','smuta-limit',e.limitation));
+        const citations=el('div','smuta-citations');cite(citations,e.sources);row.append(citations);
+        const placeId=mapped.get(e.id);
+        if(placeId)row.append(button('Найти место на карте →','smuta-center-find',()=>choosePlace(placeId)));
+        else row.append(el('p','smuta-unlocated','Несколько мест в одном притязании: точная точка не установлена.'));
+        card.append(row);
+      }
+      detail.append(card);
+    }
+    const warning=el('p','smuta-comparison-warning',
+      'Ни один из показанных политических центров не получает нарисованную территорию контроля; для неё необходимы отдельные источники по каждому месту и периоду.');
+    detail.append(warning);
+    status.textContent=year+' год · '+formal.length+' юридических записей, '+groups.size+
+      ' местных центров по '+present.length+' свидетельствам';
+  }
   function render(){
     if(!enabled)return;
     for(const b of examples.querySelectorAll('button'))b.setAttribute('aria-pressed',String(Number(b.dataset.year)===currentYear()));
+    evidenceMode.setAttribute('aria-pressed',String(!comparison));
+    compareMode.setAttribute('aria-pressed',String(comparison));
+    aside.classList.toggle('is-comparison',comparison);
+    filters.hidden=comparison;waterCheck.checked=riversVisible;
     city.value=selected;kind.value=category;all.checked=whole;
     if(!data){status.textContent=error?'Данные не загрузились: '+error:'Загрузка карты…';return;}
     drawMap();detail.replaceChildren();
+    if(comparison){renderComparison();return;}
     const shown=records(),year=currentYear(),where=data.places.find(p=>p.id===selected);
     status.textContent=(whole?'Весь период 1598–1613':year+' год')+' · '+shown.length+' свидетельств'+(where?' · '+where.name:'');
     if(where){
@@ -282,8 +354,14 @@
   new ResizeObserver(schedule).observe(plot);
   readState();
   fetch('./smuta-map.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();}).then(d=>{
-    if(d.schema_version!==1||d.coordinate_kind!=='modern_reference_only'||d.historical_borders_verified!==false||!Array.isArray(d.places)||!Array.isArray(d.evidence))throw Error('Неверный контракт карты');
+    if(d.schema_version!==1||d.coordinate_kind!=='modern_reference_only'||
+      d.historical_borders_verified!==false||!Array.isArray(d.places)||
+      !Array.isArray(d.evidence)||!Array.isArray(d.formal_year_overlaps)||
+      d.hydrography?.kind!=='modern_hydrography_reference'||
+      d.hydrography?.historical_hydrography_verified!==false||
+      !Array.isArray(d.hydrography?.rivers))throw Error('Неверный контракт карты');
     data=d;sources=new Map(d.sources.map(s=>[s.id,s]));events=new Map(d.events.map(e=>[e.id,e]));people=new Map(d.people.map(p=>[p.id,p.name]));
+    hydroAttribution.append(link('Natural Earth 1:10m · общественное достояние',d.hydrography.source.url,true));
     city.append(el('option',null,'Все места'));city.options[0].value='';
     for(const p of d.places){const o=el('option',null,p.name);o.value=p.id;city.append(o);p.evidence_ids.forEach(id=>mapped.set(id,p.id));}
     const missing=el('option',null,'Без точной привязки');missing.value='unlocated';city.append(missing);
