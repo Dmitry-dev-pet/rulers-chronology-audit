@@ -131,6 +131,7 @@
   function setMonth(month,push=true){
     if(!Number.isInteger(month)||month<0||month>12)return;
     selectedMonth=month;if(month>0)whole=false;
+    if(matrixMode)matrixMode=false;
     writeState(push);schedule();
   }
   function stepMonth(direction){
@@ -188,7 +189,7 @@
     }else if(q.get('map')!=='smuta'&&enabled)exit(false);
   }
   function setComparison(flag,push=false){
-    comparison=flag;if(flag)matrixMode=false;
+    comparison=flag;matrixMode=false;
     writeState(push);detail.scrollTop=0;schedule();
   }
   function setMatrix(flag,push=false){
