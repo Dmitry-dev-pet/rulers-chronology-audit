@@ -42,7 +42,18 @@ def check(dist: Path, output: Path):
                 assert page.evaluate('document.documentElement.scrollHeight<=innerHeight+1')
                 # A source page is NOT requested by clicking a map pin.
                 page.screenshot(path=str(output/f'map-{w}.png'),full_page=True)
-                page.locator('.smuta-marker[data-place="yaroslavl"]').click()
+                # At short landscape sizes, nearby *geographic* points can
+                # overlap. The map then exposes a chooser, never a shifted pin.
+                direct=page.locator('.smuta-marker[data-place="yaroslavl"]')
+                if direct.count():
+                    direct.click()
+                else:
+                    grouped=page.locator('.smuta-marker[data-cluster="true"][data-members*="yaroslavl"]')
+                    expect(grouped).to_have_count(1)
+                    grouped.click()
+                    expect(page.locator('.smuta-cluster-sheet')).to_be_visible()
+                    page.locator('.smuta-cluster-choice[data-place="yaroslavl"]').click()
+                    expect(page.locator('.smuta-cluster-sheet')).to_be_hidden()
                 expect(page.locator('.smuta-evidence')).to_have_count(1)
                 expect(page.locator('.smuta-evidence h3')).to_contain_text('Ярославль')
                 expect(page).to_have_url(__import__('re').compile('place=yaroslavl'))
