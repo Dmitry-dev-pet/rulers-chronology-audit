@@ -1,0 +1,24 @@
+id,topic,printed_or_implied,initial_correction,kind,status,source_ids
+C01,Симеон Бекбулатович,1574-1576,1575-1576; номинальный великий князь; власть у Ивана IV,date-and-status,provisional-reviewed,S01 S02
+C02,Гостомысл,исторический правитель,легендарная/поздняя традиция,source-criticism,provisional-reviewed,S18
+C03,Киев столица,с 862,летописная схема: 882; дата спорна,date-and-model,provisional-reviewed,S03 S04
+C04,Святополк и Ярослав,Святополк непрерывно 1015-1019,Ярослав Киев 1016-1018; Святополк вновь 1018,omitted-reign,provisional-reviewed,S04
+C05,Владимир столица,с 1169,столица княжества Андрея с 1157; не перенос единого государства,anachronism,provisional-reviewed,S19 S04
+C06,митрополит Алексий,1359-1368 правитель,регент/советник при Дмитрии,role,provisional-reviewed,S11
+C07,Дмитрий Донской,с 1368,московский князь с 1359; великий князь владимирский с 1362,dates,provisional-reviewed,S10
+C08,Софья Витовтовна,1425-1432 правитель,регент при Василии II; княжение Василия II с 1425,role,provisional-reviewed,S12
+C09,Иван IV,с 1548,великий князь с 1533; царь с 1547,dates-and-title,provisional-reviewed,S13
+C10,Фёдор Иванович,царствование до 1587,царь до 1598,dates,provisional-reviewed,S14
+C11,Борис Годунов,1587-1605 правление,де-факто с 1587; царь с 1598,role,provisional-reviewed,S15 S14
+C12,Владислав,1610 правление,номинальное признание без фактического царствования,role,provisional-reviewed,S20
+C13,Софья Алексеевна,1682-1689 правитель,регент при Петре и Иване V,role,provisional-reviewed,S16 S17
+C14,Пётр I,с 1689,царь с 1682; самостоятельное правление с 1689; император с 1721,dates-and-title,provisional-reviewed,S16
+C15,Иван V,отсутствует,царь-соправитель 1682-1696,omission,provisional-reviewed,S17
+C16,Санкт-Петербург столица,с 1703,общепринятая дата переноса 1712; Сенат переехал 1713,dates,provisional-reviewed,S05
+C17,Иван VI,правнук Петра I,правнук Ивана V; регенты Бирон и Анна Леопольдовна,genealogy,provisional-reviewed,S06
+C18,Константин Павлович,1825 правитель,присяга была; не вступил на престол,role,provisional-reviewed,S21
+C19,Ленин,1917-1923,председатель СНК до 1924,dates-and-role,provisional-reviewed,S22 S23
+C20,Сталин,1923-1953 и родился 1879,генсек с 1922; глава правительства с 1941; год рождения 1878,dates-and-role,provisional-reviewed,S07
+C21,Маленков,год рождения 1902,год рождения 1901 по архивным материалам,birth-year,provisional-reviewed,S08 S09
+C22,Хрущёв,1953-1964,партия с 1953; правительство с 1958,role,provisional-reviewed,S24
+C23,Цитата Ленина,в шапке плаката,атрибуция к «К характеристике экономического романтизма»,attribution,provisional-reviewed,S25
