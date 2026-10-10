@@ -12,6 +12,7 @@ class SPAContract(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.js=(ROOT/'site/site.js').read_text(encoding='utf-8')
+        cls.dashboard=(ROOT/'site/year-view.js').read_text(encoding='utf-8')
         cls.css=(ROOT/'site/site.css').read_text(encoding='utf-8')
 
     def test_four_accessible_views_share_same_document(self):
@@ -82,9 +83,40 @@ class SPAContract(unittest.TestCase):
         self.assertIn(".atlas-app #panel-people.spa-profile-open .spa-people-browser{display:none}", self.css)
         self.assertIn("citations(links,entry.sources)", self.js)
 
+
+    def test_year_view_is_primary_and_year_hash_stable(self):
+        self.assertIn("['timeline', 'Год и власть']", self.js)
+        self.assertIn("['people', 'Биографии']", self.js)
+        self.assertIn("history.replaceState(null, '', '#/timeline/1685')", self.js)
+        self.assertIn("return navigate('timeline', false)", self.js)
+        self.assertIn("atlas:show-year-details", self.js)
+
+    def test_year_overview_separates_formal_effective_and_collective(self):
+        for literal in ('Формальные должности', 'Политическое влияние',
+                        'Регентство и соправители', 'Учреждения и коллегии'):
+            self.assertIn(literal, self.dashboard)
+        for field in ('result.tenures', 'result.power_assessments',
+                      'result.institution_periods', 'result.sources'):
+            self.assertIn(field, self.dashboard)
+        self.assertIn("fetch('./atlas.json', {cache: 'no-cache'})", self.dashboard)
+        self.assertIn('intersects = (record, year)', self.dashboard)
+        self.assertIn('start <= year && year <= end', self.dashboard)
+        self.assertIn('!nominal.has(r.status)', self.dashboard)
+        self.assertIn("не обязательно действовавшие одновременно", self.dashboard)
+
+    def test_year_controls_and_source_links(self):
+        self.assertIn("slider.dispatchEvent(new Event('input', {bubbles: true}))", self.dashboard)
+        self.assertIn("yearNumber", self.dashboard)
+        self.assertIn("year-role-details", self.dashboard)
+        self.assertIn("url.protocol === 'https:'", self.dashboard) if False else self.assertIn("parsed.protocol === 'https:'", self.dashboard)
+        self.assertIn("a.href = '#/people/' + encodeURIComponent(record.person_id)", self.dashboard)
+        self.assertIn("a.href = src.url", self.dashboard)
+        self.assertNotIn("drive.google.com/file/d/", self.dashboard)
+
     def test_script_syntax_if_node_present(self):
         if shutil.which('node'):
             subprocess.run(['node','--check',str(ROOT/'site/site.js')],check=True,capture_output=True)
+            subprocess.run(['node','--check',str(ROOT/'site/year-view.js')],check=True,capture_output=True)
 
     def test_historical_db_not_mutated(self):
         db=atlas_db.load(ROOT)

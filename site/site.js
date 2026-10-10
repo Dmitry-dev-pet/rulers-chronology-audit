@@ -36,10 +36,26 @@
     mainHost.appendChild(pane);
   }
 
+  // The year-centric authority view is the primary application destination.
+  // Reordering happens only with JS; the original poster remains the noscript fallback.
+  const tabOrder = [
+    ['timeline', 'Год и власть'], ['people', 'Биографии'],
+    ['poster', 'Плакат'], ['research', 'Исследование']
+  ];
+  for (const [index, [view, label]] of tabOrder.entries()) {
+    const node = navHost && navHost.querySelector('.mode-tab[data-view="' + view + '"]');
+    if (!node) continue;
+    const number = node.querySelector('.num');
+    if (number) number.textContent = String(index + 1).padStart(2, '0');
+    const last = node.lastChild;
+    if (last && last.nodeType === 3) last.textContent = ' ' + label;
+    else node.appendChild(document.createTextNode(' ' + label));
+    navHost.appendChild(node);
+  }
   const tabNames = new Set(['poster', 'timeline', 'research', 'people']);
   const tabs = Array.from(document.querySelectorAll('.mode-tab'));
   const panels = new Map(Array.from(document.querySelectorAll('.mode-panel')).map(panel => [panel.dataset.mode, panel]));
-  let currentMode = 'poster';
+  let currentMode = 'timeline';
   const originalTitle=document.title;
   function navigate(name, updateHash) {
     if (!tabNames.has(name)) return;
@@ -267,7 +283,10 @@
       return;
     }
     if (hash.startsWith('poster-')) return navigate('poster', false);
-    if (!hash) return navigate('poster', false);
+    if (!hash) {
+      history.replaceState(null, '', '#/timeline/1685');
+      return navigate('timeline', false);
+    }
   }
   window.addEventListener('hashchange', fromHash);
   fromHash();
@@ -830,6 +849,16 @@
       sidebar.setAttribute('inert', '');
     else sidebar.removeAttribute('inert');
   }
+  // Year summary cards can show the full, sourced dossier on demand.
+  window.addEventListener('atlas:show-year-details', () => {
+    if (timeline.hidden) return;
+    if (narrow.matches) openSidebar();
+    else {
+      sidebar.scrollTop = 0;
+      sidebar.tabIndex = -1;
+      sidebar.focus({preventScroll: true});
+    }
+  });
   toggle.addEventListener('click', () => {
     if (work.classList.contains('atlas-sidebar-open')) closeSidebar();
     else openSidebar();

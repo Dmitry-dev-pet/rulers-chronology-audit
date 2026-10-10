@@ -1301,3 +1301,68 @@ button[disabled] {
   .atlas-app .atlas-timeline-workspace,.atlas-app .spa-people-workspace{display:block!important}
   .atlas-app .timeline-scroll,.atlas-app .atlas-sidebar,.atlas-app .spa-people-grid,.atlas-app .spa-person-detail{overflow:visible!important;height:auto!important;max-height:none!important}
 }
+
+
+/* Year-first SPA dashboard. Source-backed cards are a compact, independent
+   summary; the existing year inspector retains complete research records. */
+.atlas-app #panel-timeline>.section-top{display:none}
+.atlas-app .atlas-year-dashboard{flex:0 0 auto;min-width:0;display:flex;flex-direction:column;gap:5px;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:8px}
+.atlas-app .atlas-year-dashboard .atlas-year-head{display:block}
+.atlas-app .atlas-year-dashboard-heading{display:flex;align-items:center;justify-content:flex-start;gap:11px;min-width:0}
+.atlas-app .atlas-year-dashboard-heading h2{font:700 clamp(20px,2.5vw,28px)/1.17 Georgia,serif;letter-spacing:-.025em;margin:0;flex:1}
+.atlas-app .atlas-year-dashboard-heading strong{color:var(--red);font-variant-numeric:tabular-nums}
+.atlas-app .atlas-year-step{flex:0 0 auto;border:1px solid var(--line);border-radius:7px;width:33px;height:33px;background:var(--surface);font-size:25px;line-height:1;display:grid;place-items:center;color:var(--ink)}
+.atlas-app .atlas-year-step:hover{border-color:var(--green);color:var(--green)}
+.atlas-app .atlas-year-step:disabled{opacity:.35;cursor:not-allowed}
+.atlas-app .atlas-year-dashboard-range{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.atlas-app #atlas-year-range{width:100%;min-width:0;margin:1px 0;cursor:pointer;accent-color:var(--green)}
+.atlas-app .atlas-year-dashboard-caveat,.atlas-app .atlas-year-dashboard-status{font-size:10.5px;line-height:1.4;color:var(--muted);margin:0}
+.atlas-app .atlas-year-dashboard-status{color:var(--green);min-height:15px}
+.atlas-app .atlas-year-dashboard-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;min-width:0}
+.atlas-app .atlas-year-role-card{display:flex;flex-direction:column;min-width:0;height:166px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fcfbf6;overflow:hidden}
+.atlas-app .atlas-year-role-head{display:flex;gap:5px;justify-content:space-between;align-items:center}
+.atlas-app .atlas-year-role-head h3{font:700 13px/1.2 system-ui,sans-serif;margin:0}
+.atlas-app .atlas-year-role-count{border-radius:30px;border:1px solid var(--line);font:700 11px/1.4 system-ui,sans-serif;min-width:23px;text-align:center;color:var(--muted)}
+.atlas-app .atlas-year-role-description{font:400 10px/1.25 system-ui,sans-serif;color:var(--muted);margin:3px 0 6px}
+.atlas-app .atlas-year-role-items{margin:0;padding:0;list-style:none;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.atlas-app .atlas-year-role-item{padding:5px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}
+.atlas-app .atlas-year-person-link{font-size:12px;font-weight:750;line-height:1.25}
+.atlas-app .atlas-year-role-explanation{font-size:10.5px;line-height:1.35;color:#49524d;margin-top:3px}
+.atlas-app .atlas-year-qualification,.atlas-app .atlas-year-verification{font-size:9.5px;display:block;color:var(--red);margin:2px 0}
+.atlas-app .atlas-year-verification{color:var(--muted)}
+.atlas-app .atlas-year-role-sources{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:10px;margin-top:3px}
+.atlas-app .atlas-year-source{font-size:10px;text-decoration:underline}
+.atlas-app .atlas-year-role-empty{font-size:11px;color:var(--muted);line-height:1.35}
+.atlas-app .atlas-year-role-bottom{display:flex;justify-content:space-between;align-items:center;gap:4px;flex:0 0 auto;border-top:1px solid var(--line);padding-top:5px}
+.atlas-app .atlas-year-role-remaining{font-size:10px;color:var(--muted)}
+.atlas-app .atlas-year-role-details{border:0;background:transparent;padding:1px;font-size:10.5px;font-weight:750;color:var(--green);cursor:pointer;text-decoration:underline;white-space:nowrap;margin-left:auto}
+.atlas-app .atlas-year-role-details:hover{color:var(--red)}
+.atlas-app .atlas-sidebar .atlas-year-inspector>.atlas-year-caveat{margin:7px 0}
+@media(max-width:1100px){
+ .atlas-app .atlas-year-dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .atlas-app .atlas-year-role-card{height:110px}
+ .atlas-app .atlas-year-role-description{display:none}
+}
+@media(max-width:700px){
+ .atlas-app .atlas-year-dashboard{padding:7px 8px;gap:4px;margin-bottom:6px}
+ .atlas-app .atlas-year-dashboard-heading{gap:6px}
+ .atlas-app .atlas-year-dashboard-heading h2{font-size:18px}
+ .atlas-app .atlas-year-step{width:28px;height:28px;font-size:23px}
+ .atlas-app .atlas-year-dashboard-range{gap:6px}
+ .atlas-app .atlas-year-dashboard-caveat{font-size:9.5px;max-height:27px;overflow:hidden}
+ .atlas-app .atlas-year-dashboard-status{font-size:9.5px}
+ .atlas-app .atlas-year-dashboard-cards{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(205px,78%);gap:7px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:thin;overscroll-behavior-inline:contain;padding:1px 1px 5px}
+ .atlas-app .atlas-year-role-card{scroll-snap-align:start;height:126px;padding:7px 9px}
+ .atlas-app .atlas-year-role-head h3{font-size:12px}
+ .atlas-app .atlas-year-role-items{min-height:0}
+ .atlas-app .atlas-year-role-description{display:none}
+}
+@media(max-height:630px){
+ .atlas-app .atlas-year-dashboard-caveat{display:none}
+ .atlas-app .atlas-year-role-card{height:105px}
+}
+@media print{
+ .atlas-app .atlas-year-dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr));display:grid}
+ .atlas-app .atlas-year-role-card{height:auto;overflow:visible}
+ .atlas-app .atlas-year-role-items{overflow:visible}
+}
