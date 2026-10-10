@@ -220,7 +220,7 @@ def check(dist: Path, output: Path):
                     expect(record).to_have_count(1)
                     expect(page.locator('.smuta-evidence')).to_have_count(1)
                     expect(record).to_contain_text(expected)
-                    expect(record.locator('.smuta-citations a')).to_contain_text(source)
+                    expect(record.locator('.smuta-citations a').filter(has_text=source)).to_have_count(1)
                     expect(page.locator('.smuta-events .smuta-event')).to_have_count(1)
                     expect(page.locator('#smuta-month')).to_have_value(str(int(month)))
                     if eid.endswith('judgment-1611'):
