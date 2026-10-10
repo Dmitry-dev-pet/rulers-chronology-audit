@@ -177,7 +177,7 @@ class AtlasTests(unittest.TestCase):
             before={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in (ROOT/'data/atlas').rglob('*') if p.is_file()}
             a.build(ROOT,output)
             self.assertEqual(json.loads((output/'atlas.json').read_text()),self.db)
-            expected={'index.html','database.html','atlas.json','atlas.sqlite','atlas-manifest.json','atlas-schema.sql','SHA256SUMS'}
+            expected={'index.html','database.html','atlas.json','atlas.sqlite','atlas-manifest.json','atlas-schema.sql','transition-cases.json','SHA256SUMS'}
             self.assertEqual({p.name for p in output.iterdir()},expected)
             self.assertTrue((output/'atlas.sqlite').read_bytes().startswith(b'SQLite format 3\x00'))
             for p in output.iterdir():
