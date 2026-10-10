@@ -314,7 +314,7 @@
     for(const x of entries.slice(0,24)) {
       const name=people.get(x.person_id)?.name||bodies.get(x.body_id)?.name||'Неуточнённые участники';
       const item=el('li','atlas-year-item');
-      item.append(el('div','atlas-year-person',name),el('div','atlas-year-meta',x.start.value+' — '+x.end.value+' · '+x.description));
+      item.append(el('div','atlas-year-person',name),el('div','atlas-year-meta',x.start.value+' — '+x.end.value+' · '+x.description+' ['+x.status+']'));
       if(x.person_id)item.appendChild(el('div','atlas-year-biography',bio(x.person_id)));
       if(power && x.note)item.appendChild(el('p','atlas-year-note',x.note));
       const links=el('div','atlas-year-citations');references(links,x.sources||[]);item.appendChild(links);
@@ -328,8 +328,12 @@
     currentYear=Number(slider.value);yearLabel.textContent=String(currentYear);markYear();
     if(!atlas)return;
     const container=el('div','atlas-year-columns');
-    group('Оценки фактического влияния',atlas.power_assessments.filter(active),container,true);
+    // Formal/nominal or contested titles must not look like verified personal control.
+    const nominal=new Set(['infant_emperor','nominal_grand_prince','nominal_due_to_illness','leadership_constrained_by_illness']);
+    const all=atlas.power_assessments.filter(active);
+    group('Фактическая и коллективная власть',all.filter(x=>!nominal.has(x.status)),container,true);
     group('Юридические должности',atlas.tenures.filter(active),container,false);
+    if(all.some(x=>nominal.has(x.status))) group('Номинальные роли и ограничения',all.filter(x=>nominal.has(x.status)),container,true);
     results.replaceChildren(container);
   }
   function syncWindow() {
