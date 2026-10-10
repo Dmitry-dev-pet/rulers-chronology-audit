@@ -8,12 +8,23 @@
     {
       "id": "moscow",
       "name": "Москва",
-      "reference_point": {"lat": 55.750556, "lon": 37.6175},
+      "reference_point": {
+        "lat": 55.750556,
+        "lon": 37.6175
+      },
       "coordinate_source": {
         "url": "https://www.wikidata.org/wiki/Q649",
         "title": "Wikidata Q649 · coordinate location",
-        "latitude_dms": [55, 45, 2],
-        "longitude_dms": [37, 37, 3],
+        "latitude_dms": [
+          55,
+          45,
+          2
+        ],
+        "longitude_dms": [
+          37,
+          37,
+          3
+        ],
         "checked_on": "2026-10-10"
       },
       "point_semantics": "modern_place_reference_not_historic_boundary",
@@ -22,68 +33,126 @@
         "local-smuta-moscow-boyars-1610",
         "local-smuta-moscow-vladislav-1610",
         "local-smuta-moscow-garrison-1610",
+        "local-smuta-moscow-uprising-1611",
         "local-smuta-moscow-liberation-1612"
       ]
     },
     {
       "id": "tushino",
       "name": "Тушино",
-      "reference_point": {"lat": 55.831389, "lon": 37.44},
+      "reference_point": {
+        "lat": 55.831389,
+        "lon": 37.44
+      },
       "coordinate_source": {
         "url": "https://www.wikidata.org/wiki/Q2116741",
         "title": "Wikidata Q2116741 · coordinate location",
-        "latitude_dms": [55, 49, 53],
-        "longitude_dms": [37, 26, 24],
+        "latitude_dms": [
+          55,
+          49,
+          53
+        ],
+        "longitude_dms": [
+          37,
+          26,
+          24
+        ],
         "checked_on": "2026-10-10"
       },
       "point_semantics": "modern_place_reference_not_historic_boundary",
       "note": "Ориентир местности Тушино, не археологически установленное положение лагеря Лжедмитрия II.",
-      "evidence_ids": ["local-smuta-tushino-1608"]
+      "evidence_ids": [
+        "local-smuta-tushino-1608",
+        "local-smuta-tushino-flight-1609"
+      ]
     },
     {
       "id": "yaroslavl",
       "name": "Ярославль",
-      "reference_point": {"lat": 57.65278, "lon": 39.87611},
+      "reference_point": {
+        "lat": 57.65278,
+        "lon": 39.87611
+      },
       "coordinate_source": {
         "url": "https://whc.unesco.org/en/list/1170/maps/",
         "title": "UNESCO WHC 1170 · Geographical data",
-        "latitude_dms": [57, 39, 10.008],
-        "longitude_dms": [39, 52, 33.996],
+        "latitude_dms": [
+          57,
+          39,
+          10.008
+        ],
+        "longitude_dms": [
+          39,
+          52,
+          33.996
+        ],
         "checked_on": "2026-10-10"
       },
       "point_semantics": "modern_place_reference_not_historic_boundary",
       "note": "Справочная точка исторического центра из современного реестра UNESCO; не адрес заседаний Совета всея земли.",
-      "evidence_ids": ["local-smuta-yaroslavl-allegiance-1608", "local-smuta-yaroslavl-council-1612"]
+      "evidence_ids": [
+        "local-smuta-yaroslavl-allegiance-1608",
+        "local-smuta-yaroslavl-uprising-1609",
+        "local-smuta-yaroslavl-council-1612"
+      ]
     },
     {
       "id": "nizhny-novgorod",
       "name": "Нижний Новгород",
-      "reference_point": {"lat": 56.326944, "lon": 44.0075},
+      "reference_point": {
+        "lat": 56.326944,
+        "lon": 44.0075
+      },
       "coordinate_source": {
         "url": "https://www.wikidata.org/wiki/Q891",
         "title": "Wikidata Q891 · coordinate location",
-        "latitude_dms": [56, 19, 37],
-        "longitude_dms": [44, 0, 27],
+        "latitude_dms": [
+          56,
+          19,
+          37
+        ],
+        "longitude_dms": [
+          44,
+          0,
+          27
+        ],
         "checked_on": "2026-10-10"
       },
       "point_semantics": "modern_place_reference_not_historic_boundary",
       "note": "Общий ориентир города, не точка формирования ополчения и не граница его контроля.",
-      "evidence_ids": ["local-smuta-nizhny-resistance-1608", "local-smuta-nizhny-militia-1611"]
+      "evidence_ids": [
+        "local-smuta-nizhny-resistance-1608",
+        "local-smuta-nizhny-militia-1611",
+        "local-smuta-nizhny-departure-1612"
+      ]
     },
     {
       "id": "oryol",
       "name": "Орёл",
-      "reference_point": {"lat": 52.968611, "lon": 36.069444},
+      "reference_point": {
+        "lat": 52.968611,
+        "lon": 36.069444
+      },
       "coordinate_source": {
         "url": "https://www.wikidata.org/wiki/Q3118",
         "title": "Wikidata Q3118 · coordinate location",
-        "latitude_dms": [52, 58, 7],
-        "longitude_dms": [36, 4, 10],
+        "latitude_dms": [
+          52,
+          58,
+          7
+        ],
+        "longitude_dms": [
+          36,
+          4,
+          10
+        ],
         "checked_on": "2026-10-10"
       },
       "point_semantics": "modern_place_reference_not_historic_boundary",
       "note": "Общий ориентир города. Место выдачи грамоты не локализовано до здания.",
-      "evidence_ids": ["local-smuta-oryol-1608"]
+      "evidence_ids": [
+        "local-smuta-oryol-1608"
+      ]
     }
   ],
   "unlocated": [

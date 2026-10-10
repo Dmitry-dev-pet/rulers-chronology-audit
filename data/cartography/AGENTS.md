@@ -17,3 +17,6 @@ Read ../../docs/SMUTA_PILOT.md before editing. The user approved a city-point pi
 - Year×place research coverage must be derived from the authored place-to-evidence references, never manually authored as historical truth. An empty cell denotes no researched documentary evidence, not absence of authority.
 - When adding month selection, match exact recorded `YYYY-MM` for dates with month/day precision. Year-only dates must remain unassigned to months and appear in an explicit uncertainty section. Julian and unspecified calendars are not silently normalized to Gregorian for filtering.
 - Existing comparison displays coarse formal YEAR overlaps with warnings even if the reader selects a month. Do not promote year overlap to continuous or month-level de facto power.
+
+- When filling previously empty city×year cells, add new source-qualified `territorial_evidence` assertions and explicitly map their IDs in the existing city's `evidence_ids`. Recompute coverage; NEVER modify the compiled `smuta-map.json` or manual totals.
+- A source providing only a year must **not** be promoted to a precise month; if scholarly/institutional accounts disagree, preserve their disagreement and keep the year-only date. The research batch of 11 October 2026 is documented in `research/smuta-local-evidence-2026-10-11.md`.
