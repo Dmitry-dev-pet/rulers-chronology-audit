@@ -421,3 +421,199 @@
     results.replaceChildren(el('p','atlas-year-caveat','База биографий недоступна ('+error.message+'). Основная шкала продолжает работать.'));
   });
 })();
+
+
+/* SPA biography routing: client-only views of canonical, source-qualified data. */
+(() => {
+  'use strict';
+  const panel=document.getElementById('panel-people');
+  if(!panel)return;
+  const search=document.getElementById('spa-people-search');
+  const tools=document.getElementById('spa-people-tools');
+  const status=document.getElementById('spa-people-status');
+  const list=document.getElementById('spa-people-list');
+  const detail=document.getElementById('spa-person-detail');
+  const footerLink=document.querySelector('[data-atlas-database] a');
+  if(footerLink){
+    footerLink.href='#/people';
+    footerLink.textContent='Биографии и источники · открыть в приложении';
+  }
+  let db=null,request=null,persons=new Map(),facts=new Map(),terms=new Map(),influence=new Map(),sources=new Map();
+  function el(tag,cls,value){
+    const node=document.createElement(tag);
+    if(cls)node.className=cls;
+    if(value!==undefined)node.textContent=String(value);
+    return node;
+  }
+  function validUrl(uri){
+    try{
+      const url=new URL(uri);
+      return url.protocol==='https:' && !url.username && !url.password &&
+        url.hostname!=='drive.google.com' && url.hostname!=='docs.google.com';
+    }catch(_){return false;}
+  }
+  function citations(parent,keys){
+    const seen=new Set();
+    for(const key of keys||[]){
+      if(seen.has(key))continue;
+      seen.add(key);
+      const entry=sources.get(key);
+      if(!entry || !validUrl(entry.url))continue;
+      const link=el('a','spa-citation',key);
+      link.href=entry.url;link.title=entry.title||key;
+      link.target='_blank';link.rel='noopener noreferrer';
+      parent.appendChild(link);
+    }
+  }
+  function describe(f){
+    if(f.value && typeof f.value==='object'){
+      const calendar=f.value.calendar==='julian'?'старый стиль':
+        f.value.calendar==='gregorian'?'новый стиль':'календарь не установлен';
+      return f.value.value+' ('+calendar+(f.value.precision==='day'?'':', '+f.value.precision)+')';
+    }
+    return String(f.value||'нет данных');
+  }
+  function birth(id){
+    const dates=(facts.get(id)||[]).filter(f=>f.kind==='birth');
+    return dates.length?dates.map(describe).join(' / '):'Дата рождения не исследована';
+  }
+  function indexText(p){
+    return [p.name,...(p.aliases||[]),
+      ...(terms.get(p.id)||[]).map(x=>x.description),
+      ...(facts.get(p.id)||[]).filter(x=>['dynasty','ethnic_origin','citizenship'].includes(x.kind)).map(describe)
+    ].join(' ').toLocaleLowerCase('ru');
+  }
+  function showList(){
+    tools.hidden=false;list.hidden=false;detail.hidden=true;
+    list.replaceChildren();
+    const q=search.value.trim().toLocaleLowerCase('ru');
+    const matches=[...persons.values()].filter(p=>indexText(p).includes(q))
+      .sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+    status.textContent='Найдено '+matches.length+' из '+persons.size+' человек. Исходные источники доступны в карточках.';
+    for(const p of matches){
+      const card=el('a','spa-person-card');
+      card.href='#/people/'+encodeURIComponent(p.id);
+      const tenures=terms.get(p.id)||[];
+      card.appendChild(el('strong',null,p.name));
+      card.appendChild(el('small',null,birth(p.id)));
+      card.appendChild(el('span','spa-card-description',
+        tenures.length?tenures[0].description+(tenures.length>1?' · ещё '+(tenures.length-1)+' периода':''):
+        'Участник регентства, коллективного органа или политического события'));
+      list.appendChild(card);
+    }
+    if(!matches.length)list.appendChild(el('p','spa-empty','Совпадений нет. Попробуйте другую формулировку.'));
+  }
+  function factSection(id){
+    const section=el('section','spa-fact-section');
+    section.appendChild(el('h4',null,'Биографические сведения'));
+    const records=(facts.get(id)||[]).filter(x=>x.kind!=='lifespan_text');
+    if(!records.length)section.appendChild(el('p','spa-empty','Проверенные биографические сведения пока не внесены.'));
+    const labels={birth:'Рождение',death:'Смерть',dynasty:'Династия / дом',
+      ethnic_origin:'Этнокультурное происхождение',citizenship:'Подданство / гражданство'};
+    for(const f of records){
+      const part=el('div','spa-fact');
+      part.append(el('b',null,(labels[f.kind]||f.kind)+': '),el('span',null,describe(f)));
+      if(f.verification==='disputed' || (f.value && f.value.qualifier==='uncertain'))
+        part.appendChild(el('small','spa-warning','Спорная или неопределённая датировка'));
+      else if(f.verification==='imported_not_rechecked')
+        part.appendChild(el('small','spa-warning','Нужна независимая проверка'));
+      const links=el('div','spa-source-list');citations(links,f.sources);
+      part.appendChild(links);section.appendChild(part);
+    }
+    return section;
+  }
+  function intervalSection(title,records){
+    const section=el('section','spa-interval-section');
+    section.appendChild(el('h4',null,title));
+    if(!records.length){
+      section.appendChild(el('p','spa-empty','Отдельная запись отсутствует; это не доказывает отсутствие влияния.'));
+      return section;
+    }
+    const items=el('ul','spa-interval-list');
+    for(const entry of records){
+      const item=el('li','spa-interval');
+      item.append(el('b',null,entry.start.value+' — '+entry.end.value),
+        el('span',null,entry.description+' · '+entry.status));
+      if(entry.note)item.appendChild(el('p',null,entry.note));
+      const links=el('div','spa-source-list');citations(links,entry.sources);
+      item.appendChild(links);items.appendChild(item);
+    }
+    section.appendChild(items);return section;
+  }
+  function showProfile(id){
+    tools.hidden=true;list.hidden=true;detail.hidden=false;detail.replaceChildren();
+    const back=el('a','spa-back','← Все биографии');back.href='#/people';detail.appendChild(back);
+    const p=persons.get(id);
+    if(!p){status.textContent='Такой личности в базе нет.';detail.appendChild(el('p','spa-empty','Запись не найдена.'));return;}
+    detail.appendChild(el('h3',null,p.name));
+    if((p.aliases||[]).length)detail.appendChild(el('p','spa-aliases','Другие имена: '+p.aliases.join(', ')));
+    const appointments=terms.get(id)||[];
+    const start=appointments.length?Number(appointments[0].start.value.slice(0,4)):
+      Number(document.getElementById('atlas-year-range')?.value||1685);
+    const chosen=Math.max(1417,Math.min(1991,start));
+    const yearBar=el('div','spa-person-year');
+    const label=el('label',null,'Возраст в году');label.htmlFor='spa-profile-year';
+    const input=el('input','spa-year-number');
+    input.type='number';input.id='spa-profile-year';input.min='1417';input.max='1991';input.step='1';
+    input.value=String(chosen);
+    const age=el('strong','spa-age-result');
+    const timeline=el('a','spa-timeline-profile-link','Показать на временной шкале →');
+    const updateAge=()=>{
+      const y=Number(input.value);
+      const valid=Number.isInteger(y)&&y>=1417&&y<=1991;
+      age.textContent=valid?(typeof window.atlasAgeFor==='function'?window.atlasAgeFor(id,y):'не установлен')+' · '+y+' год':
+        'Выберите год в диапазоне 1417–1991';
+      timeline.href='#/timeline/'+(valid?y:chosen);
+    };
+    input.addEventListener('input',updateAge);
+    yearBar.append(label,input,age,timeline);
+    detail.append(yearBar,factSection(id),
+      intervalSection('Юридические должности и правления',appointments),
+      intervalSection('Оценки фактического влияния',influence.get(id)||[]));
+    updateAge();status.textContent='Карточка: '+p.name+'. Каждое утверждение хранится отдельно от должности.';
+  }
+  function load(){
+    if(db)return Promise.resolve(db);
+    if(!request)request=fetch('./atlas.json',{cache:'no-cache'}).then(r=>{
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return r.json();
+    }).then(result=>{
+      if(!result.people || !result.tenures || !result.person_facts ||
+         !result.power_assessments || !result.sources)throw new Error('Неполная база');
+      db=result;
+      persons=new Map(db.people.map(p=>[p.id,p]));
+      sources=new Map(db.sources.map(s=>[s.id,s]));
+      facts=new Map(db.people.map(p=>[p.id,[]]));
+      terms=new Map(db.people.map(p=>[p.id,[]]));
+      influence=new Map(db.people.map(p=>[p.id,[]]));
+      db.person_facts.forEach(f=>{if(facts.has(f.person_id))facts.get(f.person_id).push(f);});
+      db.tenures.forEach(t=>{if(terms.has(t.person_id))terms.get(t.person_id).push(t);});
+      db.power_assessments.forEach(t=>{if(influence.has(t.person_id))influence.get(t.person_id).push(t);});
+      for(const records of [...terms.values(),...influence.values()])
+        records.sort((a,b)=>a.start.value.localeCompare(b.start.value));
+      return db;
+    }).catch(error=>{request=null;throw error;});
+    return request;
+  }
+  let ticket=0;
+  function handleRoute(){
+    if(panel.hidden)return;
+    const seq=++ticket;
+    const route=/^\/people(?:\/(person-[a-z0-9-]+))?$/.exec(decodeURIComponent(location.hash.slice(1)));
+    const personId=route?route[1]:null;
+    status.textContent='Загрузка биографий…';
+    load().then(()=>{
+      if(seq!==ticket||panel.hidden)return;
+      if(personId)showProfile(personId);else showList();
+    }).catch(error=>{
+      if(seq!==ticket||panel.hidden)return;
+      status.textContent='База недоступна: '+error.message;
+      list.replaceChildren();
+      const fallback=el('a',null,'Открыть резервную таблицу');fallback.href='./database.html';
+      list.appendChild(fallback);list.hidden=false;detail.hidden=true;
+    });
+  }
+  search.addEventListener('input',()=>{if(db&&!panel.hidden&&detail.hidden)showList();});
+  window.addEventListener('atlas:route',handleRoute);
+  handleRoute();
+})();
