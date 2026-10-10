@@ -275,7 +275,282 @@
           "verification": "reference_checked",
           "confidence": "medium"
         }
-      ]
+      ],
+      "territorial_evidence": [
+        {
+          "id": "local-smuta-oryol-1608",
+          "date": {
+            "value": "1608-03-07",
+            "calendar": "unspecified",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Орёл",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Канцелярия Лжедмитрия II",
+          "statement": "Жалованная грамота Власу Устинову выдана в Орле; зафиксирован выпуск распорядительного документа самозванца.",
+          "limitation": "Место выдачи грамоты и пожалование в Рославльском уезде не доказывают, что весь уезд либо Орёл находились под устойчивой административной властью.",
+          "sources": [
+            "TJ01"
+          ],
+          "related_event_ids": [
+            "smuta-1608"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-tushino-1608",
+          "date": {
+            "value": "1608-06",
+            "calendar": "unspecified",
+            "precision": "month",
+            "qualifier": "as_recorded"
+          },
+          "place": "Тушино под Москвой",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Двор Лжедмитрия II",
+          "statement": "Лагерь самозванца находился в Тушине с июня 1608; там существовали параллельные придворные и приказные структуры.",
+          "limitation": "Резиденция возле Москвы не равна контролю московского Кремля или всех окружающих земель.",
+          "sources": [
+            "TJ03",
+            "TJ04"
+          ],
+          "related_event_ids": [
+            "smuta-1608"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-severian-claim-1608",
+          "date": {
+            "value": "1608-10-04",
+            "calendar": "julian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Рыльск, Чернигов, Смоленск, Путивль и другие города грамоты",
+          "place_kind": "group_of_cities",
+          "nature": "claim",
+          "authority": "Канцелярия Лжедмитрия II",
+          "statement": "Грамота Юрию Мнишеку перечисляет города в качестве предмета объявленного пожалования; это документированный объём притязания.",
+          "limitation": "Список городов в грамоте не свидетельствует, что самозванец реально управлял каждым городом; Смоленск нельзя закрашивать цветом контроля Лжедмитрия II.",
+          "sources": [
+            "TJ02"
+          ],
+          "related_event_ids": [
+            "smuta-1608"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-yaroslavl-allegiance-1608",
+          "date": {
+            "value": "1608",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "place": "Ярославль",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Сторонники Лжедмитрия II",
+          "statement": "Историк Р. Скрынников описывает признание самозванца Ярославлем, отправку казны и продовольствия в Тушино и дальнейший конфликт из-за поборов.",
+          "limitation": "Это свидетельство меняющейся лояльности и сбора ресурсов, не бесспорного непрерывного контроля Ярославля до 1612 года.",
+          "sources": [
+            "TJ03"
+          ],
+          "related_event_ids": [
+            "smuta-1608"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-nizhny-resistance-1608",
+          "date": {
+            "value": "1608",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "place": "Нижний Новгород",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Земский совет Нижнего Новгорода",
+          "statement": "Город сопротивлялся попыткам тушинских отрядов утвердиться; местные воеводы и посадское сообщество организовали оборону.",
+          "limitation": "Тушинское наступление на Нижний Новгород нельзя изображать как факт его захвата; поддержка Шуйского не означает покорности каждого населённого пункта вокруг.",
+          "sources": [
+            "TJ03"
+          ],
+          "related_event_ids": [
+            "smuta-1608"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-moscow-boyars-1610",
+          "date": {
+            "value": "1610-07",
+            "calendar": "unspecified",
+            "precision": "month",
+            "qualifier": "as_recorded"
+          },
+          "place": "Москва",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Семибоярщина",
+          "statement": "После свержения Шуйского боярское правительство реально осуществляло управление в Москве летом–осенью 1610 года.",
+          "limitation": "Высшая власть в Москве не означает одинакового фактического контроля всех регионов Русского государства.",
+          "sources": [
+            "TJ05",
+            "TR01"
+          ],
+          "related_event_ids": [
+            "smuta-1610a"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-moscow-vladislav-1610",
+          "date": {
+            "value": "1610-08-17",
+            "calendar": "julian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Москва (договор с гетманом под Москвой)",
+          "place_kind": "city",
+          "nature": "law",
+          "authority": "Семибоярщина и польский королевич Владислав",
+          "statement": "17(27) августа 1610 был подписан договор о признании Владислава русским царём.",
+          "limitation": "Соглашение московских бояр не означает венчания Владислава на царство и не доказывает подчинения договору всех городов.",
+          "sources": [
+            "TJ05",
+            "TR01"
+          ],
+          "related_event_ids": [
+            "smuta-1610b"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-moscow-garrison-1610",
+          "date": {
+            "value": "1610-10",
+            "calendar": "unspecified",
+            "precision": "month",
+            "qualifier": "as_recorded"
+          },
+          "place": "Москва, Кремль и городские укрепления",
+          "place_kind": "city",
+          "nature": "military",
+          "authority": "Польско-литовский гарнизон",
+          "statement": "Осенью 1610 в Москве утвердился польско-литовский гарнизон; реальная власть бояр сменилась номинальным статусом. Гарнизон сохранялся до капитуляции в 1612.",
+          "limitation": "Не следует подменять военный контроль гарнизона самостоятельным правлением Владислава или объявлять за ним всю территорию государства.",
+          "sources": [
+            "TJ15",
+            "TJ05"
+          ],
+          "related_event_ids": [
+            "smuta-1610a"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-nizhny-militia-1611",
+          "date": {
+            "value": "1611",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "place": "Нижний Новгород",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Второе земское ополчение",
+          "statement": "Город стал организационным центром Второго ополчения; из него в 1612 году отряды направились к Ярославлю и Москве.",
+          "limitation": "Сбор войска не свидетельствует о единой государственной власти ополчения над всеми городами по пути похода.",
+          "sources": [
+            "TJ06",
+            "TJ07"
+          ],
+          "related_event_ids": [
+            "smuta-1611"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-yaroslavl-council-1612",
+          "date": {
+            "value": "1612-04",
+            "calendar": "unspecified",
+            "precision": "month",
+            "qualifier": "as_recorded"
+          },
+          "place": "Ярославль",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Совет всея земли и Второе ополчение",
+          "statement": "Весной–летом 1612 года в Ярославле действовал Совет всея земли с административными, хозяйственными и дипломатическими функциями.",
+          "limitation": "Совет не был царём и не осуществлял безусловный контроль всех областей государства; маршрут ополчения не карта сплошной территории.",
+          "sources": [
+            "TJ06",
+            "TJ07",
+            "TR03"
+          ],
+          "related_event_ids": [
+            "smuta-1612a"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-smuta-moscow-liberation-1612",
+          "date": {
+            "value": "1612-10-27",
+            "calendar": "julian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Москва, Китай-город и Кремль",
+          "place_kind": "city",
+          "nature": "military",
+          "authority": "Объединённое земское ополчение",
+          "statement": "Отряды ополчения заняли Китай-город 22 октября (1 ноября), гарнизон в Кремле капитулировал 27 октября (6 ноября) 1612 года.",
+          "limitation": "Контроль над Китай-городом и капитуляция Кремля происходили в разные дни; нельзя датировать освобождение всей Москвы одним произвольным числом.",
+          "sources": [
+            "TJ15",
+            "TJ07"
+          ],
+          "related_event_ids": [
+            "smuta-1612b"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        }
+      ],
+      "geography_policy": "Точки свидетельствуют о конкретных действиях, местной администрации, заявлениях юрисдикции или военном присутствии. Границы и сплошные территории не реконструированы."
     },
     {
       "id": "ussr-1991",
@@ -587,7 +862,229 @@
           "verification": "reference_checked",
           "confidence": "medium"
         }
-      ]
+      ],
+      "territorial_evidence": [
+        {
+          "id": "local-ussr-rsfsr-decree-aug19",
+          "date": {
+            "value": "1991-08-19",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "РСФСР (территория республики)",
+          "place_kind": "republic",
+          "nature": "law",
+          "authority": "Президент и органы государственной власти РСФСР",
+          "statement": "Указ Президента РСФСР №59 объявил решения ГКЧП недействительными на территории РСФСР и подтвердил полномочия республиканских органов.",
+          "limitation": "Это правовое утверждение руководства РСФСР; без отдельных свидетельств нельзя заявить, что все военные и административные органы на всей территории ему подчинились.",
+          "sources": [
+            "TJ08",
+            "TR13"
+          ],
+          "related_event_ids": [
+            "ussr-1991d"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-moscow-rsfsr-aug19",
+          "date": {
+            "value": "1991-08-19",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Москва, Дом Советов РСФСР",
+          "place_kind": "city",
+          "nature": "practice",
+          "authority": "Руководство РСФСР",
+          "statement": "Дом Советов РСФСР стал местом публичной организационной и политической деятельности властей России против ГКЧП.",
+          "limitation": "Реальное наличие альтернативного государственного центра в Москве не означает, что российская власть контролировала тогда все воинские части Москвы.",
+          "sources": [
+            "TJ08",
+            "TR14"
+          ],
+          "related_event_ids": [
+            "ussr-1991d"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-riga-military-aug19",
+          "date": {
+            "value": "1991-08-19",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Рига: телевидение, радио и объекты связи",
+          "place_kind": "city",
+          "nature": "military",
+          "authority": "ОМОН и подразделения вооружённых сил СССР",
+          "statement": "Во время августовского путча вооружённые структуры заняли отдельные учреждения телевидения, радио и связи в Риге, несмотря на деятельность местного парламента.",
+          "limitation": "Захват объектов связи нельзя превращать в утверждение о полном управлении всей Латвией либо признании ГКЧП населением страны.",
+          "sources": [
+            "TJ13"
+          ],
+          "related_event_ids": [
+            "ussr-1991c"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-estonia-independence-aug20",
+          "date": {
+            "value": "1991-08-20",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Эстония",
+          "place_kind": "republic",
+          "nature": "law",
+          "authority": "Верховный совет Республики Эстония",
+          "statement": "Эстонский парламент принял постановление о государственной независимости 20 августа 1991 года, продолжая процесс восстановления государственности.",
+          "limitation": "Законодательное решение не доказывает немедленного подчинения ему каждой советской военной части; речь о правовом переходе.",
+          "sources": [
+            "TJ12"
+          ],
+          "related_event_ids": [
+            "ussr-1991e"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-latvia-independence-aug21",
+          "date": {
+            "value": "1991-08-21",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Латвия",
+          "place_kind": "republic",
+          "nature": "law",
+          "authority": "Верховный совет Республики Латвия",
+          "statement": "21 августа 1991 был принят Конституционный закон о государственном статусе Латвии, завершивший установленный в мае 1990 года переходный период.",
+          "limitation": "Не подменять юридическое восстановление независимости утверждением, что до или после акта в Риге не присутствовали советские вооружённые структуры.",
+          "sources": [
+            "TJ13"
+          ],
+          "related_event_ids": [
+            "ussr-1991e"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-ukraine-independence-aug24",
+          "date": {
+            "value": "1991-08-24",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Украина",
+          "place_kind": "republic",
+          "nature": "law",
+          "authority": "Верховная рада Украины",
+          "statement": "Акт и постановление №1427-XII провозгласили независимость Украины и преимущественное действие её законов на территории государства.",
+          "limitation": "Провозглашение независимости задаёт республиканский правовой режим, но не является физической инвентаризацией всех органов союзной власти по городам.",
+          "sources": [
+            "TJ09"
+          ],
+          "related_event_ids": [
+            "ussr-1991f"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-union-law-sep05",
+          "date": {
+            "value": "1991-09-05",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Союзные республики, межреспубликанские органы",
+          "place_kind": "union_level",
+          "nature": "law",
+          "authority": "Государственный совет СССР и Верховный Совет СССР",
+          "statement": "Закон №2392-I описал межреспубликанские органы и право республик приостанавливать союзные законы при противоречии республиканской конституции.",
+          "limitation": "Нормативная юрисдикция Союза не означает, что Москва реально управляла всей территорией каждого государства или что республики оставались в одинаковом статусе.",
+          "sources": [
+            "TJ11",
+            "TR10"
+          ],
+          "related_event_ids": [
+            "ussr-1991j"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-ukraine-conditional-sep12",
+          "date": {
+            "value": "1991-09-12",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Украина (условное применение актов СССР)",
+          "place_kind": "republic",
+          "nature": "law",
+          "authority": "Верховная рада Украины",
+          "statement": "Постановление №1545-XII разрешило применять союзные акты только по не урегулированным украинскими законами вопросам и при отсутствии противоречия праву Украины.",
+          "limitation": "Нельзя утверждать, что после 24 августа вообще никакие нормы СССР не применялись на территории Украины: действовал оговорённый переходный порядок.",
+          "sources": [
+            "TJ10"
+          ],
+          "related_event_ids": [
+            "ussr-1991j"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        },
+        {
+          "id": "local-ussr-ukraine-referendum-dec01",
+          "date": {
+            "value": "1991-12-01",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "place": "Украина, общереспубликанский референдум",
+          "place_kind": "republic",
+          "nature": "law",
+          "authority": "Граждане Украины и республиканские органы",
+          "statement": "1 декабря граждане на референдуме подтвердили Акт независимости от 24 августа, что публично зафиксировано в материалах Верховной рады.",
+          "limitation": "Референдум — отдельное подтверждение республиканской независимости; это не акт о прекращении всех союзных учреждений 1 декабря.",
+          "sources": [
+            "TJ14"
+          ],
+          "related_event_ids": [
+            "ussr-1991k"
+          ],
+          "confidence": "medium",
+          "verification": "reference_checked",
+          "geometry_verified": false
+        }
+      ],
+      "geography_policy": "Точки свидетельствуют о конкретных действиях, местной администрации, заявлениях юрисдикции или военном присутствии. Границы и сплошные территории не реконструированы."
     }
   ]
 }
