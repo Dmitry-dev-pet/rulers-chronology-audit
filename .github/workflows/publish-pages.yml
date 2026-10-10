@@ -49,7 +49,7 @@ jobs:
           set -euo pipefail
           python3 -m unittest discover -s tests -v
           python3 scripts/soviet_audit.py --revision "$GITHUB_SHA"
-          python3 scripts/extend_century.py
+          python3 -m scripts.extend_century
 
       - name: Assert public output contains no private source images or Drive references
         shell: bash
