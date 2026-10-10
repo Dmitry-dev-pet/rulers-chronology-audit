@@ -8,6 +8,10 @@ on:
       - scripts/soviet_audit.py
       - scripts/extend_century.py
       - scripts/extend_romanovs.py
+      - scripts/extend_muscovy.py
+      - data/muscovy-chronology.json
+      - data/muscovy-period-review.csv
+      - research/muscovy-sources.md
       - data/early-romanov-chronology.json
       - data/early-romanov-period-review.csv
       - research/early-romanov-sources.md
@@ -55,6 +59,7 @@ jobs:
           python3 scripts/soviet_audit.py --revision "$GITHUB_SHA"
           python3 -m scripts.extend_century
           python3 -m scripts.extend_romanovs
+          python3 -m scripts.extend_muscovy
 
       - name: Assert public output contains no private source images or Drive references
         shell: bash
@@ -67,7 +72,7 @@ jobs:
           expected = {
               "index.html", "site.css", "site.js", "README.md",
               "chronology.json", "sources.json", "validation.json",
-              "party.csv", "imperial.csv", "romanov.csv", "government.csv", "state_institutions.csv",
+              "party.csv", "imperial.csv", "romanov.csv", "muscovy.csv", "government.csv", "state_institutions.csv",
               "separate_records.csv", "SHA256SUMS",
           }
           actual = {p.name for p in dist.iterdir() if p.is_file()}
