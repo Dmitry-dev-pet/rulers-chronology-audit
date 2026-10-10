@@ -313,7 +313,8 @@
         const n=cell.evidence_ids.length;
         const caption=n?String(n):'—';
         const label=place.name+', '+cell.year+': '+(n?
-          n+' свидетельств; известные месяцы: '+(cell.known_months.join(', ')||'не установлены'):
+          n+' свидетельств; известные месяцы: '+(cell.known_months.join(', ')||'не установлены')+
+            '; записей только с годовой датировкой: '+cell.year_only_ids.length:
           'нет внесённых свидетельств, наличие власти неизвестно');
         const action=button(caption,'smuta-matrix-cell'+(n?' has-evidence':' is-gap'),()=>{
           selectedMonth=0;whole=false;
