@@ -7,10 +7,40 @@
   try { data = JSON.parse(source.textContent); }
   catch (error) { document.getElementById('timeline-status').textContent = 'Данные шкалы недоступны.'; return; }
 
-  const tabNames = new Set(['poster', 'timeline', 'research']);
+
+  // Create one additional accessible screen in the existing static document.
+  const navHost=document.querySelector('.modes[role="tablist"]');
+  const mainHost=document.querySelector('main.container');
+  if(navHost && mainHost && !document.getElementById('panel-people')){
+    const tab=document.createElement('button');
+    tab.id='tab-people';tab.type='button';tab.role='tab';tab.className='mode-tab';
+    tab.dataset.view='people';tab.setAttribute('aria-selected','false');
+    tab.setAttribute('aria-controls','panel-people');tab.tabIndex=-1;
+    const index=document.createElement('span');index.className='num';index.textContent='04';
+    tab.append(index,document.createTextNode(' Биографии'));navHost.appendChild(tab);
+    const pane=document.createElement('section');
+    pane.id='panel-people';pane.className='mode-panel';pane.dataset.mode='people';
+    pane.setAttribute('role','tabpanel');pane.setAttribute('aria-labelledby','tab-people');pane.hidden=true;
+    // All HTML below is a static shell, never inserted historical data.
+    pane.innerHTML='<div class="section-top"><div><div class="kicker">Режим 04 / база людей</div>'+
+      '<h2>Биографии и сроки власти</h2><p>Возраст, происхождение, юридические должности и оценки влияния '+
+      'хранятся отдельно. Неизвестные сведения не домысливаются.</p></div></div>'+
+      '<div id="spa-people-tools" class="spa-people-tools"><label for="spa-people-search">Поиск по именам и должностям'+
+      '<input type="search" id="spa-people-search" autocomplete="off" placeholder="Имя, должность, династия…"></label>'+
+      '<p>Каждая личность — одна запись. Открывайте карточки без перехода на другой сайт.</p></div>'+
+      '<p class="spa-people-status" id="spa-people-status" role="status" aria-live="polite">Откройте биографии, чтобы загрузить базу.</p>'+
+      '<div id="spa-people-list" class="spa-people-grid"></div>'+
+      '<section id="spa-person-detail" class="spa-person-detail" hidden aria-label="Карточка выбранного человека"></section>'+
+      '<p class="spa-people-footnote">Историческая проверка неполна. '+
+      '<a href="./database.html">Резервная табличная версия</a>.</p>';
+    mainHost.appendChild(pane);
+  }
+
+  const tabNames = new Set(['poster', 'timeline', 'research', 'people']);
   const tabs = Array.from(document.querySelectorAll('.mode-tab'));
   const panels = new Map(Array.from(document.querySelectorAll('.mode-panel')).map(panel => [panel.dataset.mode, panel]));
   let currentMode = 'poster';
+  const originalTitle=document.title;
   function navigate(name, updateHash) {
     if (!tabNames.has(name)) return;
     currentMode = name;
@@ -21,8 +51,14 @@
     });
     panels.forEach((panel, id) => { panel.hidden = id !== name; });
     if (name === 'timeline' && !rendered) renderTimeline();
-    if (updateHash && location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
-    if (updateHash) document.querySelector('.modes-wrap').scrollIntoView({block: 'start'});
+    if(updateHash){
+      const year=document.getElementById('atlas-year-range');
+      const route='#/'+name+(name==='timeline' && year ? '/'+year.value : '');
+      if(location.hash!==route)location.hash=route;
+      document.querySelector('.modes-wrap').scrollIntoView({block:'start'});
+    }
+    document.title=name==='people'?'Биографии · '+originalTitle:originalTitle;
+    window.dispatchEvent(new CustomEvent('atlas:route',{detail:{view:name}}));
   }
   tabs.forEach((tab, index) => {
     tab.addEventListener('click', () => navigate(tab.dataset.view, true));
@@ -213,6 +249,8 @@
   });
   function fromHash() {
     const hash = decodeURIComponent(location.hash.slice(1));
+    const route=/^\/(poster|timeline|research|people)(?:\/([A-Za-z0-9-]+))?$/.exec(hash);
+    if(route)return navigate(route[1],false);
     if (tabNames.has(hash)) return navigate(hash, false);
     if (hash.startsWith('source-') || /^[MRIPGSX]\d{2,}$/.test(hash)) {
       navigate('research', false);
@@ -242,7 +280,9 @@
   root.innerHTML='<div class="atlas-year-head"><label for="atlas-year-range">Исторический срез: <strong id="atlas-year-value">1685</strong> год</label><span>Возраст и правовой статус</span></div><input type="range" id="atlas-year-range" min="1417" max="1991" step="1" value="1685" aria-label="Выбрать год"><p class="atlas-year-caveat">Показаны периоды, пересекающие выбранный год, а не гарантированное совпадение должностей в конкретный день. Возраст дан диапазоном в течение года.</p><div id="atlas-year-results" aria-live="polite">Загрузка биографических сведений…</div>';
   toolbar.insertAdjacentElement('afterend',root);
   const slider=root.querySelector('#atlas-year-range'), yearLabel=root.querySelector('#atlas-year-value'), results=root.querySelector('#atlas-year-results');
-  let atlas=null, currentYear=1685, people=new Map(), bodies=new Map(), sources=new Map(), facts=new Map(), recordPerson=new Map();
+  const deepYear=/^#\/timeline\/(\d{4})$/.exec(location.hash);
+  let atlas=null, currentYear=deepYear?Number(deepYear[1]):1685, people=new Map(), bodies=new Map(), sources=new Map(), facts=new Map(), recordPerson=new Map();
+  slider.value=String(Math.max(1417,Math.min(1991,currentYear)));
   function el(tag,cls,t) {const n=document.createElement(tag);if(cls)n.className=cls;if(t!==undefined)n.textContent=String(t);return n;}
   function windowYears() {
     const btn=panel.querySelector('.era-btn[aria-pressed="true"]');
@@ -326,6 +366,10 @@
   }
   function render() {
     currentYear=Number(slider.value);yearLabel.textContent=String(currentYear);markYear();
+    if(/^#\/timeline(?:\/\d{4})?$/.test(location.hash)){
+      const path='#/timeline/'+currentYear;
+      if(location.hash!==path)history.replaceState(null,'',path);
+    }
     if(!atlas)return;
     const container=el('div','atlas-year-columns');
     // Formal/nominal or contested titles must not look like verified personal control.
@@ -342,6 +386,10 @@
     render();queueMicrotask(markYear);
   }
   slider.addEventListener('input',render);
+  window.addEventListener('hashchange',()=>{
+    const route=/^#\/timeline\/(\d{4})$/.exec(location.hash);
+    if(route){const y=Number(route[1]);if(y>=1417&&y<=1991&&y!==currentYear){slider.value=String(y);render();}}
+  });
   panel.querySelectorAll('.era-btn').forEach(x=>x.addEventListener('click',()=>queueMicrotask(syncWindow)));
   canvas.addEventListener('click',event=>{
     const bar=event.target.closest('.time-bar');if(!bar||!atlas)return;
@@ -349,6 +397,9 @@
       const id=recordPerson.get(bar.dataset.record), detail=document.getElementById('timeline-selection');
       if(!id||!detail)return;
       detail.appendChild(el('p','atlas-year-biography','На '+currentYear+' год · '+bio(id)));
+      const profile=el('a','spa-open-profile','Открыть биографию →');
+      profile.href='#/people/'+encodeURIComponent(id);
+      detail.appendChild(profile);
       const links=el('div','atlas-year-citations');
       references(links,(facts.get(id)||[]).filter(f=>['birth','dynasty','ethnic_origin'].includes(f.kind)).flatMap(f=>f.sources||[]));
       detail.appendChild(links);
@@ -363,6 +414,7 @@
     atlas=db;people=new Map(db.people.map(x=>[x.id,x]));bodies=new Map(db.bodies.map(x=>[x.id,x]));sources=new Map(db.sources.map(x=>[x.id,x]));
     facts=new Map(db.people.map(x=>[x.id,[]]));
     db.person_facts.forEach(x=>{if(facts.has(x.person_id))facts.get(x.person_id).push(x);});
+    window.atlasAgeFor=(personId,year)=>age(personId,year);
     [...db.tenures,...db.power_assessments].forEach(x=>{if(x.person_id)recordPerson.set(x.record_id,x.person_id);});
     render();
   }).catch(error=>{
