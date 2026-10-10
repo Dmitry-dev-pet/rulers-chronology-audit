@@ -104,6 +104,67 @@ class SmutaMapTests(unittest.TestCase):
         # 1610 claimant Vladislav remains in history as a CLAIM, not a tsar.
         self.assertFalse(any('Владислав' in t['name'] for t in terms))
 
+    def test_city_by_year_coverage_counts_are_derived_from_sources(self):
+        d=smuta_map.prepare(self.registry,self.dossier,self.atlas,self.hydro)
+        coverage=d["research_coverage"]
+        self.assertEqual(coverage["years"],list(range(1598,1614)))
+        self.assertEqual(len(coverage["places"]),5)
+        self.assertEqual(sum(len(place["cells"]) for place in coverage["places"]),80)
+        self.assertEqual(coverage["filled_city_years"],8)
+        self.assertEqual(coverage["research_gap_city_years"],72)
+        self.assertEqual(coverage["mapped_evidence_count"],10)
+        self.assertEqual(coverage["mapped_precise_month_count"],7)
+        self.assertEqual(coverage["unlocated_evidence_ids"],
+                         ["local-smuta-severian-claim-1608"])
+        self.assertEqual(len(d["evidence"]),11)
+        mapped_ids={id for place in coverage["places"]
+                    for cell in place["cells"] for id in cell["evidence_ids"]}
+        self.assertEqual(len(mapped_ids),10)
+        original={e["id"]:e for e in d["evidence"]}
+        for place in coverage["places"]:
+            for cell in place["cells"]:
+                self.assertEqual(cell["research_gap"],not bool(cell["evidence_ids"]))
+                self.assertEqual(cell["known_months"],sorted({
+                    int(original[eid]["date"]["value"][5:7])
+                    for eid in cell["evidence_ids"]
+                    if original[eid]["date"]["precision"] in {"month","day"}
+                }))
+                self.assertEqual(cell["year_only_ids"],[
+                    eid for eid in cell["evidence_ids"]
+                    if original[eid]["date"]["precision"]=="year"
+                ])
+
+    def test_1610_moscow_july_august_october_and_undated_years(self):
+        d=smuta_map.prepare(self.registry,self.dossier,self.atlas,self.hydro)
+        places={p["place_id"]:p for p in d["research_coverage"]["places"]}
+        moscow=next(c for c in places["moscow"]["cells"] if c["year"]==1610)
+        self.assertEqual(moscow["known_months"],[7,8,10])
+        self.assertEqual(len(moscow["evidence_ids"]),3)
+        self.assertEqual(moscow["year_only_ids"],[])
+        april_1612=next(c for c in places["yaroslavl"]["cells"] if c["year"]==1612)
+        self.assertEqual(april_1612["known_months"],[4])
+        year_1608=next(c for c in places["yaroslavl"]["cells"] if c["year"]==1608)
+        self.assertEqual(year_1608["known_months"],[])
+        self.assertEqual(len(year_1608["year_only_ids"]),1)
+        no_1611=next(c for c in places["yaroslavl"]["cells"] if c["year"]==1611)
+        self.assertTrue(no_1611["research_gap"])
+        self.assertFalse(no_1611["evidence_ids"])
+        self.assertIn("не отсутствие власти",d["research_coverage"]["precision_policy"])
+
+    def test_calendar_ui_contract_does_not_promote_year_only_to_month(self):
+        code=(ROOT/"site/smuta-map.js").read_text(encoding="utf-8")
+        css=(ROOT/"site/smuta-map.css").read_text(encoding="utf-8")
+        for phrase in (
+            "smuta-month", "smuta-month-unknown", "Месяц не установлен",
+            "year_only_ids", "smuta-mode-matrix", "smuta-matrix-cell",
+            "research_gap_city_years", "monthKey(", "exactMonth(",
+            "date.precision!=='year'", "monthNames[selectedMonth]",
+            "aria-current", "research_gap"
+        ):
+            self.assertIn(phrase,code)
+        self.assertIn(".smuta-matrix-scroll",css)
+        self.assertIn(".smuta-month-select",css)
+
     def test_source_records_are_not_modified(self):
         before=json.dumps([self.registry,self.dossier,self.atlas,self.hydro],sort_keys=True,ensure_ascii=False)
         smuta_map.prepare(self.registry,self.dossier,self.atlas,self.hydro)

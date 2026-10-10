@@ -168,6 +168,37 @@ def prepare(registry: dict, dossier: dict, atlas: dict, hydrography: dict | None
             require(safe_url(src['url']),'Unsafe formal tenure source URL')
             merged_sources[sid]={'id':sid,'url':src['url'],'title':src['title'],
                                  'verification':src['verification']}
+    # Annual evidence matrix: an empty cell is a RESEARCH GAP, never evidence
+    # that nobody controlled a city. Monthly precision remains attached to the
+    # original date, with year-only records explicitly unassigned to months.
+    matrix_years=list(range(case['start_year'],case['end_year']+1))
+    matrix_places=[]
+    filled_cells=0
+    precise_month_records=0
+    for place in registry['places']:
+        cells=[]
+        for year in matrix_years:
+            entries=[evidence[eid] for eid in place['evidence_ids']
+                     if int(evidence[eid]['date']['value'][:4]) == year]
+            months=sorted({int(e['date']['value'][5:7]) for e in entries
+                           if e['date']['precision'] in {'month','day'}})
+            unknown=[e['id'] for e in entries if e['date']['precision']=='year']
+            precise_month_records+=len(entries)-len(unknown)
+            if entries:filled_cells+=1
+            cells.append({'year':year,'evidence_ids':[e['id'] for e in entries],
+                          'known_months':months,'year_only_ids':unknown,
+                          'research_gap':not bool(entries)})
+        matrix_places.append({'place_id':place['id'],'name':place['name'],
+                              'cells':cells})
+    # Each unlocated source observation stays unlocated, never assigned to a city.
+    coverage={'start_year':case['start_year'],'end_year':case['end_year'],
+              'precision_policy':'Запись о годе нельзя относить к отдельному месяцу. Пустая ячейка означает отсутствие исследованной записи, не отсутствие власти.',
+              'years':matrix_years,'places':matrix_places,
+              'filled_city_years':filled_cells,
+              'research_gap_city_years':len(matrix_years)*len(registry['places'])-filled_cells,
+              'mapped_evidence_count':len(mapped),
+              'mapped_precise_month_count':precise_month_records,
+              'unlocated_evidence_ids':unlocated_ids}
     # Copy existing claims verbatim. No new actor or territorial conclusion.
     return {
         'schema_version':1, 'historical_borders_verified':False,
@@ -175,6 +206,7 @@ def prepare(registry: dict, dossier: dict, atlas: dict, hydrography: dict | None
         'title':'Смута · карта свидетельств', 'start_year':1598, 'end_year':1613,
         'places':copy.deepcopy(registry['places']), 'unlocated':copy.deepcopy(unlocated),
         'evidence':list(copy.deepcopy(evidence).values()), 'events':copy.deepcopy(case['records']),
+        'research_coverage':coverage,
         'formal_year_overlaps':legal,
         'hydrography':copy.deepcopy(hydrography),
         'sources':[copy.deepcopy(x) for x in merged_sources.values()],
@@ -213,7 +245,7 @@ def build(root: Path = ROOT, revision: str = 'local') -> dict:
             page = page.replace(boundary, tag + '\n' + boundary)
     (out/'index.html').write_text(page,encoding='utf-8')
     (out/'SHA256SUMS').write_text(''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n' for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS'),encoding='utf-8')
-    return {'places':len(data['places']),'mapped_evidence':sum(len(p['evidence_ids']) for p in data['places']), 'unlocated':len(data['unlocated']), 'rivers':len(data['hydrography']['rivers']), 'formal_year_overlaps':len(data['formal_year_overlaps']), 'historical_borders_verified':False,'revision':revision}
+    return {'places':len(data['places']),'mapped_evidence':sum(len(p['evidence_ids']) for p in data['places']), 'unlocated':len(data['unlocated']), 'rivers':len(data['hydrography']['rivers']), 'formal_year_overlaps':len(data['formal_year_overlaps']), 'coverage_gaps':data['research_coverage']['research_gap_city_years'], 'historical_borders_verified':False,'revision':revision}
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
