@@ -75,7 +75,7 @@ jobs:
           import hashlib, json, sqlite3
           dist = Path('dist')
           expected = {
-              'index.html', 'site.css', 'site.js', 'README.md',
+              'index.html', 'site.css', 'site.js', 'year-view.js', 'README.md',
               'chronology.json', 'sources.json', 'validation.json',
               'party.csv', 'imperial.csv', 'romanov.csv', 'muscovy.csv',
               'government.csv', 'state_institutions.csv', 'separate_records.csv', 'SHA256SUMS',
