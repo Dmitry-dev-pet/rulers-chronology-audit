@@ -80,7 +80,7 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-comparison-legal')).to_contain_text('Шуйский')
                 expect(page.locator('.smuta-center-observation')).to_have_count(3)
                 expect(page.locator('.smuta-comparison-legal')).not_to_contain_text('Владислав')
-                expect(page.locator('.smuta-center-observation')).to_contain_text('Владислав')
+                expect(page.locator('.smuta-center-observation').filter(has_text='Владислав')).to_have_count(1)
                 page.screenshot(path=str(output/f'compare-{w}.png'),full_page=True)
                 page.locator('.smuta-mode-evidence').click()
                 expect(page.locator('.smuta-mode-evidence')).to_have_attribute('aria-pressed','true')
