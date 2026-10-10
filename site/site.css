@@ -1118,3 +1118,22 @@ button[disabled] {
     background:#f5f2e8
   }
 }
+
+/* Historical year inspector, independent of the existing scale and poster modes. */
+.atlas-year-inspector{border:1px solid #c2cbd0;border-radius:12px;padding:15px;margin:14px 0 22px;background:transparent}
+.atlas-year-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px}
+.atlas-year-head strong{font-variant-numeric:tabular-nums;font-size:21px}
+.atlas-year-caveat{font-size:12px;opacity:.75;line-height:1.45}
+#atlas-year-range{width:100%;margin:14px 0;accent-color:#bb7350}
+.atlas-year-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.atlas-year-group h4{margin:4px 0 12px;font-size:14px}
+.atlas-year-list{list-style:none;display:grid;gap:8px;margin:0;padding:0}
+.atlas-year-item{border:1px solid #c2cbd0;border-radius:8px;padding:10px;overflow-wrap:anywhere}
+.atlas-year-person{font-size:14px;font-weight:700}
+.atlas-year-meta,.atlas-year-biography,.atlas-year-note{font-size:12px;margin-top:5px;line-height:1.45}
+.atlas-year-meta,.atlas-year-note{opacity:.8}
+.atlas-year-biography{font-weight:550}
+.atlas-year-citations{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;margin-top:6px}
+.atlas-year-citations a{text-decoration:underline}
+.atlas-year-cursor{position:absolute;top:0;bottom:0;width:2px;background:#d77c48;pointer-events:none;z-index:5;box-shadow:0 0 0 1px #fff5}
+@media(max-width:700px){.atlas-year-columns{grid-template-columns:1fr}.atlas-year-inspector{padding:12px}}
