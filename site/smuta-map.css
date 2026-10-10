@@ -129,3 +129,63 @@
  .atlas-app #panel-timeline:not(.smuta-map-active){display:block;overflow-y:auto;overscroll-behavior:contain}
  .atlas-app #panel-timeline:not(.smuta-map-active)>.atlas-timeline-workspace{height:300px;min-height:180px;flex:none}
 }
+
+
+/* Verified modern river vectors as a quiet geographical reference layer.
+   They do not indicate 17th-century watercourse boundaries or territorial control. */
+.smuta-map{background:linear-gradient(135deg,#f0f2e8 0%,#e7eddc 48%,#ebede1 100%)}
+.smuta-water{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.smuta-water path{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.smuta-river-major{stroke:#6e9fba;stroke-width:2.7;opacity:.90}
+.smuta-river-minor{stroke:#96b6c1;stroke-width:1.25;opacity:.78}
+.smuta-river-label{fill:#39758f;font:italic 700 12px/1.1 Georgia,serif;stroke:#f1f2e9;stroke-width:3;paint-order:stroke;pointer-events:none}
+.smuta-water-toggle{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink);white-space:nowrap;cursor:pointer}
+.smuta-water-toggle input{accent-color:var(--green);width:16px;height:16px;margin:0}
+.smuta-water-source{font-size:10px;line-height:1.3;color:var(--muted);padding:3px 0}
+.smuta-water-source a{color:var(--green);text-decoration:underline}
+.smuta-pin-kinds{position:absolute;top:37px;left:50%;display:flex;gap:3px;transform:translateX(-50%);pointer-events:none}
+.smuta-kind-dot{font-size:9px;line-height:10px;color:var(--green);text-shadow:0 1px 1px white}
+.smuta-kind-dot.military{color:#ad5745}
+.smuta-kind-dot.claim{color:#a57836}
+.smuta-kind-dot.law{color:#406c79}
+.smuta-kind-dot.practice{color:#3b6858}
+.smuta-compare-modes{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:8px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.smuta-compare-modes button{border:1px solid var(--line);border-radius:5px;background:var(--surface);min-height:34px;color:var(--ink);font-size:11px;font-weight:730;padding:5px 6px;cursor:pointer}
+.smuta-compare-modes button[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
+.smuta-compare-modes button:hover{border-color:var(--green)}
+.smuta-detail .smuta-filters[hidden],.smuta-detail.is-comparison .smuta-filters{display:none!important}
+.smuta-comparison-lead{border-bottom:1px solid var(--line);padding:0 1px 8px;margin:0 0 10px}
+.smuta-comparison-lead h3{font:700 20px/1.2 Georgia,serif;margin:5px 0}
+.smuta-comparison-lead p{font-size:11px;color:var(--muted);line-height:1.45;margin:6px 0}
+.smuta-comparison-legal{margin:0 0 15px}
+.smuta-comparison-legal>h4,.smuta-detail-scroll>h4{font:700 14px/1.25 system-ui,sans-serif;color:var(--ink);margin:13px 0 8px}
+.smuta-center{background:#fcfbf6;border:1px solid var(--line);border-radius:7px;padding:10px 11px;margin:0 0 9px;min-width:0;overflow-wrap:anywhere}
+.smuta-center.legal{border-left:3px solid var(--green)}
+.smuta-center h5{font:700 18px/1.15 Georgia,serif;margin:5px 0 7px}
+.smuta-center h6{font:700 13px/1.25 system-ui,sans-serif;margin:5px 0}
+.smuta-center>small,.smuta-center-observation small{color:var(--muted);font-size:10px}
+.smuta-center p{font-size:11.5px;line-height:1.43;margin:6px 0}
+.smuta-center>a{font-size:11px;color:var(--green)}
+.smuta-center-observation{border-top:1px solid var(--line);margin-top:9px;padding-top:9px}
+.smuta-center-observation[data-nature=military]{border-left:3px solid var(--red);padding-left:7px}
+.smuta-center-observation[data-nature=claim]{border-left:3px solid #ae843d;padding-left:7px}
+.smuta-center-observation[data-nature=practice]{border-left:3px solid var(--green);padding-left:7px}
+.smuta-center-observation[data-nature=law]{border-left:3px solid #477b8a;padding-left:7px}
+.smuta-center-find{border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--green);padding:4px 7px;font-size:10.5px;font-weight:720;cursor:pointer;margin-top:4px}
+.smuta-center-find:hover{border-color:var(--green)}
+.smuta-comparison-empty{padding:9px;background:var(--faint);font-size:11px;line-height:1.4;color:var(--muted)}
+.smuta-comparison-warning{background:#f5ecdc;border-left:3px solid #a37f46;color:#675c47;margin:8px 0;padding:8px 9px;font-size:10.5px;line-height:1.42}
+@media(max-width:760px){
+ .smuta-water-source{font-size:9px}
+ .smuta-compare-modes{padding:5px;gap:4px}
+ .smuta-compare-modes button{min-height:32px;font-size:10px}
+ .smuta-comparison-lead h3{font-size:18px}
+ .smuta-center{padding:9px}
+ .smuta-center h5{font-size:16px}
+ .smuta-map-caveat{font-size:9px}
+}
+@media(max-height:560px){
+ .smuta-compare-modes{padding:3px;gap:2px}
+ .smuta-compare-modes button{min-height:26px;padding:3px;font-size:9px}
+ .smuta-water-source{font-size:8px}
+}
