@@ -8,6 +8,18 @@
   "sha256": "6c487e9427658f711cb41b930db2fadd06bb4b921423ab0b1b5bab4416a1c6ee",
   "captured_at": null,
   "uploaded_in_chat_date": "2026-10-10",
-  "notes": "Metadata from exact original mounted file; do not substitute a derived raster or thumbnail.",
-  "github_binary_upload_verified": false
+  "notes": "Exact original stored in Google Drive. Drive copy downloaded and re-hashed on 2026-10-10; SHA-256 equals the source photograph.",
+  "github_binary_upload_verified": false,
+  "storage": {
+    "provider": "google_drive",
+    "file_id": "1rHAcVH5_UuuqWRX0L76K7eay0KxYCt8u",
+    "file_url": "https://drive.google.com/file/d/1rHAcVH5_UuuqWRX0L76K7eay0KxYCt8u/view",
+    "folder_id": "1ztJMRaG12lpi3UOOqyu2VP3EiWntwNW6",
+    "folder_url": "https://drive.google.com/drive/folders/1ztJMRaG12lpi3UOOqyu2VP3EiWntwNW6",
+    "source_visibility": "not_shared",
+    "note": "Original JPEG retained in private Google Drive, not tracked as a Git binary."
+  },
+  "drive_upload_verified": true,
+  "downloaded_from_drive_bytes": 464782,
+  "downloaded_from_drive_sha256": "6c487e9427658f711cb41b930db2fadd06bb4b921423ab0b1b5bab4416a1c6ee"
 }
