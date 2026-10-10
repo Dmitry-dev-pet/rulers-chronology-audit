@@ -38,6 +38,7 @@ jobs:
         run: |
           python3 scripts/soviet_audit.py --revision "$SOURCE_REVISION"
           python3 -m scripts.extend_century
+          python3 -m scripts.extend_romanovs
 
       - name: Record result in job summary
         run: |
@@ -46,10 +47,10 @@ jobs:
           from pathlib import Path
           r = json.loads(Path('dist/validation.json').read_text(encoding='utf-8'))
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as f:
-              f.write('# Soviet chronology: structural validation passed\n\n')
+              f.write('# Historical atlas 1617–1991: structural validation passed\n\n')
               f.write(f"Records: **{r['records']}**; sources: **{r['sources']}**; open questions: **{r['open_items']}**.\n\n")
               f.write('This is NOT historical fact-checking. Uncertainty and parallel offices are preserved.\n\n')
-              f.write('Artifact: HTML report, JSON, five CSV files, validation receipt and SHA256SUMS. No source photograph.\n')
+              f.write('Artifact: HTML report, JSON, six CSV files, validation receipt and SHA256SUMS. No source photograph.\n')
           PY
 
       - name: Upload report (without original photo)
