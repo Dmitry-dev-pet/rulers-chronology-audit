@@ -1,0 +1,60 @@
+name: One-time atlas data migration
+on:
+  push:
+    branches: [bootstrap/atlas-db-v1]
+    paths:
+      - scripts/atlas_db.py
+      - schemas/atlas.sql
+      - tests/test_atlas_db.py
+      - .github/workflows/bootstrap-atlas.yml
+permissions:
+  contents: write
+concurrency:
+  group: bootstrap-atlas-db-v1
+  cancel-in-progress: false
+jobs:
+  migrate:
+    if: ${{ github.repository == 'Dmitry-dev-pet/rulers-chronology-audit' && github.ref == 'refs/heads/bootstrap/atlas-db-v1' && github.event.repository.private == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Migrate once, check real source files and build both representations
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -d data/atlas ]; then python3 -m scripts.atlas_db migrate; fi
+          python3 -m scripts.atlas_db validate
+          python3 -m unittest discover -s tests -v
+          python3 scripts/soviet_audit.py --revision "$GITHUB_SHA"
+          python3 -m scripts.extend_century
+          python3 -m scripts.extend_romanovs
+          python3 -m scripts.extend_muscovy
+          python3 -m scripts.atlas_db build
+      - name: Commit only canonical textual data to the exact bootstrap branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git diff --name-only)"
+          git add -- data/atlas
+          python3 - <<'PY'
+          import subprocess
+          paths = subprocess.check_output(['git','diff','--cached','--name-only','-z']).decode().split('\0')
+          assert all(not p or (p.startswith('data/atlas/') and p.endswith(('.json','.jsonl'))) for p in paths)
+          PY
+          if ! git diff --cached --quiet; then
+            git -c user.name='Atlas migration' -c user.email='atlas-migration@users.noreply.github.com' commit -m 'data: preserve and normalize all 150 legacy records with stable identities'
+            # A concurrent update rejects this ordinary fast-forward push; never force.
+            git push origin HEAD:refs/heads/bootstrap/atlas-db-v1
+          fi
+      - name: Upload checked build for review
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: atlas-database-migration
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
