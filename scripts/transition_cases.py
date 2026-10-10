@@ -54,7 +54,9 @@ def load(root: Path = ROOT, db: dict | None = None) -> dict:
         records = case.get("records")
         require(isinstance(records, list) and len(records) >= 4,
                 f"Too few researched transition events for {cid}")
-        last_date = ""
+        last_year = 0
+        last_precise_date = ""
+        last_calendar = ""
         found_categories: set[str] = set()
         for item in records:
             rid = item.get("id")
@@ -68,8 +70,17 @@ def load(root: Path = ROOT, db: dict | None = None) -> dict:
             # actually states that day; it is not manufactured from a year.
             year = int(dt["value"][:4])
             require(a <= year <= b, f"Transition date out of case range: {rid}")
-            require(dt["value"] >= last_date, f"Events must be chronological: {rid}")
-            last_date = dt["value"]
+            require(year >= last_year, f"Events must be chronological by year: {rid}")
+            # A year-only event can occur at any time within its year.
+            # Comparing it lexicographically to a month/day would invent
+            # chronology. Compare finer dates only within one known style.
+            if (year == last_year and dt["precision"] != "year" and last_precise_date
+                    and dt["calendar"] == last_calendar):
+                require(dt["value"] >= last_precise_date,
+                        f"Precisely dated events out of order: {rid}")
+            last_year = year
+            last_precise_date = dt["value"] if dt["precision"] != "year" else ""
+            last_calendar = dt["calendar"]
             require(item.get("category") in CATEGORIES, f"Unknown category: {rid}")
             found_categories.add(item["category"])
             for field in ("title", "actor", "summary", "caveat"):
