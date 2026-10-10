@@ -54,15 +54,25 @@
   plot.setAttribute('role','region'); plot.setAttribute('aria-label','Географическая карта. Стрелки перемещают вид, плюс и минус меняют масштаб.');
   const NS='http://www.w3.org/2000/svg';
   const svg=document.createElementNS(NS,'svg'); svg.setAttribute('aria-hidden','true'); svg.classList.add('smuta-grid');
+  const waterSvg=document.createElementNS(NS,'svg'); waterSvg.setAttribute('aria-hidden','true'); waterSvg.classList.add('smuta-water');
   const pins=el('div','smuta-pins');
   const stamp=el('div','smuta-map-stamp'); stamp.append(el('strong',null,'СМУТА'),el('span',null,'Карта свидетельств · 1598–1613'));
   const north=el('span','smuta-north','С ↑'); north.setAttribute('aria-hidden','true');
-  plot.append(svg,pins,stamp,north);
+  plot.append(svg,waterSvg,pins,stamp,north);
   const legend=el('div','smuta-legend'); legend.append(el('span','smuta-key active','● Есть запись в выбранном срезе'),el('span','smuta-key','○ Только географический ориентир'));
-  const caveat=el('p','smuta-map-caveat','Современные точки-ориентиры, не границы XVII века и не точные адреса событий. Датированная запись не означает непрерывный контроль.');
-  mapColumn.append(tools,plot,legend,caveat);
+  const waterLabel=el('label','smuta-water-toggle');
+  const waterCheck=el('input');waterCheck.type='checkbox';waterCheck.checked=true;waterCheck.id='smuta-water-toggle';
+  waterLabel.append(waterCheck,document.createTextNode(' Реки'));legend.appendChild(waterLabel);
+  const caveat=el('p','smuta-map-caveat','Современные точки и обобщённые линии рек, не границы XVII века, исторические русла или точные адреса событий. Нет проверенного рельефа. Датированная запись не означает непрерывный контроль.');
+  const hydroAttribution=el('div','smuta-water-source');
+  hydroAttribution.append(document.createTextNode('Водная основа: '));
+  mapColumn.append(tools,plot,legend,caveat,hydroAttribution);
 
   const aside=el('aside','smuta-detail'); aside.setAttribute('aria-label','Места, события и источники');
+  const modes=el('div','smuta-compare-modes');
+  const evidenceMode=button('Свидетельства по месту','smuta-mode-evidence',()=>setComparison(false,true));
+  const compareMode=button('Сравнить центры власти','smuta-mode-compare',()=>setComparison(true,true));
+  modes.append(evidenceMode,compareMode);
   const filters=el('div','smuta-filters');
   const cityLabel=el('label',null,'Место'); const city=el('select','smuta-city'); city.id='smuta-city'; cityLabel.htmlFor=city.id; cityLabel.append(city);
   const kindLabel=el('label',null,'Тип свидетельства'); const kind=el('select','smuta-kind'); kind.id='smuta-kind'; kindLabel.htmlFor=kind.id;
@@ -78,13 +88,13 @@
     try { await navigator.clipboard.writeText(location.href);share.textContent='Ссылка скопирована'; }
     catch (_) { const input=el('input','smuta-share-url');input.readOnly=true;input.value=location.href;share.after(input);input.focus();input.select(); }
   });
-  aside.append(filters,status,detail,share); work.append(mapColumn,aside);
+  aside.append(modes,filters,status,detail,share); work.append(mapColumn,aside);
   panel.insertBefore(work,legacy);
   const oldFooter=document.querySelector('body > [data-atlas-database]');
   const research=document.getElementById('panel-research');
   if(oldFooter && research)research.append(oldFooter);
   function setMobile(show){work.classList.toggle('show-details',show);mobileSwitch.textContent=show?'← Карта':'Свидетельства';schedule();}
-  let data=null, error=null, enabled=false, selected='', category='all', whole=false;
+  let data=null, error=null, enabled=false, selected='', category='all', whole=false, comparison=false, riversVisible=true;
   let sources=new Map(), events=new Map(), people=new Map(), mapped=new Map();
   let view={lon:40,lat:55.3,zoom:1};
   let frame=0, entering=false;
@@ -94,7 +104,7 @@
   function writeState(push=false) {
     const u=new URL(location.href);
     if(enabled)u.searchParams.set('map','smuta');else u.searchParams.delete('map');
-    for(const [key,val] of [['place',selected],['kind',category==='all'?'':category],['scope',whole?'period':'']]) {
+    for(const [key,val] of [['place',selected],['kind',category==='all'?'':category],['scope',whole?'period':''],['compare',comparison?'1':''],['rivers',riversVisible?'':'0']]) {
       if(enabled&&val)u.searchParams.set(key,val);else u.searchParams.delete(key);
     }
     const target=u.pathname+u.search+u.hash;
@@ -123,19 +133,24 @@
   }
   function readState() {
     const q=qs();selected=q.get('place')||'';category=names.has(q.get('kind'))?q.get('kind'):'all';whole=q.get('scope')==='period';
+    comparison=q.get('compare')==='1';riversVisible=q.get('rivers')!=='0';
     if(data&&!data.places.some(p=>p.id===selected)&&selected!=='unlocated')selected='';
     if(q.get('map')==='smuta'&&!panel.hidden) {
       if(!enabled)enter(requestedYear(),true);else schedule();
     }else if(q.get('map')!=='smuta'&&enabled)exit(false);
   }
+  function setComparison(flag,push=false){
+    comparison=flag;writeState(push);detail.scrollTop=0;schedule();
+  }
   function choosePlace(id,push=true) {
-    selected=id;city.value=id;writeState(push);detail.scrollTop=0;
+    selected=id;comparison=false;city.value=id;writeState(push);detail.scrollTop=0;
     if(window.matchMedia('(max-width: 760px)').matches)setMobile(true);
     schedule();
   }
   city.addEventListener('change',()=>choosePlace(city.value));
   kind.addEventListener('change',()=>{category=kind.value;writeState(true);schedule();});
   all.addEventListener('change',()=>{whole=all.checked;writeState(true);schedule();});
+  waterCheck.addEventListener('change',()=>{riversVisible=waterCheck.checked;writeState(true);schedule();});
   function records(ignorePlace=false) {
     if(!data)return [];
     return data.evidence.filter(e=>(whole||Number(e.date.value.slice(0,4))===currentYear())&&
@@ -148,9 +163,36 @@
   function dimensions(){const w=plot.clientWidth,h=plot.clientHeight;return {w,h,s:Math.max(1,Math.min(w/6.4,h/6.3))*view.zoom,c:Math.cos(55.3*Math.PI/180)};}
   function project(p,d){return {x:d.w/2+(p.lon-view.lon)*d.c*d.s,y:d.h/2+(view.lat-p.lat)*d.s};}
   function svgNode(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;}
+  function drawWater(d) {
+    waterSvg.setAttribute('viewBox',`0 0 ${d.w} ${d.h}`);
+    waterSvg.replaceChildren();
+    if(!riversVisible||!data?.hydrography)return;
+    const labeled=new Set(),mainNames=new Set(['Volga','Oka']);
+    for(const stream of data.hydrography.rivers){
+      const primary=mainNames.has(stream.name);
+      let longest=[],bestLength=0;
+      for(const path of stream.paths){
+        const points=path.map(([lon,lat])=>project({lon,lat},d));
+        if(points.length<2)continue;
+        const dstr=points.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+        waterSvg.appendChild(svgNode('path',{d:dstr,'data-water':stream.id,
+          'data-river':stream.name||'',class:primary?'smuta-river-major':'smuta-river-minor'}));
+        const len=points.slice(1).reduce((n,p,i)=>n+Math.hypot(p.x-points[i].x,p.y-points[i].y),0);
+        if(len>bestLength){bestLength=len;longest=points;}
+      }
+      if(primary&&!labeled.has(stream.name)&&bestLength>90&&longest.length>2){
+        const pos=longest[Math.floor(longest.length/2)];
+        if(pos.x>30&&pos.x<d.w-30&&pos.y>25&&pos.y<d.h-20){
+          waterSvg.appendChild(svgNode('text',{class:'smuta-river-label',x:pos.x+5,y:pos.y-7},stream.label_ru||stream.name));
+          labeled.add(stream.name);
+        }
+      }
+    }
+  }
   function drawMap(){
     if(!data||!enabled||!plot.clientWidth)return;
     const d=dimensions();svg.setAttribute('viewBox',`0 0 ${d.w} ${d.h}`);svg.replaceChildren();pins.replaceChildren();
+    drawWater(d);
     const ideal=85/(d.s*d.c);
     const step=[0.1,0.25,0.5,1,2,5,10].find(v=>v>=ideal)||10;
     for(let lon=30;lon<=50;lon+=step){const p=project({lon,lat:view.lat},d);if(p.x<0||p.x>d.w)continue;
