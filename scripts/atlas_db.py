@@ -443,7 +443,7 @@ def database_page(db: dict) -> str:
 <style>body{font:17px/1.5 system-ui;max-width:1250px;margin:3rem auto;padding:0 1rem;color:#202b32;background:#faf9f6}h1{line-height:1.1}a{color:#215e76}nav{display:flex;gap:1rem;flex-wrap:wrap}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #d0d6d8;padding:.8rem;text-align:left;vertical-align:top}small{display:block;font-size:11px;color:#62717a}input{font:inherit;padding:.6rem;width:min(90%,30rem)}.scroll{overflow-x:auto}th{white-space:nowrap}</style>
 <nav><a href="index.html">← Атлас</a><a href="atlas.json">JSON</a><a href="atlas.sqlite">SQLite</a><a href="atlas-manifest.json">Проверки и контрольные суммы</a><a href="atlas-schema.sql">Схема SQL</a></nav>
 <h1>Люди, должности и источники</h1><p>Одна личность — одна запись, независимо от числа должностей. Это структурированный импорт существующего исследования, не новая независимая проверка истории.</p>
-<p>Годы жизни из прежней сверки сохранены. Для первых 14 личностей добавлены независимо источниковые даты рождения; остальные ещё не исследованы. У отдельных исторических дат есть конкурирующие версии, показанные раздельно. Возраст на выбранный год доступен во вкладке «Линии власти». Династия и происхождение — отдельные утверждения, не национальность по умолчанию. Оценки фактической власти не образуют доказанную непрерывную линию единоличных правителей.</p>
+<p>Годы жизни из прежней сверки сохранены. Для части личностей добавлены источниковые даты рождения, иногда с конкурирующими архивными версиями; остальные ещё исследуются. У отдельных исторических дат есть конкурирующие версии, показанные раздельно. Возраст на выбранный год доступен во вкладке «Линии власти». Династия и происхождение — отдельные утверждения, не национальность по умолчанию. Оценки фактической власти не образуют доказанную непрерывную линию единоличных правителей.</p>
 <details><summary>Состав базы</summary><p>'''+summary+'''</p></details><p><label>Найти человека или должность<br><input id="search" type="search" placeholder="Например, Пётр или председатель"></label></p>
 <div class="scroll"><table><thead><tr><th>Личность</th><th>Дата рождения и источник</th><th>Годы жизни: прежняя сверка</th><th>Этнокультурное происхождение</th><th>Должности</th></tr></thead><tbody>'''+''.join(rows)+'''</tbody></table></div>
 <script>document.getElementById('search').addEventListener('input',function(){const q=this.value.toLocaleLowerCase('ru');document.querySelectorAll('tbody tr').forEach(r=>r.hidden=!r.textContent.toLocaleLowerCase('ru').includes(q));});</script></html>'''
@@ -451,12 +451,16 @@ def database_page(db: dict) -> str:
 
 def build(root: Path = ROOT, output: Path | None = None, verify: bool = True) -> dict:
     db=load(root); output=output or root/'dist'
+    from scripts import transition_cases
+    transition_export = transition_cases.load(root, db)
     if verify: verify_inputs(db,root)
     schema=(root/'schemas/atlas.sql').read_text(encoding='utf-8')
     output.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='atlas-build-') as temp:
         stage=Path(temp)
         (stage/'atlas.json').write_text(json.dumps(db,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+        (stage/'transition-cases.json').write_text(
+            json.dumps(transition_export,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
         (stage/'atlas-schema.sql').write_text(schema,encoding='utf-8')
         write_sqlite(db,stage/'atlas.sqlite',schema)
         (stage/'database.html').write_text(database_page(db),encoding='utf-8')
@@ -485,7 +489,12 @@ def main() -> None:
     args=parser.parse_args()
     if args.command=='migrate':result=migrate(args.root,args.output)
     elif args.command=='validate':
-        db=load(args.root);verify_inputs(db,args.root);result=counts(db)
+        db=load(args.root);verify_inputs(db,args.root)
+        from scripts import transition_cases
+        validated=transition_cases.load(args.root,db)
+        result=counts(db)
+        result['transition_cases']=len(validated['cases'])
+        result['transition_records']=sum(len(c['records']) for c in validated['cases'])
     else:result=build(args.root,args.output)
     print(json.dumps(result,ensure_ascii=False,indent=2))
 

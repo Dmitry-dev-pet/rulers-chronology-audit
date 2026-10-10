@@ -1366,3 +1366,69 @@ button[disabled] {
  .atlas-app .atlas-year-role-card{height:auto;overflow:visible}
  .atlas-app .atlas-year-role-items{overflow:visible}
 }
+
+
+/* Sourced transition dossiers: independent scrolling within the SPA chart. */
+.atlas-app .atlas-transition-controls{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap;padding-top:6px;margin-top:3px;border-top:1px solid var(--line)}
+.atlas-app .atlas-transition-label{color:var(--ink);font-size:11px;font-weight:800;white-space:nowrap}
+.atlas-app .atlas-transition-picks{display:flex;gap:5px;flex:0 0 auto}
+.atlas-app .atlas-transition-jump,.atlas-app .atlas-transition-preview{border:1px solid var(--line);border-radius:5px;min-height:29px;background:var(--surface);padding:4px 9px;font-size:10.5px;font-weight:750;color:var(--green);cursor:pointer}
+.atlas-app .atlas-transition-jump[aria-pressed="true"]{color:#fff;background:var(--green);border-color:var(--green)}
+.atlas-app .atlas-transition-jump:hover,.atlas-app .atlas-transition-preview:hover{border-color:var(--red)}
+.atlas-app .atlas-transition-teaser{font-size:10px;color:var(--muted);flex:1;line-height:1.2;min-width:90px}
+.atlas-app .atlas-transition-preview{border-color:var(--green);white-space:normal}
+.atlas-app .atlas-transition-preview[hidden]{display:none!important}
+.atlas-app .atlas-transition-sheet{position:absolute;inset:0 0 0 auto;z-index:22;width:min(610px,100%);min-width:0;background:var(--surface);border:1px solid var(--line);box-shadow:-12px 0 38px #151d1e36;border-radius:10px 0 0 10px;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:contain}
+.atlas-app .atlas-transition-sheet[hidden]{display:none!important}
+.atlas-app .atlas-transition-sheet-head{display:flex;align-items:start;justify-content:space-between;gap:12px;padding:15px 16px 11px;background:var(--surface);border-bottom:1px solid var(--line);flex:0 0 auto}
+.atlas-app .atlas-transition-sheet-title-area{min-width:0}
+.atlas-app .atlas-transition-sheet-kicker{font-size:10px;font-weight:800;color:var(--red);letter-spacing:.11em;text-transform:uppercase}
+.atlas-app .atlas-transition-sheet-head h3{font:700 clamp(18px,2.5vw,25px)/1.15 Georgia,serif;margin:3px 0 0}
+.atlas-app .atlas-transition-close{border:1px solid var(--line);border-radius:5px;padding:7px 9px;flex:0 0 auto;background:var(--surface);font-size:11px;font-weight:800;color:var(--ink)}
+.atlas-app .atlas-transition-sheet-intro{font-size:12px;line-height:1.35;font-weight:620;margin:10px 16px 3px}
+.atlas-app .atlas-transition-sheet-caution{font-size:11px;line-height:1.38;color:var(--muted);margin:0 16px 10px}
+.atlas-app .atlas-transition-filters{display:flex;gap:5px;overflow-x:auto;padding:0 16px 10px;flex:0 0 auto;scrollbar-width:thin}
+.atlas-app .atlas-transition-filter{flex:0 0 auto;white-space:nowrap;border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:5px 9px;font-size:10.5px;font-weight:700}
+.atlas-app .atlas-transition-filter[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.atlas-app .atlas-transition-result-count{padding:7px 16px;margin:0;font-size:10px;color:var(--muted);border-block:1px solid var(--line)}
+.atlas-app .atlas-transition-entries{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:11px 16px 18px;display:grid;align-content:start;gap:9px;scrollbar-color:#b8b5aa transparent}
+.atlas-app .atlas-transition-entry{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:6px;padding:10px 12px;background:#fcfbf6;overflow-wrap:anywhere}
+.atlas-app .atlas-transition-entry[data-category="legal"]{border-left-color:var(--green)}
+.atlas-app .atlas-transition-entry[data-category="practical"]{border-left-color:var(--blue)}
+.atlas-app .atlas-transition-entry[data-category="claim"]{border-left-color:var(--red)}
+.atlas-app .atlas-transition-entry[data-category="institutional"]{border-left-color:var(--gold)}
+.atlas-app .atlas-transition-entry.is-year{background:#f2f3ea;outline:1px solid #8b9d91}
+.atlas-app .atlas-transition-entry-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.atlas-app .atlas-transition-entry-date,.atlas-app .atlas-transition-kind{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.atlas-app .atlas-transition-kind{font-weight:800;color:var(--ink)}
+.atlas-app .atlas-transition-year-mark{font-size:9px;color:var(--green);font-weight:800}
+.atlas-app .atlas-transition-entry h4{font:700 17px/1.2 Georgia,serif;margin:6px 0 2px}
+.atlas-app .atlas-transition-actor{color:var(--muted);font-size:11px;font-weight:740}
+.atlas-app .atlas-transition-summary{font-size:12px;line-height:1.4;margin:6px 0}
+.atlas-app .atlas-transition-note{font-size:11px;color:var(--muted);line-height:1.4;margin:5px 0;border-left:2px solid var(--line);padding-left:8px}
+.atlas-app .atlas-transition-sources{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:10px;color:var(--muted);margin-top:8px}
+.atlas-app .atlas-transition-source{font-size:10px;font-weight:740}
+@media(max-width:700px){
+ .atlas-app .atlas-transition-controls{gap:4px;padding-top:4px}
+ .atlas-app .atlas-transition-label{font-size:10px}
+ .atlas-app .atlas-transition-picks{gap:4px}
+ .atlas-app .atlas-transition-jump,.atlas-app .atlas-transition-preview{padding:4px 7px;min-height:28px;font-size:10px}
+ .atlas-app .atlas-transition-teaser{flex-basis:100%;order:3;font-size:9px;min-height:0}
+ .atlas-app .atlas-transition-preview{order:4;width:100%;text-align:left;min-height:26px}
+ .atlas-app .atlas-transition-sheet{inset:0;width:100%;border-radius:9px}
+ .atlas-app .atlas-transition-sheet-head{padding:10px 12px 9px}
+ .atlas-app .atlas-transition-sheet-intro{margin:8px 12px 3px}
+ .atlas-app .atlas-transition-sheet-caution{margin:0 12px 6px}
+ .atlas-app .atlas-transition-filters{padding:0 12px 8px}
+ .atlas-app .atlas-transition-entries{padding:7px 12px 12px}
+}
+@media(max-height:560px){
+ .atlas-app .atlas-transition-sheet-intro{display:none}
+ .atlas-app .atlas-transition-sheet-caution{margin-top:7px}
+ .atlas-app .atlas-transition-teaser{display:none}
+}
+@media print{
+ .atlas-app .atlas-transition-sheet{position:static!important;width:100%!important;max-height:none;box-shadow:none;display:block!important}
+ .atlas-app .atlas-transition-sheet[hidden]{display:none!important}
+ .atlas-app .atlas-transition-entries{overflow:visible}
+}

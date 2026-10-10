@@ -10,6 +10,7 @@ on:
       - scripts/extend_romanovs.py
       - scripts/extend_muscovy.py
       - scripts/atlas_db.py
+      - scripts/transition_cases.py
       - schemas/**
       - data/atlas/**
       - data/muscovy-chronology.json
@@ -75,11 +76,11 @@ jobs:
           import hashlib, json, sqlite3
           dist = Path('dist')
           expected = {
-              'index.html', 'site.css', 'site.js', 'year-view.js', 'README.md',
+              'index.html', 'site.css', 'site.js', 'year-view.js', 'transition-view.js', 'README.md',
               'chronology.json', 'sources.json', 'validation.json',
               'party.csv', 'imperial.csv', 'romanov.csv', 'muscovy.csv',
               'government.csv', 'state_institutions.csv', 'separate_records.csv', 'SHA256SUMS',
-              'atlas.json', 'atlas.sqlite', 'atlas-manifest.json', 'atlas-schema.sql', 'database.html',
+              'atlas.json', 'atlas.sqlite', 'atlas-manifest.json', 'atlas-schema.sql', 'database.html', 'transition-cases.json',
           }
           actual = {p.name for p in dist.iterdir() if p.is_file()}
           assert actual == expected, f'Unexpected site files: {actual ^ expected}'

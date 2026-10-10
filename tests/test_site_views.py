@@ -19,7 +19,7 @@ class SiteViewsTests(unittest.TestCase):
         for path in ("data", "research", "site", "assets/original"):
             (self.root / path).mkdir(parents=True, exist_ok=True)
         source = Path(audit.__file__).resolve().parents[1] / "site"
-        for f in ("site.css", "site.js", "year-view.js"):
+        for f in ("site.css", "site.js", "year-view.js", "transition-view.js"):
             shutil.copyfile(source / f, self.root / "site" / f)
         self.transcript = self.root / "data/poster-transcription.tsv"
         self.review = self.root / "data/soviet-period-review.csv"
@@ -86,6 +86,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("href='#/timeline/1685'", markup)
         self.assertIn("site.js?v=revision-tes", markup)
         self.assertIn("year-view.js?v=revision-tes", markup)
+        self.assertIn("transition-view.js?v=revision-tes", markup)
         self.assertIn("site.css?v=revision-tes", markup)
         self.assertIn("aria-selected='true'", markup)
         self.assertIn("&lt;script&gt;", markup)
@@ -104,7 +105,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertFalse(result["historical_truth_verified_by_ci"])
         self.assertEqual(result["records"], 4)
         files = {p.name for p in (self.root / "dist").iterdir()}
-        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "README.md", "SHA256SUMS",
+        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "transition-view.js", "README.md", "SHA256SUMS",
                                  "chronology.json", "sources.json", "validation.json", "party.csv",
                                  "government.csv", "state_institutions.csv", "separate_records.csv"})
         for p in (self.root / "dist").iterdir():
@@ -114,6 +115,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("site.js", sums)
         self.assertIn("site.css", sums)
         self.assertIn("year-view.js", sums)
+        self.assertIn("transition-view.js", sums)
         self.assertEqual(len(sums.strip().splitlines()), len(files) - 1)
 
 
