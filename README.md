@@ -2,6 +2,12 @@
 
 Исследовательский проект по плакату **«Правители государства с древнейших времен»**. Начат 10 октября 2026 года. Подготовлен к публичной публикации; фотография остаётся в закрытом Google Drive.
 
+## Public site (GitHub Pages)
+
+[**Soviet leadership: three parallel chronologies**](https://dmitry-dev-pet.github.io/rulers-chronology-audit/) — generated static HTML from the reviewed research data. The site becomes live after the first successful Pages deployment. [Deployment documentation](docs/PAGES.md) · [deployment workflow](.github/workflows/publish-pages.yml).
+
+The image of the original poster remains in **private Google Drive** and is never uploaded to Pages.
+
 ## GitHub Actions
 
 [![Soviet chronology audit](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/workflows/soviet-audit.yml/badge.svg)](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/workflows/soviet-audit.yml)
