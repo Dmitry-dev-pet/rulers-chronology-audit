@@ -1170,3 +1170,6 @@ button[disabled] {
 .spa-people-footnote{margin-top:26px;color:var(--muted);font-size:12px}
 @media(max-width:700px){.spa-people-grid{grid-template-columns:1fr}.spa-person-detail{padding:15px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Hidden states take precedence over flex/grid layouts in the SPA. */
+.spa-people-grid[hidden],.spa-people-tools[hidden],.spa-person-detail[hidden]{display:none!important}
