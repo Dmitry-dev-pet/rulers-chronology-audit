@@ -100,7 +100,7 @@
   function dateLabel(item) {
     const date = item.date;
     const suffix = date.calendar === 'julian' ? ' · ст. ст.' :
-      date.calendar === 'gregorian' && date.precision === 'day' ? ' · н. ст.' :
+      date.calendar === 'gregorian' ? ' · н. ст.' :
       ' · календарь не уточнён';
     return date.value + suffix;
   }
