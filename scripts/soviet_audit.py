@@ -205,7 +205,7 @@ def render(data: dict, sources: dict, result: dict, revision: str,
         "<meta name='theme-color' content='#f7f5ee'>",
         "<meta name='description' content='Советский период, 1917–1991: исходная хронология, параллельные линии власти и источники.'>",
         "<title>Правители государства · Советский период 1917–1991</title>",
-        "<link rel='stylesheet' href='./site.css'>",
+        f"<link rel='stylesheet' href='./site.css?v={revision[:12]}'>",
         "</head><body><div class='topline'></div>",
         "<header>",
         "<nav class='container topnav' aria-label='Главная навигация'>",
@@ -219,6 +219,9 @@ def render(data: dict, sources: dict, result: dict, revision: str,
         "<p class='lead'>От исходной печатной таблицы — к проверяемой хронологии. "
         "Сохраняем последовательность имён, но различаем политическое влияние, "
         "правительство и государственные должности.</p>",
+        "<div class='hero-quicklinks' aria-label='Интерактивные разделы атласа'>"
+        "<a class='hero-quicklink primary' href='#/people'>Биографии и поиск →</a>"
+        "<a class='hero-quicklink' href='#/timeline/1685'>Исследовать год на шкале →</a></div>",
         f"<div class='facts'><span><b>{len(poster_rows)}</b> строк плаката</span>",
         f"<span><b>{counts}</b> записей о должностях и событиях</span>",
         f"<span><b>{len(sources)}</b> ссылок на источники</span></div>",
@@ -357,7 +360,7 @@ def render(data: dict, sources: dict, result: dict, revision: str,
     embedded = json.dumps({k: data[k] for k in TRACKS}, ensure_ascii=False, separators=(',', ':'))
     embedded = embedded.replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
     head.append(f"<script id='chronology-data' type='application/json'>{embedded}</script>")
-    head.extend(["<script defer src='./site.js'></script>", "</body></html>"])
+    head.extend([f"<script defer src='./site.js?v={revision[:12]}'></script>", "</body></html>"])
     return "\n".join(head)
 
 
