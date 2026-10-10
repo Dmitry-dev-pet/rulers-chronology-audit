@@ -111,10 +111,17 @@ def build(root: Path = ROOT, revision: str = 'local') -> dict:
     require('</head>' in page and '</body>' in page,'Missing document mount')
     version=hashlib.sha256(''.join((out/name).read_text(encoding='utf-8') for name in ASSETS).encode()).hexdigest()[:12]
     # Idempotent build supports validation/rebuild without multiplying mounts.
-    page=re.sub(r'\n?<link data-smuta-map[^>]*>', '', page)
-    page=re.sub(r'\n?<script data-smuta-map[^>]*></script>', '', page)
-    page=page.replace('</head>',f"<link data-smuta-map rel='stylesheet' href='./smuta-map.css?v={version}'>\n</head>")
-    page=page.replace('</body>',f"<script data-smuta-map defer src='./smuta-map.js?v={version}'></script>\n</body>")
+    mounts = [
+        (r'<link data-smuta-map[^>]*>',
+         f"<link data-smuta-map rel='stylesheet' href='./smuta-map.css?v={version}'>", '</head>'),
+        (r'<script data-smuta-map[^>]*></script>',
+         f"<script data-smuta-map defer src='./smuta-map.js?v={version}'></script>", '</body>'),
+    ]
+    for pattern, tag, boundary in mounts:
+        if re.search(pattern, page):
+            page = re.sub(pattern, lambda _: tag, page)
+        else:
+            page = page.replace(boundary, tag + '\n' + boundary)
     (out/'index.html').write_text(page,encoding='utf-8')
     (out/'SHA256SUMS').write_text(''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n' for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS'),encoding='utf-8')
     return {'places':len(data['places']),'mapped_evidence':sum(len(p['evidence_ids']) for p in data['places']), 'unlocated':len(data['unlocated']), 'historical_borders_verified':False,'revision':revision}
