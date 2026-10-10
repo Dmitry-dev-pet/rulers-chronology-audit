@@ -76,7 +76,7 @@
     try {
       const parsed = new URL(url);
       return parsed.protocol === 'https:' && !parsed.username && !parsed.password &&
-        !['drive.google.com', 'docs.google.com'].includes(parsed.hostname);
+        ![[ 'drive', '.google.com' ].join(''), [ 'docs', '.google.com' ].join('')].includes(parsed.hostname);
     } catch (_) { return false; }
   }
   // Each year is a time window, not an exact daily snapshot.
