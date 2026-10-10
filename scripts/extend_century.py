@@ -213,6 +213,18 @@ def build() -> dict:
         ("Три линии на одной оси времени",
          "Император, правительство и партия: общая шкала"),
     ]
+    summary = json.loads((DIST / "validation.json").read_text(encoding="utf-8"))
+    imperial_records = sum(len(data[k]) for k in TRACKS)
+    site = replace_once(site, "<b>10</b> строк плаката",
+                        f"<b>{10 + len(annotations)}</b> строк плаката", "poster row count")
+    site = replace_once(site, f"<b>{summary['records']}</b> записей о должностях и событиях",
+                        f"<b>{summary['records'] + imperial_records}</b> записей о должностях и событиях",
+                        "record count")
+    site = replace_once(site, f"<b>{summary['sources']}</b> ссылок на источники",
+                        f"<b>{summary['sources'] + len(sources)}</b> ссылок на источники",
+                        "source count")
+    site = replace_once(site, "<span><i></i> Партия</span>",
+                        "<span><i></i> Монархия / партия</span>", "timeline legend")
     for before, after in fixed:
         site = replace_once(site, before, after, before[:55])
     site = site.replace("Советская Россия с 1917 года. СССР образован в 1922 году.",
