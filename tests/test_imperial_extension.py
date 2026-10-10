@@ -68,7 +68,7 @@ class ImperialCenturyTests(unittest.TestCase):
         self.assertFalse(check["historical_truth_verified_by_ci"])
         self.assertFalse(check["imperial_primary_acts_verified"])
         self.assertTrue((ROOT / "dist/imperial.csv").is_file())
-        self.assertEqual(len(list((ROOT / "dist").iterdir())), 14)
+        self.assertEqual(len(list((ROOT / "dist").iterdir())), 15)
         for path in (ROOT / "dist").iterdir():
             self.assertNotIn("drive.google.com", path.read_text(encoding="utf-8-sig"))
 
