@@ -220,7 +220,7 @@ class SmutaMapTests(unittest.TestCase):
         june=facts["local-smuta-moscow-opolchenie-judgment-1611"]
         self.assertEqual(june["place_kind"],"vicinity_of_city")
         self.assertIn("под Москвой",june["statement"])
-        self.assertIn("не в Кремле",june["limitation"])
+        self.assertIn("не о функционировании",june["limitation"])
         self.assertIs(data["historical_borders_verified"],False)
         self.assertEqual(len(data["events"]),16)
         self.assertEqual(len(data["evidence"]),19)
