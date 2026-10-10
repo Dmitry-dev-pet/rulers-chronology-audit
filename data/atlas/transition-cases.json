@@ -1,0 +1,593 @@
+{
+  "schema_version": 1,
+  "historical_truth_verified_by_ci": false,
+  "method": "Правовой статус, практическое управление, спорное притязание и учреждение не отождествляются; выбор года не доказывает одновременность полномочий.",
+  "cases": [
+    {
+      "id": "smuta-1598-1613",
+      "title": "Смута: несколько центров власти",
+      "period": "1598–1613",
+      "start_year": 1598,
+      "end_year": 1613,
+      "focus_year": 1610,
+      "lead": "Царь в Москве, Тушинский двор, Семибоярщина и ополчения действовали не как одна цепочка законных преемников.",
+      "caveat": "Источники различают московское правление и конкурирующие центры; точность дат сохраняется, места и регионы не приписываются одному властителю.",
+      "records": [
+        {
+          "id": "smuta-1598",
+          "date": {
+            "value": "1598",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Избрание Бориса после Фёдора",
+          "actor": "Борис Годунов",
+          "person_id": "person-70e920e83c13510c",
+          "body_id": null,
+          "summary": "После смерти Фёдора Ивановича Борис был избран царём; до этого его политическое влияние не было формальным царствованием.",
+          "caveat": "Смерть прежнего царя и новое избрание — разные основания полномочий; точный день здесь не установлен.",
+          "sources": [
+            "MS10"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1605a",
+          "date": {
+            "value": "1605",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Короткое царствование сына Бориса",
+          "actor": "Фёдор Борисович",
+          "person_id": "person-d5e0312f487853f3",
+          "body_id": null,
+          "summary": "После смерти Бориса его сын непродолжительно занимал московский престол до свержения династии.",
+          "caveat": "Не изображать 1605 год как непрерывный срок власти одного лица.",
+          "sources": [
+            "MS11",
+            "MS14"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1605b",
+          "date": {
+            "value": "1605",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "claim",
+          "title": "Лжедмитрий I в Москве",
+          "actor": "Лжедмитрий I",
+          "person_id": "person-8e62076339325bb0",
+          "body_id": null,
+          "summary": "Самозванец занял престол в Москве и получил признание; его заявленное происхождение оспаривается.",
+          "caveat": "Спор об идентичности не отменяет факта московского царствования, но меняет трактовку династической законности.",
+          "sources": [
+            "MS11",
+            "MS14"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1606",
+          "date": {
+            "value": "1606",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Василий Шуйский — царь в Москве",
+          "actor": "Василий Шуйский",
+          "person_id": "person-54755129b73c57aa",
+          "body_id": null,
+          "summary": "После гибели Лжедмитрия I царём в Москве стал Василий Шуйский.",
+          "caveat": "Московский титул не равен бесспорному контролю всей территории.",
+          "sources": [
+            "MS11"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1608",
+          "date": {
+            "value": "1608",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "claim",
+          "title": "Тушинский двор — конкурирующая власть",
+          "actor": "Лжедмитрий II",
+          "person_id": "person-35df48afc6515524",
+          "body_id": null,
+          "summary": "В Тушине сложились собственные двор, Боярская дума и приказы, конкурировавшие с московской властью.",
+          "caveat": "Лжедмитрий II не был венчан на царство в Москве; не превращать Тушинский стан во второе законное московское царствование.",
+          "sources": [
+            "MS18",
+            "MS11"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1610a",
+          "date": {
+            "value": "1610",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "practical",
+          "title": "Семибоярщина в Москве",
+          "actor": "Боярское правительство",
+          "person_id": null,
+          "body_id": "body-e225049a1b9053c7",
+          "summary": "После свержения Шуйского бояре реально управляли Москвой (июль–октябрь 1610); позднее сохранился формальный статус при иной ситуации.",
+          "caveat": "БРЭ различает реальный контроль и формальное положение правительства 1610–1612; это не независимое царствование одного человека.",
+          "sources": [
+            "TR01",
+            "TR02"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1610b",
+          "date": {
+            "value": "1610-08-17",
+            "calendar": "julian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "claim",
+          "title": "Договор о призвании Владислава",
+          "actor": "Владислав Ваза",
+          "person_id": "person-252fa597743855f7",
+          "body_id": null,
+          "summary": "Семибоярщина заключила договор о признании королевича русским царём 17 (27) августа 1610 года.",
+          "caveat": "Владислав не был венчан на царство в Москве и не осуществлял самостоятельного московского царствования.",
+          "sources": [
+            "TR01",
+            "MS11"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1611",
+          "date": {
+            "value": "1611",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "practical",
+          "title": "Первое ополчение и борьба за Москву",
+          "actor": "Первое народное ополчение",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Вооружённое сопротивление и попытка освобождения Москвы не означали автоматического установления единого правительства всей страны.",
+          "caveat": "Участники ополчения не вступали тем самым в индивидуальную царскую должность.",
+          "sources": [
+            "TR04",
+            "MS11"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1612a",
+          "date": {
+            "value": "1612-04",
+            "calendar": "unspecified",
+            "precision": "month",
+            "qualifier": "as_recorded"
+          },
+          "category": "practical",
+          "title": "Совет всея земли в Ярославле",
+          "actor": "Совет всея земли",
+          "person_id": null,
+          "body_id": null,
+          "summary": "В апреле–июле 1612 при Втором ополчении действовали земский Совет, приказы и дипломатические представители.",
+          "caveat": "Временное правительство ополчения, не отдельная династия; указан месяц, а не выдуманный точный день.",
+          "sources": [
+            "TR03",
+            "TR04"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1612b",
+          "date": {
+            "value": "1612",
+            "calendar": "unspecified",
+            "precision": "year",
+            "qualifier": "as_recorded"
+          },
+          "category": "institutional",
+          "title": "Возвращение Москвы под контроль ополчения",
+          "actor": "Второе народное ополчение",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Освобождение Москвы изменило соотношение сил и создало условия для Земского собора 1613 года.",
+          "caveat": "Руководители ополчения не стали в силу этого царями.",
+          "sources": [
+            "TR04",
+            "MS12"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1613a",
+          "date": {
+            "value": "1613-02-21",
+            "calendar": "julian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Земский собор избрал Михаила",
+          "actor": "Михаил Фёдорович Романов",
+          "person_id": "person-3af18c6e60935132",
+          "body_id": null,
+          "summary": "Избрание 21 февраля по старому стилю (3 марта по новому) положило начало новой династии.",
+          "caveat": "Избрание отличается от венчания на царство и от постепенного восстановления управления страной.",
+          "sources": [
+            "TR05",
+            "MS12"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "smuta-1613b",
+          "date": {
+            "value": "1613-07-11",
+            "calendar": "julian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Венчание Михаила на царство",
+          "actor": "Михаил Фёдорович Романов",
+          "person_id": "person-3af18c6e60935132",
+          "body_id": null,
+          "summary": "Коронация состоялась 11 июля по старому стилю (21 июля по новому).",
+          "caveat": "В единой хронологии Михаил уже царствует с 1613; повторного срока не создаётся.",
+          "sources": [
+            "TR05",
+            "MS13"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "id": "ussr-1991",
+      "title": "1991: распад союзных полномочий",
+      "period": "1991",
+      "start_year": 1991,
+      "end_year": 1991,
+      "focus_year": 1991,
+      "lead": "В одном году пересеклись президентство СССР, власть республик, попытка ГКЧП и разные акты о преобразовании и прекращении государства.",
+      "caveat": "Выбор 1991 года показывает события разных месяцев — это не одновременное правление и не одно постановление о конце СССР.",
+      "records": [
+        {
+          "id": "ussr-1991a",
+          "date": {
+            "value": "1991-06-12",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Президент РСФСР, но не президент СССР",
+          "actor": "Российская республиканская власть",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Борис Ельцин избран президентом РСФСР; это отдельная республиканская должность.",
+          "caveat": "Выборы в РСФСР не прекратили полномочия президента СССР.",
+          "sources": [
+            "PC21"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991b",
+          "date": {
+            "value": "1991-08-19",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Союзный президент остаётся президентом",
+          "actor": "Михаил Горбачёв",
+          "person_id": "person-8ace0ae735b35ada",
+          "body_id": null,
+          "summary": "Заявление ГКЧП о болезни не стало бесспорной законной передачей должности; президентский срок Горбачёва в справочных данных продолжается.",
+          "caveat": "Формальные полномочия не равны возможности фактически руководить во время изоляции.",
+          "sources": [
+            "PC16",
+            "TR07"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991c",
+          "date": {
+            "value": "1991-08-19",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "claim",
+          "title": "Притязания Янаева и ГКЧП",
+          "actor": "Геннадий Янаев",
+          "person_id": "person-24f269a2c7b75e0a",
+          "body_id": null,
+          "summary": "ГКЧП объявил об отстранении Горбачёва и переходе обязанностей к вице-президенту.",
+          "caveat": "Это заявление претендентов, а не доказательство конституционности; Верховный Совет впоследствии осудил переворот.",
+          "sources": [
+            "TR06",
+            "TR07"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991d",
+          "date": {
+            "value": "1991-08-19",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "practical",
+          "title": "Республиканские органы отвергли ГКЧП",
+          "actor": "Руководство РСФСР",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Президент РСФСР издал указ № 59, а Ельцин, Силаев и Хасбулатов призвали граждан к противодействию.",
+          "caveat": "Российская власть не была отдельной должностью президента СССР: это конкурирующие центры и правовые позиции.",
+          "sources": [
+            "TR13",
+            "TR14"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991e",
+          "date": {
+            "value": "1991-08-21",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "institutional",
+          "title": "Провал августовского путча",
+          "actor": "ГКЧП и союзные органы",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Попытка переворота 19–21 августа завершилась неудачей; её парламентская оценка последовала 29 августа.",
+          "caveat": "Провал путча и последующее юридическое решение — разные события.",
+          "sources": [
+            "TR07"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991f",
+          "date": {
+            "value": "1991-08-24",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "institutional",
+          "title": "Указ о хозяйственном комитете",
+          "actor": "Комитет под руководством Ивана Силаева",
+          "person_id": "person-4dc062b6502f55d1",
+          "body_id": null,
+          "summary": "Горбачёв распорядился создать комитет для оперативного управления народным хозяйством совместно с республиками.",
+          "caveat": "Создание комитета не означало назначение Силаева на новую должность премьер-министра СССР.",
+          "sources": [
+            "PC10",
+            "TR09"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991g",
+          "date": {
+            "value": "1991-08-28",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Решение об освобождении Павлова",
+          "actor": "Валентин Павлов",
+          "person_id": "person-8a204fe46c345d69",
+          "body_id": null,
+          "summary": "Верховный Совет СССР согласился с президентским указом от 22 августа об освобождении Павлова от должности.",
+          "caveat": "22 августа и парламентское решение 28 августа не одна и та же дата.",
+          "sources": [
+            "TR08"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991h",
+          "date": {
+            "value": "1991-08-28",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "institutional",
+          "title": "Недоверие Кабинету министров",
+          "actor": "Верховный Совет СССР",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Отдельное постановление № 2367-I выразило недоверие Кабинету и определило переходные хозяйственные функции комитета.",
+          "caveat": "Функции экономического управления не превращаются автоматически в новый президентский пост.",
+          "sources": [
+            "TR09"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991i",
+          "date": {
+            "value": "1991-08-29",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "institutional",
+          "title": "Парламентская оценка ГКЧП",
+          "actor": "Верховный Совет СССР",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Постановление № 2371-I охарактеризовало попытку переворота и предусмотрело расследование.",
+          "caveat": "Политико-правовая оценка не означала единого фактического контроля всех союзных республик.",
+          "sources": [
+            "TR07",
+            "PC19"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991j",
+          "date": {
+            "value": "1991-09-05",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Закон о союзных органах переходного периода",
+          "actor": "Государственный совет и Верховный Совет СССР",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Закон № 2392-I предусмотрел Государственный совет и Верховный Совет из двух палат, упразднив пост вице-президента.",
+          "caveat": "5 сентября Союз не прекратил существование; союзная структура и власть республик всё сильнее расходились.",
+          "sources": [
+            "TR10"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991k",
+          "date": {
+            "value": "1991-12-08",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "claim",
+          "title": "Беловежское соглашение",
+          "actor": "Главы России, Беларуси и Украины",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Руководители трёх республик подписали соглашение, заявившее о прекращении СССР и создании СНГ.",
+          "caveat": "Соглашение республик не тождественно декларации Совета Республик СССР от 26 декабря; правовой контекст многослоен.",
+          "sources": [
+            "TR11"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991l",
+          "date": {
+            "value": "1991-12-21",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "institutional",
+          "title": "Алма-Атинская декларация",
+          "actor": "Главы одиннадцати государств",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Главы одиннадцати республик подписали декларацию о формировании СНГ.",
+          "caveat": "Не смешивать с Беловежьем, отставкой Горбачёва или заявлением союзного парламента.",
+          "sources": [
+            "TR12"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991m",
+          "date": {
+            "value": "1991-12-25",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "legal",
+          "title": "Отставка президента СССР",
+          "actor": "Михаил Горбачёв",
+          "person_id": "person-8ace0ae735b35ada",
+          "body_id": null,
+          "summary": "Горбачёв объявил о прекращении полномочий президента СССР.",
+          "caveat": "Это личное решение не совпадает по дате с декларацией Совета Республик 26 декабря.",
+          "sources": [
+            "PC18",
+            "PC16"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        },
+        {
+          "id": "ussr-1991n",
+          "date": {
+            "value": "1991-12-26",
+            "calendar": "gregorian",
+            "precision": "day",
+            "qualifier": "as_recorded"
+          },
+          "category": "institutional",
+          "title": "Декларация № 142-Н о прекращении СССР",
+          "actor": "Совет Республик Верховного Совета СССР",
+          "person_id": null,
+          "body_id": null,
+          "summary": "Совет Республик констатировал прекращение существования СССР как государства и субъекта международного права.",
+          "caveat": "Декларация — юридический финал процесса, а не свидетельство непрерывной персональной власти до этой даты.",
+          "sources": [
+            "PC20"
+          ],
+          "verification": "reference_checked",
+          "confidence": "medium"
+        }
+      ]
+    }
+  ]
+}
