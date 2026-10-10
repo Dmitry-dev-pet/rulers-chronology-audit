@@ -97,7 +97,7 @@ class JurisdictionResearchTests(unittest.TestCase):
         css=(ROOT/"site/site.css").read_text(encoding="utf-8")
         for snippet in ("География власти", "territorial_evidence",
                         "selected.geography_policy", "Не доказывает: ",
-                        "hrefs(refs, record)", "viewMode = 'geography'",
+                        "hrefs(refs, record)", "viewMode = mode",
                         "atlas-transition-section", "dateLabel(record)"):
             self.assertIn(snippet, js)
         self.assertIn("точные границы не реконструированы",js)
