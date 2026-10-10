@@ -55,7 +55,12 @@
       const year=document.getElementById('atlas-year-range');
       const route='#/'+name+(name==='timeline' && year ? '/'+year.value : '');
       if(location.hash!==route)location.hash=route;
-      document.querySelector('.modes-wrap').scrollIntoView({block:'start'});
+      if (document.documentElement.classList.contains('atlas-app')) {
+        const view = panels.get(name);
+        if (view) view.scrollTop = 0;
+      } else {
+        document.querySelector('.modes-wrap').scrollIntoView({block:'start'});
+      }
     }
     document.title=name==='people'?'Биографии · '+originalTitle:originalTitle;
     window.dispatchEvent(new CustomEvent('atlas:route',{detail:{view:name}}));
