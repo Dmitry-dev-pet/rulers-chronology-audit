@@ -145,6 +145,11 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-month-unknown .smuta-uncertain-item')).to_have_count(2)
                 page.locator('#smuta-month').select_option('0')
                 expect(page.locator('.smuta-evidence')).to_have_count(5)
+                # A portrait phone deliberately separates the map and details
+                # into two screens; open the details before testing their tabs.
+                if w<=760 and h>560:
+                    page.locator('.smuta-mobile-switch').click()
+                    expect(page.locator('.smuta-detail')).to_be_visible()
                 page.locator('.smuta-mode-matrix').click()
                 expect(page.locator('.smuta-matrix tbody tr')).to_have_count(5)
                 expect(page.locator('.smuta-matrix-cell.has-evidence')).to_have_count(8)
