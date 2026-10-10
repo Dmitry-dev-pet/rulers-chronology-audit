@@ -33,15 +33,12 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-workspace')).to_be_visible()
                 expect(page.locator('#atlas-year-value')).to_have_text('1608')
                 expect(page.locator('.smuta-water path[data-water]')).not_to_have_count(0)
-                water_count=page.locator('.smuta-water path[data-water]').count()
-                print('HYDRO-DOM',w,h,'paths',water_count,'errors',errors,
-                      'enabled',page.locator('#smuta-water-toggle').is_checked(),flush=True)
-                assert water_count >= 30, ('Unexpected water path count',water_count,errors)
+                expect(page.locator('.smuta-water path[data-water]')).to_have_count(41)
                 expect(page.locator('.smuta-water-source a')).to_have_attribute('href',__import__('re').compile('natural-earth-vector'))
                 page.locator('#smuta-water-toggle').uncheck()
                 expect(page.locator('.smuta-water path[data-water]')).to_have_count(0)
                 page.locator('#smuta-water-toggle').check()
-                assert page.locator('.smuta-water path[data-water]').count() >= 30
+                expect(page.locator('.smuta-water path[data-water]')).to_have_count(41)
                 assert page.evaluate('document.documentElement.scrollHeight<=innerHeight+1')
                 # A source page is NOT requested by clicking a map pin.
                 page.screenshot(path=str(output/f'map-{w}.png'),full_page=True)
