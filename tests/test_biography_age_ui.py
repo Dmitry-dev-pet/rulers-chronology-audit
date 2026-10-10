@@ -19,7 +19,7 @@ class BiographyContract(unittest.TestCase):
 
     def test_researched_births_from_four_centuries(self):
         names={self.names[f['person_id']] for f in self.facts if f['kind']=='birth'}
-        self.assertEqual(len(names),14)
+        self.assertEqual(len(names),35)
         for name in ('Иван III Васильевич','Иван IV Васильевич','Михаил Фёдорович',
                      'Пётр I Алексеевич','Екатерина II Алексеевна','Николай II',
                      'Владимир Ленин','Иосиф Сталин','Никита Хрущёв','Михаил Горбачёв'):
@@ -29,11 +29,16 @@ class BiographyContract(unittest.TestCase):
         for row in self.facts:
             if row['kind'] not in {'birth','death'}: continue
             atlas_db.validate_date(row['value'])
-            self.assertIn(row['value']['calendar'],{'julian','gregorian'})
-            self.assertEqual(row['value']['precision'],'day')
+            self.assertIn(row['value']['calendar'],{'julian','gregorian','unspecified'})
+            if row['value']['calendar']=='unspecified':
+                self.assertIn(row['value']['precision'],{'year','month'})
+            else:
+                self.assertEqual(row['value']['precision'],'day')
             self.assertTrue(row['sources'])
             self.assertTrue(set(row['sources'])<=self.sources)
-            self.assertIn(row['verification'],{'disputed','reference_checked'})
+            self.assertIn(row['verification'],{'disputed','reference_checked','imported_not_rechecked'})
+            if row['verification']=='imported_not_rechecked':
+                self.assertTrue(row['value']['calendar']=='unspecified' or row['value']['qualifier'] in {'uncertain','as_recorded'})
 
     def test_ivan_and_peter_ages_reconciled_with_julian_calendar(self):
         for name,dob,year,minage,maxage in [
@@ -67,7 +72,8 @@ class BiographyContract(unittest.TestCase):
     def test_timeline_has_distinct_power_and_office_groups(self):
         code=(ROOT/'site/site.js').read_text(encoding='utf-8')
         self.assertIn("fetch('./atlas.json'",code)
-        self.assertIn('Оценки фактического влияния',code)
+        self.assertIn('Фактическая и коллективная власть',code)
+        self.assertIn('Номинальные роли и ограничения',code)
         self.assertIn('Юридические должности',code)
         self.assertIn('atlas-year-cursor',code)
         if shutil.which('node'):
