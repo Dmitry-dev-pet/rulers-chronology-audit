@@ -17,15 +17,15 @@ class SmutaMapTests(unittest.TestCase):
         cls.atlas=atlas_db.load(ROOT)
         cls.dossier=transition_cases.load(ROOT,cls.atlas)
 
-    def test_five_places_fourteen_mapped_and_one_unlocated(self):
+    def test_five_places_eighteen_mapped_and_one_unlocated(self):
         d=smuta_map.prepare(self.registry,self.dossier,self.atlas)
         self.assertEqual(len(d['places']),5)
-        self.assertEqual(sum(len(p['evidence_ids']) for p in d['places']),14)
+        self.assertEqual(sum(len(p['evidence_ids']) for p in d['places']),18)
         self.assertEqual(len(d['unlocated']),1)
         self.assertEqual(d['unlocated'][0]['evidence_id'],'local-smuta-severian-claim-1608')
         self.assertIs(d['historical_borders_verified'],False)
-        self.assertEqual(len(d['events']),12)
-        self.assertEqual(len(d['evidence']),15)
+        self.assertEqual(len(d['events']),16)
+        self.assertEqual(len(d['evidence']),19)
         self.assertEqual(d['hydrography']['kind'],'modern_hydrography_reference')
         self.assertGreaterEqual(len(d['hydrography']['rivers']),15)
         self.assertEqual({r['name'] for r in d['hydrography']['rivers']
@@ -112,14 +112,14 @@ class SmutaMapTests(unittest.TestCase):
         self.assertEqual(sum(len(place["cells"]) for place in coverage["places"]),80)
         self.assertEqual(coverage["filled_city_years"],12)
         self.assertEqual(coverage["research_gap_city_years"],68)
-        self.assertEqual(coverage["mapped_evidence_count"],14)
-        self.assertEqual(coverage["mapped_precise_month_count"],10)
+        self.assertEqual(coverage["mapped_evidence_count"],18)
+        self.assertEqual(coverage["mapped_precise_month_count"],14)
         self.assertEqual(coverage["unlocated_evidence_ids"],
                          ["local-smuta-severian-claim-1608"])
-        self.assertEqual(len(d["evidence"]),15)
+        self.assertEqual(len(d["evidence"]),19)
         mapped_ids={id for place in coverage["places"]
                     for cell in place["cells"] for id in cell["evidence_ids"]}
-        self.assertEqual(len(mapped_ids),14)
+        self.assertEqual(len(mapped_ids),18)
         original={e["id"]:e for e in d["evidence"]}
         for place in coverage["places"]:
             for cell in place["cells"]:
@@ -165,7 +165,7 @@ class SmutaMapTests(unittest.TestCase):
             with self.subTest(place=place,year=year):
                 cell=next(c for c in places[place]["cells"] if c["year"]==year)
                 self.assertFalse(cell["research_gap"])
-                self.assertEqual(cell["evidence_ids"],[eid])
+                self.assertIn(eid,cell["evidence_ids"])
                 fact=evidence[eid]
                 self.assertEqual(fact["date"]["value"],date)
                 self.assertEqual(fact["date"]["calendar"],calendar)
@@ -180,6 +180,54 @@ class SmutaMapTests(unittest.TestCase):
         self.assertIn("марта",evidence["local-smuta-nizhny-departure-1612"]["limitation"])
         self.assertEqual(data["research_coverage"]["research_gap_city_years"],68)
         self.assertEqual(data["research_coverage"]["filled_city_years"],12)
+        self.assertEqual(len(data["unlocated"]),1)
+
+    def test_1609_1611_detailed_month_sequence_without_claiming_whole_city(self):
+        data=smuta_map.prepare(self.registry,self.dossier,self.atlas,self.hydro)
+        coverage={p["place_id"]:p for p in data["research_coverage"]["places"]}
+        facts={f["id"]:f for f in data["evidence"]}
+        events={e["id"]:e for e in data["events"]}
+        samples={
+            ("yaroslavl",1609):([
+                ("local-smuta-yaroslavl-exactions-1609","1609-01","unspecified","practice","smuta-1609-january","SL01"),
+                ("local-smuta-yaroslavl-uprising-1609","1609-04","julian","practice",None,"SL01"),
+                ("local-smuta-yaroslavl-posad-burning-1609","1609-05","julian","military","smuta-1609-may","SL01"),
+            ],[1,4,5]),
+            ("moscow",1611):([
+                ("local-smuta-moscow-uprising-1611","1611-03","unspecified","military",None,"TJ15"),
+                ("local-smuta-moscow-white-city-1611","1611-04","unspecified","military","smuta-1611-april","SS01"),
+                ("local-smuta-moscow-opolchenie-judgment-1611","1611-06","unspecified","law","smuta-1611-june","SS02"),
+            ],[3,4,6]),
+        }
+        for (city,year),(entries,months) in samples.items():
+            with self.subTest(city=city,year=year):
+                cell=next(c for c in coverage[city]["cells"] if c["year"]==year)
+                self.assertEqual(cell["known_months"],months)
+                self.assertEqual(len(cell["evidence_ids"]),3)
+                self.assertEqual(cell["year_only_ids"],[])
+                for eid,value,calendar,nature,event,source in entries:
+                    fact=facts[eid]
+                    self.assertEqual(fact["date"]["value"],value)
+                    self.assertEqual(fact["date"]["calendar"],calendar)
+                    self.assertEqual(fact["nature"],nature)
+                    self.assertIn(source,fact["sources"])
+                    self.assertIs(fact["geometry_verified"],False)
+                    self.assertIn("не",fact["limitation"].lower())
+                    if event:
+                        self.assertIn(event,events)
+                        self.assertIn(event,fact["related_event_ids"])
+                        self.assertIn(source,events[event]["sources"])
+        june=facts["local-smuta-moscow-opolchenie-judgment-1611"]
+        self.assertEqual(june["place_kind"],"vicinity_of_city")
+        self.assertIn("под Москвой",june["statement"])
+        self.assertIn("не в Кремле",june["limitation"])
+        self.assertIs(data["historical_borders_verified"],False)
+        self.assertEqual(len(data["events"]),16)
+        self.assertEqual(len(data["evidence"]),19)
+        self.assertEqual(data["research_coverage"]["filled_city_years"],12)
+        self.assertEqual(data["research_coverage"]["research_gap_city_years"],68)
+        self.assertEqual(data["research_coverage"]["mapped_evidence_count"],18)
+        self.assertEqual(data["research_coverage"]["mapped_precise_month_count"],14)
         self.assertEqual(len(data["unlocated"]),1)
 
     def test_calendar_ui_contract_does_not_promote_year_only_to_month(self):
