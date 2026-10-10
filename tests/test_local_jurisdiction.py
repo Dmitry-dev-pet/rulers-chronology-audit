@@ -21,9 +21,9 @@ class JurisdictionResearchTests(unittest.TestCase):
     def test_places_are_local_evidence_not_political_border_polygons(self):
         case_a = self.cases["smuta-1598-1613"]
         case_b = self.cases["ussr-1991"]
-        self.assertEqual(len(case_a["territorial_evidence"]), 15)
+        self.assertEqual(len(case_a["territorial_evidence"]), 19)
         self.assertEqual(len(case_b["territorial_evidence"]), 9)
-        self.assertEqual(sum(len(c["territorial_evidence"]) for c in self.data["cases"]), 24)
+        self.assertEqual(sum(len(c["territorial_evidence"]) for c in self.data["cases"]), 28)
         for case in self.data["cases"]:
             self.assertIn("не реконструированы", case["geography_policy"])
             event_ids = {r["id"] for r in case["records"]}
