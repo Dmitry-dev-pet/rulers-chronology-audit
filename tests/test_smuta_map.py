@@ -116,7 +116,7 @@ class SmutaMapTests(unittest.TestCase):
         self.assertEqual(coverage["mapped_precise_month_count"],10)
         self.assertEqual(coverage["unlocated_evidence_ids"],
                          ["local-smuta-severian-claim-1608"])
-        self.assertEqual(len(d["evidence"]),11)
+        self.assertEqual(len(d["evidence"]),15)
         mapped_ids={id for place in coverage["places"]
                     for cell in place["cells"] for id in cell["evidence_ids"]}
         self.assertEqual(len(mapped_ids),14)
