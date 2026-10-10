@@ -217,7 +217,14 @@
   function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(render);}
   function fit(){view={lon:40,lat:55.3,zoom:1};schedule();}
   function zoomBy(factor){view.zoom=Math.max(0.7,Math.min(24,view.zoom*factor));schedule();}
-  function dimensions(){const w=plot.clientWidth,h=plot.clientHeight;return {w,h,s:Math.max(1,Math.min(w/6.4,h/6.3))*view.zoom,c:Math.cos(55.3*Math.PI/180)};}
+  function dimensions(){
+    const w=plot.clientWidth,h=plot.clientHeight;
+    // A short landscape map needs more vertical geographic padding. Scale
+    // every anchored coordinate uniformly; never shift a city to fake a pin.
+    const heightDegrees=h<160?10:6.3;
+    return {w,h,s:Math.max(1,Math.min(w/6.4,h/heightDegrees))*view.zoom,
+      c:Math.cos(55.3*Math.PI/180)};
+  }
   function project(p,d){return {x:d.w/2+(p.lon-view.lon)*d.c*d.s,y:d.h/2+(view.lat-p.lat)*d.s};}
   function svgNode(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;}
   function drawWater(d) {
