@@ -20,6 +20,7 @@
 - [data/poster-transcription.tsv](data/poster-transcription.tsv) — буквальная ручная расшифровка **106 строк** (53 в левой колонке, 53 в правой), включая исходные ошибки.
 - [data/section-markers.md](data/section-markers.md) — названия династий, служебные строки и подписи столиц.
 - [research/initial-audit.md](research/initial-audit.md) — предварительный разбор 23 исторических утверждений.
+- **Советский период (1917–1991):** [предметный разбор](research/soviet-period-audit.md), [реестр 10 строк с исправлениями](data/soviet-period-review.csv) и [22 проверенных источника](research/soviet-period-sources.md).
 - [research/source-index.md](research/source-index.md) — 25 стартовых ссылок на исторические источники; для научной сверки требуется повторная проверка каждого.
 - [data/claim-register.csv](data/claim-register.csv) — реестр спорных утверждений.
 - [docs/context.md](docs/context.md) — решение о хранилище и контекст обсуждения.
