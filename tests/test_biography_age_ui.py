@@ -19,7 +19,7 @@ class BiographyContract(unittest.TestCase):
 
     def test_researched_births_from_four_centuries(self):
         names={self.names[f['person_id']] for f in self.facts if f['kind']=='birth'}
-        self.assertEqual(len(names),35)
+        self.assertEqual(len(names),42)
         for name in ('Иван III Васильевич','Иван IV Васильевич','Михаил Фёдорович',
                      'Пётр I Алексеевич','Екатерина II Алексеевна','Николай II',
                      'Владимир Ленин','Иосиф Сталин','Никита Хрущёв','Михаил Горбачёв'):
@@ -31,7 +31,9 @@ class BiographyContract(unittest.TestCase):
             atlas_db.validate_date(row['value'])
             self.assertIn(row['value']['calendar'],{'julian','gregorian','unspecified'})
             if row['value']['calendar']=='unspecified':
-                self.assertIn(row['value']['precision'],{'year','month'})
+                # Exact-looking medieval civil days may still have unknown calendar style.
+                self.assertIn(row['value']['precision'],{'year','month','day'})
+                self.assertFalse(atlas_db.age_range(row['value'], atlas_db.historical_date('2000','gregorian'))['available'])
             else:
                 self.assertEqual(row['value']['precision'],'day')
             self.assertTrue(row['sources'])
