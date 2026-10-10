@@ -19,10 +19,10 @@ class TransitionResearchTests(unittest.TestCase):
         cls.data = transition_cases.load(ROOT, cls.db)
         cls.cases = {c["id"]: c for c in cls.data["cases"]}
 
-    def test_two_periods_and_26_sourced_records(self):
+    def test_two_periods_and_30_sourced_records(self):
         self.assertEqual(set(self.cases), {"smuta-1598-1613", "ussr-1991"})
         self.assertEqual((len(self.cases["smuta-1598-1613"]["records"]),
-                          len(self.cases["ussr-1991"]["records"])), (12, 14))
+                          len(self.cases["ussr-1991"]["records"])), (16, 14))
         self.assertEqual(self.cases["smuta-1598-1613"]["focus_year"], 1610)
         self.assertEqual(self.cases["ussr-1991"]["focus_year"], 1991)
         self.assertIs(self.data["historical_truth_verified_by_ci"], False)
