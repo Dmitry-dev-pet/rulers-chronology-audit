@@ -112,6 +112,36 @@
     catch (_) { const input=el('input','smuta-share-url');input.readOnly=true;input.value=location.href;share.after(input);input.focus();input.select(); }
   });
   aside.append(modes,filters,status,detail,share); work.append(mapColumn,aside);
+  const clusterSheet=el('div','smuta-cluster-sheet');
+  clusterSheet.hidden=true;clusterSheet.setAttribute('role','dialog');
+  clusterSheet.setAttribute('aria-label','Выбор места среди близких точек');
+  clusterSheet.setAttribute('aria-modal','false');
+  work.append(clusterSheet);
+  let clusterTrigger=null;
+  function closeCluster(){
+    clusterSheet.hidden=true;
+    if(clusterTrigger?.isConnected)clusterTrigger.focus({preventScroll:true});
+    clusterTrigger=null;
+  }
+  function openCluster(members,trigger){
+    clusterTrigger=trigger;clusterSheet.replaceChildren();
+    const card=el('div','smuta-cluster-card');
+    card.append(el('h3',null,'Точки рядом · '+members.length),
+      el('p',null,'Выберите город. Все точки сохраняют свои настоящие координаты.'));
+    for(const place of members){
+      const entry=button(place.name,'smuta-cluster-choice',()=>{
+        clusterSheet.hidden=true;clusterTrigger=null;choosePlace(place.id);
+      });
+      entry.dataset.place=place.id;
+      card.append(entry);
+    }
+    const close=button('Закрыть','smuta-cluster-close',()=>closeCluster());
+    card.append(close);clusterSheet.append(card);clusterSheet.hidden=false;
+    close.focus({preventScroll:true});
+  }
+  clusterSheet.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){e.preventDefault();closeCluster();}
+  });
   panel.insertBefore(work,legacy);
   const oldFooter=document.querySelector('body > [data-atlas-database]');
   const research=document.getElementById('panel-research');
@@ -173,7 +203,9 @@
   }
   function exit(update=true) {
     enabled=false;panel.classList.remove('smuta-map-active');work.hidden=true;legacy.hidden=false;
-    leave.hidden=true;launch.setAttribute('aria-pressed','false');if(update)writeState(true);
+    leave.hidden=true;launch.setAttribute('aria-pressed','false');
+    clusterSheet.hidden=true;clusterTrigger=null;
+    if(update)writeState(true);
     window.dispatchEvent(new Event('resize'));
   }
   function readState() {
@@ -265,21 +297,39 @@
       svg.append(svgNode('line',{x1:0,y1:p.y,x2:d.w,y2:p.y}),svgNode('text',{x:8,y:p.y-5},lat+'° с. ш.'));}
     const visible=(comparison||matrixMode)?data.evidence.filter(e=>matchesSelectedYearMonth(e)):records(true);
     const counts=new Map(data.places.map(p=>[p.id,visible.filter(r=>p.evidence_ids.includes(r.id)).length]));
-    let placed=data.places.map(p=>({...p,...project(p.reference_point,d),members:[p]}));
-    // Nearby geographic anchors are clustered, NEVER shifted away from coordinates.
-    const a=placed.find(p=>p.id==='moscow'),b=placed.find(p=>p.id==='tushino');
-    if(a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<70){placed=placed.filter(p=>!['moscow','tushino'].includes(p.id));placed.push({id:'moscow,tushino',name:'Москва / Тушино',x:(a.x+b.x)/2,y:(a.y+b.y)/2,members:[a,b]});}
+    // All markers are placed at their projected coordinates. At low zoom
+    // nearby points become one SELECTABLE group rather than fake shifted dots.
+    const remaining=data.places.map(p=>({...p,...project(p.reference_point,d)}));
+    const placed=[];
+    while(remaining.length){
+      const members=[remaining.shift()];
+      for(let i=0;i<members.length;i++){
+        for(let k=remaining.length-1;k>=0;k--){
+          if(Math.hypot(members[i].x-remaining[k].x,members[i].y-remaining[k].y)<58)
+            members.push(remaining.splice(k,1)[0]);
+        }
+      }
+      const x=members.reduce((acc,p)=>acc+p.x,0)/members.length;
+      const y=members.reduce((acc,p)=>acc+p.y,0)/members.length;
+      const label=members.length===2?members.map(p=>p.name).join(' / '):
+        members.length>2?members.length+' места':members[0].name;
+      placed.push({id:members.map(p=>p.id).join(','),name:label,x,y,members});
+    }
     for(const p of placed){if(p.x<12||p.x>d.w-12||p.y<12||p.y>d.h-12)continue;
       const n=p.members.reduce((v,m)=>v+(counts.get(m.id)||0),0),isCluster=p.members.length>1;
-      const pin=button('', 'smuta-marker'+(n?' has-evidence':'')+(p.members.some(m=>m.id===selected)?' is-selected':''),()=>{
-        if(isCluster){view={lon:(a.reference_point.lon+b.reference_point.lon)/2,lat:(a.reference_point.lat+b.reference_point.lat)/2,zoom:20};schedule();}
+      let pin;
+      pin=button('', 'smuta-marker'+(n?' has-evidence':'')+(p.members.some(m=>m.id===selected)?' is-selected':''),()=>{
+        if(isCluster)openCluster(p.members,pin);
         else choosePlace(p.id);
       });
-      pin.dataset.place=p.id;pin.dataset.count=String(n);pin.dataset.cluster=String(isCluster);
+      pin.dataset.place=p.id;pin.dataset.members=p.members.map(m=>m.id).join(',');
+      pin.dataset.count=String(n);pin.dataset.cluster=String(isCluster);
       pin.style.left=p.x+'px';pin.style.top=p.y+'px';
-      pin.setAttribute('aria-label',isCluster?`Разделить точки: ${p.name}`:`${p.name}: ${n} свидетельств`);
+      pin.setAttribute('aria-label',isCluster?
+        `Выбрать место из группы: ${p.members.map(m=>m.name).join(', ')}`:
+        `${p.name}: ${n} свидетельств`);
       pin.setAttribute('aria-pressed',String(p.members.some(m=>m.id===selected)));
-      const dot=el('span','smuta-pin-dot',isCluster?'2':n||'');
+      const dot=el('span','smuta-pin-dot',isCluster?String(p.members.length):n||'');
       const label=el('span','smuta-pin-label',p.name);if(p.x>d.w-170)label.classList.add('left');
       pin.append(dot,label);
       const kinds=[...new Set(p.members.flatMap(m=>
