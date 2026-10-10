@@ -35,7 +35,9 @@ jobs:
       - name: Validate data and build report
         env:
           SOURCE_REVISION: ${{ github.sha }}
-        run: python3 scripts/soviet_audit.py --revision "$SOURCE_REVISION"
+        run: |
+          python3 scripts/soviet_audit.py --revision "$SOURCE_REVISION"
+          python3 scripts/extend_century.py
 
       - name: Record result in job summary
         run: |
@@ -47,7 +49,7 @@ jobs:
               f.write('# Soviet chronology: structural validation passed\n\n')
               f.write(f"Records: **{r['records']}**; sources: **{r['sources']}**; open questions: **{r['open_items']}**.\n\n")
               f.write('This is NOT historical fact-checking. Uncertainty and parallel offices are preserved.\n\n')
-              f.write('Artifact: HTML report, JSON, four CSV files, validation receipt and SHA256SUMS. No source photograph.\n')
+              f.write('Artifact: HTML report, JSON, five CSV files, validation receipt and SHA256SUMS. No source photograph.\n')
           PY
 
       - name: Upload report (without original photo)
