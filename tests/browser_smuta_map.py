@@ -72,7 +72,7 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-evidence')).to_have_count(0)
                 expect(page.locator('.smuta-empty')).to_contain_text('пробел в исследовании')
                 page.locator('#smuta-all-period').check()
-                expect(page.locator('.smuta-evidence')).to_have_count(5)
+                expect(page.locator('.smuta-evidence')).to_have_count(7)
                 expect(page.locator('.smuta-status')).to_contain_text('Весь период')
                 # Query-only history navigation changes city without reload.
                 # Inspect parallel centers without inventing a multi-year reign.
@@ -97,9 +97,9 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-mode-evidence')).to_have_attribute('aria-pressed','true')
                 page.locator('#smuta-city').select_option('moscow')
                 page.locator('#smuta-all-period').check()
-                expect(page.locator('.smuta-evidence')).to_have_count(7)
+                expect(page.locator('.smuta-evidence')).to_have_count(9)
                 page.go_back();expect(page.locator('#smuta-city')).to_have_value('yaroslavl')
-                expect(page.locator('.smuta-evidence')).to_have_count(5)
+                expect(page.locator('.smuta-evidence')).to_have_count(7)
                 # Unlocated multi-city claim remains visible, without a fake polygon.
                 page.locator('#smuta-city').select_option('unlocated')
                 expect(page.locator('.smuta-evidence')).to_have_count(1)
