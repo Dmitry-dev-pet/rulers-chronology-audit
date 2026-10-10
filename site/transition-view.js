@@ -46,7 +46,10 @@
   const body = make('div', 'atlas-transition-entries');
   const count = make('p', 'atlas-transition-result-count');
   count.setAttribute('role', 'status');
-  sheet.append(header, intro, caution, tabs, count, body);
+  const sectionPicker = make('div', 'atlas-transition-sections');
+  sectionPicker.setAttribute('role', 'group');
+  sectionPicker.setAttribute('aria-label', 'Вид исторического досье');
+  sheet.append(header, intro, caution, sectionPicker, tabs, count, body);
   workspace.appendChild(sheet);
 
   const categories = [
@@ -56,10 +59,18 @@
     ['claim', 'Претензии'],
     ['institutional', 'Органы и решения'],
   ];
+  const geoCategories = [
+    ['all', 'Все местности'],
+    ['practice', 'Местное управление'],
+    ['military', 'Военное присутствие'],
+    ['claim', 'Притязания'],
+    ['law', 'Правовой статус'],
+  ];
   let cases = [];
   let sourceIndex = new Map();
   let selected = null;
   let activeFilter = 'all';
+  let viewMode = 'events';
   let currentTrigger = null;
   let buttonByCase = new Map();
   const isSafe = value => {
@@ -95,6 +106,10 @@
   }
   function displayEntries() {
     if (!selected) return;
+    if (viewMode === 'geography') {
+      displayGeography();
+      return;
+    }
     const visible = selected.records.filter(r => activeFilter === 'all' || r.category === activeFilter);
     const year = currentYear();
     body.replaceChildren();
@@ -128,9 +143,67 @@
     count.textContent = 'Показано ' + visible.length + ' записей · ' +
       'события разных дат не означают одновременную власть.';
   }
+
+  function displayGeography() {
+    if (!selected) return;
+    const observations = selected.territorial_evidence || [];
+    const visible = observations.filter(r => activeFilter === 'all' || r.nature === activeFilter);
+    const year = currentYear();
+    const labels = new Map(geoCategories);
+    body.replaceChildren();
+    const disclaimer = make('p', 'atlas-geo-disclaimer',
+      selected.geography_policy + ' Это свидетельства о местах и юридических притязаниях, не достоверная карта границ.');
+    body.appendChild(disclaimer);
+    for (const record of visible) {
+      const card = make('article', 'atlas-transition-entry atlas-geo-entry' +
+        (Number(record.date.value.slice(0, 4)) === year ? ' is-year' : ''));
+      card.dataset.category = record.nature;
+      const head = make('div', 'atlas-transition-entry-meta');
+      head.append(make('span', 'atlas-transition-entry-date', dateLabel(record)),
+        make('span', 'atlas-transition-kind', labels.get(record.nature)));
+      if (Number(record.date.value.slice(0,4)) === year)
+        head.appendChild(make('span', 'atlas-transition-year-mark', 'Выбранный год'));
+      card.appendChild(head);
+      card.appendChild(make('h4', null, record.place));
+      card.appendChild(make('div', 'atlas-transition-actor', record.authority));
+      card.appendChild(make('p', 'atlas-transition-summary', record.statement));
+      const limit = make('p', 'atlas-transition-note', 'Не доказывает: ' + record.limitation);
+      card.appendChild(limit);
+      const refs = make('div', 'atlas-transition-sources');
+      refs.append(make('span', null, 'Источники: '));
+      hrefs(refs, record);
+      card.appendChild(refs);
+      body.appendChild(card);
+    }
+    count.textContent = 'Географические свидетельства: ' + visible.length +
+      ' · точные границы не реконструированы.';
+  }
+  function renderSections() {
+    sectionPicker.replaceChildren();
+    for (const [mode, caption] of [
+      ['events', 'События · ' + (selected?.records?.length || 0)],
+      ['geography', 'География власти · ' + (selected?.territorial_evidence?.length || 0)]
+    ]) {
+      const button = make('button', 'atlas-transition-section', caption);
+      button.type = 'button';
+      button.setAttribute('aria-pressed', String(viewMode === mode));
+      button.addEventListener('click', () => {
+        viewMode = mode;
+        activeFilter = 'all';
+        renderSections();
+        renderFilters();
+        displayEntries();
+        body.scrollTop = 0;
+      });
+      sectionPicker.appendChild(button);
+    }
+  }
   function renderFilters() {
     tabs.replaceChildren();
-    for (const [kind, caption] of categories) {
+    const groups = viewMode === 'geography' ? geoCategories : categories;
+    tabs.setAttribute('aria-label', viewMode === 'geography' ?
+      'Тип территориального свидетельства' : 'Тип исторических утверждений');
+    for (const [kind, caption] of groups) {
       const button = make('button', 'atlas-transition-filter', caption);
       button.type = 'button';
       button.setAttribute('aria-pressed', String(activeFilter === kind));
@@ -145,11 +218,13 @@
   function openCase(c, trigger) {
     selected = c;
     activeFilter = 'all';
+    viewMode = 'events';
     currentTrigger = trigger || null;
     sheet.hidden = false;
     title.textContent = c.title;
     intro.textContent = c.lead;
     caution.textContent = c.caveat;
+    renderSections();
     renderFilters();
     displayEntries();
     body.scrollTop = 0;
