@@ -426,16 +426,26 @@ def database_page(db: dict) -> str:
         lives=[f['value'] for f in facts[p['id']] if f['kind']=='lifespan_text']
         origins=[f['value'] for f in facts[p['id']] if f['kind']=='ethnic_origin']
         terms=[t for t in db['tenures'] if t['person_id']==p['id']]
+        birth_rows=[]
+        for born in (f for f in facts[p['id']] if f['kind']=='birth'):
+            cal='ст. ст.' if born['value']['calendar']=='julian' else 'н. ст.'
+            mark=' · спорная версия' if born['verification']=='disputed' else ''
+            refs=[]
+            for sid in born['sources']:
+                source=next((s for s in db['sources'] if s['id']==sid),None)
+                if source: refs.append(f"<a target='_blank' rel='noopener noreferrer' href='{e(source['url'],quote=True)}'>{e(sid)}</a>")
+            birth_rows.append(f"{e(born['value']['value'])} ({cal}{mark}) <small>{' '.join(refs)}</small>")
+        born_html='<br>'.join(birth_rows) if birth_rows else 'Не исследовано'
         detail='<br>'.join(e(t['start']['value']+' — '+t['end']['value']+': '+t['description']) for t in terms)
-        rows.append(f"<tr id='{e(p['id'])}'><td>{e(p['name'])}<small>{e(p['id'])}</small></td><td>{e('; '.join(dict.fromkeys(lives)) or 'Не заполнено')}</td><td>{e('; '.join(origins) or 'Не исследовано')}</td><td>{detail or 'Нет отдельной должностной записи'}</td></tr>")
+        rows.append(f"<tr id='{e(p['id'])}'><td>{e(p['name'])}<small>{e(p['id'])}</small></td><td>{born_html}</td><td>{e('; '.join(dict.fromkeys(lives)) or 'Не заполнено')}</td><td>{e('; '.join(origins) or 'Не исследовано')}</td><td>{detail or 'Нет отдельной должностной записи'}</td></tr>")
     summary=' · '.join(e(k)+': '+str(v) for k,v in counts(db).items())
     return '''<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>База атласа власти</title>
 <style>body{font:17px/1.5 system-ui;max-width:1250px;margin:3rem auto;padding:0 1rem;color:#202b32;background:#faf9f6}h1{line-height:1.1}a{color:#215e76}nav{display:flex;gap:1rem;flex-wrap:wrap}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #d0d6d8;padding:.8rem;text-align:left;vertical-align:top}small{display:block;font-size:11px;color:#62717a}input{font:inherit;padding:.6rem;width:min(90%,30rem)}.scroll{overflow-x:auto}th{white-space:nowrap}</style>
 <nav><a href="index.html">← Атлас</a><a href="atlas.json">JSON</a><a href="atlas.sqlite">SQLite</a><a href="atlas-manifest.json">Проверки и контрольные суммы</a><a href="atlas-schema.sql">Схема SQL</a></nav>
 <h1>Люди, должности и источники</h1><p>Одна личность — одна запись, независимо от числа должностей. Это структурированный импорт существующего исследования, не новая независимая проверка истории.</p>
-<p>Годы жизни — формулировки прежней сверки. Точные даты рождения, происхождение, гражданство и династия требуют отдельных источников. При неизвестном календаре точный возраст не вычисляется. Оценки фактической власти доступны отдельно в JSON и SQLite; они не образуют доказанную непрерывную линию единоличных правителей.</p>
+<p>Годы жизни из прежней сверки сохранены. Для первых 14 личностей добавлены независимо источниковые даты рождения; остальные ещё не исследованы. У отдельных исторических дат есть конкурирующие версии, показанные раздельно. Возраст на выбранный год доступен во вкладке «Линии власти». Династия и происхождение — отдельные утверждения, не национальность по умолчанию. Оценки фактической власти не образуют доказанную непрерывную линию единоличных правителей.</p>
 <details><summary>Состав базы</summary><p>'''+summary+'''</p></details><p><label>Найти человека или должность<br><input id="search" type="search" placeholder="Например, Пётр или председатель"></label></p>
-<div class="scroll"><table><thead><tr><th>Личность</th><th>Годы жизни: прежняя сверка</th><th>Этнокультурное происхождение</th><th>Должности</th></tr></thead><tbody>'''+''.join(rows)+'''</tbody></table></div>
+<div class="scroll"><table><thead><tr><th>Личность</th><th>Дата рождения и источник</th><th>Годы жизни: прежняя сверка</th><th>Этнокультурное происхождение</th><th>Должности</th></tr></thead><tbody>'''+''.join(rows)+'''</tbody></table></div>
 <script>document.getElementById('search').addEventListener('input',function(){const q=this.value.toLocaleLowerCase('ru');document.querySelectorAll('tbody tr').forEach(r=>r.hidden=!r.textContent.toLocaleLowerCase('ru').includes(q));});</script></html>'''
 
 

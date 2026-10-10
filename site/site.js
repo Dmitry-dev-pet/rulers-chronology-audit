@@ -229,3 +229,139 @@
   window.addEventListener('hashchange', fromHash);
   fromHash();
 })();
+
+/* Static, source-aware biographies and selected-year inspector. */
+(() => {
+  'use strict';
+  const panel=document.getElementById('panel-timeline'), canvas=document.getElementById('time-canvas');
+  const toolbar=panel && panel.querySelector('.timeline-toolbar');
+  if (!panel || !toolbar || !canvas) return;
+  const root=document.createElement('section');
+  root.className='atlas-year-inspector';
+  root.setAttribute('aria-label','Правители в выбранном году');
+  root.innerHTML='<div class="atlas-year-head"><label for="atlas-year-range">Исторический срез: <strong id="atlas-year-value">1685</strong> год</label><span>Возраст и правовой статус</span></div><input type="range" id="atlas-year-range" min="1417" max="1991" step="1" value="1685" aria-label="Выбрать год"><p class="atlas-year-caveat">Показаны периоды, пересекающие выбранный год, а не гарантированное совпадение должностей в конкретный день. Возраст дан диапазоном в течение года.</p><div id="atlas-year-results" aria-live="polite">Загрузка биографических сведений…</div>';
+  toolbar.insertAdjacentElement('afterend',root);
+  const slider=root.querySelector('#atlas-year-range'), yearLabel=root.querySelector('#atlas-year-value'), results=root.querySelector('#atlas-year-results');
+  let atlas=null, currentYear=1685, people=new Map(), bodies=new Map(), sources=new Map(), facts=new Map(), recordPerson=new Map();
+  function el(tag,cls,t) {const n=document.createElement(tag);if(cls)n.className=cls;if(t!==undefined)n.textContent=String(t);return n;}
+  function windowYears() {
+    const btn=panel.querySelector('.era-btn[aria-pressed="true"]');
+    const numbers=btn && btn.textContent.match(/\d{4}/g);
+    return numbers && numbers.length>=2 ? numbers.slice(0,2).map(Number) : [1417,1991];
+  }
+  function markYear() {
+    const bounds=windowYears(), a=Date.UTC(bounds[0],0,1), b=Date.UTC(bounds[1],11,31);
+    const percentage=Math.max(0,Math.min(100,100*(Date.UTC(currentYear,6,1)-a)/(b-a)));
+    canvas.querySelectorAll('.time-track .track-plot').forEach(plot=>{
+      let marker=plot.querySelector('.atlas-year-cursor');
+      if(!marker){marker=el('div','atlas-year-cursor');marker.setAttribute('aria-hidden','true');plot.appendChild(marker);}
+      marker.style.left=percentage+'%';
+    });
+  }
+  // The timeline renderer replaces its own plots when zooming.
+  new MutationObserver(markYear).observe(canvas,{childList:true});
+  function julian(y,m,d) {
+    const a=Math.floor((14-m)/12), yy=y+4800-a, mm=m+12*a-3;
+    const jd=d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-32083;
+    const v=jd+32044,b=Math.floor((4*v+3)/146097),c=v-Math.floor(146097*b/4),e=Math.floor((4*c+3)/1461);
+    const f=c-Math.floor(1461*e/4),g=Math.floor((5*f+2)/153);
+    return [100*b+e-4800+Math.floor(g/10),g+3-12*Math.floor(g/10),f-Math.floor((153*g+2)/5)+1];
+  }
+  function bounds(d) {
+    if(!d || !['julian','gregorian'].includes(d.calendar))return null;
+    const p=d.value.split('-').map(Number), year=p[0], month=p[1]||1;
+    const monthEnd=p[1]||12;
+    const dayEnd=p[2]||new Date(Date.UTC(year,monthEnd,0)).getUTCDate();
+    const lower=[year,month,p[2]||1],upper=[year,monthEnd,dayEnd];
+    return {start:d.calendar==='julian'?julian(...lower):lower,
+            end:d.calendar==='julian'?julian(...upper):upper};
+  }
+  const completed=(b,day)=>day[0]-b[0]-((day[1]<b[1]||(day[1]===b[1]&&day[2]<b[2]))?1:0);
+  function age(id,y) {
+    const variants=(facts.get(id)||[]).filter(f=>f.kind==='birth'),ranges=[];
+    for(const fact of variants) {
+      const b=bounds(fact.value);if(!b||b.start[0]>y)continue;
+      const lo=Math.max(0,completed(b.end,[y,1,1])),hi=completed(b.start,[y,12,31]);
+      if(hi>=0)ranges.push({lo,hi,disputed:fact.verification==='disputed'});
+    }
+    if(!ranges.length)return 'не установлен';
+    const low=Math.min(...ranges.map(x=>x.lo)),high=Math.max(...ranges.map(x=>x.hi));
+    return (low===high?String(low):low+'–'+high)+' лет'+(ranges.length>1||ranges.some(x=>x.disputed)?' (спорные даты)':'');
+  }
+  function fact(id,kind) {
+    return [...new Set((facts.get(id)||[]).filter(f=>f.kind===kind).map(f=>f.value))].join(' / ');
+  }
+  function bio(personId) {
+    if(!personId)return '';
+    const segments=['Возраст: '+age(personId,currentYear)],origin=fact(personId,'ethnic_origin'),dynasty=fact(personId,'dynasty');
+    if(origin)segments.push('Происхождение: '+origin);
+    if(dynasty)segments.push('Династия: '+dynasty);
+    return segments.join(' · ');
+  }
+  function references(parent,ids) {
+    for(const id of [...new Set(ids)].slice(0,4)) {
+      const s=sources.get(id);
+      if(!s || !/^https:\/\//.test(s.url||''))continue;
+      const link=el('a',null,id);
+      link.href=s.url;link.title=s.title;link.rel='noopener noreferrer';link.target='_blank';
+      parent.appendChild(link);
+    }
+  }
+  function active(x) {return Number(x.start.value.slice(0,4))<=currentYear&&currentYear<=Number(x.end.value.slice(0,4));}
+  function group(title,entries,out,power) {
+    const section=el('section','atlas-year-group'+(power?' power':'')),list=el('ul','atlas-year-list');
+    section.appendChild(el('h4',null,title+' · '+entries.length));
+    for(const x of entries.slice(0,24)) {
+      const name=people.get(x.person_id)?.name||bodies.get(x.body_id)?.name||'Неуточнённые участники';
+      const item=el('li','atlas-year-item');
+      item.append(el('div','atlas-year-person',name),el('div','atlas-year-meta',x.start.value+' — '+x.end.value+' · '+x.description));
+      if(x.person_id)item.appendChild(el('div','atlas-year-biography',bio(x.person_id)));
+      if(power && x.note)item.appendChild(el('p','atlas-year-note',x.note));
+      const links=el('div','atlas-year-citations');references(links,x.sources||[]);item.appendChild(links);
+      list.appendChild(item);
+    }
+    section.appendChild(list);
+    if(entries.length>24)section.appendChild(el('p','atlas-year-caveat','Ещё '+(entries.length-24)+' записей доступны в полном JSON.'));
+    out.appendChild(section);
+  }
+  function render() {
+    currentYear=Number(slider.value);yearLabel.textContent=String(currentYear);markYear();
+    if(!atlas)return;
+    const container=el('div','atlas-year-columns');
+    group('Оценки фактического влияния',atlas.power_assessments.filter(active),container,true);
+    group('Юридические должности',atlas.tenures.filter(active),container,false);
+    results.replaceChildren(container);
+  }
+  function syncWindow() {
+    const [a,b]=windowYears();slider.min=a;slider.max=b;
+    if(currentYear<a||currentYear>b)slider.value=Math.floor((a+b)/2);
+    render();queueMicrotask(markYear);
+  }
+  slider.addEventListener('input',render);
+  panel.querySelectorAll('.era-btn').forEach(x=>x.addEventListener('click',()=>queueMicrotask(syncWindow)));
+  canvas.addEventListener('click',event=>{
+    const bar=event.target.closest('.time-bar');if(!bar||!atlas)return;
+    queueMicrotask(()=>{
+      const id=recordPerson.get(bar.dataset.record), detail=document.getElementById('timeline-selection');
+      if(!id||!detail)return;
+      detail.appendChild(el('p','atlas-year-biography','На '+currentYear+' год · '+bio(id)));
+      const links=el('div','atlas-year-citations');
+      references(links,(facts.get(id)||[]).filter(f=>['birth','dynasty','ethnic_origin'].includes(f.kind)).flatMap(f=>f.sources||[]));
+      detail.appendChild(links);
+    });
+  });
+  render();
+  fetch('./atlas.json',{cache:'no-cache'}).then(response=>{
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    return response.json();
+  }).then(db=>{
+    if(!db.people||!db.tenures||!db.power_assessments||!db.person_facts||!db.provenance)throw new Error('Неполная база');
+    atlas=db;people=new Map(db.people.map(x=>[x.id,x]));bodies=new Map(db.bodies.map(x=>[x.id,x]));sources=new Map(db.sources.map(x=>[x.id,x]));
+    facts=new Map(db.people.map(x=>[x.id,[]]));
+    db.person_facts.forEach(x=>{if(facts.has(x.person_id))facts.get(x.person_id).push(x);});
+    [...db.tenures,...db.power_assessments].forEach(x=>{if(x.person_id)recordPerson.set(x.record_id,x.person_id);});
+    render();
+  }).catch(error=>{
+    results.replaceChildren(el('p','atlas-year-caveat','База биографий недоступна ('+error.message+'). Основная шкала продолжает работать.'));
+  });
+})();
