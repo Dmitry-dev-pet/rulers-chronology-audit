@@ -285,11 +285,70 @@
   }
   function cite(node,ids){for(const id of [...new Set(ids)]){const src=sources.get(id);if(src&&safe(src.url)){const a=link(id,src.url,true);a.title=src.title;node.append(a);}}}
   function date(d){const unit={day:'',month:' · месяц',year:' · только год'}[d.precision]||'';return d.value+unit+' · '+({julian:'ст. ст.',gregorian:'н. ст.',unspecified:'календарь не уточнён'}[d.calendar]||'');}
+  function renderMatrix(){
+    const info=data.research_coverage;
+    const heading=el('section','smuta-matrix-intro');
+    heading.append(el('h3',null,'Матрица исследовательских пробелов'),
+      el('p',null,info.precision_policy),
+      el('p','smuta-matrix-stats',info.places.length+' мест × '+info.years.length+' лет · '+
+        info.filled_city_years+' ячеек с документами · '+
+        info.research_gap_city_years+' без внесённых записей.'));
+    detail.append(heading);
+    const scroll=el('div','smuta-matrix-scroll');
+    scroll.tabIndex=0;scroll.setAttribute('role','region');
+    scroll.setAttribute('aria-label','Матрица города и года; прокручивается горизонтально');
+    const table=el('table','smuta-matrix');
+    const head=el('thead');
+    const header=el('tr');
+    const th=el('th',null,'Место');th.scope='col';header.append(th);
+    for(const year of info.years){const h=el('th',null,year);h.scope='col';header.append(h);}
+    head.append(header);table.append(head);
+    const tbody=el('tbody');
+    for(const place of info.places){
+      const tr=el('tr');tr.dataset.place=place.place_id;
+      const name=el('th',null,place.name);name.scope='row';tr.append(name);
+      for(const cell of place.cells){
+        const td=el('td');
+        const n=cell.evidence_ids.length;
+        const caption=n?String(n):'—';
+        const label=place.name+', '+cell.year+': '+(n?
+          n+' свидетельств; известные месяцы: '+(cell.known_months.join(', ')||'не установлены'):
+          'нет внесённых свидетельств, наличие власти неизвестно');
+        const action=button(caption,'smuta-matrix-cell'+(n?' has-evidence':' is-gap'),()=>{
+          selectedMonth=0;whole=false;
+          setYear(cell.year);
+          choosePlace(place.place_id);
+          schedule();
+        });
+        action.dataset.year=String(cell.year);
+        action.dataset.place=place.place_id;
+        action.dataset.count=String(n);
+        action.setAttribute('aria-label',label);
+        action.title=label;
+        action.setAttribute('aria-current',String(cell.year===currentYear()&&
+          place.place_id===selected?'true':'false'));
+        td.append(action);tr.append(td);
+      }
+      tbody.append(tr);
+    }
+    table.append(tbody);scroll.append(table);detail.append(scroll);
+    const note=el('p','smuta-matrix-note',
+      'Число в клетке — количество записей, не длительность власти. Пусто — не изучено, а не «не управлял». Нажмите клетку для перехода к городу и году.');
+    detail.append(note);
+    const unknown=el('div','smuta-matrix-unlocated',info.unlocated_evidence_ids.length+
+      ' свидетельство о нескольких городах оставлено без единой точки. Это не потерянная запись.');
+    detail.append(unknown);
+    status.textContent='Матрица · '+info.filled_city_years+' документированных ячеек, '+
+      info.research_gap_city_years+' исследовательских пробелов';
+  }
   function renderComparison(){
     const year=currentYear();
     const lead=el('div','smuta-comparison-lead');
-    lead.append(el('h3',null,'Центры власти · '+year),
-      el('p',null,'Показаны только юридические сроки, пересекающие выбранный год, и документированные местные свидетельства именно за этот год. Годовые пересечения не доказывают одновременность, а должность — фактический контроль всей территории.'));
+    const period=selectedMonth?monthNames[selectedMonth]+' '+year:year+' год';
+    lead.append(el('h3',null,'Центры власти · '+period),
+      el('p',null,selectedMonth?
+        'Юридические сроки ниже пересекают ГОД, но не подтверждают власть именно в выбранном месяце. Местные свидетельства с известным месяцем приведены отдельно. Юлианский и неизвестный календарный стиль не нормализованы между собой.':
+        'Показаны только юридические сроки, пересекающие выбранный год, и документированные местные свидетельства именно за этот год. Годовые пересечения не доказывают одновременность, а должность — фактический контроль всей территории.'));
     detail.append(lead);
     const formal=(data.formal_year_overlaps||[]).filter(t=>
       Number(t.start.value.slice(0,4))<=year&&Number(t.end.value.slice(0,4))>=year);
@@ -308,7 +367,7 @@
       legalSection.append(card);
     }
     detail.append(legalSection);
-    const present=data.evidence.filter(e=>Number(e.date.value.slice(0,4))===year);
+    const present=data.evidence.filter(e=>matchesSelectedPeriod(e));
     const heading=el('h4',null,'Местное управление, военное присутствие и притязания');
     detail.append(heading);
     if(!present.length)detail.append(el('p','smuta-comparison-empty',
@@ -321,7 +380,8 @@
     for(const [actor,observations] of groups){
       const card=el('article','smuta-center');
       card.append(el('h5',null,actor),
-        el('p','smuta-comparison-description',observations.length+' местных свидетельств в '+year+' году.'));
+        el('p','smuta-comparison-description',observations.length+
+          (selectedMonth?' свидетельств с известным месяцем · '+period:' местных свидетельств в '+year+' году.')));
       for(const e of observations){
         const row=el('div','smuta-center-observation');
         row.dataset.nature=e.nature;row.dataset.sourceEvent=e.id;
@@ -337,25 +397,52 @@
       }
       detail.append(card);
     }
+    if(selectedMonth){
+      const uncertain=data.evidence.filter(e=>
+        Number(e.date.value.slice(0,4))===year&&e.date.precision==='year');
+      if(uncertain.length){
+        const box=el('section','smuta-month-unknown');
+        box.append(el('h4',null,'Месяц не установлен · '+uncertain.length),
+          el('p',null,'Эти события известны только с точностью до года. Нельзя приписывать их выбранному месяцу.'));
+        for(const e of uncertain){
+          const note=el('article','smuta-uncertain-item');
+          note.append(el('strong',null,e.place),el('p',null,e.statement));
+          const links=el('div','smuta-citations');cite(links,e.sources);note.append(links);
+          box.append(note);
+        }
+        detail.append(box);
+      }
+    }
     const warning=el('p','smuta-comparison-warning',
       'Ни один из показанных политических центров не получает нарисованную территорию контроля; для неё необходимы отдельные источники по каждому месту и периоду.');
     detail.append(warning);
-    status.textContent=year+' год · '+formal.length+' юридических записей, '+groups.size+
-      ' местных центров по '+present.length+' свидетельствам';
+    status.textContent=period+' · '+formal.length+' годовых юридических записей, '+
+      groups.size+' местных центров по '+present.length+' датированным свидетельствам';
   }
   function render(){
     if(!enabled)return;
     for(const b of examples.querySelectorAll('button'))b.setAttribute('aria-pressed',String(Number(b.dataset.year)===currentYear()));
-    evidenceMode.setAttribute('aria-pressed',String(!comparison));
+    evidenceMode.setAttribute('aria-pressed',String(!comparison&&!matrixMode));
     compareMode.setAttribute('aria-pressed',String(comparison));
+    matrixModeButton.setAttribute('aria-pressed',String(matrixMode));
     aside.classList.toggle('is-comparison',comparison);
-    filters.hidden=comparison;waterCheck.checked=riversVisible;
+    filters.hidden=comparison||matrixMode;waterCheck.checked=riversVisible;
     city.value=selected;kind.value=category;all.checked=whole;
+    monthSelect.value=String(selectedMonth);
+    monthSelect.disabled=whole;
+    monthBack.disabled=currentYear()===1598&&selectedMonth===1;
+    monthForward.disabled=currentYear()===1613&&selectedMonth===12;
+    monthCaveat.textContent=selectedMonth?
+      monthNames[selectedMonth]+' · запись года без месяца не относится к этому срезу; календари не приведены к единому стилю.':
+      'Весь '+currentYear()+' год · месяц выбирается только по документу.';
     if(!data){status.textContent=error?'Данные не загрузились: '+error:'Загрузка карты…';return;}
     drawMap();detail.replaceChildren();
+    if(matrixMode){renderMatrix();return;}
     if(comparison){renderComparison();return;}
     const shown=records(),year=currentYear(),where=data.places.find(p=>p.id===selected);
-    status.textContent=(whole?'Весь период 1598–1613':year+' год')+' · '+shown.length+' свидетельств'+(where?' · '+where.name:'');
+    const period=whole?'Весь период 1598–1613':selectedMonth?
+      monthNames[selectedMonth]+' '+year:year+' год';
+    status.textContent=period+' · '+shown.length+' документированных свидетельств'+(where?' · '+where.name:'');
     if(where){
       const box=el('div','smuta-place-note');box.append(el('h3',null,where.name),el('p',null,where.note));
       box.append(link('Откуда взят географический ориентир',where.coordinate_source.url,true));detail.append(box);
@@ -366,6 +453,25 @@
       for(const y of [...new Set(pool.map(e=>Number(e.date.value.slice(0,4))))].sort())empty.append(button('Перейти к '+y,'smuta-nearest-year',()=>setYear(y)));
       detail.append(empty);
     }
+    if(selectedMonth&&!whole){
+      const undated=data.evidence.filter(e=>
+        Number(e.date.value.slice(0,4))===year&&e.date.precision==='year'&&
+        (category==='all'||e.nature===category)&&
+        (!selected||(selected==='unlocated'?!mapped.has(e.id):mapped.get(e.id)===selected)));
+      if(undated.length){
+        const box=el('section','smuta-month-unknown');
+        box.append(el('h3',null,'Месяц не установлен · '+undated.length),
+          el('p',null,'Ниже сведения только за год. Они не считаются событиями выбранного месяца.'));
+        for(const e of undated){
+          const card=el('article','smuta-uncertain-item');card.dataset.evidence=e.id;
+          card.append(el('strong',null,e.place),el('p',null,e.statement),
+            el('p','smuta-limit',e.limitation));
+          const refs=el('div','smuta-citations');cite(refs,e.sources);card.append(refs);
+          box.append(card);
+        }
+        detail.append(box);
+      }
+    }
     for(const e of shown){
       const card=el('article','smuta-evidence');card.dataset.evidence=e.id;card.dataset.kind=e.nature;
       card.append(el('small',null,date(e.date)+' · '+names.get(e.nature)),el('h3',null,e.place),el('strong','smuta-authority',e.authority),el('p',null,e.statement),el('p','smuta-limit',e.limitation));
@@ -375,13 +481,29 @@
       for(const id of personIds)if(people.has(id))card.append(link('Биография: '+people.get(id),'#/people/'+id));
       detail.append(card);
     }
-    const chronology=data.events.filter(e=>whole||Number(e.date.value.slice(0,4))===year);
-    const section=el('section','smuta-events');section.append(el('h3',null,whole?'События периода':'События '+year+' года'),el('p',null,'События всего раздела; не каждое локализовано до города.'));
+    const chronology=data.events.filter(e=>matchesSelectedPeriod(e));
+    const section=el('section','smuta-events');
+    section.append(el('h3',null,whole?'События периода':selectedMonth?
+        'События за '+period:'События '+year+' года'),
+      el('p',null,'Документированные события всего раздела; не каждое локализовано до города.'));
     for(const e of chronology){const card=el('article','smuta-event');card.dataset.event=e.id;
       card.append(el('small',null,date(e.date)),el('h4',null,e.title),el('p',null,e.summary),el('p','smuta-limit',e.caveat));
       const refs=el('div','smuta-citations');cite(refs,e.sources);card.append(refs);
       if(e.person_id&&people.has(e.person_id))card.append(link('Биография: '+people.get(e.person_id),'#/people/'+e.person_id));section.append(card);}
-    if(!chronology.length)section.append(el('p',null,'Датированные события за этот год ещё не внесены.'));
+    if(!chronology.length)section.append(el('p',null,'За этот период отдельных датированных событий пока не внесено.'));
+    if(selectedMonth&&!whole){
+      const other=data.events.filter(e=>Number(e.date.value.slice(0,4))===year&&e.date.precision==='year');
+      if(other.length){
+        const note=el('div','smuta-year-events');
+        note.append(el('h4',null,'События только с годовой датировкой · '+other.length),
+          el('p',null,'Не относятся автоматически к выбранному месяцу.'));
+        for(const e of other){
+          const n=el('article','smuta-year-event');n.append(el('strong',null,e.title),el('p',null,e.caveat));
+          const refs=el('div','smuta-citations');cite(refs,e.sources);n.append(refs);note.append(n);
+        }
+        section.append(note);
+      }
+    }
     detail.append(section);
   }
   // Native pointer capture: one finger pans, two fingers zoom. Pins remain buttons.
