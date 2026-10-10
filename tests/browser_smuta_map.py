@@ -97,7 +97,7 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-mode-evidence')).to_have_attribute('aria-pressed','true')
                 page.locator('#smuta-city').select_option('moscow')
                 page.locator('#smuta-all-period').check()
-                expect(page.locator('.smuta-evidence')).to_have_count(4)
+                expect(page.locator('.smuta-evidence')).to_have_count(5)
                 page.go_back();expect(page.locator('#smuta-city')).to_have_value('yaroslavl')
                 expect(page.locator('.smuta-evidence')).to_have_count(3)
                 # Unlocated multi-city claim remains visible, without a fake polygon.
