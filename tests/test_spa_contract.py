@@ -103,7 +103,6 @@ class SPAContract(unittest.TestCase):
         self.assertIn('start <= year && year <= end', self.dashboard)
         self.assertIn('!nominal.has(r.status)', self.dashboard)
         self.assertIn("не обязательно действовавшие одновременно", self.dashboard)
-        self.assertIn("Не доказывает", self.dashboard.capitalize()) if False else None
 
     def test_year_controls_and_source_links(self):
         self.assertIn("slider.dispatchEvent(new Event('input', {bubbles: true}))", self.dashboard)
