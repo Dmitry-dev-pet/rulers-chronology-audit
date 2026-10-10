@@ -53,6 +53,8 @@ class ImperialCenturyTests(unittest.TestCase):
         self.assertIn("poster-092", rendered)
         self.assertIn("poster-106", rendered)
         self.assertIn("1817–1991", rendered)
+        self.assertIn("<b>16</b> строк плаката", rendered)
+        self.assertIn("Монархия / партия", rendered)
         self.assertIn("data-era='imperial'", rendered)
         self.assertIn("source-IM01", rendered)
         self.assertNotIn("drive.google.com", rendered)
