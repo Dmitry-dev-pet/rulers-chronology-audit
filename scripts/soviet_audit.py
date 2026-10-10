@@ -361,7 +361,8 @@ def render(data: dict, sources: dict, result: dict, revision: str,
     embedded = embedded.replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
     head.append(f"<script id='chronology-data' type='application/json'>{embedded}</script>")
     head.extend([f"<script defer src='./site.js?v={revision[:12]}'></script>",
-                 f"<script defer src='./year-view.js?v={revision[:12]}'></script>", "</body></html>"])
+                 f"<script defer src='./year-view.js?v={revision[:12]}'></script>",
+                 f"<script defer src='./transition-view.js?v={revision[:12]}'></script>", "</body></html>"])
     return "\n".join(head)
 
 
@@ -372,7 +373,8 @@ def dump_json(path: Path, value: object) -> None:
 def build(root: Path, out: Path, revision: str) -> dict:
     require(out.resolve() == (root / "dist").resolve(), "Output must be the repository dist directory")
     inputs = [root / DATA_PATH, root / SOURCE_PATH, root / "data/poster-transcription.tsv",
-              root / "data/soviet-period-review.csv", root / "site/site.css", root / "site/site.js", root / "site/year-view.js"]
+              root / "data/soviet-period-review.csv", root / "site/site.css", root / "site/site.js", root / "site/year-view.js",
+              root / "site/transition-view.js"]
     data = json.loads(inputs[0].read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys)
     sources = source_index(inputs[1].read_text(encoding="utf-8"))
     result = validate(data, sources)
@@ -386,6 +388,7 @@ def build(root: Path, out: Path, revision: str) -> dict:
     shutil.copyfile(root / "site/site.css", out / "site.css")
     shutil.copyfile(root / "site/site.js", out / "site.js")
     shutil.copyfile(root / "site/year-view.js", out / "year-view.js")
+    shutil.copyfile(root / "site/transition-view.js", out / "transition-view.js")
     dump_json(out / "validation.json", result)
     dump_json(out / "chronology.json", data)
     dump_json(out / "sources.json", list(sources.values()))
