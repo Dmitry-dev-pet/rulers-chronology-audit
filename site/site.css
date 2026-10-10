@@ -1186,3 +1186,118 @@ button[disabled] {
   .hero-quicklinks{display:grid;grid-template-columns:1fr;gap:8px}
   .hero-quicklink{justify-content:center}
 }
+
+
+/* A viewport-sized SPA, not a long document with tabs.
+   Enabled only after JavaScript mounts the independent workspaces. */
+.atlas-app,.atlas-app body{height:100%;overflow:hidden}
+.atlas-app body{height:100dvh;display:flex;flex-direction:column}
+.atlas-app .topline,.atlas-app header,.atlas-app .modes-wrap{flex:0 0 auto}
+.atlas-app header{min-height:0}
+.atlas-app .hero{display:none}
+.atlas-app .topnav{min-height:54px;padding-top:9px;padding-bottom:9px}
+.atlas-app .brand{font-size:12px;letter-spacing:.1em;display:flex;align-items:center;gap:12px}
+.atlas-app .atlas-brand-years{font-size:11px;letter-spacing:0;font-weight:550;color:var(--muted);white-space:nowrap}
+.atlas-app .modes-wrap{position:relative;top:auto;z-index:9}
+.atlas-app .modes{scrollbar-width:thin}
+.atlas-app main.container{width:100%;min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden}
+.atlas-app .mode-panel{min-height:0;height:100%;flex:1;overflow-y:auto;overscroll-behavior:contain;padding-top:17px;padding-bottom:20px;scrollbar-color:#b8b5aa transparent}
+.atlas-app .mode-panel[hidden]{display:none!important}
+.atlas-app .mode-panel .section-top{flex:0 0 auto;padding-bottom:12px;gap:12px}
+.atlas-app .mode-panel .section-top h2{font-size:clamp(22px,2.5vw,29px);margin:2px 0 5px}
+.atlas-app .mode-panel .section-top p{line-height:1.4}
+
+/* The chronology uses the available work area. Both sides scroll independently. */
+.atlas-app #panel-timeline{display:flex;flex-direction:column;overflow:hidden}
+.atlas-app #panel-timeline .timeline-toolbar{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:0 0 10px}
+.atlas-app .era-switch{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding-bottom:3px;scrollbar-width:thin}
+.atlas-app .era-btn{flex:0 0 auto;white-space:nowrap;padding:7px 10px}
+.atlas-app .timeline-key{font-size:10px}
+.atlas-app .atlas-timeline-controls{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.atlas-app .atlas-control{border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:6px 10px;min-height:36px;font-size:12px;font-weight:650;white-space:nowrap;color:var(--ink)}
+.atlas-app .atlas-control:hover{border-color:var(--green);color:var(--green)}
+.atlas-app .atlas-control:disabled{opacity:.35;cursor:not-allowed}
+.atlas-app .atlas-zoom-label{display:inline-block;text-align:center;min-width:49px;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums}
+.atlas-app .atlas-goto-label{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+.atlas-app .atlas-goto-label input{width:72px;height:36px;padding:5px;border:1px solid var(--line);border-radius:5px;font:inherit;font-variant-numeric:tabular-nums;background:var(--surface);color:var(--ink)}
+.atlas-app .atlas-timeline-workspace{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,340px);gap:12px}
+.atlas-app .timeline-box{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
+.atlas-app .timeline-scroll{max-height:none;min-height:0;height:100%;flex:1;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y;cursor:grab}
+.atlas-app .timeline-scroll.atlas-is-panning{cursor:grabbing;user-select:none}
+.atlas-app .time-canvas{min-width:0}
+.atlas-app .atlas-sidebar{min-height:0;min-width:0;display:block;overflow:auto;overscroll-behavior:contain;background:var(--surface);border:1px solid var(--line);scrollbar-color:#b8b5aa transparent}
+.atlas-app .atlas-sidebar-heading{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;background:var(--surface);border-bottom:1px solid var(--line);font-size:13px}
+.atlas-app .atlas-sidebar-close{display:none;border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:6px 10px;font-size:12px;font-weight:700}
+.atlas-app .atlas-sidebar .timeline-selection{display:block;min-height:0;padding:12px 14px;overflow-wrap:anywhere}
+.atlas-app .atlas-sidebar .timeline-selection h3{font-size:21px}
+.atlas-app .atlas-sidebar .selection-date{text-align:left;margin:6px 0}
+.atlas-app .atlas-sidebar .atlas-year-inspector{padding:13px 14px;margin:0;border:0;border-radius:0;border-top:1px solid var(--line);background:transparent}
+.atlas-app .atlas-sidebar .atlas-year-columns{display:block}
+.atlas-app .atlas-sidebar .atlas-year-group{margin:15px 0}
+.atlas-app .atlas-sidebar .atlas-year-group h4{position:relative}
+.atlas-app .atlas-sidebar .timeline-footnote{margin:12px 14px;font-size:11px}
+.atlas-app .atlas-sidebar-toggle{display:none}
+.atlas-app #panel-timeline .time-track:last-child{border-bottom:1px solid var(--line)}
+.atlas-app #panel-timeline .track-name{left:0}
+.atlas-app #panel-timeline .time-ruler{min-height:43px}
+.atlas-app .timeline-selection:focus-visible,.atlas-app .spa-person-detail:focus-visible{outline:3px solid var(--green);outline-offset:-3px}
+
+/* Search stays visible when an individual ruler is open on desktop. */
+.atlas-app #panel-people{display:flex;flex-direction:column;overflow:hidden}
+.atlas-app .spa-people-workspace{min-height:0;flex:1;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.atlas-app #panel-people.spa-profile-open .spa-people-workspace{grid-template-columns:minmax(0,1fr) minmax(280px,390px)}
+.atlas-app .spa-people-browser{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.atlas-app .spa-people-tools{flex:0 0 auto;margin:0 0 6px}
+.atlas-app .spa-people-status{flex:0 0 auto;margin:3px 0 10px}
+.atlas-app .spa-people-grid{min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:3px 9px 12px 2px;align-content:start}
+.atlas-app .spa-person-detail{min-height:0;min-width:0;max-width:none;height:100%;overflow-y:auto;overscroll-behavior:contain;padding:16px 20px}
+.atlas-app .spa-people-footnote{flex:0 0 auto;margin:8px 0 0;font-size:11px}
+.atlas-app .spa-people-grid[hidden],.atlas-app .spa-people-tools[hidden],.atlas-app .spa-person-detail[hidden]{display:none!important}
+
+@media(max-width:900px){
+  .atlas-app .atlas-timeline-workspace{grid-template-columns:minmax(0,1fr);gap:0}
+  .atlas-app .atlas-sidebar{display:none;position:absolute;inset:17% 0 0;z-index:15;box-shadow:0 -8px 30px #0003;border-radius:14px 14px 0 0}
+  .atlas-app .atlas-sidebar-open .atlas-sidebar{display:block}
+  .atlas-app .atlas-sidebar-toggle{display:inline-block}
+  .atlas-app .atlas-sidebar-close{display:inline-block}
+  .atlas-app #panel-people.spa-profile-open .spa-people-workspace{grid-template-columns:minmax(0,1fr)}
+  .atlas-app #panel-people.spa-profile-open .spa-people-browser{display:none}
+  .atlas-app .spa-person-detail{max-width:none}
+}
+@media(max-width:700px){
+  .atlas-app .container{padding-left:12px;padding-right:12px}
+  .atlas-app .topnav{min-height:47px}
+  .atlas-app .brand{font-size:11px;gap:6px}
+  .atlas-app .atlas-brand-years{font-size:10px}
+  .atlas-app .topnav-links a.github-arrow{display:none}
+  .atlas-app .mode-tab,.atlas-app .mode-tab:first-child{padding:8px 10px;min-height:37px}
+  .atlas-app .mode-panel{padding-top:10px;padding-bottom:9px}
+  .atlas-app #panel-timeline .section-top,.atlas-app #panel-people .section-top{padding-bottom:7px}
+  .atlas-app #panel-timeline .section-top h2,.atlas-app #panel-people .section-top h2{font-size:20px;margin:0}
+  .atlas-app #panel-timeline .section-top p,.atlas-app #panel-people .section-top p,.atlas-app #panel-timeline .kicker,.atlas-app #panel-people .kicker{display:none}
+  .atlas-app #panel-timeline .timeline-toolbar{gap:5px;margin-bottom:7px}
+  .atlas-app .era-btn{font-size:11px;padding:6px 8px}
+  .atlas-app .timeline-key{display:none}
+  .atlas-app .atlas-control{min-height:32px;padding:5px 8px;font-size:11px}
+  .atlas-app .atlas-timeline-controls{gap:5px}
+  .atlas-app .atlas-goto-label{margin-left:0}
+  .atlas-app .atlas-goto-label input{height:32px;width:65px}
+  .atlas-app .atlas-sidebar-toggle{margin-left:auto}
+  .atlas-app .atlas-sidebar{inset:13% 0 0}
+  .atlas-app .spa-people-tools{gap:7px}
+  .atlas-app .spa-people-tools p{display:none}
+  .atlas-app .spa-people-tools label{max-width:none}
+  .atlas-app .spa-people-footnote{display:none}
+}
+@media(max-height:550px) and (max-width:900px){
+  .atlas-app #panel-timeline .section-top{display:none}
+  .atlas-app .atlas-timeline-controls{gap:3px}
+  .atlas-app .mode-tab{min-height:31px}
+}
+@media print{
+  .atlas-app,.atlas-app body{height:auto!important;overflow:visible!important;display:block!important}
+  .atlas-app main.container,.atlas-app .mode-panel{height:auto!important;overflow:visible!important;display:block!important}
+  .atlas-app #panel-timeline,.atlas-app #panel-people{display:block!important;overflow:visible!important}
+  .atlas-app .atlas-timeline-workspace,.atlas-app .spa-people-workspace{display:block!important}
+  .atlas-app .timeline-scroll,.atlas-app .atlas-sidebar,.atlas-app .spa-people-grid,.atlas-app .spa-person-detail{overflow:visible!important;height:auto!important;max-height:none!important}
+}

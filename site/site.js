@@ -55,7 +55,12 @@
       const year=document.getElementById('atlas-year-range');
       const route='#/'+name+(name==='timeline' && year ? '/'+year.value : '');
       if(location.hash!==route)location.hash=route;
-      document.querySelector('.modes-wrap').scrollIntoView({block:'start'});
+      if (document.documentElement.classList.contains('atlas-app')) {
+        const view = panels.get(name);
+        if (view) view.scrollTop = 0;
+      } else {
+        document.querySelector('.modes-wrap').scrollIntoView({block:'start'});
+      }
     }
     document.title=name==='people'?'Биографии · '+originalTitle:originalTitle;
     window.dispatchEvent(new CustomEvent('atlas:route',{detail:{view:name}}));
@@ -484,6 +489,7 @@
     ].join(' ').toLocaleLowerCase('ru');
   }
   function showList(){
+    panel.classList.remove('spa-profile-open');
     tools.hidden=false;list.hidden=false;detail.hidden=true;
     list.replaceChildren();
     const q=search.value.trim().toLocaleLowerCase('ru');
@@ -541,7 +547,8 @@
     section.appendChild(items);return section;
   }
   function showProfile(id){
-    tools.hidden=true;list.hidden=true;detail.hidden=false;detail.replaceChildren();
+    panel.classList.add('spa-profile-open');
+    tools.hidden=false;list.hidden=false;detail.hidden=false;detail.replaceChildren();
     const back=el('a','spa-back','← Все биографии');back.href='#/people';detail.appendChild(back);
     const p=persons.get(id);
     if(!p){status.textContent='Такой личности в базе нет.';detail.appendChild(el('p','spa-empty','Запись не найдена.'));return;}
@@ -616,4 +623,274 @@
   search.addEventListener('input',()=>{if(db&&!panel.hidden&&detail.hidden)showList();});
   window.addEventListener('atlas:route',handleRoute);
   handleRoute();
+})();
+
+
+/* Atlas workspace: persistent navigation and independent scrolling regions.
+   No history data, source links or storage are changed by this module. */
+(() => {
+  'use strict';
+  const timeline = document.getElementById('panel-timeline');
+  const people = document.getElementById('panel-people');
+  const toolbar = timeline && timeline.querySelector('.timeline-toolbar');
+  const inspector = timeline && timeline.querySelector('.atlas-year-inspector');
+  const chart = timeline && timeline.querySelector('.timeline-box');
+  const selected = chart && chart.querySelector('#timeline-selection');
+  const viewport = chart && chart.querySelector('.timeline-scroll');
+  const canvas = chart && chart.querySelector('.time-canvas');
+  if (!timeline || !people || !toolbar || !inspector || !chart ||
+      !selected || !viewport || !canvas) return;
+
+  document.documentElement.classList.add('atlas-app');
+  const brand = document.querySelector('.brand');
+  if (brand) {
+    brand.textContent = 'АТЛАС ПРАВИТЕЛЕЙ';
+    const years = document.createElement('span');
+    years.className = 'atlas-brand-years';
+    years.textContent = '1417–1991';
+    brand.appendChild(years);
+  }
+  const researchLink = document.querySelector('.topnav-links a[href="#research"]');
+  if (researchLink) researchLink.href = '#/research';
+
+  // The public source/revision footer remains available in Research, but
+  // must not consume viewport height below the application work area.
+  const footer = document.querySelector('body > footer.footer');
+  const research = document.getElementById('panel-research');
+  if (footer && research) {
+    footer.classList.add('atlas-inline-footer');
+    research.appendChild(footer);
+  }
+
+  // Biographies keep search/results visible beside the open profile on desktop.
+  // Mobile displays the profile as its own screen with a back link.
+  const search = people.querySelector('#spa-people-tools');
+  const status = people.querySelector('#spa-people-status');
+  const cards = people.querySelector('#spa-people-list');
+  const profile = people.querySelector('#spa-person-detail');
+  if (search && status && cards && profile) {
+    const work = document.createElement('div');
+    work.className = 'spa-people-workspace';
+    const browser = document.createElement('div');
+    browser.className = 'spa-people-browser';
+    people.insertBefore(work, search);
+    browser.append(search, status, cards);
+    profile.tabIndex = -1;
+    work.append(browser, profile);
+  }
+
+  // Build a two-pane historical workspace without changing legacy generated
+  // HTML anchors, the three tracks or the year-inspector data contract.
+  const work = document.createElement('div');
+  work.className = 'atlas-timeline-workspace';
+  timeline.insertBefore(work, inspector);
+  const sidebar = document.createElement('aside');
+  sidebar.className = 'atlas-sidebar';
+  sidebar.id = 'atlas-sidebar';
+  sidebar.setAttribute('aria-label', 'Сведения о выбранном периоде');
+  const sidebarHeading = document.createElement('div');
+  sidebarHeading.className = 'atlas-sidebar-heading';
+  const sidebarTitle = document.createElement('strong');
+  sidebarTitle.textContent = 'Год и исторические сведения';
+  const close = document.createElement('button');
+  close.className = 'atlas-sidebar-close';
+  close.type = 'button';
+  close.textContent = 'Закрыть';
+  sidebarHeading.append(sidebarTitle, close);
+  sidebar.append(sidebarHeading, selected, inspector);
+  timeline.querySelectorAll(':scope > .timeline-footnote').forEach(node => sidebar.appendChild(node));
+  work.append(chart, sidebar);
+
+  // Explicit zoom and century navigation; track rows are panned together by
+  // their own horizontal scroll container. Touch uses native scrolling.
+  const controls = document.createElement('div');
+  controls.className = 'atlas-timeline-controls';
+  controls.setAttribute('role', 'group');
+  controls.setAttribute('aria-label', 'Навигация по временной шкале');
+  function button(label, title, cls) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = label; b.title = title;
+    b.className = 'atlas-control ' + cls;
+    controls.appendChild(b);
+    return b;
+  }
+  const earlier = button('← Раньше', 'Переместить шкалу назад во времени', 'atlas-pan');
+  const later = button('Позже →', 'Переместить шкалу вперёд во времени', 'atlas-pan');
+  const minus = button('−', 'Уменьшить масштаб', 'atlas-zoom-out');
+  const zoomLabel = document.createElement('output');
+  zoomLabel.className = 'atlas-zoom-label';
+  zoomLabel.setAttribute('aria-live', 'polite');
+  controls.appendChild(zoomLabel);
+  const plus = button('+', 'Увеличить масштаб', 'atlas-zoom-in');
+  const fit = button('Весь период', 'Показать весь выбранный период', 'atlas-fit');
+  const dateLabel = document.createElement('label');
+  dateLabel.className = 'atlas-goto-label';
+  dateLabel.textContent = 'Год ';
+  const date = document.createElement('input');
+  date.id = 'atlas-goto-year';
+  date.type = 'number'; date.min = '1417'; date.max = '1991'; date.step = '1';
+  date.setAttribute('aria-label', 'Перейти к году');
+  dateLabel.appendChild(date);
+  controls.appendChild(dateLabel);
+  const toggle = button('Сведения о годе', 'Открыть сведения о выбранном годе', 'atlas-sidebar-toggle');
+  toggle.setAttribute('aria-controls', 'atlas-sidebar');
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.setAttribute('aria-haspopup', 'dialog');
+  toolbar.appendChild(controls);
+
+  const yearSlider = inspector.querySelector('#atlas-year-range');
+  const zoomSteps = [1, 1.5, 2.3, 3.5, 5, 7.5, 11];
+  let zoomIndex = 2;
+  let drag = null;
+  const narrow = window.matchMedia('(max-width: 900px)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function yearBounds() {
+    const active = toolbar.querySelector('.era-btn[aria-pressed="true"]');
+    const nums = active && active.textContent.match(/\d{4}/g);
+    return nums && nums.length >= 2 ? nums.slice(0, 2).map(Number) : [1417, 1991];
+  }
+  function layoutWidth() {
+    return Math.ceil(Math.max(320, viewport.clientWidth) * zoomSteps[zoomIndex]);
+  }
+  function updateCanvas(keepCenter) {
+    if (!viewport.clientWidth) return;
+    const oldWidth = Math.max(1, canvas.getBoundingClientRect().width);
+    const ratio = oldWidth > viewport.clientWidth
+      ? (viewport.scrollLeft + viewport.clientWidth / 2) / oldWidth : 0.5;
+    canvas.style.width = layoutWidth() + 'px';
+    if (keepCenter) viewport.scrollLeft = ratio * canvas.getBoundingClientRect().width - viewport.clientWidth / 2;
+    zoomLabel.textContent = Math.round(zoomSteps[zoomIndex] * 100) + '%';
+    minus.disabled = zoomIndex === 0;
+    plus.disabled = zoomIndex === zoomSteps.length - 1;
+  }
+  function focusYear(year) {
+    if (!viewport.clientWidth) return;
+    const range = yearBounds();
+    const fraction = Math.max(0, Math.min(1, (year - range[0]) / Math.max(1, range[1] - range[0])));
+    const x = 142 + Math.max(0, canvas.clientWidth - 142) * fraction;
+    viewport.scrollLeft = Math.max(0, x - viewport.clientWidth / 2);
+  }
+  function selectedYear() {
+    return yearSlider ? Number(yearSlider.value) : 1685;
+  }
+  function updateYearInput() {
+    if (!yearSlider) return;
+    date.min = yearSlider.min;
+    date.max = yearSlider.max;
+    date.value = yearSlider.value;
+  }
+  function setZoom(index) {
+    zoomIndex = Math.max(0, Math.min(zoomSteps.length - 1, index));
+    updateCanvas(true);
+  }
+  minus.addEventListener('click', () => setZoom(zoomIndex - 1));
+  plus.addEventListener('click', () => setZoom(zoomIndex + 1));
+  fit.addEventListener('click', () => {setZoom(0); focusYear(selectedYear());});
+  function pan(direction) {
+    const distance = Math.max(100, viewport.clientWidth * 0.75);
+    viewport.scrollBy({left: direction * distance, behavior: reducedMotion.matches ? 'instant' : 'smooth'});
+  }
+  earlier.addEventListener('click', () => pan(-1));
+  later.addEventListener('click', () => pan(1));
+  date.addEventListener('change', () => {
+    const year = Number(date.value);
+    if (!yearSlider || !Number.isInteger(year) ||
+        year < Number(yearSlider.min) || year > Number(yearSlider.max)) {
+      updateYearInput();
+      return;
+    }
+    yearSlider.value = String(year);
+    yearSlider.dispatchEvent(new Event('input', {bubbles: true}));
+    focusYear(year);
+  });
+  if (yearSlider) yearSlider.addEventListener('input', () => {
+    updateYearInput();
+    focusYear(selectedYear());
+  });
+  toolbar.querySelectorAll('.era-btn').forEach(b => b.addEventListener('click', () => {
+    queueMicrotask(() => {updateYearInput(); updateCanvas(false); focusYear(selectedYear());});
+  }));
+
+  function openSidebar() {
+    if (!narrow.matches) return;
+    work.classList.add('atlas-sidebar-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    sidebar.removeAttribute('inert');
+    close.focus({preventScroll: true});
+  }
+  function closeSidebar() {
+    work.classList.remove('atlas-sidebar-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    if (narrow.matches) sidebar.setAttribute('inert', '');
+    toggle.focus({preventScroll: true});
+  }
+  function syncSidebar() {
+    if (narrow.matches && !work.classList.contains('atlas-sidebar-open'))
+      sidebar.setAttribute('inert', '');
+    else sidebar.removeAttribute('inert');
+  }
+  toggle.addEventListener('click', () => {
+    if (work.classList.contains('atlas-sidebar-open')) closeSidebar();
+    else openSidebar();
+  });
+  close.addEventListener('click', closeSidebar);
+  timeline.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && work.classList.contains('atlas-sidebar-open')) {
+      event.preventDefault();
+      closeSidebar();
+    }
+  });
+  if (narrow.addEventListener) narrow.addEventListener('change', syncSidebar);
+  syncSidebar();
+
+  // Bar clicks retain the existing sourced details; expose them in a drawer
+  // on narrow screens instead of pushing the timeline below the fold.
+  const plots = timeline.querySelector('#time-canvas');
+  if (plots) plots.addEventListener('click', event => {
+    if (event.target.closest('.time-bar')) {
+      if (narrow.matches) openSidebar();
+      else sidebar.scrollTop = 0;
+    }
+  });
+
+  // Desktop mouse dragging pans empty chart background, without stealing bar
+  // clicks. Mobile touch panning remains native and scrollable on both axes.
+  viewport.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'mouse' || event.button !== 0 ||
+        event.target.closest('button,a,input,summary')) return;
+    drag = {id: event.pointerId, x: event.clientX, scroll: viewport.scrollLeft};
+    viewport.setPointerCapture(event.pointerId);
+    viewport.classList.add('atlas-is-panning');
+  });
+  viewport.addEventListener('pointermove', event => {
+    if (!drag || event.pointerId !== drag.id) return;
+    viewport.scrollLeft = drag.scroll - (event.clientX - drag.x);
+  });
+  function stopDrag(event) {
+    if (!drag || event.pointerId !== drag.id) return;
+    drag = null; viewport.classList.remove('atlas-is-panning');
+    if (viewport.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId);
+  }
+  viewport.addEventListener('pointerup', stopDrag);
+  viewport.addEventListener('pointercancel', stopDrag);
+  viewport.addEventListener('lostpointercapture', () => {
+    drag = null; viewport.classList.remove('atlas-is-panning');
+  });
+
+  window.addEventListener('atlas:route', event => {
+    if (event.detail.view === 'timeline') {
+      updateCanvas(false);
+      updateYearInput();
+      focusYear(selectedYear());
+    } else {
+      work.classList.remove('atlas-sidebar-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      syncSidebar();
+    }
+  });
+  window.addEventListener('resize', () => updateCanvas(true));
+  updateCanvas(false);
+  updateYearInput();
+  if (!timeline.hidden) focusYear(selectedYear());
 })();

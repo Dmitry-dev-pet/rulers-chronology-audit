@@ -49,6 +49,39 @@ class SPAContract(unittest.TestCase):
         self.assertIn(".spa-people-tools[hidden]",self.css)
         self.assertIn(".spa-person-detail[hidden]",self.css)
 
+    def test_app_shell_has_scoped_scrolling_and_fixed_navigation(self):
+        self.assertIn("document.documentElement.classList.add('atlas-app')", self.js)
+        self.assertIn(".atlas-app body{height:100dvh;display:flex;flex-direction:column}", self.css)
+        self.assertIn(".atlas-app main.container{width:100%;min-height:0;flex:1", self.css)
+        self.assertIn(".atlas-app .mode-panel{min-height:0;height:100%;flex:1;overflow-y:auto", self.css)
+        self.assertIn(".atlas-app .timeline-scroll{max-height:none;min-height:0;height:100%;flex:1;overflow:auto", self.css)
+        self.assertIn(".atlas-app .atlas-sidebar{min-height:0;min-width:0;display:block;overflow:auto", self.css)
+        self.assertIn(".atlas-app .spa-people-grid{min-height:0;flex:1;overflow-y:auto", self.css)
+        self.assertIn(".atlas-app .mode-panel[hidden]{display:none!important}", self.css)
+
+    def test_chart_controls_are_real_and_sync_with_year_route(self):
+        for event in ("pointerdown", "pointermove", "pointerup", "pointercancel"):
+            self.assertIn("viewport.addEventListener('"+event+"'", self.js)
+        self.assertIn("const zoomSteps = [1, 1.5, 2.3, 3.5, 5, 7.5, 11]", self.js)
+        self.assertIn("canvas.style.width = layoutWidth() + 'px'", self.js)
+        self.assertIn("const earlier = button('← Раньше'", self.js)
+        self.assertIn("const later = button('Позже →'", self.js)
+        self.assertIn("focusYear(selectedYear())", self.js)
+        self.assertIn("yearSlider.dispatchEvent(new Event('input'", self.js)
+        self.assertIn("toolbar.querySelectorAll('.era-btn')", self.js)
+
+    def test_mobile_drawers_keep_biographies_and_provenance(self):
+        self.assertIn("className = 'atlas-timeline-workspace'", self.js)
+        self.assertIn("className = 'atlas-sidebar'", self.js)
+        self.assertIn("sidebar.append(sidebarHeading, selected, inspector)", self.js)
+        self.assertIn("className = 'spa-people-workspace'", self.js)
+        self.assertIn("panel.classList.add('spa-profile-open')", self.js)
+        self.assertIn("panel.classList.remove('spa-profile-open')", self.js)
+        self.assertIn("sidebar.setAttribute('inert', '')", self.js)
+        self.assertIn(".atlas-app .atlas-sidebar-open .atlas-sidebar{display:block}", self.css)
+        self.assertIn(".atlas-app #panel-people.spa-profile-open .spa-people-browser{display:none}", self.css)
+        self.assertIn("citations(links,entry.sources)", self.js)
+
     def test_script_syntax_if_node_present(self):
         if shutil.which('node'):
             subprocess.run(['node','--check',str(ROOT/'site/site.js')],check=True,capture_output=True)
