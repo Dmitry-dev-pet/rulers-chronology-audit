@@ -1432,3 +1432,21 @@ button[disabled] {
  .atlas-app .atlas-transition-sheet[hidden]{display:none!important}
  .atlas-app .atlas-transition-entries{overflow:visible}
 }
+
+
+/* Distinguish evidence about places from event chronology without inventing borders. */
+.atlas-app .atlas-transition-sections{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:9px 16px 7px;background:var(--surface);border-top:1px solid var(--line)}
+.atlas-app .atlas-transition-section{min-width:0;min-height:33px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:var(--faint);color:var(--ink);font-size:11px;font-weight:750;text-align:center}
+.atlas-app .atlas-transition-section[aria-pressed="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+.atlas-app .atlas-transition-section:hover{border-color:var(--green)}
+.atlas-app .atlas-geo-disclaimer{font-size:11px;line-height:1.45;margin:0 0 2px;padding:10px 11px;background:var(--faint);border-left:3px solid var(--blue);color:var(--ink)}
+.atlas-app .atlas-geo-entry[data-category="practice"]{border-left-color:var(--blue)}
+.atlas-app .atlas-geo-entry[data-category="law"]{border-left-color:var(--green)}
+.atlas-app .atlas-geo-entry[data-category="military"]{border-left-color:var(--red)}
+.atlas-app .atlas-geo-entry[data-category="claim"]{border-left-color:var(--gold)}
+.atlas-app .atlas-geo-entry .atlas-transition-note{background:#f1eee5;padding:8px 9px;border:0;border-radius:5px}
+@media(max-width:700px){
+ .atlas-app .atlas-transition-sections{padding:6px 12px;gap:4px}
+ .atlas-app .atlas-transition-section{font-size:10px;padding:5px;min-height:31px}
+ .atlas-app .atlas-geo-disclaimer{font-size:10px;padding:8px}
+}

@@ -72,7 +72,9 @@ class TransitionResearchTests(unittest.TestCase):
 
     def test_all_sources_are_canonical_and_public(self):
         sources={s["id"]:s for s in self.db["sources"]}
-        refs={id for case in self.data["cases"] for x in case["records"] for id in x["sources"]}
+        refs={id for case in self.data["cases"]
+              for x in (case["records"] + case["territorial_evidence"])
+              for id in x["sources"]}
         self.assertEqual(refs,{s["id"] for s in self.data["sources"]})
         self.assertLessEqual(refs,sources.keys())
         self.assertTrue(all(s["url"].startswith("https://") for s in self.data["sources"]))
