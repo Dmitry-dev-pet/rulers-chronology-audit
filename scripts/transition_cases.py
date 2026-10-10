@@ -17,6 +17,9 @@ SOURCE = Path("data/atlas/transition-cases.json")
 CATEGORIES = {"legal", "practical", "claim", "institutional"}
 VERIFICATIONS = {"reference_checked", "imported_not_rechecked", "disputed"}
 CONFIDENCES = {"high", "medium", "low", "not_assessed"}
+GEO_NATURES = {"practice", "military", "claim", "law"}
+GEO_PLACE_KINDS = {"city", "group_of_cities", "republic", "union_level"}
+FORBIDDEN_GEOMETRY_KEYS = {"geometry", "coordinates", "polygon", "lat", "lng", "latitude", "longitude"}
 
 
 def load(root: Path = ROOT, db: dict | None = None) -> dict:
@@ -38,6 +41,7 @@ def load(root: Path = ROOT, db: dict | None = None) -> dict:
     bodies = {p["id"] for p in db["bodies"]}
     known_case_ids: set[str] = set()
     known_event_ids: set[str] = set()
+    known_local_ids: set[str] = set()
     cited: set[str] = set()
     for case in cases:
         cid = case.get("id")
@@ -101,6 +105,48 @@ def load(root: Path = ROOT, db: dict | None = None) -> dict:
             cited.update(refs)
         require(found_categories == CATEGORIES,
                 f"Transition case must distinguish legal, practical, claims, institutions: {cid}")
+        # The jurisdiction layer is point-/place-based evidence, NOT a map of
+        # exhaustive historical borders, nominal suzerainty or uniform control.
+        places = case.get("territorial_evidence")
+        require(isinstance(places, list) and len(places) >= 5,
+                f"Missing researched local jurisdiction evidence for {cid}")
+        require(isinstance(case.get("geography_policy"), str)
+                and bool(case["geography_policy"].strip()),
+                f"Missing no-polygon methodology for {cid}")
+        refs_in_case = {r["id"] for r in records}
+        for area in places:
+            aid = area.get("id")
+            require(isinstance(aid, str) and re.fullmatch(r"[a-z0-9-]+", aid)
+                    and aid.startswith("local-") and aid not in known_local_ids,
+                    f"Invalid or repeated geography ID: {aid}")
+            known_local_ids.add(aid)
+            require(not (FORBIDDEN_GEOMETRY_KEYS & set(area)),
+                    f"Unverified map polygon/coordinates supplied: {aid}")
+            require(area.get("geometry_verified") is False,
+                    f"No historical polygon has been checked: {aid}")
+            require(area.get("place_kind") in GEO_PLACE_KINDS
+                    and area.get("nature") in GEO_NATURES,
+                    f"Invalid historical place or authority type: {aid}")
+            for field in ("place", "authority", "statement", "limitation"):
+                require(isinstance(area.get(field), str) and area[field].strip(),
+                        f"Missing geography {field}: {aid}")
+            atlas_db.validate_date(area.get("date"))
+            y = int(area["date"]["value"][:4])
+            require(a <= y <= b, f"Geographical observation outside case: {aid}")
+            require(area.get("verification") in VERIFICATIONS
+                    and area.get("confidence") in CONFIDENCES,
+                    f"Unreviewed geography assertion: {aid}")
+            links = area.get("related_event_ids")
+            require(isinstance(links, list) and links
+                    and len(links) == len(set(links))
+                    and set(links) <= refs_in_case,
+                    f"Orphaned linked chronology event in geography: {aid}")
+            refs = area.get("sources")
+            require(isinstance(refs, list) and refs
+                    and len(refs) == len(set(refs))
+                    and set(refs) <= source_index.keys(),
+                    f"Unknown citation in geography: {aid}")
+            cited.update(refs)
     if "smuta-1598-1613" in known_case_ids:
         smuta = next(c for c in cases if c["id"] == "smuta-1598-1613")
         require(smuta["start_year"] == 1598 and smuta["end_year"] == 1613,
