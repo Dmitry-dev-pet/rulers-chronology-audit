@@ -1,6 +1,16 @@
 # Проверка исторической таблицы правителей
 
-Приватный исследовательский проект по плакату **«Правители государства с древнейших времен»**. Начат 10 октября 2026 года.
+Исследовательский проект по плакату **«Правители государства с древнейших времен»**. Начат 10 октября 2026 года. Подготовлен к публичной публикации; фотография остаётся в закрытом Google Drive.
+
+## GitHub Actions
+
+[![Soviet chronology audit](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/workflows/soviet-audit.yml/badge.svg)](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/workflows/soviet-audit.yml)
+
+**[Запуски проверки и сборки отчёта](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/workflows/soviet-audit.yml)** · [Как устроен workflow](docs/ACTIONS.md).
+
+Проверка формата данных, дат, идентификаторов и ссылок на источники; сборка HTML с тремя параллельными хронологиями, JSON и четырёх CSV. Результат успешного запуска — артефакт `soviet-chronology-report`, без исходной фотографии. Это техническая проверка структуры, **не автоматическое доказательство исторической достоверности**.
+
+Runner — GitHub-hosted Ubuntu, без Mac, внешних языковых моделей и пользовательских секретов. Запуск при push, pull request, вручную и при переводе репозитория в public. В приватном состоянии job пропускается для исключения расхода закрытой квоты; skipped не означает успешную проверку.
 
 ## Советский период: актуальная версия
 
@@ -8,33 +18,23 @@
 
 [Машиночитаемые данные JSON](data/soviet-parallel-chronology.json) · [Источники и границы проверки](research/soviet-parallel-sources.md) · [Уточнения к первому разбору](research/soviet-period-corrections.md).
 
-Новая версия уточняет коллегиальное устройство ЦИК, совмещение должностей, три замещения Кузнецовым и неоднозначные переходы 1923, 1953 и 1991 годов. Она имеет приоритет перед сокращёнными формулировками первоначального разбора. Не все персональные назначения независимо проверены по оригиналам актов; спорные и предварительные записи явно отмечены.
+Новая версия уточняет коллегиальное устройство ЦИК, совмещение должностей, три замещения Кузнецовым и неоднозначные переходы 1923, 1953 и 1991 годов. Не все персональные назначения независимо проверены по оригиналам актов; спорные и предварительные записи явно отмечены.
 
 ## Оригинальное фото
 
-**[Открыть исходную фотографию (Google Drive)](https://drive.google.com/file/d/1rHAcVH5_UuuqWRX0L76K7eay0KxYCt8u/view)** · [Папка проекта в Google Drive](https://drive.google.com/drive/folders/1ztJMRaG12lpi3UOOqyu2VP3EiWntwNW6).
+[Исходная фотография в Google Drive — доступ только с разрешением владельца](https://drive.google.com/file/d/1rHAcVH5_UuuqWRX0L76K7eay0KxYCt8u/view).
 
-- Имя файла: `1000428575.jpg`
-- Формат и разрешение: JPEG, 1152 × 1536
-- Размер: **464 782 байта**
-- SHA-256: `6c487e9427658f711cb41b930db2fadd06bb4b921423ab0b1b5bab4416a1c6ee`
-- **Проверка завершена**: исходный файл загружен в Google Drive, затем скачан обратно и идентифицирован по SHA-256.
-- **Доступ к фото закрытый:** ссылка Google Drive требует разрешения владельца. Фото не делалось общедоступным.
+`1000428575.jpg`, JPEG, 1152 × 1536, 464 782 байта. SHA-256: `6c487e9427658f711cb41b930db2fadd06bb4b921423ab0b1b5bab4416a1c6ee`.
 
-По договорённости с пользователем **бинарное фото хранится в Google Drive**, а **в GitHub — исследовательские данные, ссылки и контрольная сумма**. Загружать JPEG в Git или открывать публичный доступ не требуется. Подробности: [GOOGLE_DRIVE_SOURCE.md](assets/original/GOOGLE_DRIVE_SOURCE.md), [photo-metadata.json](assets/original/photo-metadata.json).
+По решению пользователя оригинал хранится в Google Drive, а в GitHub — исследовательские данные, ссылки и контрольная сумма. Публичность репозитория не меняет разрешения Drive. Ни workflow, ни HTML-артефакт не получают исходную фотографию. Подробности: [GOOGLE_DRIVE_SOURCE.md](assets/original/GOOGLE_DRIVE_SOURCE.md), [photo-metadata.json](assets/original/photo-metadata.json).
 
-## Содержание проекта
+## Другие материалы
 
-- [data/poster-transcription.tsv](data/poster-transcription.tsv) — буквальная предварительная расшифровка **106 строк** (53 в каждой колонке), включая исходные ошибки.
-- [data/section-markers.md](data/section-markers.md) — названия династий, служебные строки и подписи столиц.
-- [research/initial-audit.md](research/initial-audit.md) — первоначальные 23 замечания.
-- Первый советский разбор: [текст](research/soviet-period-audit.md), [реестр 10 строк](data/soviet-period-review.csv), [его источники](research/soviet-period-sources.md). Читать вместе с [уточнениями](research/soviet-period-corrections.md).
-- [research/source-index.md](research/source-index.md) — 25 исходных ссылок; каждую проверять при дальнейшем использовании.
-- [data/claim-register.csv](data/claim-register.csv) — первоначальный реестр спорных утверждений.
-- [docs/context.md](docs/context.md) — решение о хранении оригинала и контекст обсуждения.
-- [NEXT_STEPS.md](NEXT_STEPS.md) — общий план исследования; советские параллельные хронологии теперь подготовлены, их источниковедческая доработка продолжается.
-- [scripts/verify_original_photo.py](scripts/verify_original_photo.py) — проверка SHA-256 локальной копии.
+- [Буквальная расшифровка 106 строк](data/poster-transcription.tsv) и [служебные строки плаката](data/section-markers.md). Исходные ошибки оставлены без исправлений.
+- [Первоначальные замечания](research/initial-audit.md), [реестр](data/claim-register.csv), [исходные источники](research/source-index.md).
+- Первый советский разбор: [текст](research/soviet-period-audit.md), [CSV](data/soviet-period-review.csv), [источники](research/soviet-period-sources.md). Читать вместе с [уточнениями](research/soviet-period-corrections.md).
+- [Контекст](docs/context.md), [дальнейшая работа](NEXT_STEPS.md), [проверка локальной копии фото](scripts/verify_original_photo.py).
 
 **Полная независимая проверка всех 106 строк не завершена.** Не смешивать буквальное чтение плаката, справочную хронологию должностей и интерпретацию фактической политической власти.
 
-Задачи: [#1 — архивирование оригинала (выполнено)](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/issues/1), [#2 — проверка 106 строк (открыта)](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/issues/2).
+Задачи: [#1 — оригинал сохранён](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/issues/1), [#2 — историческая проверка](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/issues/2).

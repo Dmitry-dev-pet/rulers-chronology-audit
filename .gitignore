@@ -1,0 +1,9 @@
+/dist/
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+assets/original/*.jpg
+assets/original/*.jpeg
+assets/original/*.png

@@ -1,0 +1,60 @@
+name: Soviet chronology audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  public:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: soviet-audit-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-build:
+    # Avoid spending private-repository quota. The public event starts the first build.
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact event revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Test validator and renderer
+        run: |
+          python3 --version
+          python3 -m unittest discover -s tests -v
+
+      - name: Validate data and build report
+        env:
+          SOURCE_REVISION: ${{ github.sha }}
+        run: python3 scripts/soviet_audit.py --revision "$SOURCE_REVISION"
+
+      - name: Record result in job summary
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          r = json.loads(Path('dist/validation.json').read_text(encoding='utf-8'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as f:
+              f.write('# Soviet chronology: structural validation passed\n\n')
+              f.write(f"Records: **{r['records']}**; sources: **{r['sources']}**; open questions: **{r['open_items']}**.\n\n")
+              f.write('This is NOT historical fact-checking. Uncertainty and parallel offices are preserved.\n\n')
+              f.write('Artifact: HTML report, JSON, four CSV files, validation receipt and SHA256SUMS. No source photograph.\n')
+          PY
+
+      - name: Upload report (without original photo)
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: soviet-chronology-report
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+          include-hidden-files: false
