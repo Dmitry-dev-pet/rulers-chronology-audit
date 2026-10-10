@@ -6,13 +6,15 @@ on:
     paths:
       - .github/workflows/publish-pages.yml
       - scripts/soviet_audit.py
+      - site/**
       - tests/**
       - data/soviet-parallel-chronology.json
+      - data/soviet-period-review.csv
       - data/poster-transcription.tsv
       - research/soviet-parallel-sources.md
   workflow_dispatch:
 
-# No unreviewed pull_request execution with Pages deployment permissions.
+# Pages writes cannot run on unreviewed pull request code.
 permissions:
   contents: read
   pages: write
@@ -53,9 +55,10 @@ jobs:
           import json
           dist = Path("dist")
           expected = {
-              "index.html", "README.md", "chronology.json", "sources.json",
-              "validation.json", "party.csv", "government.csv",
-              "state_institutions.csv", "separate_records.csv", "SHA256SUMS",
+              "index.html", "site.css", "site.js", "README.md",
+              "chronology.json", "sources.json", "validation.json",
+              "party.csv", "government.csv", "state_institutions.csv",
+              "separate_records.csv", "SHA256SUMS",
           }
           actual = {p.name for p in dist.iterdir() if p.is_file()}
           assert actual == expected, f"Unexpected site files: {actual ^ expected}"

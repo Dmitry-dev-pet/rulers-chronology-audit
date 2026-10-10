@@ -1,34 +1,15 @@
-# Publication on GitHub Pages
+# GitHub Pages: публикация советского периода
 
-This site is a static public rendering of the Soviet-period research, not an
-automatic historical fact checker. It displays parallel **party, government,
-and state institution** chronologies generated from versioned JSON.
+Сайт публикуется по адресу https://dmitry-dev-pet.github.io/rulers-chronology-audit/.
 
-## Deployment
+По договорённости об интерфейсе в нём **три режима**: `Плакат` (табличный по умолчанию), `Линии власти` (интервалы на общей календарной оси) и `Исследование` (справочные записи с оговорками и источниками). [Описание представлений](VIEW_MODES.md).
 
-The public site is deployed by [`publish-pages.yml`](../.github/workflows/publish-pages.yml)
-on relevant changes to the default `main` branch (or a manual dispatch from
-`main`). No pull requests can deploy Pages. The job runs on GitHub-hosted
-`ubuntu-24.04` and:
+## Как разворачивается
 
-1. Runs offline Python unit tests.
-2. Builds `dist/index.html`, JSON, CSV, metadata and checksums using
-   `scripts/soviet_audit.py`.
-3. Rejects unexpected output files and any occurrence of the private
-   Google Drive URL or original photograph filename in published output.
-4. Publishes only the generated `dist/` directory with GitHub Pages
-   artifact/deployment actions.
+`.github/workflows/publish-pages.yml` запускается при проверенном изменении `main` в генераторе, JS/CSS, исторических входных данных или по ручному запуску из `main`. PR с недоверенным кодом **не может** публиковать сайт. Используется GitHub-hosted `ubuntu-24.04`.
 
-Runtime permissions are limited to `contents: read`, `pages: write`, and
-`id-token: write`. Git credentials are not persisted after checkout.
-No external agents, Mac runner, private Google Drive images or user secrets
-are involved. Pages is enabled through the separate reviewed GitHub Control
-App issue workflow.
+Перед публикацией Actions выполняет Python unit tests, заново генерирует сайт из версии данных в коммите, проверяет ожидаемый список **12 публичных файлов**, отклоняет любые включения приватного Drive URL и имени исходного JPEG. Затем на Pages отправляется только `dist/`, через официальные Actions, закреплённые SHA. Права job ограничены `contents: read`, `pages: write`, `id-token: write`; checkout не сохраняет токен. Пользовательские секреты, локальный Mac и Google Drive не используются в сборке.
 
-**Expected URL after first successful deploy:**
-https://dmitry-dev-pet.github.io/rulers-chronology-audit/
+Файлы сайта: `index.html`, `site.css`, `site.js`, `chronology.json`, `sources.json`, `validation.json`, `party.csv`, `government.csv`, `state_institutions.csv`, `separate_records.csv`, `README.md`, `SHA256SUMS`.
 
-The actual address should be treated as live only after a successful
-deployment and an HTTP response check. Source records are the repository
-history; the deployed site does **not** independently verify the historical
-accuracy of dates or claims. The original image stays private in Google Drive.
+Оригинал плаката хранится в частном Google Drive. Сайт не получает сам файл и ссылку на закрытый источник. Датировки и интерпретации не становятся автоматически истинными в результате успешной технической проверки.
