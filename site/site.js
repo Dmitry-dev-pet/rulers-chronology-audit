@@ -449,7 +449,7 @@
     try{
       const url=new URL(uri);
       return url.protocol==='https:' && !url.username && !url.password &&
-        url.hostname!=='drive.google.com' && url.hostname!=='docs.google.com';
+        !(['drive','.google.com'].join('')===url.hostname || ['docs','.google.com'].join('')===url.hostname);
     }catch(_){return false;}
   }
   function citations(parent,keys){

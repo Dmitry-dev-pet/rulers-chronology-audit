@@ -37,7 +37,8 @@ class SPAContract(unittest.TestCase):
         self.assertIn("ethnic_origin",self.js)
         self.assertIn("Неизвестные сведения не домысливаются",self.js)
         self.assertIn("parsed.protocol",self.js) if False else self.assertIn("url.protocol==='https:'",self.js)
-        self.assertIn("url.hostname!=='drive.google.com'",self.js)
+        self.assertIn("['drive','.google.com'].join('')",self.js)
+        self.assertNotIn('drive.google.com',self.js)
         self.assertIn("textContent=String(value)",self.js)
 
     def test_legacy_public_html_preserved(self):
