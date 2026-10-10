@@ -48,7 +48,10 @@
   });
 
   const windows = {
-    all: [Date.UTC(1617, 0, 1), Date.UTC(1991, 11, 26)],
+    all: [Date.UTC(1417, 0, 1), Date.UTC(1991, 11, 26)],
+    muscovy: [Date.UTC(1417, 0, 1), Date.UTC(1547, 11, 31)],
+    tsardom: [Date.UTC(1547, 0, 1), Date.UTC(1617, 11, 31)],
+    troubles: [Date.UTC(1598, 0, 1), Date.UTC(1613, 11, 31)],
     romanov: [Date.UTC(1617, 0, 1), Date.UTC(1721, 11, 31)],
     eighteenth: [Date.UTC(1721, 0, 1), Date.UTC(1817, 11, 31)],
     dual: [Date.UTC(1682, 0, 1), Date.UTC(1741, 11, 31)],
@@ -62,11 +65,11 @@
   // monarchy -> party; ministries -> governments; advisory -> legislative bodies.
   const trackInfo = [
     ['authority', 'Цари / императоры → партия', 'Царская, регентская и партийная власть', 'party',
-      ['early_monarchy', 'early_regency', 'imperial_monarchy', 'party']],
+      ['muscovy_rulers', 'muscovy_regents', 'early_monarchy', 'early_regency', 'imperial_monarchy', 'party']],
     ['government', 'Управление', 'От приказов, Сената и коллегий до СНК СССР', 'gov',
-      ['early_executive', 'imperial_government', 'government']],
+      ['muscovy_government', 'early_executive', 'imperial_government', 'government']],
     ['state', 'Государственные органы', 'Советы, Дума, Президиум Верховного Совета', 'state',
-      ['early_institutions', 'imperial_institutions', 'state_institutions']],
+      ['muscovy_institutions', 'early_institutions', 'imperial_institutions', 'state_institutions']],
   ];
   let currentEra = 'all';
   let selectedBar = null;
@@ -146,7 +149,10 @@
     let total = 0;
     trackInfo.forEach(([key, label, caption, color, sourceKeys]) => {
       const authorityLabels = {
-        all: 'Цари / императоры → партия',
+        all: 'Князья / цари / императоры → партия',
+        muscovy: 'Великие князья и опека',
+        tsardom: 'Цари и конкурирующие власти',
+        troubles: 'Смута и претенденты',
         romanov: 'Цари и регенты',
         eighteenth: 'Императоры и регенты',
         dual: 'Соправители и регенты',
@@ -208,7 +214,7 @@
   function fromHash() {
     const hash = decodeURIComponent(location.hash.slice(1));
     if (tabNames.has(hash)) return navigate(hash, false);
-    if (hash.startsWith('source-') || /^[RIPGSX]\d{2,}$/.test(hash)) {
+    if (hash.startsWith('source-') || /^[MRIPGSX]\d{2,}$/.test(hash)) {
       navigate('research', false);
       const target = document.getElementById(hash);
       if (target) {
