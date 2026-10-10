@@ -19,7 +19,7 @@ jobs:
   validate-and-build:
     if: ${{ github.event.repository.private == false }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout exact event revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -41,6 +41,16 @@ jobs:
           python3 -m scripts.extend_romanovs
           python3 -m scripts.extend_muscovy
           python3 -m scripts.atlas_db build
+          python3 -m scripts.smuta_map --revision "$SOURCE_REVISION"
+
+      - name: Test actual Chromium navigation and four viewport sizes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv /tmp/atlas-browser
+          /tmp/atlas-browser/bin/pip install --disable-pip-version-check playwright==1.56.0
+          /tmp/atlas-browser/bin/python -m playwright install --with-deps chromium
+          /tmp/atlas-browser/bin/python tests/browser_smuta_map.py --dist dist --output browser-evidence
 
       - name: Record result in job summary
         run: |
@@ -53,8 +63,20 @@ jobs:
               for key, value in r['counts'].items():
                   f.write(f'{key}: **{value}**  \n')
               f.write('\nThis is NOT historical fact-checking. Uncertainty and parallel offices are preserved.\n\n')
-              f.write('Artifact: original-compatible report, normalized JSON, SQLite, database browser and checksums. No source photograph.\n')
+              f.write('Artifact: compatible report, normalized JSON, SQLite, sourced Smuta place explorer and checksums. No source photograph.\n')
+              browser = json.loads(Path('browser-evidence/receipt.json').read_text())
+              f.write('\nBrowser acceptance: ' + str(len(browser)) + ' scenarios passed. Screenshots are a separate test artifact.\n')
           PY
+
+      - name: Upload browser acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: smuta-browser-evidence
+          path: browser-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+          include-hidden-files: false
 
       - name: Upload report and database without original photo
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
