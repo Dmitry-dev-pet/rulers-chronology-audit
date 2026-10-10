@@ -48,7 +48,10 @@
   });
 
   const windows = {
-    all: [Date.UTC(1817, 0, 1), Date.UTC(1991, 11, 26)],
+    all: [Date.UTC(1617, 0, 1), Date.UTC(1991, 11, 26)],
+    romanov: [Date.UTC(1617, 0, 1), Date.UTC(1721, 11, 31)],
+    eighteenth: [Date.UTC(1721, 0, 1), Date.UTC(1817, 11, 31)],
+    dual: [Date.UTC(1682, 0, 1), Date.UTC(1741, 11, 31)],
     imperial: [Date.UTC(1817, 0, 1), Date.UTC(1917, 10, 8)],
     transition: [Date.UTC(1894, 0, 1), Date.UTC(1925, 11, 31)],
     early: [Date.UTC(1917, 0, 1), Date.UTC(1953, 11, 31)],
@@ -58,12 +61,12 @@
   // Three conceptual roles, not three unchanging legal offices:
   // monarchy -> party; ministries -> governments; advisory -> legislative bodies.
   const trackInfo = [
-    ['authority', 'Император → партия', 'Монархическая и партийная политическая власть', 'party',
-      ['imperial_monarchy', 'party']],
-    ['government', 'Правительство', 'От Комитета министров до СНК СССР', 'gov',
-      ['imperial_government', 'government']],
-    ['state', 'Государственные органы', 'От Государственного совета и Думы до Президиума ВС', 'state',
-      ['imperial_institutions', 'state_institutions']],
+    ['authority', 'Цари / императоры → партия', 'Царская, регентская и партийная власть', 'party',
+      ['early_monarchy', 'early_regency', 'imperial_monarchy', 'party']],
+    ['government', 'Управление', 'От приказов, Сената и коллегий до СНК СССР', 'gov',
+      ['early_executive', 'imperial_government', 'government']],
+    ['state', 'Государственные органы', 'Советы, Дума, Президиум Верховного Совета', 'state',
+      ['early_institutions', 'imperial_institutions', 'state_institutions']],
   ];
   let currentEra = 'all';
   let selectedBar = null;
@@ -142,11 +145,18 @@
     });
     let total = 0;
     trackInfo.forEach(([key, label, caption, color, sourceKeys]) => {
-      const labelForEra = currentEra === 'imperial' && key === 'authority'
-        ? 'Император'
-        : currentEra !== 'all' && currentEra !== 'imperial' && key === 'authority'
-          ? 'Партия'
-          : label;
+      const authorityLabels = {
+        all: 'Цари / императоры → партия',
+        romanov: 'Цари и регенты',
+        eighteenth: 'Императоры и регенты',
+        dual: 'Соправители и регенты',
+        imperial: 'Император',
+        transition: 'Монархия → партия',
+        early: 'Партия',
+        middle: 'Партия',
+        late: 'Партия',
+      };
+      const labelForEra = key === 'authority' ? authorityLabels[currentEra] || label : label;
       const entries = sourceKeys.flatMap(sourceKey => data[sourceKey] || []).map(item => {
         const from = bounds(item.from), to = bounds(item.to);
         return { item, a: from ? from.lower : null, b: to ? to.upper : null, partial: (from && from.partial) || (to && to.partial) };
@@ -198,7 +208,7 @@
   function fromHash() {
     const hash = decodeURIComponent(location.hash.slice(1));
     if (tabNames.has(hash)) return navigate(hash, false);
-    if (hash.startsWith('source-') || /^[IPGSX]\d{2,}$/.test(hash)) {
+    if (hash.startsWith('source-') || /^[RIPGSX]\d{2,}$/.test(hash)) {
       navigate('research', false);
       const target = document.getElementById(hash);
       if (target) {
