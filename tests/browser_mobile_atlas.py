@@ -46,6 +46,11 @@ def run(dist: Path, output: Path) -> None:
                 expect(page.locator('.atlas-mobile-actions')).to_be_visible()
                 expect(page.locator('.atlas-mobile-action')).to_have_count(4)
                 expect(page.locator('.mode-tab')).to_have_count(4)
+                expect(page.locator('.mode-tab[data-view="timeline"] .atlas-mobile-tab-label')).to_have_text('Год')
+                expect(page.locator('.mode-tab[data-view="research"] .atlas-mobile-tab-label')).to_have_text('Источники')
+                expect(page.locator('.atlas-year-dashboard-heading strong')).to_have_text('1685')
+                expect(page.locator('.atlas-mobile-year-caption')).to_be_visible()
+                expect(page.locator('#panel-timeline:not(.smuta-map-active) .smuta-modebar')).to_be_hidden()
                 expect(page.locator('.atlas-year-role-card')).to_have_count(4)
                 expect(page.locator('.atlas-mobile-role-toggle')).to_have_count(4)
                 expect(page.locator('.atlas-year-role-card[data-kind="formal"] .atlas-mobile-role-toggle')).to_have_attribute('aria-expanded','true')
@@ -62,7 +67,7 @@ def run(dist: Path, output: Path) -> None:
                     page.locator('.atlas-mobile-role-toggle').first,
                     page.locator('.atlas-year-step').first,
                 ]:
-                    assert loc.bounding_box()['height']>=43,loc
+                    assert loc.bounding_box()['height']>=43.5,loc
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
                 assert page.evaluate('document.documentElement.scrollHeight<=innerHeight+1')
                 assert page.evaluate(
@@ -87,6 +92,9 @@ def run(dist: Path, output: Path) -> None:
                 expect(page.locator('#panel-timeline')).to_have_attribute('data-mobile-mode','timeline')
                 expect(page.locator('.atlas-sidebar')).to_be_visible()
                 expect(page.locator('.atlas-sidebar')).to_have_attribute('aria-modal','true')
+                expect(page.locator('.atlas-sidebar-heading')).to_contain_text('Все записи')
+                expect(page.locator('.atlas-sidebar .timeline-selection')).to_be_hidden()
+                expect(page.locator('.atlas-sidebar .atlas-year-inspector')).to_be_visible()
                 expect(page.locator('.atlas-mobile-scrim')).to_be_visible()
                 assert page.locator('.atlas-sidebar').bounding_box()['height'] <= height*.87+1
                 page.screenshot(path=str(output/f'mobile-bottom-sheet-{width}.png'),full_page=True)
@@ -96,6 +104,7 @@ def run(dist: Path, output: Path) -> None:
 
                 expect(page.locator('.timeline-toolbar')).to_be_visible()
                 expect(page.locator('.atlas-timeline-workspace')).to_be_visible()
+                expect(page.locator('.era-btn[data-era="dual"]')).to_have_attribute('aria-pressed','true')
                 expect(page.locator('.atlas-year-dashboard-cards')).to_be_hidden()
                 expect(page.locator('.timeline-scroll')).to_be_visible()
                 expect(page.locator('.time-bar')).not_to_have_count(0)
@@ -126,6 +135,7 @@ def run(dist: Path, output: Path) -> None:
                 # the chart workspace is hidden by summary-first CSS.
                 page.locator('.atlas-mobile-action[data-mobile-action="overview"]').click()
                 expect(page.locator('.atlas-global-sheet')).to_be_visible()
+                expect(page.locator('.atlas-global-sheet-head')).to_be_visible()
                 expect(page.locator('.atlas-global-century-card')).to_have_count(5)
                 expect(page.locator('.atlas-global-coverage-row')).to_have_count(20)
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
