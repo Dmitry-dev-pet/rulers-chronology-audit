@@ -64,7 +64,7 @@ def score(result: dict, gold: dict, with_mcp: bool) -> dict:
     toolnames = [str(t).lower() for t in result.get("used_tool_names", [])]
     touched_mcp = any("archigos_returnees" in t or "historical-atlas" in t for t in toolnames)
     assessed = isinstance(answer, dict) and result.get("status") == "SUCCESS"
-    exact = assessed and not answer.get("insufficient_data")
+    exact = assessed and (not with_mcp or touched_mcp) and not answer.get("insufficient_data")
     if exact:
         for key in ("return_events", "unique_country_person_keys", "excluded_conflicting_identity_groups"):
             exact = exact and answer.get(key) == expected[key]
