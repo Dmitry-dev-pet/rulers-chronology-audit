@@ -1733,7 +1733,7 @@ button[disabled] {
   .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-dashboard-cards{display:none!important}
 }
 @media(max-width:900px) and (max-height:560px){
-  .atlas-app.atlas-mobile header{display:none}
+  .atlas-app.atlas-mobile body > header{display:none}
   .atlas-app.atlas-mobile .mode-tab,.atlas-app.atlas-mobile .mode-tab:first-child{min-height:43px;font-size:12px}
   .atlas-app.atlas-mobile .mode-panel{padding-top:4px;padding-bottom:4px}
   .atlas-app.atlas-mobile .atlas-year-dashboard{gap:5px;padding-top:4px}
