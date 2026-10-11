@@ -882,6 +882,138 @@
       lastCenteredFootprintYear=year;
     }
   }
+  // Coverage is evidence of registry entries, NOT a claim of complete history.
+  const COVERAGE_START=1762;
+  const COVERAGE_END=1800;
+  const COVERAGE_YEARS=COVERAGE_END-COVERAGE_START+1;
+  const COVERAGE_CORE_KINDS=new Set(['sovereign','elector','emperor']);
+  const COVERAGE_STATUS_TEXT={
+    office:'Есть запись о должности главы или императора',
+    institution:'Есть запись об учреждении (возможны и иные роли)',
+    supplementary:'Есть только дополнительные персональные роли',
+    research_gap:'Пробел реестра внутри заявленной выборки',
+    outside_sample:'Год ещё не исследовался в этой выборке',
+    historically_not_in_force:'Исторический режим ещё не возник либо уже прекратился',
+    birthplace_context:'Только исторический контекст места рождения'
+  };
+  let selectedCoverage=null;
+  let lastCoverageCenteredYear=null;
+  const coveragePolityName=id=>
+    allJurisdictions().find(p=>p.id===id)?.name||id;
+  function coverageFor(polity,selectedYear){
+    const roles=fullRoles().filter(r=>r.polity_id===polity.polity_id &&
+      isActive(r,selectedYear));
+    const institutions=(extension?.institutions||[]).filter(r=>
+      r.polity_id===polity.polity_id && isActive(r,selectedYear));
+    let status;
+    if(polity.display_only==='birthplace_context')status='birthplace_context';
+    else if((polity.historical_start && selectedYear<polity.historical_start) ||
+            (polity.historical_end && selectedYear>polity.historical_end))
+      status='historically_not_in_force';
+    else if(selectedYear<polity.researched_from ||
+            selectedYear>polity.researched_through)
+      status='outside_sample';
+    else if(roles.some(r=>COVERAGE_CORE_KINDS.has(r.role_kind)))
+      status='office';
+    else if(institutions.length)status='institution';
+    else if(roles.length)status='supplementary';
+    else status='research_gap';
+    return {polity,selectedYear,roles,institutions,status};
+  }
+  function coverageSourcesFor(result){
+    return [...new Set([
+      ...(result.polity.source_ids||[]),
+      ...result.roles.flatMap(r=>r.source_ids||[]),
+      ...result.institutions.flatMap(r=>r.source_ids||[])
+    ])];
+  }
+  function renderCoverageDetail(polity,selectedYear){
+    if(!polity)return;
+    selectedCoverage={polity_id:polity.polity_id,year:selectedYear};
+    const outcome=coverageFor(polity,selectedYear);
+    const article=create('div','dynasty-coverage-detail-body');
+    article.append(create('h3',null,
+      coveragePolityName(polity.polity_id)+' · '+selectedYear));
+    const status=create('p','dynasty-coverage-detail-status',
+      COVERAGE_STATUS_TEXT[outcome.status]);
+    status.dataset.coverageStatus=outcome.status;
+    article.append(status);
+    const caveat=outcome.status==='outside_sample'?
+      'За пределами исследовательской партии. Отсутствие записи не свидетельствует об отсутствии государственной власти.':
+      outcome.status==='research_gap'?
+      'Период входит в заявленную выборку, но роль главы и учреждение не занесены. Требуется источниковая сверка.':
+      outcome.status==='historically_not_in_force'?
+      'Это специально отмеченная историческая граница государственного режима, а не отсутствие найденной биографии.':
+      outcome.status==='birthplace_context'?
+      'Полития вносилась только как место рождения персоны, а не хронология её правителей.':
+      'Ячейка отражает пересечение записанного срока с годом, не полный список исторических событий.';
+    article.append(create('p','dynasty-coverage-detail-explain',caveat));
+    if(outcome.roles.length){
+      const list=create('ul','dynasty-coverage-evidence');
+      const people=new Map(allPeople().map(p=>[p.id,p]));
+      for(const role of outcome.roles){
+        const item=create('li');
+        item.append(create('strong',null,actorName(people.get(role.person_id))+
+          ' — '+titleFor(role)),
+          create('span','dynasty-coverage-evidence-years',
+            ' · '+role.start_year+'–'+role.end_year+'; тип '+role.role_kind),
+          sources(role.source_ids));
+        list.append(item);
+      }
+      article.append(list);
+    }
+    if(outcome.institutions.length){
+      const list=create('ul','dynasty-coverage-evidence');
+      for(const institution of outcome.institutions){
+        const item=create('li');
+        item.append(create('strong',null,institution.name),
+          create('span','dynasty-coverage-evidence-years',
+            ' · '+institution.start_year+'–'+institution.end_year+
+            ' · коллективный институт, не отдельный монарх'),
+          sources(institution.source_ids));
+        list.append(item);
+      }
+      article.append(list);
+    }
+    const tasks=(coverage?.known_research_tasks||[]).filter(t=>
+      t.polity_id===polity.polity_id &&
+      t.start_year<=selectedYear && selectedYear<=t.end_year);
+    tasks.forEach(task=>{
+      article.append(create('p','dynasty-coverage-open-task',
+        'Следующая проверка: '+task.title+' — '+task.note),
+        sources(task.source_ids));
+    });
+    article.append(create('p','dynasty-coverage-polity-note',polity.note),
+      create('p','dynasty-coverage-source-caption',
+        'Источники границ выборки и имеющихся записей (не доказательство отсутствия других событий):'),
+      sources(coverageSourcesFor(outcome)));
+    coverageDetail.replaceChildren(article);
+  }
+  function renderCoverageTasks(){
+    const section=create('section','dynasty-coverage-task-list');
+    section.append(create('h3',null,'Очередь исторической сверки'));
+    section.append(create('p',null,
+      'Сначала закрываем пробелы подтверждёнными источниками, не заполняем их догадками.'));
+    for(const task of coverage.known_research_tasks){
+      const card=create('article','dynasty-coverage-task-card');
+      card.dataset.coverageTask=task.id;
+      const action=create('button','dynasty-coverage-task-action',
+        task.title+' · '+task.start_year+'–'+task.end_year+' →');
+      action.type='button';
+      action.addEventListener('click',()=>{
+        const target=task.polity_id==='tusc'?Math.max(task.start_year,1795):
+          task.start_year;
+        selectedCoverage={polity_id:task.polity_id,year:target};
+        chooseYear(target,true);
+        renderCoverageDetail(coverage.polities.find(p=>
+          p.polity_id===task.polity_id),target);
+        coverageDetail.focus({preventScroll:true});
+      });
+      card.append(action,create('p',null,task.note),sources(task.source_ids));
+      section.append(card);
+    }
+    coverageTasks.replaceChildren(section);
+  }
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
