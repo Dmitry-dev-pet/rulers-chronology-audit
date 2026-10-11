@@ -1137,6 +1137,249 @@
       lastCoverageCenteredYear=year;
     }
   }
+
+  // Spatial projection from externally sourced CURRENT geographic reference
+  // points and the Natural Earth physical coastline. Historical information
+  // still comes exclusively from role / relationship / institution records.
+  const geoCoreRoles=new Set(['sovereign','elector','first_consul']);
+  const geoRoleLabels={
+    sovereign:'Правящий титул',elector:'Курфюрст',emperor:'Императорский титул',
+    regent:'Регентство',co_regent:'Соправительство',consort:'Консорт',
+    heir:'Наследник',first_consul:'Первый консул',dynastic_person:'Династический контекст'
+  };
+  function geoPoint(lon,lat) {
+    const e=geography.extent;
+    return [
+      36+(lon-e.west)/(e.east-e.west)*1048,
+      26+(e.north-lat)/(e.north-e.south)*570
+    ];
+  }
+  function geoPlaces(){
+    if(!geography)return [];
+    const allowed=new Map(allPolities().map(p=>[p.id,p]));
+    const places=new Map();
+    for(const anchor of geography.anchors){
+      if(!allowed.has(anchor.polity_id))continue;
+      const key=anchor.place_id||('unplaced-'+anchor.polity_id);
+      if(!places.has(key))places.set(key,{...anchor,id:key,polities:[]});
+      places.get(key).polities.push(allowed.get(anchor.polity_id));
+    }
+    return [...places.values()];
+  }
+  function geoRelationArcs(places){
+    const pos=new Map();
+    for(const place of places)for(const polity of place.polities)pos.set(polity.id,place);
+    const roles=activeRoles();
+    function polityOf(personId){
+      const selected=roles.filter(r=>r.person_id===personId &&
+        pos.has(r.polity_id) && pos.get(r.polity_id).lon!==null);
+      const weight={sovereign:0,elector:1,first_consul:2,regent:3,
+        co_regent:4,consort:5,heir:6,dynastic_person:7,emperor:8};
+      selected.sort((a,b)=>(weight[a.role_kind]??9)-(weight[b.role_kind]??9));
+      return selected[0]?.polity_id||null;
+    }
+    const links=[];
+    for(const relation of activeRelations()){
+      if(!(relation.source_ids||[]).length)continue;
+      let pair=null,kind='relation';
+      if(relation.polity_ids?.length===2){
+        pair=relation.polity_ids;
+        kind='interstate';
+      }else if(relation.subjects?.length===2 &&
+          ['marriage','parent','regency','co_regency'].includes(relation.kind)){
+        pair=relation.subjects.map(polityOf);
+        kind='person_relation';
+      }
+      if(!pair||!pair[0]||!pair[1]||pair[0]===pair[1])continue;
+      const a=pos.get(pair[0]),b=pos.get(pair[1]);
+      if(!a||!b||a.id===b.id||a.lon===null||b.lon===null)continue;
+      links.push({relation,a,b,kind});
+    }
+    return links;
+  }
+  function renderGeoDetails(places){
+    const place=places.find(p=>p.id===selectedGeoPlace)||places[0];
+    geoDetails.replaceChildren();
+    if(!place)return;
+    selectedGeoPlace=place.id;
+    geoDetails.append(create('h3',null,
+      (place.place_name||'Вне географической точки')+' · '+year));
+    for(const polity of place.polities){
+      const section=create('article','dynasty-geo-polity');
+      section.dataset.polity=polity.id;
+      const caption=create('h4',null,polity.name);
+      const policy=coverage?.polities?.find(p=>p.polity_id===polity.id);
+      const c=policy?coverageFor(policy,year):null;
+      const statusLabels={
+        office:'Должность в выборке',institution:'Коллективное учреждение',
+        supplementary:'Дополнительная роль',research_gap:'Пробел исследования',
+        outside_sample:'Вне исследованной выборки',
+        historically_not_in_force:'Режим не действовал',
+        birthplace_context:'Только контекст места рождения'
+      };
+      section.append(caption,create('p','dynasty-geo-coverage',
+        c?(statusLabels[c.status]||c.status):
+          'Охват не определён; отсутствие записи не означает отсутствия власти'));
+      const records=activeRoles().filter(r=>r.polity_id===polity.id);
+      const institutions=activeInstitutions().filter(r=>r.polity_id===polity.id);
+      if(!records.length&&!institutions.length)section.append(create('p',null,
+        'На этот год в нашей выборке нет записи. Это не отрицание существования правителя.'));
+      for(const role of records){
+        const actor=getPerson(role.person_id);
+        const item=create('div','dynasty-geo-role');
+        item.dataset.roleKind=role.role_kind;
+        item.append(create('strong',null,actor?actorName(actor):'Неизвестная персона'),
+          create('span',null,' · '+(geoRoleLabels[role.role_kind]||role.role_kind)+': '+titleFor(role)),
+          sources(role.source_ids));
+        section.append(item);
+      }
+      for(const institution of institutions) section.append(
+        create('p','dynasty-geo-institution','Коллективный орган: '+institution.name),
+        sources(institution.source_ids));
+      if(polity.note)section.append(create('p','dynasty-geo-polity-note',polity.note));
+      geoDetails.append(section);
+    }
+    if(place.source_url&&validLink(place.source_url)){
+      const link=create('a','dynasty-geo-reference','Источник координат города ↗');
+      link.href=place.source_url;link.target='_blank';link.rel='noopener noreferrer';
+      geoDetails.append(link);
+    }else geoDetails.append(create('p','dynasty-geo-reference',
+      'Единой географической точки для этого исторического института нет.'));
+    for(const b of geoJump.querySelectorAll('button'))
+      b.setAttribute('aria-pressed',String(b.dataset.place===selectedGeoPlace));
+    for(const node of geoViewport.querySelectorAll('[data-place]'))
+      node.setAttribute('aria-pressed',String(node.dataset.place===selectedGeoPlace));
+  }
+  function renderGeography(){
+    if(!geography||!data||!base||!atlas||!extension){
+      geoStatus.textContent='Проверенная географическая подложка пока не загружена. Исторические данные доступны в других режимах.';
+      return;
+    }
+    const places=geoPlaces();
+    const visible=places.filter(p=>p.lon!==null&&p.lat!==null);
+    const links=geoRelationArcs(places);
+    const svg=svgNode('svg',{viewBox:'0 0 1120 630',
+      width:1120,height:630,role:'group',
+      'aria-label':'Современная береговая линия Европы, города-ориентиры для '+year+' года; не политические границы'});
+    svg.classList.add('dynasty-geo-svg');
+    svg.append(svgNode('title',{},'Европа, географические ориентиры · '+year));
+    svg.append(svgNode('desc',{},
+      'Береговая линия Natural Earth. Точки городов не обозначают исторические территории или юридические границы. Линии обозначают только документированные отношения.'));
+    for(const lon of [-10,0,10,20,30,40]){
+      const [x]=geoPoint(lon,50);
+      svg.append(svgNode('line',{x1:x,y1:26,x2:x,y2:596,
+        stroke:'#dfebe8','stroke-width':1,'stroke-dasharray':'4 7'}));
+    }
+    for(const lat of [40,50,60]){
+      const [,y]=geoPoint(0,lat);
+      svg.append(svgNode('line',{x1:36,y1:y,x2:1084,y2:y,
+        stroke:'#dfebe8','stroke-width':1,'stroke-dasharray':'4 7'}));
+    }
+    for(const path of geography.physical_outline.paths){
+      if(path.length<2)continue;
+      const d=path.map((p,i)=>{
+        const [x,y]=geoPoint(p[0],p[1]);
+        return (i===0?'M':'L')+x.toFixed(1)+' '+y.toFixed(1);
+      }).join(' ');
+      svg.append(svgNode('path',{d,class:'dynasty-geo-coast',
+        fill:'none',stroke:'#92b5a9','stroke-width':1.55,
+        'stroke-linejoin':'round','stroke-linecap':'round'}));
+    }
+    for(const [index,edge] of links.entries()){
+      const a=geoPoint(edge.a.lon,edge.a.lat),b=geoPoint(edge.b.lon,edge.b.lat);
+      const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2-22-(index%3)*13;
+      const path=svgNode('path',{
+        d:'M'+a[0]+' '+a[1]+' Q'+mx+' '+my+' '+b[0]+' '+b[1],
+        fill:'none',stroke:edgePalette[edge.relation.kind]||'#627e91',
+        'stroke-width':edge.kind==='interstate'?3:2.5,
+        'stroke-dasharray':edge.kind==='person_relation'?'6 6':'',
+        opacity:.85,class:'dynasty-geo-edge'
+      });
+      path.dataset.relationId=edge.relation.id;
+      path.append(svgNode('title',{},
+        edge.relation.title+' · '+(edge.kind==='person_relation'?
+          'Связь людей, не государств':'Документированное межгосударственное отношение')+
+          ' · '+edge.relation.source_ids.join(', ')));
+      svg.append(path);
+    }
+    for(const place of visible){
+      const [x,y]=geoPoint(place.lon,place.lat);
+      const roles=activeRoles().filter(r=>place.polities.some(p=>p.id===r.polity_id));
+      const institutions=activeInstitutions().filter(r=>place.polities.some(p=>p.id===r.polity_id));
+      const core=roles.some(r=>geoCoreRoles.has(r.role_kind));
+      const known=roles.length>0||institutions.length>0;
+      const color=core?'#316d62':known?'#a67e45':'#9da9a6';
+      const group=svgNode('g',{role:'button',tabindex:'0',
+        'aria-label':place.place_name+': '+place.polities.map(p=>p.name).join(', ')+
+          '; '+roles.length+' задокументированных ролей. Показать источники.',
+        'aria-pressed':String(place.id===selectedGeoPlace),
+        class:'dynasty-geo-marker'});
+      group.dataset.place=place.id;
+      group.append(svgNode('circle',{cx:x,cy:y,r:24,fill:'transparent',
+        class:'dynasty-geo-hit'}));
+      group.append(svgNode('circle',{cx:x,cy:y,r:core?11:9,
+        fill:color,stroke:'#fff','stroke-width':3}));
+      if(place.id===selectedGeoPlace)group.append(svgNode('circle',{cx:x,cy:y,r:16,
+        fill:'none',stroke:'#c39249','stroke-width':2.8}));
+      const off=place.label_offset||[18,-17];
+      const tx=x+off[0],ty=y+off[1];
+      group.append(svgNode('path',{d:'M'+x+' '+y+' L'+tx+' '+ty,
+        stroke:color,opacity:.6,fill:'none','stroke-width':1}));
+      group.append(svgNode('text',{x:tx,y:ty-4,'text-anchor':'middle',
+        fill:'#243f37','font-size':15,'font-weight':750,
+        'paint-order':'stroke',stroke:'#f5f9f8','stroke-width':5},
+        place.place_name));
+      if(place.polities.length>1)group.append(svgNode('text',{
+        x:tx,y:ty+13,'text-anchor':'middle','font-size':11,
+        fill:'#526a60'},'2 политических контекста'));
+      const select=()=>{selectedGeoPlace=place.id;renderGeoDetails(places);};
+      group.addEventListener('click',select);
+      group.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();select();}
+      });
+      svg.append(group);
+    }
+    svg.append(svgNode('text',{x:42,y:618,'font-size':14,
+      fill:'#5d7972'},'Natural Earth · физическая береговая линия · без границ стран'));
+    geoViewport.replaceChildren(svg);
+    geoJump.replaceChildren();
+    for(const place of places){
+      const label=place.place_name||place.polities.map(p=>p.name).join(', ');
+      const button=create('button','dynasty-geo-jump-button',label);
+      button.type='button';button.dataset.place=place.id;
+      button.setAttribute('aria-pressed',String(place.id===selectedGeoPlace));
+      button.addEventListener('click',()=>{
+        selectedGeoPlace=place.id;renderGeoDetails(places);
+        if(place.lon!==null){
+          const [x]=geoPoint(place.lon,place.lat);
+          const width=svg.getBoundingClientRect().width;
+          geoViewport.scrollLeft=Math.max(0,x*width/1120-geoViewport.clientWidth/2);
+        }
+      });
+      geoJump.append(button);
+    }
+    renderGeoDetails(places);
+    geoConnections.replaceChildren(create('h3',null,
+      'Подтверждённые отношения · '+links.length+' линий'));
+    if(!links.length)geoConnections.append(create('p',null,
+      'В этом году межгородских связей из выбранных документов не выделено. Это пробел, а не отсутствие связей.'));
+    for(const edge of links){
+      const card=create('article','dynasty-geo-connection');
+      card.dataset.relationKind=edge.relation.kind;
+      const suffix=edge.kind==='person_relation'?
+        'Связь конкретных людей, не союз государств':
+        'Отношение государств из источников';
+      card.append(create('strong',null,edge.relation.title),
+        create('span',null,' · '+suffix),sources(edge.relation.source_ids));
+      geoConnections.append(card);
+    }
+    const roleCount=visible.reduce((n,p)=>n+activeRoles().filter(r=>
+      p.polities.some(x=>x.id===r.polity_id)).length,0);
+    geoStatus.textContent=year+' · '+visible.length+' точек-ориентиров · '+
+      roleCount+' документированных ролей у точек · '+links.length+
+      ' отображённых источниковых связей. Вне географии: '+(places.length-visible.length)+
+      ' институциональный контекст. Карта не показывает исторические границы.';
+  }
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
