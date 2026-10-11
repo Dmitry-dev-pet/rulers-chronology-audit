@@ -168,6 +168,13 @@ def relations_validate(snapshot: dict) -> dict:
                 require(event is not None or lo==hi,
                         "one-time event without event year "+rid)
 
+    pinned_kinds=alias.get("relation_kinds")
+    require(isinstance(pinned_kinds,dict) and set(pinned_kinds)==set(registry),
+            "relation kind contract inventory differs from recorded source IDs")
+    for recorded_id,(recorded_dataset,recorded) in registry.items():
+        require(recorded["kind"]==pinned_kinds[recorded_id],
+                "relation kind drift for "+recorded_id)
+
     declared_aliases=alias["aliases"]
     require(len(declared_aliases)==2, "unexpected set of duplicate source records")
     require(set((a["dataset"],a["native_id"],a["canonical_id"])
