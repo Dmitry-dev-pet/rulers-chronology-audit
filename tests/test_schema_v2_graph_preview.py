@@ -119,7 +119,7 @@ class HistoricalGraphPreviewContract(unittest.TestCase):
         text=js.read_text(encoding="utf-8")
         for snippet in ("atlasV2","v2Year","atlas-v2-graph.json","v2Links",
                         "atlas-v2-source","history[push?'pushState':'replaceState']",
-                        "aria-modal","role','button","atlas-v2-node"):
+                        "aria-modal","role:'button'","atlas-v2-node"):
             self.assertIn(snippet,text)
         self.assertNotIn("innerHTML",text)
         self.assertNotIn("eval(",text)
