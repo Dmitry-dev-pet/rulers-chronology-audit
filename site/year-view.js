@@ -62,7 +62,10 @@
   // On desktop this is hidden and the existing four-column layout is unchanged.
   const highlights = elem('section', 'atlas-mobile-highlights');
   highlights.setAttribute('aria-label', 'Краткий источниковый срез года');
-  dashboard.append(originalHead, range, caveat, status, highlights, cards);
+  const worldLink = elem('a', 'atlas-year-world-link', '◈ Мир · 1762: происхождение и династии ↗');
+  worldLink.href = '?world=1762#/timeline/1762';
+  worldLink.dataset.worldOpen = '1762';
+  dashboard.append(originalHead, range, worldLink, caveat, status, highlights, cards);
   panel.insertBefore(dashboard, toolbar);
 
   // The historical statements remain in the canonical atlas database,
