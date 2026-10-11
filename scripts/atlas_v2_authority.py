@@ -221,7 +221,7 @@ def populate(conn:sqlite3.Connection,data:dict,snapshot:dict)->dict:
             period_id="v2-auth-period-"+edge["id"]
             meaning = ("event" if edge["period"]["meaning"]=="event_in_year"
                        else "research_window")
-            caveat=edge["caveat"]+" Research slice only; no day-level or territorial inference."
+            caveat=edge["caveat"]+" Источниковый срез: не выводим точные дни или границы фактической власти."
             conn.execute("""INSERT INTO v2_periods
                 (id,start_year,end_year,start_date_json,end_date_json,meaning,note)
                 VALUES(?,?,?,NULL,NULL,?,?)""",
