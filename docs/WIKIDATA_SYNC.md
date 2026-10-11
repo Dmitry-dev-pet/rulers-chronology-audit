@@ -88,3 +88,9 @@ Reference operational guidance: [Wikimedia rate limits](https://www.mediawiki.or
    preserving mixed calendars, uncertainty, disagreement and collective power.
 4. Publish selected data in the worldwide SPA only after historical review
    and measurement of derived SQLite/JSON size versus the 100 MB target.
+
+## P2 extension: reviewed world IDs and legal P39 comparison (11 Oct 2026)
+
+[Full P2 protocol](WIKIDATA_P2.md). P2 adds six explicitly reviewed canonical-person QIDs and 17 world-pilot QID references **without** turning world-pilot people into canonical persons. The registry excludes known name-collision candidates for Frederick II and Leopold II. A new read-only `wikidata_office_review` module compares explicit P39 office QIDs and date qualifiers with compatible canonical tenure candidates. It never equates a party secretariat with personal political dominance, and it does not silently split Soviet composite roles or normalize unspecified calendar dates.
+
+The weekly audit now produces four review files (identity/date JSON + Markdown, office JSON + Markdown). The first-run numbers above describe **the P1 historical snapshot**, not a permanent population size or future synchronization coverage. All four reports remain review-only artifacts; a manual opt-in PR is a report, not a canonical history update.
