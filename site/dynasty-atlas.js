@@ -110,11 +110,13 @@
   const networkViewButton=create('button','dynasty-view-button','Люди и связи');
   const housesViewButton=create('button','dynasty-view-button','Династии × государства');
   const coverageViewButton=create('button','dynasty-view-button','Покрытие базы');
-  networkViewButton.type=housesViewButton.type=coverageViewButton.type='button';
+  const mapViewButton=create('button','dynasty-view-button','Карта и связи');
+  networkViewButton.type=housesViewButton.type=coverageViewButton.type=mapViewButton.type='button';
   networkViewButton.dataset.dynastyView='network';
   housesViewButton.dataset.dynastyView='houses';
   coverageViewButton.dataset.dynastyView='coverage';
-  viewSwitch.append(networkViewButton,housesViewButton,coverageViewButton);
+  mapViewButton.dataset.dynastyView='map';
+  viewSwitch.append(networkViewButton,housesViewButton,coverageViewButton,mapViewButton);
   const networkPanel=create('section','dynasty-person-graph-panel');
   networkPanel.append(graphicTitle,key,countryJump,graphContainer,graphNote);
   const footprintPanel=create('section','dynasty-footprint-panel');
@@ -190,34 +192,57 @@
   // Mobile-first: the year-by-country chart is seen before long commentary.
   coveragePanel.append(coverageOverview,coverageScroll,coverageLegend,
     coverageDetail,coverageTasks,coverageIntro,coverageMethod);
+  // Geographic reference-only view of existing roles, not historic borders.
+  const geoPanel=create('section','dynasty-geo-panel');
+  geoPanel.hidden=true;
+  geoPanel.setAttribute('aria-label','Европа: ориентиры, правители и документированные связи');
+  const geoLead=create('p','dynasty-geo-lead',
+    'Береговая линия и точки городов — современные географические ориентиры. НЕ границы государств XVIII века. Связи людей не означают союза стран.');
+  const geoStatus=create('p','dynasty-geo-status','Загружаем географические ориентиры…');
+  geoStatus.setAttribute('role','status');
+  const geoJump=create('nav','dynasty-geo-jump');
+  geoJump.setAttribute('aria-label','Выбрать ориентир на карте');
+  const geoViewport=create('div','dynasty-geo-viewport');
+  geoViewport.setAttribute('role','region');
+  geoViewport.setAttribute('aria-label','Прокручиваемая карта береговой линии Европы с городами-ориентирами');
+  geoViewport.tabIndex=0;
+  const geoDetails=create('section','dynasty-geo-details');
+  geoDetails.setAttribute('aria-label','Подтверждённые должности выбранного места');
+  geoDetails.tabIndex=-1;
+  const geoConnections=create('section','dynasty-geo-connections');
+  geoConnections.setAttribute('aria-label','Документированные связи на карте');
+  geoPanel.append(geoLead,geoStatus,geoJump,geoViewport,geoDetails,geoConnections);
+  let selectedGeoPlace='saint-petersburg';
   let selectedView='network';
   let showSecondary=false;
   let selectedFootprint=null;
   let lastCenteredFootprintYear=null;
   const modeFromUrl=()=>{
     const candidate=new URL(location.href).searchParams.get('dynView');
-    return ['houses','coverage'].includes(candidate)?candidate:'network';
+    return ['houses','coverage','map'].includes(candidate)?candidate:'network';
   };
   function updateView(){
     networkPanel.hidden=selectedView!=='network';
     footprintPanel.hidden=selectedView!=='houses';
     coveragePanel.hidden=selectedView!=='coverage';
+    geoPanel.hidden=selectedView!=='map';
     // These palette controls belong to the personal graph only: dynasty
     // colors in the matrix are fixed house identifiers, never ethnicity.
     colorControls.hidden=selectedView!=='network';
     notice.hidden=selectedView!=='network';
-    for(const button of [networkViewButton,housesViewButton,coverageViewButton]){
+    for(const button of [networkViewButton,housesViewButton,coverageViewButton,mapViewButton]){
       button.setAttribute('aria-pressed',String(button.dataset.dynastyView===selectedView));
     }
     if(selectedView==='houses' && footprints && data && extension)renderFootprints();
     if(selectedView==='coverage')renderCoverage();
+    if(selectedView==='map')renderGeography();
   }
   function setView(next,push){
-    if(!['network','houses','coverage'].includes(next))return;
+    if(!['network','houses','coverage','map'].includes(next))return;
     selectedView=next;
     if(isNetworkURL()){
       const url=new URL(location.href);
-      if(next==='houses'||next==='coverage')url.searchParams.set('dynView',next);
+      if(next==='houses'||next==='coverage'||next==='map')url.searchParams.set('dynView',next);
       else url.searchParams.delete('dynView');
       history[push?'pushState':'replaceState'](null,'',url.pathname+url.search+url.hash);
     }
@@ -226,6 +251,7 @@
   networkViewButton.addEventListener('click',()=>setView('network',true));
   housesViewButton.addEventListener('click',()=>setView('houses',true));
   coverageViewButton.addEventListener('click',()=>setView('coverage',true));
+  mapViewButton.addEventListener('click',()=>setView('map',true));
   showSecondaryInput.addEventListener('change',()=>{
     showSecondary=showSecondaryInput.checked;
     selectedFootprint=null;
@@ -246,13 +272,13 @@
   const original=create('a','dynasty-previous','← Открыть исходный пилот 1762 года');
   original.href='?world=1762#/timeline/1762';
   content.append(lede,timeline,colorControls,notice,viewSwitch,
-    networkPanel,footprintPanel,coveragePanel,timelineTitle,events,institutionsTitle,
+    networkPanel,footprintPanel,coveragePanel,geoPanel,timelineTitle,events,institutionsTitle,
     polities,participantsTitle,persons,relationsTitle,relations,caveats,original);
   dialog.append(head,content);
   layer.append(dialog);
   document.body.append(layer);
 
-  let data=null,base=null,atlas=null,extension=null,footprints=null,coverage=null,pending=null,previousFocus=null;
+  let data=null,base=null,atlas=null,extension=null,footprints=null,coverage=null,geography=null,pending=null,previousFocus=null;
   let year=1762;
   const abbr={
     ru:'Россия',fr:'Франция',pr:'Пруссия',gb:'Великобритания',
@@ -1153,6 +1179,7 @@
     renderCountryJump();
     if(selectedView==='houses')renderFootprints();
     if(selectedView==='coverage')renderCoverage();
+    if(selectedView==='map')renderGeography();
     renderEvents();renderPolities();renderPersons();renderRelations();
   }
   function chooseYear(value,push){
