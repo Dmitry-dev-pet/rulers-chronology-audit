@@ -11,6 +11,20 @@
   if(!panel||!slider||!dashboard||!workspace||!globalSheet)return;
 
   const breakpoint=window.matchMedia('(max-width:900px)');
+  // Keep original, descriptive accessible names. Only abbreviate the VISIBLE
+  // labels in the bottom navigation, where 320px cannot fit long words.
+  const shortNames={timeline:'Год',people:'Люди',poster:'Плакат',research:'Источники'};
+  document.querySelectorAll('.mode-tab[data-view]').forEach(tab=>{
+    const num=tab.querySelector('.num');
+    const full=tab.textContent.replace(/^\s*\d{1,2}\s*/,'').trim();
+    const large=document.createElement('span');
+    large.className='atlas-desktop-tab-label';large.textContent=full;
+    const small=document.createElement('span');
+    small.className='atlas-mobile-tab-label';
+    small.textContent=shortNames[tab.dataset.view]||full;
+    tab.setAttribute('aria-label',full);
+    tab.replaceChildren(...(num?[num]:[]),large,small);
+  });
   const modeMap=new Map([
     ['summary','Сводка'],
     ['timeline','Шкала']
@@ -80,19 +94,44 @@
         b.setAttribute('aria-pressed',String(b.dataset.mobileAction===mode));
     }
   }
+  function chooseContextEra(){
+    const y=Number(slider.value);
+    const available=[
+      [1417,1546,'muscovy'],[1547,1616,'tsardom'],
+      [1617,1681,'romanov'],[1682,1741,'dual'],
+      [1742,1816,'eighteenth'],[1817,1893,'imperial'],
+      [1894,1925,'transition'],[1926,1952,'early'],
+      [1953,1981,'middle'],[1982,1991,'late']
+    ];
+    const active=panel.querySelector('.era-btn[aria-pressed="true"]');
+    const numbers=active?.textContent.match(/\d{4}/g)?.map(Number);
+    // Respect an intentionally selected short period if it still contains
+    // the chosen year. The all-centuries view is unreadable at phone width.
+    if(active?.dataset.era!=='all'&&numbers?.length>=2&&
+       numbers[0]<=y&&y<=numbers[1])return;
+    const target=available.find(([a,b])=>a<=y&&y<=b)?.[2]||'all';
+    const button=panel.querySelector('.era-btn[data-era="'+target+'"]');
+    if(button&&button!==active)button.click();
+  }
   function setMode(next){
     if(!modeMap.has(next))return;
     if(!breakpoint.matches)return;
     if(next==='summary' && workspace.classList.contains('atlas-sidebar-open')){
       workspace.querySelector('.atlas-sidebar-close')?.click();
     }
+    if(next==='summary'){
+      // Summary is a universal year chooser; do not leave the slider bounded
+      // to a narrow era selected for chart readability.
+      const all=panel.querySelector('.era-btn[data-era="all"]');
+      if(all&&all.getAttribute('aria-pressed')!=='true')all.click();
+    }
     mode=next;
     panel.dataset.mobileMode=mode;
     refreshControls();
-    // The desktop chart calculates horizontal width from clientWidth. When it
-    // becomes visible again after summary mode, trigger a real resize.
-    if(mode==='timeline')
+    if(mode==='timeline'){
+      chooseContextEra();
       requestAnimationFrame(()=>window.dispatchEvent(new Event('resize')));
+    }
     if(mode==='summary')dashboard.scrollTop=0;
   }
 
