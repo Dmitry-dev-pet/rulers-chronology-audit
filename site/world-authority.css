@@ -91,3 +91,14 @@ button:focus-visible,input:focus-visible,a:focus-visible,[tabindex="0"]:focus-vi
 @media(max-width:700px){.world-auth-year-tabs{display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
   .world-auth-year{min-width:0;width:100%;min-height:48px;padding:9px 5px}}
+
+/* Source register lives on a separate page and leaves legacy graph untouched. */
+.world-auth-top{flex-wrap:wrap}
+.world-auth-coverage-link{display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;border:1px solid #9cbbcf;background:#edf5fa;border-radius:9px;
+  padding:7px 12px;text-decoration:none;color:#345f74;font:750 13px/1.3 system-ui,sans-serif}
+.world-auth-coverage-link:hover{background:#dfeef4}
+.world-auth-coverage-link:focus-visible{outline:3px solid #b78843;outline-offset:3px}
+@media(max-width:700px){.world-auth-top{gap:7px}
+  .world-auth-coverage-link,.world-auth-top .world-auth-home{font-size:12px;
+    min-height:44px;flex:1 1 auto;text-align:center}}
