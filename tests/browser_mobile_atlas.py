@@ -53,12 +53,18 @@ def run(dist: Path, output: Path) -> None:
                 expect(page.locator('#panel-timeline:not(.smuta-map-active) .smuta-modebar')).to_be_hidden()
                 expect(page.locator('.atlas-year-role-card')).to_have_count(4)
                 expect(page.locator('.atlas-mobile-role-toggle')).to_have_count(4)
-                expect(page.locator('.atlas-year-role-card[data-kind="formal"] .atlas-mobile-role-toggle')).to_have_attribute('aria-expanded','true')
+                expect(page.locator('.atlas-year-role-card[data-kind="formal"] .atlas-mobile-role-toggle')).to_have_attribute('aria-expanded','false')
                 expect(page.locator('.atlas-year-role-card[data-kind="effective"] .atlas-mobile-role-toggle')).to_have_attribute('aria-expanded','false')
                 expect(page.locator('.atlas-timeline-workspace')).to_be_hidden()
                 expect(page.locator('.timeline-toolbar')).to_be_hidden()
                 expect(page.locator('.atlas-mobile-role-title').first).to_be_visible()
-                expect(page.locator('.atlas-year-person-link').first).to_be_visible()
+                expect(page.locator('.atlas-mobile-highlights')).to_be_visible()
+                expect(page.locator('.atlas-mobile-highlight')).to_have_count(4)
+                expect(page.locator('.atlas-mobile-highlight[data-kind="formal"]')).to_contain_text('Иван V')
+                expect(page.locator('.atlas-mobile-highlight[data-kind="formal"]')).to_contain_text('Пётр I')
+                expect(page.locator('.atlas-mobile-highlight[data-kind="effective"]')).to_contain_text('Софья')
+                expect(page.locator('.atlas-mobile-highlight[data-kind="regency"]')).to_contain_text('Софья')
+                expect(page.locator('.atlas-mobile-highlights-note')).to_contain_text('не одновременный')
                 # Mobile tap targets must be physically large, while body itself
                 # fits the viewport. Horizontal chips and the chart scroll locally.
                 for loc in [
@@ -74,6 +80,10 @@ def run(dist: Path, output: Path) -> None:
                     "parseFloat(getComputedStyle(document.querySelector('.atlas-mobile-role-title')).fontSize)>=16")
                 screenshot=output/f'mobile-summary-{width}.png'
                 page.screenshot(path=str(screenshot),full_page=True)
+                # One tap from the preview expands the original canonical card.
+                page.locator('.atlas-mobile-highlight[data-kind="formal"]').click()
+                expect(page.locator('.atlas-year-role-card[data-kind="formal"] .atlas-mobile-role-toggle')).to_have_attribute('aria-expanded','true')
+                expect(page.locator('.atlas-year-person-link').first).to_be_visible()
 
                 regency=page.locator('.atlas-year-role-card[data-kind="regency"]')
                 regency.locator('.atlas-mobile-role-toggle').click()
