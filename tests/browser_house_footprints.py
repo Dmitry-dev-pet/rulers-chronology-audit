@@ -37,6 +37,11 @@ def run(dist:Path, output:Path):
                 expect(page.locator('[data-dynasty-view="houses"]')).to_have_attribute('aria-pressed','true')
                 expect(page.locator('.dynasty-footprint-panel')).to_be_visible()
                 expect(page.locator('.dynasty-person-graph-panel')).to_be_hidden()
+                expect(page.locator('.dynasty-color-controls')).to_be_hidden()
+                expect(page.locator('.dynasty-notice')).to_be_hidden()
+                if width<=390 and height>=640:
+                    chart=page.locator('.dynasty-footprint-scroll').bounding_box()
+                    assert chart and chart['y']<height*.75, (width,height,chart)
                 expect(page.locator('.dynasty-house-group')).to_have_count(4)
                 expect(page.locator('.dynasty-house-year')).to_have_count(5)
                 expect(page.locator('.dynasty-house-group[data-family-id="bourbon"] .dynasty-house-row[data-country="fr"]')).to_have_count(1)
