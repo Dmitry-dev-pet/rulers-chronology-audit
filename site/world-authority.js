@@ -124,8 +124,14 @@
         make('p',null,item.explanation),
         make('p','world-auth-caution',item.caveat),
         make('p','world-auth-caution',
-          item.meaning==='event'?'Разовое событие, отнесённое к 1788 году.':
-            'Годовой срез, а не датировка начала или конца всех полномочий.'));
+          item.meaning==='event'
+            ?'Разовое событие '+year+' года, а не непрерывное правление.'
+            :'Годовой срез, а не датировка начала или конца всех полномочий.'));
+      if(item.documented_day){
+        detail.append(make('p','world-auth-tag',
+          'Точная дата по источнику: '+item.documented_day.value+
+          ' · '+item.documented_day.calendar));
+      }
     }
     detail.append(citations(item.source_ids));
   }
@@ -218,6 +224,7 @@
   function render(){
     if(!data)return;
     heading.textContent='Мировая сеть власти · '+year;
+    document.title='Мировая сеть власти · '+year+' — исторический атлас';
     intro.textContent='Выборочные политические отношения '+year+
       ' года: юридические должности, административное управление, военные '+
       'события и дипломатия. Это НЕ полная карта мира, границ или фактической власти.';
