@@ -203,7 +203,7 @@
   layer.append(dialog);
   document.body.append(layer);
 
-  let data=null,base=null,atlas=null,extension=null,footprints=null,pending=null,previousFocus=null;
+  let data=null,base=null,atlas=null,extension=null,footprints=null,repair=null,pending=null,previousFocus=null;
   let year=1762;
   const abbr={
     ru:'Россия',fr:'Франция',pr:'Пруссия',gb:'Великобритания',
@@ -240,13 +240,14 @@
   const isActive=(r,y)=>r.start_year<=y && y<=r.end_year;
   const allPeople=()=>[
     ...(base?.persons||[]),...(data?.additional_persons||[]),
-    ...(extension?.additional_persons||[])
+    ...(extension?.additional_persons||[]),...(repair?.person_additions||[])
   ];
   const allPolities=()=>[
     ...(base?.countries||[]),...(data?.additional_polities||[]),
     ...(extension?.additional_polities||[])
   ].map(p=>({...p,name:p.name||p.label})).filter(p=>
-    (!p.introduced_from||year>=p.introduced_from) &&
+    (!p.introduced_from||year>=p.introduced_from ||
+      (year>=1762 && (repair?.covered_polity_ids||[]).includes(p.id))) &&
     !(p.id==='fr' && year>1792)
   );
   const getPerson=id=>allPeople().find(p=>p.id===id);
@@ -261,7 +262,8 @@
   function sources(ids) {
     const wrap=create('div','dynasty-sources');
     const index=new Map([...(base?.sources||[]),...(data?.sources||[]),
-      ...(extension?.sources||[]),...(footprints?.sources||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
+      ...(extension?.sources||[]),...(footprints?.sources||[]),
+      ...(repair?.source_records||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
     [...new Set(ids||[])].forEach(id=>{
       const source=index.get(id);
       if(!source||!validLink(source.url))return;
@@ -294,8 +296,8 @@
     return match||null;
   }
   function activeRoles(){
-    return [...(data?.roles||[]),...(extension?.additional_roles||[])]
-      .filter(r=>isActive(r,year));
+    return [...(data?.roles||[]),...(extension?.additional_roles||[]),
+      ...(repair?.role_additions||[])].filter(r=>isActive(r,year));
   }
   function activeInstitutions(){
     return (extension?.institutions||[]).filter(r=>isActive(r,year));
@@ -303,8 +305,9 @@
   function activeIds(){return new Set(activeRoles().map(r=>r.person_id));}
   function activeRelations() {
     const people=activeIds();
-    return [...(data?.relations||[]),...(extension?.additional_relations||[])]
-      .filter(r=>isActive(r,year) && (r.subjects||[]).every(id=>people.has(id)));
+    return [...(data?.relations||[]),...(extension?.additional_relations||[]),
+      ...(repair?.relation_additions||[])].filter(r=>isActive(r,year) &&
+        (r.subjects||[]).every(id=>people.has(id)));
   }
   function mainHouse(actor){
     const h=actorHouses(actor);
@@ -334,7 +337,8 @@
   // The original year graph keeps its reviewed positions. Later years use
   // a data-driven layout that places one PERSON once, regardless of offices.
   function layoutForYear(){
-    if(year<=1780)return {positions, width:1540,height:590,groups:[],institutions:[]};
+    if(year<=1780 && !(repair?.role_additions||[]).some(r=>isActive(r,year)))
+      return {positions, width:1540,height:590,groups:[],institutions:[]};
     const groups=[
       ['ru','Россия'],['fr','Франция'],['pr','Пруссия'],['gb','Великобритания / Ганновер'],
       ['hab','Габсбургские владения / Империя'],
@@ -451,7 +455,9 @@
         'hab-francis2':'Франц II', 'ru-paul1':'Павел I',
         'pt-joao':'Жуан', 'pt-maria1':'Мария I', 'pt-pedro3':'Педру III',
         'es-carlos3':'Карл III', 'es-carlos4':'Карл IV',
-        'fr-napoleon':'Бонапарт'
+        'fr-napoleon':'Бонапарт',
+        'pt-jose1':'Жозе I','sw-adolf-fredrik':'Адольф Фредрик',
+        'tusc-ferdinand3':'Фердинанд III'
       }[actor.id]) || actorName(actor)
         .replace('Алексеевна','').replace('Петровна','');
       group.append(svgNode('text',{x,y:y-8,'text-anchor':'middle',
@@ -510,7 +516,8 @@
     return canvas;
   }
   function renderEvents(){
-    const records=[...(data?.milestones||[]),...(extension?.milestones||[])]
+    const records=[...(data?.milestones||[]),...(extension?.milestones||[]),
+      ...(repair?.milestones||[])]
       .filter(e=>e.year===year);
     events.replaceChildren();
     if(!records.length)events.append(create('p','dynasty-empty','Для этого года в пилоте нет отдельного исследованного перехода. Это не означает отсутствия событий.'));
@@ -562,7 +569,8 @@
         p.kind==='birthplace_context_only'?
           'Представлено как историческое место рождения, не как ещё один британский престол.':
           'Политических должностей в этом году в пилоте нет; это пробел, не историческое отрицание.'));
-      article.append(create('p','dynasty-polity-note',p.note||'Даты и полномочия сохраняют исходную точность.'));
+      const coverageNote=(repair?.polity_coverage_notes||[]).find(n=>n.id===p.id);
+      article.append(create('p','dynasty-polity-note',coverageNote?.note||p.note||'Даты и полномочия сохраняют исходную точность.'));
       polities.append(article);
     }
   }
@@ -640,7 +648,8 @@
     'emperor','co_regent','consort','regent','heir','dynastic_person'
   ]);
   const excludesFromStateCount=new Set(['hre','frrep','meck']);
-  const fullRoles=()=>[...(data?.roles||[]),...(extension?.additional_roles||[])];
+  const fullRoles=()=>[...(data?.roles||[]),...(extension?.additional_roles||[]),
+    ...(repair?.role_additions||[])];
   const allJurisdictions=()=>[...(base?.countries||[]),
     ...(data?.additional_polities||[]),...(extension?.additional_polities||[])]
     .map(p=>({...p,name:p.name||p.label}));
@@ -836,7 +845,7 @@
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
-    countryJump.hidden=year<=1780;
+    countryJump.hidden=layoutForYear().groups.length===0;
     if(countryJump.hidden)return;
     const groups=[
       ['ru','Россия'],['fr','Франция'],['pr','Пруссия'],
@@ -861,7 +870,7 @@
     });
   }
   function render(){
-    if(!data||!base||!atlas||!extension||!footprints)return;
+    if(!data||!base||!atlas||!extension||!footprints||!repair)return;
     slider.value=String(year);
     yearOutput.textContent=String(year);
     back.disabled=year<=data.period.start;
@@ -891,7 +900,7 @@
   slider.addEventListener('input',()=>chooseYear(slider.value,false));
   const isNetworkURL=()=>new URL(location.href).searchParams.get('world')==='dynasty18';
   async function load(){
-    if(data&&base&&atlas&&extension&&footprints)return;
+    if(data&&base&&atlas&&extension&&footprints&&repair)return;
     if(pending)return pending;
     pending=Promise.all([
       fetch('./world-dynasty-18c.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('network');return r.json();}),
