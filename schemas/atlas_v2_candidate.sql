@@ -44,7 +44,7 @@ CREATE TABLE v2_periods (
   end_year INTEGER NOT NULL,
   start_date_json TEXT,
   end_date_json TEXT,
-  meaning TEXT NOT NULL CHECK(meaning IN ('term', 'event', 'observation', 'research_window')),
+  meaning TEXT NOT NULL CHECK(meaning IN ('term', 'event', 'observation', 'research_window', 'role_window')),
   note TEXT NOT NULL DEFAULT '',
   CHECK(start_year BETWEEN 1 AND 9999 AND end_year BETWEEN 1 AND 9999),
   CHECK(start_year <= end_year),
@@ -105,7 +105,7 @@ CREATE TABLE v2_roles (
   title TEXT NOT NULL,
   role_kind TEXT NOT NULL CHECK(role_kind IN (
     'sovereign', 'elector', 'emperor', 'regent', 'co_regent',
-    'consort', 'heir', 'first_consul', 'institutional', 'other')),
+    'consort', 'heir', 'dynastic_person', 'first_consul', 'institutional', 'other')),
   period_id TEXT NOT NULL REFERENCES v2_periods(id),
   assertion_id TEXT NOT NULL REFERENCES v2_assertions(id),
   canonical_tenure_id TEXT REFERENCES entries(id),
@@ -245,3 +245,65 @@ CREATE VIEW v2_personal_unions_without_role_candidates AS
 -- A validated export additionally requires each assertion to have a source;
 -- calendar-qualified temporal semantics; role-kind consistency; no unverified
 -- identity matches; no leap from claim to control; and scoped research coverage.
+
+
+-- P2 provenance: exact pilot JSON payload for every imported role/institution,
+-- independent of the already immutable canonical v1 provenance.
+CREATE TABLE v2_world_imports (
+  origin TEXT NOT NULL,
+  native_id TEXT NOT NULL,
+  dataset TEXT NOT NULL CHECK(dataset IN ('dynasty-1762-1780.json', 'extension-1781-1800.json')),
+  kind TEXT NOT NULL CHECK(kind IN ('person_role', 'institution')),
+  role_id TEXT UNIQUE REFERENCES v2_roles(id),
+  institution_id TEXT UNIQUE REFERENCES v2_institutions(id),
+  raw_json TEXT NOT NULL CHECK(json_valid(raw_json)),
+  PRIMARY KEY(origin, native_id),
+  CHECK((role_id IS NOT NULL)+(institution_id IS NOT NULL)=1),
+  CHECK((kind='person_role' AND role_id IS NOT NULL)
+     OR (kind='institution' AND institution_id IS NOT NULL))
+);
+
+-- UNION gives a READ-ONLY candidate chronology, NOT a historical certainty.
+-- v1 canonical tenure records come first. World role imports that already
+-- resolve to a canonical tenure are excluded to avoid duplicate Russian rulers.
+-- Entry/state fan-out can produce multiple CONTEXT rows for one v1 tenure.
+-- Each year overlap is a CANDIDATE only: consult calendar/precision/raw payload.
+CREATE VIEW v2_timeline_year_candidates AS
+SELECT 'v1-tenure' AS origin_layer, e.id AS item_id,
+       'canonical_tenure' AS item_kind, cr.context_id,
+       e.person_id AS person_id,
+       NULL AS external_person_origin, NULL AS external_person_id,
+       e.body_id AS body_id, NULL AS institution_id,
+       e.office_id AS role_kind, e.status AS legacy_status,
+       e.start_year, e.end_year, e.record_id AS legacy_record_id,
+       NULL AS imported_record_id
+FROM entries e
+JOIN entry_states es ON es.entry_id=e.id
+JOIN v2_context_refs cr ON cr.origin='atlas-state-v1' AND cr.native_id=es.state_id
+WHERE e.kind='tenures'
+UNION ALL
+SELECT 'world-pilot' AS origin_layer, r.id AS item_id,
+       CASE WHEN r.role_kind='institutional' THEN 'world_institution'
+            ELSE 'world_person_role' END AS item_kind,
+       r.context_id, r.person_id,
+       r.external_person_origin, r.external_person_id,
+       r.body_id, r.institution_id, r.role_kind,
+       NULL AS legacy_status, p.start_year, p.end_year,
+       NULL AS legacy_record_id, r.native_id AS imported_record_id
+FROM v2_roles r
+JOIN v2_periods p ON p.id=r.period_id
+WHERE r.canonical_tenure_id IS NULL
+UNION ALL
+SELECT 'v1-institution' AS origin_layer, e.id AS item_id,
+       'canonical_institution' AS item_kind, cr.context_id,
+       e.person_id, NULL, NULL,
+       e.body_id, NULL, 'institutional', e.status,
+       e.start_year, e.end_year, e.record_id, NULL
+FROM entries e
+JOIN entry_states es ON es.entry_id=e.id
+JOIN v2_context_refs cr ON cr.origin='atlas-state-v1' AND cr.native_id=es.state_id
+WHERE e.kind='institution_periods';
+
+-- Does not certify completeness or actual uninterrupted control of territory.
+-- Duplicates within a calendar year are not automatically same-day coexistence.
+CREATE INDEX v2_world_import_kind ON v2_world_imports(kind,dataset);
