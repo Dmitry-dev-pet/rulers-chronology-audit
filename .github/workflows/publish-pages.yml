@@ -18,6 +18,7 @@ on:
       - scripts/atlas_v2_roles.py
       - scripts/atlas_v2_relations.py
       - scripts/atlas_v2_authority.py
+      - scripts/atlas_v2_epochs.py
       - design/atlas-v2/**
       - schemas/**
       - data/atlas/**
@@ -96,6 +97,7 @@ jobs:
               'smuta-map.js', 'smuta-map.css', 'smuta-map.json',
               'v2.html', 'atlas-v2-graph.js', 'atlas-v2-graph.css', 'atlas-v2-graph.json',
               'authority.html', 'world-authority.js', 'world-authority.css', 'world-authority-1788.json',
+              'world-authority-1688.json', 'world-authority-1888.json',
           }
           actual = {p.name for p in dist.iterdir() if p.is_file()}
           assert actual == expected, f'Unexpected site files: {actual ^ expected}'
@@ -110,6 +112,14 @@ jobs:
           assert not authority['geographic_boundaries_verified']
           assert not authority['sample_covers_all_world']
           assert len(authority['edges'])==12, 'Authority pilot missing scoped edges'
+          for yr,links,regions in [(1688,5,3),(1888,7,2)]:
+              item=json.loads((dist/f'world-authority-{yr}.json').read_text())
+              assert item['focus_year']==yr, f'Incorrect authority year {yr}'
+              assert not item['historical_truth_verified_by_ci']
+              assert not item['geographic_boundaries_verified']
+              assert not item['sample_covers_all_world']
+              assert len(item['edges'])==links
+              assert len(item['regions'])==regions
           for path in dist.iterdir():
               content = path.read_bytes()
               assert b'drive.google.com' not in content, f'Drive reference: {path}'
@@ -155,5 +165,6 @@ jobs:
             echo "Database browser: ${SITE_URL}database.html"
             echo "Dynasty graph v2: ${SITE_URL}v2.html?atlasV2=graph&v2Year=1788#/timeline/1762"
             echo "World authority research pilot: ${SITE_URL}authority.html?region=hre"
+            echo "Authority epochs: ${SITE_URL}authority.html?year=1688 and ${SITE_URL}authority.html?year=1888"
             echo 'CI validates structure, not historical truth. Original photo remains private.'
           } >> "$GITHUB_STEP_SUMMARY"
