@@ -1,0 +1,1321 @@
+{
+  "schema_version": "dynasty-extension-v1",
+  "base_pilot": "dynasty-network-v1",
+  "purpose": "Extend the source-scoped 1762–1780 network to the year 1800 without changing its existing 1762–1780 records.",
+  "full_period": {
+    "start": 1762,
+    "end": 1800
+  },
+  "additional_coverage": {
+    "start": 1781,
+    "end": 1800
+  },
+  "additional_presets": [
+    1786,
+    1788,
+    1789,
+    1790,
+    1792,
+    1795,
+    1796,
+    1797,
+    1799,
+    1800
+  ],
+  "historical_truth_verified_by_ci": false,
+  "historical_borders_verified": false,
+  "caveats": [
+    "Страны Испания, Португалия и Швеция исследованы в новом слое лишь с 1781 года. Отсутствие в предыдущих годах не означает отсутствия правителя.",
+    "До 1800 года показаны только отдельные государства, институты и связи; это не полный состав европейских дворов.",
+    "В 1792 году французский монархический режим прекратился и возникла республика. Национальный конвент, Директория и Консульство являются институтами, а не единоличными королями.",
+    "Годовой срез включит завершившийся и начавшийся в одном году сроки, но не означает совместное царствование в один день.",
+    "Регентские полномочия Жуана в Португалии описываются с 1792 года; их формально-правовое оформление в 1799 году требует отдельной сверки. Это не два разных царя.",
+    "Династия, место рождения, должность и государство не дают права угадывать этнокультурное происхождение или гражданство.",
+    "Составная монархия Габсбургов и выборная Священная Римская империя — разные категории политического устройства."
+  ],
+  "additional_polities": [
+    {
+      "id": "es",
+      "name": "Королевство Испания",
+      "kind": "kingdom",
+      "color": "#b17a43",
+      "introduced_from": 1781,
+      "source_ids": [
+        "EX07",
+        "EX08"
+      ],
+      "note": "Исторический государственный контекст для Карла III и Карла IV; прежние правители до 1781 года в пилоте не перечислены."
+    },
+    {
+      "id": "pt",
+      "name": "Королевство Португалия",
+      "kind": "kingdom",
+      "color": "#437e76",
+      "introduced_from": 1781,
+      "source_ids": [
+        "EX09"
+      ],
+      "note": "Мария I — правящая королева, Педру III — король-супруг, Жуан — регент, Карлота Жоакина — супруга принца. Не смешивать их полномочия."
+    },
+    {
+      "id": "sw",
+      "name": "Королевство Швеция",
+      "kind": "kingdom",
+      "color": "#6287a6",
+      "introduced_from": 1781,
+      "source_ids": [
+        "EX12"
+      ],
+      "note": "Густав III с 1771 года; после 1792 — малолетний Густав IV Адольф и регентство герцога Карла до 1796."
+    },
+    {
+      "id": "tusc",
+      "name": "Великое герцогство Тосканское",
+      "kind": "grand_duchy",
+      "color": "#987e67",
+      "introduced_from": 1781,
+      "source_ids": [
+        "EX05"
+      ],
+      "note": "Отдельное государство: Леопольд правил Тосканой до 1790 года, когда стал правителем владений Габсбургов и императором."
+    },
+    {
+      "id": "frrep",
+      "name": "Французская республика",
+      "kind": "republic",
+      "color": "#63828e",
+      "introduced_from": 1792,
+      "source_ids": [
+        "EX15",
+        "EX16"
+      ],
+      "note": "Не монархия: Конвент, Директория и Консульство — разные учреждения. Провозглашение республики 21 сентября 1792."
+    }
+  ],
+  "additional_persons": [
+    {
+      "id": "ru-paul1",
+      "name": null,
+      "canonical_person_id": "person-14b51b51093f55ce",
+      "canonical_tenure_id": "tenure-r13",
+      "houses": [
+        {
+          "id": "romanov",
+          "name": "Романовы",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX01"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Место рождения в этой партии не исследовано",
+        "polity_id": null,
+        "source_ids": [
+          "EX01"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX01"
+      ]
+    },
+    {
+      "id": "pr-fw2",
+      "name": "Фридрих Вильгельм II",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "hohenzollern",
+          "name": "Гогенцоллерны",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX02"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Место рождения в этой партии не исследовано",
+        "polity_id": null,
+        "source_ids": [
+          "EX02"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX02"
+      ]
+    },
+    {
+      "id": "pr-fw3",
+      "name": "Фридрих Вильгельм III",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "hohenzollern",
+          "name": "Гогенцоллерны",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX03"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Место рождения в этой партии не исследовано",
+        "polity_id": null,
+        "source_ids": [
+          "EX03"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX03"
+      ]
+    },
+    {
+      "id": "hab-leopold",
+      "name": "Леопольд II",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "habsburg-lorraine",
+          "name": "Габсбург-Лотарингский дом",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX04"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Вена",
+        "polity_id": null,
+        "source_ids": [
+          "EX04"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX04"
+      ]
+    },
+    {
+      "id": "hab-francis2",
+      "name": "Франц II",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "habsburg-lorraine",
+          "name": "Габсбург-Лотарингский дом",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX06"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Флоренция",
+        "polity_id": null,
+        "source_ids": [
+          "EX06"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX06"
+      ]
+    },
+    {
+      "id": "hab-maria-luisa",
+      "name": "Мария Луиза Испанская",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "bourbon",
+          "name": "Испанские Бурбоны",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX05"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Королевство Неаполь",
+        "polity_id": null,
+        "source_ids": [
+          "EX05"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX05"
+      ]
+    },
+    {
+      "id": "es-carlos3",
+      "name": "Карл III Испанский",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "bourbon",
+          "name": "Бурбоны",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX07"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Мадрид",
+        "polity_id": null,
+        "source_ids": [
+          "EX07"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX07"
+      ]
+    },
+    {
+      "id": "es-carlos4",
+      "name": "Карл IV Испанский",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "bourbon",
+          "name": "Бурбоны",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX08"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Портичи, Неаполитанское королевство",
+        "polity_id": null,
+        "source_ids": [
+          "EX08"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX08"
+      ]
+    },
+    {
+      "id": "pt-maria1",
+      "name": "Мария I Португальская",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "braganza",
+          "name": "Браганса",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX09"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Лиссабон",
+        "polity_id": null,
+        "source_ids": [
+          "EX09"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX09"
+      ]
+    },
+    {
+      "id": "pt-pedro3",
+      "name": "Педру III Португальский",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "braganza",
+          "name": "Браганса",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX09"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Лиссабон",
+        "polity_id": null,
+        "source_ids": [
+          "EX09"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX09"
+      ]
+    },
+    {
+      "id": "pt-joao",
+      "name": "Жуан (будущий Жуан VI)",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "braganza",
+          "name": "Браганса",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX11"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Лиссабон",
+        "polity_id": null,
+        "source_ids": [
+          "EX11"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX11"
+      ]
+    },
+    {
+      "id": "pt-carlota",
+      "name": "Карлота Жоакина",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "bourbon",
+          "name": "Испанские Бурбоны",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX10"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Аранхуэс, Испанское королевство",
+        "polity_id": null,
+        "source_ids": [
+          "EX10"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX10"
+      ]
+    },
+    {
+      "id": "sw-gustav3",
+      "name": "Густав III",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "holstein-gottorp",
+          "name": "Гольштейн-Готторпская ветвь",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX12"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Стокгольм",
+        "polity_id": null,
+        "source_ids": [
+          "EX12"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX12"
+      ]
+    },
+    {
+      "id": "sw-gustav4",
+      "name": "Густав IV Адольф",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "holstein-gottorp",
+          "name": "Гольштейн-Готторпская ветвь",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX13"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Стокгольм",
+        "polity_id": null,
+        "source_ids": [
+          "EX13"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX13"
+      ]
+    },
+    {
+      "id": "sw-charles",
+      "name": "Герцог Карл Сёдерманландский",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "holstein-gottorp",
+          "name": "Гольштейн-Готторпская ветвь",
+          "qualifier": "династическая принадлежность, не этничность",
+          "source_ids": [
+            "EX13"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Место рождения в этой партии не исследовано",
+        "polity_id": null,
+        "source_ids": [
+          "EX13"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX13"
+      ]
+    },
+    {
+      "id": "fr-napoleon",
+      "name": "Наполеон Бонапарт",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [],
+      "birthplace": {
+        "name": "Место рождения в этой партии не исследовано",
+        "polity_id": null,
+        "source_ids": [
+          "EX17"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "EX17"
+      ]
+    }
+  ],
+  "additional_roles": [
+    {
+      "id": "ex-ru-paul",
+      "person_id": "ru-paul1",
+      "polity_id": "ru",
+      "title": "Император России (с 6/17 ноября 1796)",
+      "role_kind": "sovereign",
+      "start_year": 1796,
+      "end_year": 1800,
+      "source_ids": [
+        "EX01"
+      ],
+      "note": "Вступил на престол после смерти Екатерины II. Условия действительной власти не выводятся из титула.",
+      "canonical_tenure_id": "tenure-r13"
+    },
+    {
+      "id": "ex-pr-fw2",
+      "person_id": "pr-fw2",
+      "polity_id": "pr",
+      "title": "Король Пруссии",
+      "role_kind": "sovereign",
+      "start_year": 1786,
+      "end_year": 1797,
+      "source_ids": [
+        "EX02"
+      ],
+      "note": "В 1786 году унаследовал престол после Фридриха II; умер в 1797."
+    },
+    {
+      "id": "ex-pr-fw3",
+      "person_id": "pr-fw3",
+      "polity_id": "pr",
+      "title": "Король Пруссии",
+      "role_kind": "sovereign",
+      "start_year": 1797,
+      "end_year": 1800,
+      "source_ids": [
+        "EX03"
+      ],
+      "note": "Вступил на престол в 1797 году после смерти Фридриха Вильгельма II."
+    },
+    {
+      "id": "ex-tusc-leopold",
+      "person_id": "hab-leopold",
+      "polity_id": "tusc",
+      "title": "Великий герцог Тосканский",
+      "role_kind": "sovereign",
+      "start_year": 1781,
+      "end_year": 1790,
+      "source_ids": [
+        "EX05"
+      ],
+      "note": "Реальный срок начался в 1765; отображаем только исследованное расширение после 1780.",
+      "actual_start_year": 1765
+    },
+    {
+      "id": "ex-tusc-luisa",
+      "person_id": "hab-maria-luisa",
+      "polity_id": "tusc",
+      "title": "Великая герцогиня-консорт Тосканы",
+      "role_kind": "consort",
+      "start_year": 1781,
+      "end_year": 1790,
+      "source_ids": [
+        "EX05"
+      ],
+      "note": "Дочь Карла III Испанского и супруга Леопольда. Не самостоятельная правительница Тосканы.",
+      "actual_start_year": 1765
+    },
+    {
+      "id": "ex-hab-leopold",
+      "person_id": "hab-leopold",
+      "polity_id": "hab",
+      "title": "Правитель владений Габсбургов",
+      "role_kind": "sovereign",
+      "start_year": 1790,
+      "end_year": 1792,
+      "source_ids": [
+        "EX04"
+      ],
+      "note": "После смерти Иосифа II сменил его как правитель составной монархии."
+    },
+    {
+      "id": "ex-hre-leopold",
+      "person_id": "hab-leopold",
+      "polity_id": "hre",
+      "title": "Император Священной Римской империи",
+      "role_kind": "emperor",
+      "start_year": 1790,
+      "end_year": 1792,
+      "source_ids": [
+        "EX04"
+      ],
+      "note": "Выборная императорская должность; не государственная должность во всех германских владениях."
+    },
+    {
+      "id": "ex-hab-luisa",
+      "person_id": "hab-maria-luisa",
+      "polity_id": "hab",
+      "title": "Императрица-консорт",
+      "role_kind": "consort",
+      "start_year": 1790,
+      "end_year": 1792,
+      "source_ids": [
+        "EX05"
+      ],
+      "note": "Супруга Леопольда II; не носительница самостоятельного императорского титула."
+    },
+    {
+      "id": "ex-hab-francis",
+      "person_id": "hab-francis2",
+      "polity_id": "hab",
+      "title": "Правитель владений Габсбургов",
+      "role_kind": "sovereign",
+      "start_year": 1792,
+      "end_year": 1800,
+      "source_ids": [
+        "EX06"
+      ],
+      "note": "Наследовал после смерти отца Леопольда II; император Австрии — только с 1804, не в рассматриваемом периоде."
+    },
+    {
+      "id": "ex-hre-francis",
+      "person_id": "hab-francis2",
+      "polity_id": "hre",
+      "title": "Император Священной Римской империи Франц II",
+      "role_kind": "emperor",
+      "start_year": 1792,
+      "end_year": 1800,
+      "source_ids": [
+        "EX06"
+      ],
+      "note": "Выборный титул; в 1800 году ещё не император Австрии."
+    },
+    {
+      "id": "ex-es-carlos3",
+      "person_id": "es-carlos3",
+      "polity_id": "es",
+      "title": "Король Испании",
+      "role_kind": "sovereign",
+      "start_year": 1781,
+      "end_year": 1788,
+      "source_ids": [
+        "EX07"
+      ],
+      "note": "Правление началось в 1759; в 1788 году умер 14 декабря.",
+      "actual_start_year": 1759
+    },
+    {
+      "id": "ex-es-carlos4",
+      "person_id": "es-carlos4",
+      "polity_id": "es",
+      "title": "Король Испании",
+      "role_kind": "sovereign",
+      "start_year": 1788,
+      "end_year": 1800,
+      "source_ids": [
+        "EX08"
+      ],
+      "note": "Вступил на престол после смерти отца Карла III, 14 декабря 1788."
+    },
+    {
+      "id": "ex-pt-maria",
+      "person_id": "pt-maria1",
+      "polity_id": "pt",
+      "title": "Правящая королева Португалии",
+      "role_kind": "sovereign",
+      "start_year": 1781,
+      "end_year": 1800,
+      "source_ids": [
+        "EX09"
+      ],
+      "note": "Вступила на престол в 1777 и оставалась титулярной королевой; позднее функции управления осуществлял сын Жуан.",
+      "actual_start_year": 1777
+    },
+    {
+      "id": "ex-pt-pedro",
+      "person_id": "pt-pedro3",
+      "polity_id": "pt",
+      "title": "Король-супруг Марии I",
+      "role_kind": "consort",
+      "start_year": 1781,
+      "end_year": 1786,
+      "source_ids": [
+        "EX09"
+      ],
+      "note": "Титул короля по браку; не самостоятельный наследственный монарх. Умер в 1786.",
+      "actual_start_year": 1777
+    },
+    {
+      "id": "ex-pt-joao-infant",
+      "person_id": "pt-joao",
+      "polity_id": "pt",
+      "title": "Инфант Португалии, супруг Карлоты Жоакины",
+      "role_kind": "dynastic_person",
+      "start_year": 1785,
+      "end_year": 1787,
+      "source_ids": [
+        "EX11"
+      ],
+      "note": "Брак 1785; на этот момент ещё не наследник вместо старшего брата Жозе."
+    },
+    {
+      "id": "ex-pt-joao-heir",
+      "person_id": "pt-joao",
+      "polity_id": "pt",
+      "title": "Наследник португальского престола",
+      "role_kind": "heir",
+      "start_year": 1788,
+      "end_year": 1791,
+      "source_ids": [
+        "EX11"
+      ],
+      "note": "После смерти старшего брата Жозе в 1788 году."
+    },
+    {
+      "id": "ex-pt-joao-regent",
+      "person_id": "pt-joao",
+      "polity_id": "pt",
+      "title": "Принц-регент, осуществлял управление",
+      "role_kind": "regent",
+      "start_year": 1792,
+      "end_year": 1800,
+      "source_ids": [
+        "EX11"
+      ],
+      "note": "Музейное исследование относит принятие функций регента к 1792; формальное оформление в 1799 требует отдельной источниковой сверки."
+    },
+    {
+      "id": "ex-pt-carlota",
+      "person_id": "pt-carlota",
+      "polity_id": "pt",
+      "title": "Супруга инфанта/наследника, затем принца-регента",
+      "role_kind": "consort",
+      "start_year": 1785,
+      "end_year": 1800,
+      "source_ids": [
+        "EX10"
+      ],
+      "note": "До 1816 не королева Португалии; не самостоятельный монарх."
+    },
+    {
+      "id": "ex-sw-gustav3",
+      "person_id": "sw-gustav3",
+      "polity_id": "sw",
+      "title": "Король Швеции Густав III",
+      "role_kind": "sovereign",
+      "start_year": 1781,
+      "end_year": 1792,
+      "source_ids": [
+        "EX12"
+      ],
+      "note": "Царствовал с 1771; умер 29 марта 1792.",
+      "actual_start_year": 1771
+    },
+    {
+      "id": "ex-sw-gustav4",
+      "person_id": "sw-gustav4",
+      "polity_id": "sw",
+      "title": "Король Швеции Густав IV Адольф",
+      "role_kind": "sovereign",
+      "start_year": 1792,
+      "end_year": 1800,
+      "source_ids": [
+        "EX13"
+      ],
+      "note": "На престоле с 1792 как несовершеннолетний; личное управление с ноября 1796."
+    },
+    {
+      "id": "ex-sw-charles",
+      "person_id": "sw-charles",
+      "polity_id": "sw",
+      "title": "Герцог Карл, регент при малолетнем короле",
+      "role_kind": "regent",
+      "start_year": 1792,
+      "end_year": 1796,
+      "source_ids": [
+        "EX13"
+      ],
+      "note": "Управлял государством в период несовершеннолетия Густава IV Адольфа."
+    },
+    {
+      "id": "ex-fr-napoleon",
+      "person_id": "fr-napoleon",
+      "polity_id": "frrep",
+      "title": "Первый консул Французской республики",
+      "role_kind": "first_consul",
+      "start_year": 1799,
+      "end_year": 1800,
+      "source_ids": [
+        "EX17"
+      ],
+      "note": "После переворота 18 брюмера (9 ноября 1799), консульская конституция декабря; не император в 1799–1800."
+    }
+  ],
+  "institutions": [
+    {
+      "id": "ex-fr-convention",
+      "polity_id": "frrep",
+      "name": "Национальный конвент",
+      "kind": "collective",
+      "start_year": 1792,
+      "end_year": 1795,
+      "source_ids": [
+        "EX16"
+      ],
+      "note": "Республиканское представительство 1792–1795; не список отдельных королей."
+    },
+    {
+      "id": "ex-fr-directory",
+      "polity_id": "frrep",
+      "name": "Директория",
+      "kind": "collegial_executive",
+      "start_year": 1795,
+      "end_year": 1799,
+      "source_ids": [
+        "EX16"
+      ],
+      "note": "Коллегиальный исполнительный орган пяти директоров, без выдуманного единоличного правителя."
+    },
+    {
+      "id": "ex-fr-consulate",
+      "polity_id": "frrep",
+      "name": "Консульство",
+      "kind": "executive_system",
+      "start_year": 1799,
+      "end_year": 1800,
+      "source_ids": [
+        "EX17"
+      ],
+      "note": "Система исполнительной власти после 18 брюмера; Бонапарт как первый консул, не император."
+    }
+  ],
+  "additional_relations": [
+    {
+      "id": "ex-ru-catherine-paul",
+      "kind": "parent",
+      "subjects": [
+        "ru-catherine2",
+        "ru-paul1"
+      ],
+      "start_year": 1796,
+      "end_year": 1796,
+      "source_ids": [
+        "EX01"
+      ],
+      "title": "Екатерина II — мать Павла I",
+      "note": "Родство; вступление Павла в 1796 году не означает соправительство."
+    },
+    {
+      "id": "ex-pr-succ-1786",
+      "kind": "succession",
+      "subjects": [
+        "pr-frederick2",
+        "pr-fw2"
+      ],
+      "start_year": 1786,
+      "end_year": 1786,
+      "source_ids": [
+        "EX02"
+      ],
+      "title": "1786 · Фридрих Вильгельм II сменил Фридриха II",
+      "note": "Смена прусского короля, не совместное царствование."
+    },
+    {
+      "id": "ex-pr-succ-1797",
+      "kind": "succession",
+      "subjects": [
+        "pr-fw2",
+        "pr-fw3"
+      ],
+      "start_year": 1797,
+      "end_year": 1797,
+      "source_ids": [
+        "EX03"
+      ],
+      "title": "1797 · Фридрих Вильгельм III сменил Фридриха Вильгельма II",
+      "note": "Отец и сын; смена престола, не совместная власть."
+    },
+    {
+      "id": "ex-es-succ-1788",
+      "kind": "succession",
+      "subjects": [
+        "es-carlos3",
+        "es-carlos4"
+      ],
+      "start_year": 1788,
+      "end_year": 1788,
+      "source_ids": [
+        "EX07"
+      ],
+      "title": "1788 · Карл IV сменил Карла III",
+      "note": "Преемство в испанской ветви Бурбонов."
+    },
+    {
+      "id": "ex-es-carlos-carlota",
+      "kind": "parent",
+      "subjects": [
+        "es-carlos4",
+        "pt-carlota"
+      ],
+      "start_year": 1788,
+      "end_year": 1800,
+      "source_ids": [
+        "EX10"
+      ],
+      "title": "Карл IV Испанский — отец Карлоты Жоакины",
+      "note": "Родственная связь Испании и португальского двора; не право Испании на Португалию."
+    },
+    {
+      "id": "ex-pt-maria-pedro",
+      "kind": "marriage",
+      "subjects": [
+        "pt-maria1",
+        "pt-pedro3"
+      ],
+      "start_year": 1781,
+      "end_year": 1786,
+      "source_ids": [
+        "EX09"
+      ],
+      "title": "Мария I и Педру III: правящая королева и супруг",
+      "note": "Брак заключён в 1760; роль Педру в португальской короне — консорт.",
+      "event_year": 1760
+    },
+    {
+      "id": "ex-pt-joao-carlota",
+      "kind": "marriage",
+      "subjects": [
+        "pt-joao",
+        "pt-carlota"
+      ],
+      "start_year": 1785,
+      "end_year": 1800,
+      "source_ids": [
+        "EX10"
+      ],
+      "title": "1785 · брак Жуана и Карлоты Жоакины",
+      "note": "Междинастическая связь Португалии и Испании. Свадьба не делала их королями.",
+      "event_year": 1785
+    },
+    {
+      "id": "ex-hab-carlos-luisa",
+      "kind": "parent",
+      "subjects": [
+        "es-carlos3",
+        "hab-maria-luisa"
+      ],
+      "start_year": 1781,
+      "end_year": 1788,
+      "source_ids": [
+        "EX05"
+      ],
+      "title": "Карл III Испанский — отец Марии Луизы",
+      "note": "Испанская линия Бурбонов в браке с Габсбург-Лотарингскими."
+    },
+    {
+      "id": "ex-hab-leopold-luisa",
+      "kind": "marriage",
+      "subjects": [
+        "hab-leopold",
+        "hab-maria-luisa"
+      ],
+      "start_year": 1781,
+      "end_year": 1792,
+      "source_ids": [
+        "EX05"
+      ],
+      "title": "Леопольд II и Мария Луиза Испанская — супруги",
+      "note": "Не означает правления Марии Луизы на территории мужа.",
+      "event_year": 1765
+    },
+    {
+      "id": "ex-hab-leopold-francis",
+      "kind": "parent",
+      "subjects": [
+        "hab-leopold",
+        "hab-francis2"
+      ],
+      "start_year": 1792,
+      "end_year": 1792,
+      "source_ids": [
+        "EX06"
+      ],
+      "title": "Леопольд II — отец Франца II",
+      "note": "Родство и смена императорского лица в 1792 году."
+    },
+    {
+      "id": "ex-hab-succ-1790",
+      "kind": "imperial_succession",
+      "subjects": [
+        "hre-joseph",
+        "hab-leopold"
+      ],
+      "start_year": 1790,
+      "end_year": 1790,
+      "source_ids": [
+        "EX04"
+      ],
+      "title": "1790 · императором стал Леопольд II",
+      "note": "Титул выборный, а не единоличное наследование всего германского пространства."
+    },
+    {
+      "id": "ex-hab-succ-1792",
+      "kind": "imperial_succession",
+      "subjects": [
+        "hab-leopold",
+        "hab-francis2"
+      ],
+      "start_year": 1792,
+      "end_year": 1792,
+      "source_ids": [
+        "EX06"
+      ],
+      "title": "1792 · императором стал Франц II",
+      "note": "Не император Австрии до 1804."
+    },
+    {
+      "id": "ex-sw-succ-1792",
+      "kind": "succession",
+      "subjects": [
+        "sw-gustav3",
+        "sw-gustav4"
+      ],
+      "start_year": 1792,
+      "end_year": 1792,
+      "source_ids": [
+        "EX12"
+      ],
+      "title": "1792 · Густав IV Адольф сменил Густава III",
+      "note": "Переход престола к несовершеннолетнему сыну."
+    },
+    {
+      "id": "ex-sw-regency",
+      "kind": "regency",
+      "subjects": [
+        "sw-gustav4",
+        "sw-charles"
+      ],
+      "start_year": 1792,
+      "end_year": 1796,
+      "source_ids": [
+        "EX13"
+      ],
+      "title": "1792–1796 · регентство герцога Карла",
+      "note": "Несовершеннолетний король и реально осуществлявшееся регентское управление различаются."
+    },
+    {
+      "id": "ex-fr-revolution",
+      "kind": "regime_change",
+      "subjects": [],
+      "start_year": 1792,
+      "end_year": 1792,
+      "source_ids": [
+        "EX15"
+      ],
+      "title": "1792 · переход от монархии к республике",
+      "note": "10 августа — конец монархического режима по Версалю, 21 сентября — провозглашение республики.",
+      "polity_ids": [
+        "fr",
+        "frrep"
+      ],
+      "event_year": 1792
+    },
+    {
+      "id": "ex-fr-1799",
+      "kind": "institutional_change",
+      "subjects": [],
+      "start_year": 1799,
+      "end_year": 1799,
+      "source_ids": [
+        "EX17"
+      ],
+      "title": "1799 · от Директории к Консульству",
+      "note": "Коллегиальная Директория закончилась, новая конституция учредила Консульство.",
+      "polity_ids": [
+        "frrep"
+      ],
+      "event_year": 1799
+    }
+  ],
+  "milestones": [
+    {
+      "year": 1785,
+      "title": "Брак Жуана Португальского и Карлоты Жоакины",
+      "description": "Династическая связь Браганса и испанской ветви Бурбонов, без передачи престолов.",
+      "source_ids": [
+        "EX10"
+      ]
+    },
+    {
+      "year": 1786,
+      "title": "Пруссия: Фридрих II — Фридрих Вильгельм II; смерть Педру III",
+      "description": "Переход прусской короны и завершение роли португальского короля-супруга.",
+      "source_ids": [
+        "EX02",
+        "EX09"
+      ]
+    },
+    {
+      "year": 1788,
+      "title": "Испания: Карл IV после Карла III",
+      "description": "14 декабря 1788. Португальский Жуан становится наследником престола после смерти старшего брата.",
+      "source_ids": [
+        "EX07",
+        "EX08",
+        "EX11"
+      ]
+    },
+    {
+      "year": 1789,
+      "title": "Начало Французской революции",
+      "description": "Революция началась, но Людовик XVI ещё занимал королевский престол. Нельзя преждевременно объявлять Францию республикой.",
+      "source_ids": [
+        "EX15"
+      ]
+    },
+    {
+      "year": 1790,
+      "title": "Леопольд II после Иосифа II",
+      "description": "Выборная императорская должность и управление владениями Габсбургов — разные юридические контексты.",
+      "source_ids": [
+        "EX04"
+      ]
+    },
+    {
+      "year": 1792,
+      "title": "Франция — республика; Швеция — несовершеннолетний монарх; Священная Римская империя — Франц II",
+      "description": "Разные типы перехода власти происходят в один год; сроки не считаются одновременными по одному году.",
+      "source_ids": [
+        "EX06",
+        "EX13",
+        "EX15",
+        "EX16"
+      ]
+    },
+    {
+      "year": 1795,
+      "title": "От Национального конвента к Директории",
+      "description": "Смена республиканских учреждений; не смена единоличного правителя.",
+      "source_ids": [
+        "EX16"
+      ]
+    },
+    {
+      "year": 1796,
+      "title": "Россия: Павел I после Екатерины II",
+      "description": "6 (17) ноября 1796. Шведское регентство завершается, Густав IV Адольф начинает личное управление.",
+      "source_ids": [
+        "EX01",
+        "EX13"
+      ]
+    },
+    {
+      "year": 1797,
+      "title": "Пруссия: Фридрих Вильгельм III",
+      "description": "Престол переходит после смерти Фридриха Вильгельма II.",
+      "source_ids": [
+        "EX03"
+      ]
+    },
+    {
+      "year": 1799,
+      "title": "Франция: переворот 18 брюмера и Консульство",
+      "description": "Бонапарт получает должность первого консула. Он ещё не император. Португальское регентство требует различать начало фактического управления 1792 и оформление 1799.",
+      "source_ids": [
+        "EX17",
+        "EX11"
+      ]
+    },
+    {
+      "year": 1800,
+      "title": "Конец исследуемого XVIII века",
+      "description": "Европейские монархии сосуществуют с республиканской формой власти Франции. Дальнейшие события XIX века не включены автоматически.",
+      "source_ids": [
+        "EX16",
+        "EX17"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "EX01",
+      "title": "Президентская библиотека: Павел I вступил на российский престол 6 (17) ноября 1796",
+      "url": "https://static.prlib.ru/site_zemskiy_sobor/PavelI.html",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX02",
+      "title": "SPSG: Фридрих Вильгельм II, после Фридриха II; смерть в 1797",
+      "url": "https://www.spsg.de/presse-foto-film/pressemeldung?no_cache=1&sword_list%5B0%5D=SPSG&tx_news_pi1%5Baction%5D=detail&tx_news_pi1%5Bcontroller%5D=News&tx_news_pi1%5Bnews%5D=161",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX03",
+      "title": "SPSG: Фридрих Вильгельм III, вступление на престол 1797",
+      "url": "https://www.spsg.de/aktuelles/veranstaltung/ein-koenig-zwischen-revolution-und-restauration-teil-i-friedrich-wilhelm-iii-im-neuen-fluegel-von-schloss-charlottenburg",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX04",
+      "title": "Die Welt der Habsburger: Леопольд II 1790–1792",
+      "url": "https://www.habsburger.net/en/persons/habsburg-emperor/leopold-ii",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX05",
+      "title": "Die Welt der Habsburger: Мария Луиза Испанская дочь Карла III, жена Леопольда",
+      "url": "https://www.habsburger.net/en/chapter/splendid-populator-leopold-ii-and-his-large-family",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX06",
+      "title": "Die Welt der Habsburger: Франц II, император 1792–1806, австрийский титул только 1804",
+      "url": "https://www.habsburger.net/en/persons/habsburg-emperor/franz-ii-i",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX07",
+      "title": "Patrimonio Nacional: смерть Карла III 14 декабря 1788",
+      "url": "https://www.patrimonionacional.es/microsites/carlosiii/acerca_exposicion.htm",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX08",
+      "title": "Real Biblioteca: Карл IV, 1788–1808",
+      "url": "https://rb.patrimonionacional.es/es/node/311",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX09",
+      "title": "Parques de Sintra: Мария I, Педру III; король-консорт и дворец Келуш",
+      "url": "https://www.parquesdesintra.pt/en/parks-monuments/national-palace-and-gardens-of-queluz/history/",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX10",
+      "title": "Parques de Sintra: Карлота Жоакина дочь Карла IV, брак с Жуаном в 1785",
+      "url": "https://www.parquesdesintra.pt/en/about-us/blog/d-carlota-joaquina/",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX11",
+      "title": "Parques de Sintra: историческая брошюра Келуш; функции регентства Жуана с 1792",
+      "url": "https://www.parquesdesintra.pt/en/about-us/news/national-palace-of-queluz-acquisition-of-news-pieces-notably-a-new-portrait-of-king-joao-vi/",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX12",
+      "title": "Swedish Royal Palaces: Густав III правил 1771–1792",
+      "url": "https://www.kungligaslotten.se/english/list-of-swedish-monarchs/gustav-iii.html",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX13",
+      "title": "Swedish Royal Palaces: Густав IV Адольф, регентское управление герцога Карла 1792–1796",
+      "url": "https://www.kungligaslotten.se/regentlangd/gustav-iv-adolf.html",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX14",
+      "title": "SPSG: Гогенцоллерны, череда Фридриха Вильгельма II и III",
+      "url": "https://www.spsg.de/presse-foto-film/pressematerial-aktuell/2025-05-21-gesamtsanierung-schloss-pfaueninsel-abgeschlossen",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX15",
+      "title": "Château de Versailles: падение монархии 10 августа 1792, Республика 21 сентября",
+      "url": "https://www.chateauversailles.fr/decouvrir/histoire/les-grandes-dates/histoire-republique-versailles",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX16",
+      "title": "Assemblée nationale: Национальный конвент, Директория 1792–1799",
+      "url": "https://www.assemblee-nationale.fr/histoire/7da.asp",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "EX17",
+      "title": "Assemblée nationale: 18 брюмера, 9 ноября 1799, Консульство и Бонапарт",
+      "url": "https://www.assemblee-nationale.fr/histoire/7da.asp",
+      "note": "",
+      "verification": "reference_checked"
+    }
+  ]
+}
