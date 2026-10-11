@@ -64,6 +64,16 @@ class ExistingPagesV2(unittest.TestCase):
             self.assertFalse(authority["historical_truth_verified_by_ci"])
             self.assertFalse(authority["sample_covers_all_world"])
             self.assertFalse(authority["geographic_boundaries_verified"])
+            for year,expected_regions,expected_edges in (
+                    (1688,3,5),(1888,2,7)):
+                new=json.loads(
+                    (dist/f"world-authority-{year}.json").read_text(encoding="utf-8"))
+                self.assertEqual(new["focus_year"],year)
+                self.assertEqual(len(new["regions"]),expected_regions)
+                self.assertEqual(len(new["edges"]),expected_edges)
+                self.assertFalse(new["historical_truth_verified_by_ci"])
+                self.assertFalse(new["geographic_boundaries_verified"])
+                self.assertFalse(new["sample_covers_all_world"])
             data=json.loads((dist/"atlas-v2-graph.json").read_text())
             self.assertEqual(data["schema_version"],"atlas-v2-graph-preview-1")
             self.assertFalse(data["historical_truth_verified_by_ci"])
