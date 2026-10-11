@@ -21,6 +21,7 @@ from pathlib import Path
 from scripts import atlas_v2_graph_preview as preview
 from scripts import atlas_v2_authority as authority
 from scripts import atlas_v2_epochs as epochs
+from scripts import atlas_v2_coverage as coverage
 
 ROOT = preview.ROOT
 PUBLIC_FILES = (
@@ -34,6 +35,10 @@ PUBLIC_FILES = (
     "world-authority-1788.json",
     "world-authority-1688.json",
     "world-authority-1888.json",
+    "coverage.html",
+    "world-coverage.js",
+    "world-coverage.css",
+    "world-authority-coverage.json",
 )
 
 
@@ -111,13 +116,46 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
 <link rel="stylesheet" href="./world-authority.css">
 <script defer src="./world-authority.js"></script></head>
 <body><header class="world-auth-top">
-<div class="world-auth-brand">ИСТОРИЧЕСКИЙ АТЛАС · ПИЛОТ 1788</div>
+<div class="world-auth-brand">ИСТОРИЧЕСКИЙ АТЛАС · ПИЛОТЫ 1688 / 1788 / 1888</div>
+<a class="world-auth-coverage-link" href="./coverage.html">Матрица исследований ↗</a>
 <a class="world-auth-home" href="./v2.html?atlasV2=graph&amp;v2Year=1788#/timeline/1762">← Династический граф Европы</a>
 </header><main id="world-authority-app"></main>
 <footer class="world-auth-footer">Это выборка источниковых утверждений, не полная история мира и не точная карта территориальной власти. Проверка программы не удостоверяет исторические факты.</footer>
 </body></html>
 """
         (dist / "authority.html").write_text(world_page,encoding="utf-8")
+
+        # Coverage is derived ONLY from documented source rows in the same
+        # typed historical overlay. No one may infer a historical absence from
+        # an empty matrix cell. Keep it off the unchanged root homepage.
+        coverage_data=coverage.build(root)
+        require(coverage_data["summary"]["cell_count"]==21
+                and coverage_data["summary"]["partial_samples"]==8
+                and coverage_data["summary"]["not_researched"]==13
+                and coverage_data["historical_truth_verified_by_ci"] is False,
+                "coverage matrix source contract changed")
+        (dist / "world-authority-coverage.json").write_text(
+            json.dumps(coverage_data,ensure_ascii=False,indent=2,sort_keys=True)+"\n",
+            encoding="utf-8")
+        for name in ("world-coverage.js","world-coverage.css"):
+            shutil.copyfile(root / "site" / name,dist / name)
+        coverage_page = """<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Покрытие мировой исторической базы — исследовательская матрица</title>
+<meta name="description" content="Где есть источниковые записи о политической власти в 1688, 1788, 1888 годах, а где исследование ещё не проводилось.">
+<link rel="stylesheet" href="./world-authority.css">
+<link rel="stylesheet" href="./world-coverage.css">
+<script defer src="./world-coverage.js"></script></head>
+<body><header class="world-auth-top">
+<div class="world-auth-brand">ИСТОРИЧЕСКИЙ АТЛАС · МАТРИЦА ИССЛЕДОВАНИЙ</div>
+<a class="world-auth-coverage-link" href="./v2.html?atlasV2=graph&amp;v2Year=1788#/timeline/1762">Династии v2 ↗</a>
+<a class="world-auth-home" href="./authority.html?year=1788&amp;region=hre">← К сети власти</a>
+</header><main id="world-coverage-app"></main>
+<footer class="world-auth-footer">Отсутствие источниковых записей не означает отсутствие государства, правителя или власти. Это не глобальная оценка исторического покрытия.</footer>
+</body></html>
+"""
+        (dist / "coverage.html").write_text(coverage_page,encoding="utf-8")
         # The v2.html launch is a convenience; ordinary index.html remains intact.
         original_v2=(dist / "v2.html").read_text(encoding="utf-8")
         require("id='atlas-v2-launch'" in original_v2, "v2 launch missing")
@@ -158,7 +196,8 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
         "original_index_unchanged": True,
         "original_file_count": len(before),
         "counts": {**receipt["counts"], "world_authority":result["counts"],
-                   "epoch_authority": {str(y):p["counts"] for y,p in epoch_payloads.items()}},
+                   "epoch_authority": {str(y):p["counts"] for y,p in epoch_payloads.items()},
+                   "coverage_matrix":coverage_data["summary"]},
     }
 
 
