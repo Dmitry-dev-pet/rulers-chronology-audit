@@ -5,7 +5,7 @@ import subprocess
 import unittest
 from pathlib import Path
 
-from scripts import atlas_db
+from scripts import atlas_db, europe_coverage
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'data/atlas/world-pilots'
@@ -138,6 +138,29 @@ class CoverageMatrixContract(unittest.TestCase):
         self.assertEqual(gaps,[('tusc',year) for year in range(1791,1801)])
         self.assertIn('не измеряют полноту',
            (ROOT/'site/dynasty-atlas.js').read_text(encoding='utf-8'))
+
+    def test_python_audit_agrees_with_cell_classification(self):
+        projection=europe_coverage.coverage()
+        self.assertEqual(projection['schema_version'],'europe-coverage-v2')
+        self.assertFalse(projection['completeness_established'])
+        self.assertFalse(projection['historical_truth_verified_by_ci'])
+        self.assertEqual(len(projection['states']),13)
+        self.assertEqual(projection['status_counts'],{
+            'office':335,'institution':9,'research_gap':10,
+            'outside_sample':76,'historically_not_in_force':38,
+            'birthplace_context':39
+        })
+        for state in projection['states']:
+            self.assertEqual(len(state['years']),39)
+            for cell in state['years']:
+                self.assertEqual(cell['status'],
+                    self.classify(state['polity_id'],cell['year']))
+                self.assertTrue(cell['source_ids'])
+        tusc=next(s for s in projection['states'] if s['polity_id']=='tusc')
+        self.assertEqual([x['year'] for x in tusc['years']
+                          if x['status']=='research_gap'],
+                         list(range(1791,1801)))
+        # Unit test does not write the derived projection back to sources.
 
     def test_spa_deep_link_mobile_privacy_and_existing_modes(self):
         script=(ROOT/'site/dynasty-atlas.js').read_text(encoding='utf-8')
