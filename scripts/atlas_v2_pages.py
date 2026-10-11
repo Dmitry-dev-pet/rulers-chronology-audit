@@ -19,6 +19,7 @@ import tempfile
 from pathlib import Path
 
 from scripts import atlas_v2_graph_preview as preview
+from scripts import atlas_v2_authority as authority
 
 ROOT = preview.ROOT
 PUBLIC_FILES = (
@@ -26,6 +27,10 @@ PUBLIC_FILES = (
     "atlas-v2-graph.js",
     "atlas-v2-graph.css",
     "atlas-v2-graph.json",
+    "authority.html",
+    "world-authority.js",
+    "world-authority.css",
+    "world-authority-1788.json",
 )
 
 
@@ -74,6 +79,44 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
         for destination, source in mapping.items():
             shutil.copyfile(stage / source, dist / destination)
 
+        # Separate, small source-annotated world authority pilot (1788).
+        # The existing homepage and canonical chronology are not modified.
+        result = authority.projection(root)
+        require(result["counts"]["links"] == 12 and
+                result["counts"]["regions"] == 3 and
+                result["historical_truth_verified_by_ci"] is False,
+                "authority pilot contract changed")
+        (dist / "world-authority-1788.json").write_text(
+            json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+"\n",
+            encoding="utf-8")
+        for name in ("world-authority.js","world-authority.css"):
+            shutil.copyfile(root / "site" / name,dist / name)
+        world_page = """<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Мировая сеть власти · 1788 — исторический атлас</title>
+<meta name="description" content="Юридическая, фактическая, военная и дипломатическая власть в трёх исследовательских примерах 1788 года.">
+<link rel="stylesheet" href="./world-authority.css">
+<script defer src="./world-authority.js"></script></head>
+<body><header class="world-auth-top">
+<div class="world-auth-brand">ИСТОРИЧЕСКИЙ АТЛАС · ПИЛОТ 1788</div>
+<a class="world-auth-home" href="./v2.html?atlasV2=graph&amp;v2Year=1788#/timeline/1762">← Династический граф Европы</a>
+</header><main id="world-authority-app"></main>
+<footer class="world-auth-footer">Это выборка источниковых утверждений, не полная история мира и не точная карта территориальной власти. Проверка программы не удостоверяет исторические факты.</footer>
+</body></html>
+"""
+        (dist / "authority.html").write_text(world_page,encoding="utf-8")
+        # The v2.html launch is a convenience; ordinary index.html remains intact.
+        original_v2=(dist / "v2.html").read_text(encoding="utf-8")
+        require("id='atlas-v2-launch'" in original_v2, "v2 launch missing")
+        updated_v2=original_v2.replace(
+            "<a id='atlas-v2-launch'",
+            "<a id='world-authority-launch' href='./authority.html?region=hre' "
+            "aria-label='Мировая сеть политической власти, исследование 1788 года'>"
+            "Мировая власть · 1788 ↗</a>\n<a id='atlas-v2-launch'")
+        require(updated_v2 != original_v2,"world authority entrance missing")
+        (dist / "v2.html").write_text(updated_v2,encoding="utf-8")
+
     # Preserve exactly the same SHA256SUMS contract already used by v1.
     (dist / "SHA256SUMS").write_text("".join(
         digest(p) + "  " + p.name + "\n"
@@ -102,7 +145,7 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
         "new_files": list(PUBLIC_FILES),
         "original_index_unchanged": True,
         "original_file_count": len(before),
-        "counts": receipt["counts"],
+        "counts": {**receipt["counts"], "world_authority":result["counts"]},
     }
 
 
