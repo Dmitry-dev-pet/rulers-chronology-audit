@@ -911,8 +911,12 @@
     else if((polity.historical_start && selectedYear<polity.historical_start) ||
             (polity.historical_end && selectedYear>polity.historical_end))
       status='historically_not_in_force';
-    else if(selectedYear<polity.researched_from ||
-            selectedYear>polity.researched_through)
+    // An explicitly sourced backfill role always counts as evidence, even
+    // if it predates the original pilot's editorial researched_from boundary.
+    // This keeps the matrix correct when other PRs extend country coverage.
+    else if((selectedYear<polity.researched_from ||
+             selectedYear>polity.researched_through) &&
+            !roles.length && !institutions.length)
       status='outside_sample';
     else if(roles.some(r=>COVERAGE_CORE_KINDS.has(r.role_kind)))
       status='office';
