@@ -56,9 +56,9 @@ def run(dist:Path,output:Path):
 
                 # The 1688 Japan sample is partial, has sources, and deep links.
                 jp1688=page.locator(".coverage-cell-button[data-area='jp'][data-year='1688']")
-                expect(jp1688).to_contain_text("2 записей")
+                expect(jp1688).to_contain_text("2 записи")
                 jp1688.click()
-                expect(page.locator("#coverage-detail")).to_contain_text("Частичный")
+                expect(page.locator("#coverage-detail")).to_contain_text("частичная")
                 graph=page.locator("#coverage-detail .coverage-open-network")
                 expect(graph).to_have_attribute("href",
                     "./authority.html?year=1688&region=jp")
@@ -97,7 +97,7 @@ def run(dist:Path,output:Path):
                     "Сведения выбранного типа: 3")
                 page.locator(".coverage-cell-button[data-area='eng'][data-year='1888']").click()
                 expect(page.locator("#coverage-detail")).to_contain_text(
-                    "ещё не исследовано")
+                    "В этих исследовательских файлах нет записей")
                 page.go_back()
                 expect(page.locator(".coverage-cell-button[data-area='jp'][data-year='1888']")).to_have_attribute(
                     "aria-pressed","true")
