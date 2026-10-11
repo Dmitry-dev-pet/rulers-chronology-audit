@@ -1973,3 +1973,153 @@ button[disabled] {
 @media(prefers-reduced-motion:reduce){
   .atlas-world-layer *{scroll-behavior:auto!important}
 }
+
+
+/* Europe dynastic network 1762–1780; isolated from the original 1762 pilot. */
+.dynasty-layer[hidden]{display:none!important}
+.dynasty-layer{position:fixed;inset:0;z-index:1800;display:flex;
+  align-items:center;justify-content:center;padding:12px;
+  background:rgba(21,33,31,.7);color:#273c32}
+.dynasty-open body{overflow:hidden}
+.dynasty-dialog{width:min(1320px,100%);max-height:100%;min-height:0;
+  display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #cfd8cf;border-radius:16px;background:#fbfbf6;
+  box-shadow:0 18px 60px rgba(0,0,0,.25)}
+.dynasty-head{display:flex;gap:15px;flex:0 0 auto;justify-content:space-between;
+  align-items:center;padding:12px 18px;background:#edf2eb;
+  border-bottom:1px solid #c9d6cc}
+.dynasty-head-text{min-width:0}
+.dynasty-eyebrow{font:700 11px/1.4 system-ui,sans-serif;letter-spacing:.06em;
+  text-transform:uppercase;color:#4c7261;display:block}
+.dynasty-title{font:780 clamp(20px,3vw,28px)/1.2 system-ui,sans-serif;
+  color:#243b30;margin:3px 0 0}
+.dynasty-close,.dynasty-step,.dynasty-milestone,.dynasty-color-mode{
+  font:720 13px/1.25 system-ui,sans-serif;min-height:44px;border:1px solid #b5c7b9;
+  background:#fffefa;border-radius:9px;color:#2d5743;padding:9px 11px;cursor:pointer}
+.dynasty-close:hover,.dynasty-milestone:hover,.dynasty-color-mode:hover,.dynasty-step:hover{
+  background:#e0ecdf}
+.dynasty-close:focus-visible,.dynasty-step:focus-visible,
+.dynasty-milestone:focus-visible,.dynasty-color-mode:focus-visible,
+.dynasty-graph-scroll:focus-visible,.dynasty-source:focus-visible,
+.dynasty-person-link:focus-visible,.dynasty-previous:focus-visible,
+.dynasty-person:focus-visible{
+  outline:3px solid #52886f;outline-offset:2px}
+.dynasty-step:disabled{opacity:.45;cursor:not-allowed}
+.dynasty-content{overflow:auto;min-height:0;max-width:100%;
+  overscroll-behavior:contain;padding:16px 19px 25px}
+.dynasty-lede,.dynasty-graph-note{font:400 14px/1.5 system-ui,sans-serif;
+  color:#52685b;margin:0 0 12px}
+.dynasty-timeline{border:1px solid #d3dcd2;border-radius:12px;
+  padding:12px;background:#f4f6f0;margin-bottom:12px}
+.dynasty-year-row{display:flex;align-items:center;justify-content:center;gap:16px}
+.dynasty-year{font:800 28px/1.2 system-ui,sans-serif;min-width:100px;
+  color:#243c30;text-align:center;font-variant-numeric:tabular-nums}
+.dynasty-step{min-width:44px}
+.dynasty-year-range{display:block;width:100%;margin:13px 0 3px;
+  height:28px;accent-color:#477963}
+.dynasty-slider-label{display:flex;justify-content:space-between;
+  color:#586f60;font:600 12px/1.3 system-ui,sans-serif}
+.dynasty-milestones{display:flex;gap:6px;overflow:auto;padding:9px 0 1px}
+.dynasty-milestone{flex:1 0 auto;min-width:62px}
+.dynasty-color-controls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.dynasty-color-mode[aria-pressed="true"]{background:#315c48;color:#fff;
+  border-color:#315c48}
+.dynasty-notice{font:650 13px/1.5 system-ui,sans-serif;margin:6px 0 14px;color:#567060}
+.dynasty-section-title{font:800 18px/1.4 system-ui,sans-serif;margin:16px 0 8px;
+  color:#254837}
+.dynasty-graph-scroll{overflow-x:auto;overflow-y:hidden;width:100%;max-width:100%;
+  border:1px solid #d1dacf;border-radius:12px;background:
+  linear-gradient(180deg,#fffffb,#f4f5ee);touch-action:pan-x pan-y}
+.dynasty-graph-scroll svg{display:block;width:1540px;height:590px;max-width:none}
+.dynasty-graph-scroll svg g[role="button"]{cursor:pointer}
+.dynasty-graph-scroll svg g[role="button"]:focus-visible rect{
+  stroke:#175d62;stroke-width:5}
+.dynasty-legend{display:flex;gap:13px;flex-wrap:wrap;align-items:center;
+  font:650 12px/1.45 system-ui,sans-serif;color:#506858}
+.dynasty-legend-item{display:inline-flex;align-items:center;gap:6px}
+.dynasty-legend-item:before{content:"";width:15px;height:3px;border-radius:1px;
+  background:#926baa}
+.dynasty-legend-item[data-relation-kind="parent"]:before{background:#b08755}
+.dynasty-legend-item[data-relation-kind="succession"]:before{background:#318b78}
+.dynasty-legend-item[data-relation-kind="co_regency"]:before{background:#5e91ad}
+.dynasty-legend-item[data-relation-kind="personal_union"]:before{background:#6a66a9}
+.dynasty-graph-note{font-size:12px;margin:7px 0 16px}
+.dynasty-events{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dynasty-event{padding:12px;border:1px solid #d1d8cd;border-radius:9px;
+  background:#f7f8f3}
+.dynasty-event h4{font:750 15px/1.4 system-ui,sans-serif;margin:0 0 5px;
+  color:#304e3e}
+.dynasty-event p{font:400 13px/1.55 system-ui,sans-serif;margin:0 0 7px;color:#506256}
+.dynasty-polities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.dynasty-polity{padding:11px 12px;border:1px solid #d7dcd1;
+  border-top:4px solid var(--dynasty-polity-color);border-radius:10px;
+  background:#fff;min-width:0}
+.dynasty-polity h4{font:760 16px/1.4 system-ui,sans-serif;margin:0 0 9px;color:#293f32}
+.dynasty-office{border:1px solid #e0e7df;border-radius:7px;
+  padding:8px 9px;margin:6px 0;background:#f8f9f5;display:grid;gap:3px}
+.dynasty-office strong{font:740 14px/1.35 system-ui,sans-serif;color:#2d4b38}
+.dynasty-office span{font:500 13px/1.45 system-ui,sans-serif;color:#53675c}
+.dynasty-role-qualifier{font:650 12px/1.4 system-ui,sans-serif;color:#956843}
+.dynasty-polity-note{font:400 12px/1.5 system-ui,sans-serif;
+  color:#64776b;margin:8px 0 0}
+.dynasty-persons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.dynasty-person{min-width:0;background:#fff;
+  border:1px solid #dce2d9;border-left:5px solid var(--dynasty-person-color);
+  border-radius:9px;padding:11px}
+.dynasty-person h4{font:770 16px/1.35 system-ui,sans-serif;
+  margin:0 0 4px;color:#263d31}
+.dynasty-role-swatches{display:inline-flex;gap:3px;vertical-align:middle;margin-left:7px}
+.dynasty-state-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dynasty-person-role{color:#355e48;font:650 12px/1.5 system-ui,sans-serif;margin:0 0 7px}
+.dynasty-person-link,.dynasty-source,.dynasty-previous{
+  color:#28605b;text-underline-offset:3px}
+.dynasty-person-link{font:650 13px/1.5 system-ui,sans-serif;display:block;margin:5px 0}
+.dynasty-facts{display:grid;grid-template-columns:96px minmax(0,1fr);
+  gap:7px;margin:10px 0;padding-top:9px;border-top:1px solid #e1e9e1}
+.dynasty-facts dt{font:600 12px/1.4 system-ui,sans-serif;color:#698073}
+.dynasty-facts dd{margin:0;min-width:0;overflow-wrap:anywhere;
+  font:550 12px/1.5 system-ui,sans-serif;color:#324d3b}
+.dynasty-origin{font-weight:680!important}
+.dynasty-person-note,.dynasty-empty{
+  font:400 12px/1.55 system-ui,sans-serif;color:#6d7b70;margin:9px 0}
+.dynasty-sources{display:flex;gap:5px 8px;flex-wrap:wrap;margin:6px 0 0}
+.dynasty-source{font:650 12px/1.4 system-ui,sans-serif}
+.dynasty-relations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dynasty-relation{min-width:0;padding:11px 12px;background:#f8f9f4;
+  border:1px solid #d9e2d9;border-radius:9px}
+.dynasty-relation-type{font:760 11px/1.3 system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.035em;color:#718174}
+.dynasty-relation h4{font:750 14px/1.4 system-ui,sans-serif;
+  color:#355441;margin:5px 0}
+.dynasty-relation p{font:400 12px/1.5 system-ui,sans-serif;color:#66786b;margin:0 0 6px}
+.dynasty-caveats{margin:17px 0;border:1px solid #cdd8cf;
+  border-radius:9px;background:#f4f8f3;padding:10px 12px}
+.dynasty-caveats summary{font:700 14px/1.4 system-ui,sans-serif;
+  cursor:pointer;color:#365746}
+.dynasty-caveats li{font:400 12px/1.55 system-ui,sans-serif;
+  color:#53695d;margin:5px 0}
+.dynasty-previous{font:650 14px/1.5 system-ui,sans-serif;display:inline-block;
+  padding:10px 0}
+.atlas-world-network-link{display:inline-flex;align-items:center;min-height:44px;
+  font:760 13px/1.4 system-ui,sans-serif;margin:5px 0 14px;
+  background:#e6f1e8;padding:8px 12px;border-radius:8px;
+  border:1px solid #bed5c7;text-decoration:none;color:#285b44}
+.atlas-world-network-link:focus-visible{outline:3px solid #52886f;outline-offset:2px}
+@media(max-width:1000px){
+  .dynasty-persons{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .dynasty-layer{padding:0}
+  .dynasty-dialog{width:100%;height:100%;max-height:100dvh;border:0;border-radius:0}
+  .dynasty-head{padding:9px 12px}
+  .dynasty-content{padding:12px 12px 30px}
+  .dynasty-title{font-size:21px}
+  .dynasty-polities,.dynasty-events,.dynasty-persons,.dynasty-relations{
+    grid-template-columns:1fr}
+  .dynasty-color-mode{flex:1 0 auto;min-width:80px}
+  .dynasty-graph-scroll svg{width:1150px;height:440px}
+  .dynasty-facts{grid-template-columns:105px minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){
+  .dynasty-layer *{scroll-behavior:auto!important}
+}
