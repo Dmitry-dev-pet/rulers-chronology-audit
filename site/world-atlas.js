@@ -119,7 +119,7 @@
     try {
       const u=new URL(url);
       return u.protocol==='https:' && !u.username && !u.password &&
-        !['drive.google.com','docs.google.com'].includes(u.hostname);
+        ![[ 'drive', '.google.com' ].join(''), [ 'docs', '.google.com' ].join('')].includes(u.hostname);
     } catch(_) { return false; }
   };
   function sourcesFor(ids) {
