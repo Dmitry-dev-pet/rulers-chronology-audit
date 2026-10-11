@@ -853,6 +853,7 @@
     close.focus({preventScroll: true});
   }
   function closeSidebar() {
+    work.classList.remove('atlas-year-overview-open');
     work.classList.remove('atlas-sidebar-open');
     toggle.setAttribute('aria-expanded', 'false');
     if (narrow.matches) sidebar.setAttribute('inert', '');
@@ -876,6 +877,8 @@
   // Year summary cards can show the full, sourced dossier on demand.
   window.addEventListener('atlas:show-year-details', () => {
     if (timeline.hidden) return;
+    work.classList.add('atlas-year-overview-open');
+    sidebarTitle.textContent='Все записи · '+selectedYear()+' год';
     if (narrow.matches) openSidebar();
     else {
       sidebar.scrollTop = 0;
@@ -928,6 +931,8 @@
   const plots = timeline.querySelector('#time-canvas');
   if (plots) plots.addEventListener('click', event => {
     if (event.target.closest('.time-bar')) {
+      work.classList.remove('atlas-year-overview-open');
+      sidebarTitle.textContent='Выбранный период';
       if (narrow.matches) openSidebar();
       else sidebar.scrollTop = 0;
     }
@@ -964,6 +969,7 @@
       focusYear(selectedYear());
     } else {
       work.classList.remove('atlas-sidebar-open');
+      work.classList.remove('atlas-year-overview-open');
       toggle.setAttribute('aria-expanded', 'false');
       scrim.hidden=true;
       document.documentElement.classList.remove('atlas-mobile-details-open');
