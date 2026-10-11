@@ -18,7 +18,7 @@ CATEGORIES = {"legal", "practical", "claim", "institutional"}
 VERIFICATIONS = {"reference_checked", "imported_not_rechecked", "disputed"}
 CONFIDENCES = {"high", "medium", "low", "not_assessed"}
 GEO_NATURES = {"practice", "military", "claim", "law"}
-GEO_PLACE_KINDS = {"city", "group_of_cities", "republic", "union_level"}
+GEO_PLACE_KINDS = {"city", "vicinity_of_city", "group_of_cities", "republic", "union_level"}
 FORBIDDEN_GEOMETRY_KEYS = {"geometry", "coordinates", "polygon", "lat", "lng", "latitude", "longitude"}
 
 

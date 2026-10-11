@@ -72,7 +72,7 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-evidence')).to_have_count(0)
                 expect(page.locator('.smuta-empty')).to_contain_text('пробел в исследовании')
                 page.locator('#smuta-all-period').check()
-                expect(page.locator('.smuta-evidence')).to_have_count(3)
+                expect(page.locator('.smuta-evidence')).to_have_count(5)
                 expect(page.locator('.smuta-status')).to_contain_text('Весь период')
                 # Query-only history navigation changes city without reload.
                 # Inspect parallel centers without inventing a multi-year reign.
@@ -97,9 +97,9 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-mode-evidence')).to_have_attribute('aria-pressed','true')
                 page.locator('#smuta-city').select_option('moscow')
                 page.locator('#smuta-all-period').check()
-                expect(page.locator('.smuta-evidence')).to_have_count(5)
+                expect(page.locator('.smuta-evidence')).to_have_count(7)
                 page.go_back();expect(page.locator('#smuta-city')).to_have_value('yaroslavl')
-                expect(page.locator('.smuta-evidence')).to_have_count(3)
+                expect(page.locator('.smuta-evidence')).to_have_count(5)
                 # Unlocated multi-city claim remains visible, without a fake polygon.
                 page.locator('#smuta-city').select_option('unlocated')
                 expect(page.locator('.smuta-evidence')).to_have_count(1)
@@ -202,8 +202,39 @@ def check(dist: Path, output: Path):
                 page.locator('#smuta-month').select_option('0')
                 expect(page.locator('.smuta-evidence')).to_have_count(1)
                 expect(page.locator('.smuta-evidence')).to_contain_text('Второго ополчения')
+                # Research pass: three distinct months in each city are
+                # independently sourced, not continuous control of a city.
+                case_studies=[
+                    ('yaroslavl','01','1609','январе','SL01',
+                     'local-smuta-yaroslavl-exactions-1609'),
+                    ('yaroslavl','05','1609','посад','SL01',
+                     'local-smuta-yaroslavl-posad-burning-1609'),
+                    ('moscow','04','1611','Белого города','SS01',
+                     'local-smuta-moscow-white-city-1611'),
+                    ('moscow','06','1611','под Москвой','SS02',
+                     'local-smuta-moscow-opolchenie-judgment-1611')
+                ]
+                for city,month,year,expected,source,eid in case_studies:
+                    page.goto(origin+f'?map=smuta&place={city}&month={month}#/timeline/{year}')
+                    record=page.locator(f'.smuta-evidence[data-evidence="{eid}"]')
+                    expect(record).to_have_count(1)
+                    expect(page.locator('.smuta-evidence')).to_have_count(1)
+                    expect(record).to_contain_text(expected)
+                    expect(record.locator('.smuta-citations a').filter(has_text=source)).to_have_count(1)
+                    expect(page.locator('.smuta-events .smuta-event')).to_have_count(1)
+                    expect(page.locator('#smuta-month')).to_have_value(str(int(month)))
+                    if eid.endswith('judgment-1611'):
+                        expect(record).to_contain_text('не о функционировании')
+                # Within one city-year, April/May 1609 and March/April/June
+                # 1611 are distinct; the year-level matrix cell is still one.
+                page.goto(origin+'?map=smuta&place=moscow#/timeline/1611')
+                expect(page.locator('.smuta-evidence')).to_have_count(3)
+                page.goto(origin+'?map=smuta&place=yaroslavl#/timeline/1609')
+                expect(page.locator('.smuta-evidence')).to_have_count(3)
                 assert not issues,issues
-                reports.append({'viewport':[w,h],'month_matrix':'passed','city_year_gaps':68,'new_local_gaps_filled':4,'js_errors':issues})
+                reports.append({'viewport':[w,h],'month_matrix':'passed',
+                    'city_year_gaps':68,'new_local_gaps_filled':4,
+                    'new_sequence_months':4,'js_errors':issues})
                 page.close()
             browser.close()
     finally:server.shutdown()

@@ -20,3 +20,7 @@ Read ../../docs/SMUTA_PILOT.md before editing. The user approved a city-point pi
 
 - When filling previously empty city×year cells, add new source-qualified `territorial_evidence` assertions and explicitly map their IDs in the existing city's `evidence_ids`. Recompute coverage; NEVER modify the compiled `smuta-map.json` or manual totals.
 - A source providing only a year must **not** be promoted to a precise month; if scholarly/institutional accounts disagree, preserve their disagreement and keep the year-only date. The research batch of 11 October 2026 is documented in `research/smuta-local-evidence-2026-10-11.md`.
+
+- The second Smuta research batch (11 Oct 2026) adds **four observations in two already populated city-years**, not four new coverage cells; derived matrix must remain 12/68. Do not convert more observations into more fully-covered years.
+- An act issued "под Москвою" may have `place_kind=vicinity_of_city` and map to Moscow's modern reference point as an orientation only. It is not a site inside the Kremlin or a claim that the issuer governed the entire city. Same principle applies to Yaroslavl uyezd monastic estates mapped to Yaroslavl for browsing.
+- Research protocol: `research/smuta-sequences-yaroslavl-moscow-2026-10-11.md`; year/month precision and source verification remain mandatory.

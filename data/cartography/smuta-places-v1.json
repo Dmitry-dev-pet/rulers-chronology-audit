@@ -34,6 +34,8 @@
         "local-smuta-moscow-vladislav-1610",
         "local-smuta-moscow-garrison-1610",
         "local-smuta-moscow-uprising-1611",
+        "local-smuta-moscow-white-city-1611",
+        "local-smuta-moscow-opolchenie-judgment-1611",
         "local-smuta-moscow-liberation-1612"
       ]
     },
@@ -92,7 +94,9 @@
       "note": "Справочная точка исторического центра из современного реестра UNESCO; не адрес заседаний Совета всея земли.",
       "evidence_ids": [
         "local-smuta-yaroslavl-allegiance-1608",
+        "local-smuta-yaroslavl-exactions-1609",
         "local-smuta-yaroslavl-uprising-1609",
+        "local-smuta-yaroslavl-posad-burning-1609",
         "local-smuta-yaroslavl-council-1612"
       ]
     },
