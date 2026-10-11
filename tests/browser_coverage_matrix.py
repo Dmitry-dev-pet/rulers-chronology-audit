@@ -62,7 +62,7 @@ def run(dist:Path,output:Path):
                 expect(page.locator('.dynasty-coverage-task-card')).to_have_count(4)
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Фердинанд')
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Пробел')
-                expect(page.locator('.dynasty-coverage-detail a.dynasty-source')).to_have_count(2)
+                expect(page.locator('.dynasty-coverage-detail a.dynasty-source')).to_have_count(4)
                 expect(page.locator('.dynasty-coverage-detail a').last).to_have_attribute(
                     'href',re.compile('^https://'))
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
