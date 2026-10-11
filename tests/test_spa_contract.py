@@ -122,7 +122,7 @@ class SPAContract(unittest.TestCase):
             "atlasView","atlasYears","Сравнить два года",
             "Оценки политического влияния","Юридические должности",
             "Регентство и соправители","Коллективные органы",
-            "Годовые пересечения","историческая", # source cautions
+            "Годовые пересечения","Историческое утверждение", # source cautions
         ):
             self.assertIn(key,code)
         self.assertIn("!nominal.has(x.status)",code)
