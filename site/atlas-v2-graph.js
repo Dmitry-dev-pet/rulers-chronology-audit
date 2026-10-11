@@ -229,6 +229,12 @@
       r.people.forEach(p=>personIDs.add(p));
       r.contexts.forEach(c=>contextIDs.add(c));
     }
+    // A republican first consul is a personal executive role, not an emperor.
+    if(filters.has('institutional')){
+      for(const r of roleList){
+        if(r.kind==='first_consul'&&r.person_id)personIDs.add(r.person_id);
+      }
+    }
     const institutionRoles=filters.has('institutional')
       ?roleList.filter(r=>r.institution_id):[];
     const visibleRoles=roleList.filter(r=>r.person_id&&personIDs.has(r.person_id));
