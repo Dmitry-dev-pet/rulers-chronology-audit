@@ -143,8 +143,10 @@
   const footprintDetail=create('article','dynasty-footprint-detail');
   footprintDetail.tabIndex=-1;
   footprintDetail.setAttribute('aria-label','Источники выбранной династической полосы');
-  footprintPanel.append(footprintLead,footprintTools,footprintSummary,
-    footprintScroll,footprintLegend,footprintDetail);
+  // Put the actual diagram BEFORE the explanatory prose, so it is visible
+  // on a small phone instead of being pushed below the first screen.
+  footprintPanel.append(footprintTools,footprintScroll,footprintLegend,
+    footprintSummary,footprintDetail,footprintLead);
   let selectedView='network';
   let showSecondary=false;
   let selectedFootprint=null;
@@ -152,6 +154,10 @@
   function updateView(){
     networkPanel.hidden=selectedView!=='network';
     footprintPanel.hidden=selectedView!=='houses';
+    // These palette controls belong to the personal graph only: dynasty
+    // colors in the matrix are fixed house identifiers, never ethnicity.
+    colorControls.hidden=selectedView==='houses';
+    notice.hidden=selectedView==='houses';
     for(const button of [networkViewButton,housesViewButton]){
       button.setAttribute('aria-pressed',String(button.dataset.dynastyView===selectedView));
     }
