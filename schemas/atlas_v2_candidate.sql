@@ -424,6 +424,7 @@ CREATE TABLE v2_authority_nodes (
     'person','polity','constitutional_framework','imperial_title_context',
     'collective_institution','locality','fiscal_jurisdiction')),
   label TEXT NOT NULL,
+  note TEXT NOT NULL,
   p3_context_id TEXT REFERENCES v2_contexts(id),
   p3_person_origin TEXT,
   p3_person_id TEXT,
