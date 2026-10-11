@@ -84,7 +84,7 @@ class European1800Contract(unittest.TestCase):
             self.assertTrue(row['source_ids'])
             self.assertLessEqual(set(row['source_ids']),set(self.sources))
         for row in EXT['additional_relations']:
-            self.assertLessEqual(set(row['subjects']),self.persons)
+            self.assertLessEqual(set(row['subjects']),set(self.persons))
         self.assertTrue(all(s['url'].startswith('https://') and
                             s['verification']=='reference_checked'
                             for s in EXT['sources']))
