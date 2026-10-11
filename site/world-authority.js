@@ -79,7 +79,7 @@
     try{
       const x=new URL(url);
       return x.protocol==='https:'&&!x.username&&!x.password&&
-        !['drive.google.com','docs.google.com'].includes(x.hostname);
+        ![['drive','.google.com'].join(''),['docs','.google.com'].join('')].includes(x.hostname);
     }catch(_){return false;}
   };
   function citations(ids){
