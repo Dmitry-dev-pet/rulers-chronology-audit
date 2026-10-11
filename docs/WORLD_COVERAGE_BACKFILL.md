@@ -4,7 +4,7 @@
 
 ## Что исправлено
 
-Испания, Португалия, Швеция и Тоскана раньше были внесены только начиная с 1781 года. В сравнительной диаграмме это ошибочно могло восприниматься как отсутствие государства или династии до 1781. Новый слой **не переписывает предыдущие исторические записи**, а добавляет 9 источниково подтверждённых периодов ролей, 3 новые персоны, 5 исторических отношений и 11 источников.
+Испания, Португалия, Швеция и Тоскана раньше были внесены только начиная с 1781 года. В сравнительной диаграмме это ошибочно могло восприниматься как отсутствие государства или династии до 1781. Новый слой **не переписывает предыдущие исторические записи**, а добавляет 9 источниково подтверждённых периодов ролей, 3 новые персоны, 5 исторических отношений и 12 источников.
 
 Общая международная исследовательская выборка теперь включает **31 персону, 49 записей о личных должностях, 6 династических домов**. Она по-прежнему не является полной базой всех европейских правителей. Основной российский реестр (83 персоны, 97 tenure, 150 provenance) и приватный исходный плакат не изменены.
 
@@ -20,7 +20,7 @@
 
 В истории реального управления эпохой Жозе I важную роль играл маркиз Помбал. Юридическая должность короля сама по себе не доказательство принятия им всех исполнительных решений; отдельные оценки влияния Помбала нужно исследовать документально, прежде чем добавлять в граф.
 
-Источники: [BG02 — Парламент Португалии](https://www.parlamento.pt/VisitaParlamento/Paginas/BiogDJose.aspx), [BG03 — Arquivo Nacional da Torre do Tombo](https://antt.dglab.gov.pt/exposicoes-virtuais-2/nascimento-d-jose/), [BG04 — Paço dos Duques](https://pacodosduques.gov.pt/monumentos/paco-dos-duques/colecao/pintura/rainha-maria-bordalo-pinheiro-14-a/), [BG11 — Parques de Sintra, дворец Келуш](https://www.parquesdesintra.pt/en/parks-monuments/national-palace-and-gardens-of-queluz/history/).
+Источники: [BG12 — Парламент Португалии о династии Браганса](https://www.parlamento.pt/Parlamento/Paginas/bases-da-constituicao-1821.aspx), [BG02 — Парламент Португалии](https://www.parlamento.pt/VisitaParlamento/Paginas/BiogDJose.aspx), [BG03 — Arquivo Nacional da Torre do Tombo](https://antt.dglab.gov.pt/exposicoes-virtuais-2/nascimento-d-jose/), [BG04 — Paço dos Duques](https://pacodosduques.gov.pt/monumentos/paco-dos-duques/colecao/pintura/rainha-maria-bordalo-pinheiro-14-a/), [BG11 — Parques de Sintra, дворец Келуш](https://www.parquesdesintra.pt/en/parks-monuments/national-palace-and-gardens-of-queluz/history/).
 
 ## Швеция
 
