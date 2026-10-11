@@ -110,7 +110,7 @@ class CoverageBackfillContract(unittest.TestCase):
         self.assertTrue(all(self.at(y,'sw') for y in range(1762,1801)))
         self.assertEqual({r['person_id'] for r in self.at(1771,'sw')},
                          {'sw-adolf-fredrik','sw-gustav3'})
-        self.assertTrue(any('личное политическое влияние' in r['note'] for r in
+        self.assertTrue(any('реальное политическое влияние' in r['note'] for r in
                             self.at(1762,'sw')))
         self.assertIn('Гольштейн',self.people['sw-adolf-fredrik']['houses'][0]['name'])
         self.assertFalse(self.people['sw-adolf-fredrik']['ethnic_origin_fact_id'])
