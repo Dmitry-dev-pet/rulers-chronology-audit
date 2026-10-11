@@ -230,10 +230,9 @@ class RelationsV2Contract(unittest.TestCase):
         bad=copy.deepcopy(self.snapshot)
         rel=next(r for r in bad["world"][p3.EXTENSION]["additional_relations"]
                  if r["id"]=="ex-sw-regency")
-        rel["kind"]="marriage"  # shape still 2 people: require review beyond syntax.
-        # The raw pilot contract does not permit changing established kind IDs.
-        # Explicit adversarial semantic cases are caught by fixture checks below.
-        self.assertEqual(p3.relations_validate(bad)["normalized_relationships"],27)
+        rel["kind"]="marriage"  # two people, but historically a different relation
+        with self.assertRaisesRegex(ValueError,"relation kind drift"):
+            p3.relations_validate(bad)
 
     def test_false_alias_rejected(self):
         bad=copy.deepcopy(self.snapshot)
