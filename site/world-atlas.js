@@ -166,6 +166,9 @@
       stroke:'#a27543','stroke-width':'2.5','stroke-dasharray':'7 5',
       fill:'none'
     }));
+    // Label sits on an opaque plate so the treaty line never strikes through text.
+    svg.appendChild(sv('rect',{x:385,y:6,width:270,height:30,rx:9,
+      fill:'#f7f7f0'}));
     const treatyText=sv('text',{x:520,y:24,'text-anchor':'middle',
       'font-size':'13','font-weight':'700',fill:'#8d602f'},'Петербургский мир · 1762');
     svg.appendChild(treatyText);
