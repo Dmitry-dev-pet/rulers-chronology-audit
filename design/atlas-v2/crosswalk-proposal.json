@@ -1,0 +1,511 @@
+{
+  "schema_version": "v2-crosswalk-proposal-1",
+  "status": "draft_not_canonical",
+  "historical_truth_verified_by_ci": false,
+  "canonical_context_origin": "atlas-state-v1",
+  "world_context_origin": "world-pilots-1762-1800",
+  "world_person_origin": "world-pilots-1762-1800",
+  "source_namespaces": {
+    "data/atlas/sources.jsonl": "atlas-sources-v1",
+    "1762.json": "world-1762",
+    "dynasty-1762-1780.json": "world-dynasty",
+    "extension-1781-1800.json": "world-extension",
+    "coverage-1762-1800.json": "world-coverage",
+    "dynasty-footprints-1762-1800.json": "world-footprints"
+  },
+  "contexts": [
+    {
+      "id": "ctx-empire",
+      "label": "Российская империя",
+      "kind": "polity_regime",
+      "refs": [
+        {
+          "origin": "atlas-state-v1",
+          "native_id": "empire",
+          "mapping": "equivalent"
+        },
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "ru",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "explicit-canonical-state-id",
+      "note": "Прямое соответствие world-пилота канонической Российской империи; не утверждение неизменных границ."
+    },
+    {
+      "id": "ctx-moscow",
+      "label": "Московское великое княжество",
+      "kind": "polity_regime",
+      "refs": [
+        {
+          "origin": "atlas-state-v1",
+          "native_id": "moscow",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "canonical-state-id",
+      "note": "Контекст v1; не современные границы и не этничность."
+    },
+    {
+      "id": "ctx-rsfsr",
+      "label": "Советская Россия / РСФСР",
+      "kind": "other_context",
+      "refs": [
+        {
+          "origin": "atlas-state-v1",
+          "native_id": "rsfsr",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "canonical-state-id",
+      "note": "Контекст v1; не современные границы и не этничность."
+    },
+    {
+      "id": "ctx-russia-1917",
+      "label": "Россия при Временном правительстве",
+      "kind": "polity_regime",
+      "refs": [
+        {
+          "origin": "atlas-state-v1",
+          "native_id": "russia-1917",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "canonical-state-id",
+      "note": "Контекст v1; не современные границы и не этничность."
+    },
+    {
+      "id": "ctx-tsardom",
+      "label": "Русское царство",
+      "kind": "polity_regime",
+      "refs": [
+        {
+          "origin": "atlas-state-v1",
+          "native_id": "tsardom",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "canonical-state-id",
+      "note": "Контекст v1; не современные границы и не этничность."
+    },
+    {
+      "id": "ctx-ussr",
+      "label": "СССР",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "atlas-state-v1",
+          "native_id": "ussr",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "canonical-state-id",
+      "note": "Контекст v1; не современные границы и не этничность."
+    },
+    {
+      "id": "ctx-world-es",
+      "label": "Королевство Испания",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "es",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-fr",
+      "label": "Королевство Франция",
+      "kind": "polity_regime",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "fr",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-frrep",
+      "label": "Французская республика",
+      "kind": "polity_regime",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "frrep",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-gb",
+      "label": "Королевство Великобритания",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "gb",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-hab",
+      "label": "Владения Габсбургов",
+      "kind": "composite_monarchy",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "hab",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-han",
+      "label": "Курфюршество Ганновер",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "han",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-hre",
+      "label": "Священная Римская империя",
+      "kind": "elective_office_context",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "hre",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-meck",
+      "label": "Мекленбург-Стрелиц",
+      "kind": "birthplace_context",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "meck",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-pr",
+      "label": "Королевство Пруссия",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "pr",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-pt",
+      "label": "Королевство Португалия",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "pt",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-sw",
+      "label": "Королевство Швеция",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "sw",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    },
+    {
+      "id": "ctx-world-tusc",
+      "label": "Великое герцогство Тосканское",
+      "kind": "polity",
+      "refs": [
+        {
+          "origin": "world-pilots-1762-1800",
+          "native_id": "tusc",
+          "mapping": "equivalent"
+        }
+      ],
+      "basis": "independent-world-context",
+      "note": "Объект международного пилота, без автоматического слияния с каноном."
+    }
+  ],
+  "people": [
+    {
+      "world_id": "es-carlos3",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "es-carlos4",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "fr-antoinette",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "fr-louis15",
+      "dataset": "1762.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "fr-louis16",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "fr-napoleon",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "gb-charlotte",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "gb-george3",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "hab-francis2",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "hab-leopold",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "hab-maria",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "hab-maria-luisa",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "hre-francis",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "hre-joseph",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "pr-frederick2",
+      "dataset": "1762.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "pr-fw2",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "pr-fw3",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "pt-carlota",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "pt-joao",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "pt-maria1",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "pt-pedro3",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "ru-catherine2",
+      "dataset": "1762.json",
+      "resolution": "linked",
+      "basis": "explicit-existing-canonical-person-id",
+      "canonical_person_id": "person-a4d0a7000e965592",
+      "canonical_tenure_id": "tenure-r12"
+    },
+    {
+      "world_id": "ru-elizabeth",
+      "dataset": "dynasty-1762-1780.json",
+      "resolution": "linked",
+      "basis": "explicit-existing-canonical-person-id",
+      "canonical_person_id": "person-494d1e31134351ec",
+      "canonical_tenure_id": "tenure-r10"
+    },
+    {
+      "world_id": "ru-paul1",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "linked",
+      "basis": "explicit-existing-canonical-person-id",
+      "canonical_person_id": "person-14b51b51093f55ce",
+      "canonical_tenure_id": "tenure-r13"
+    },
+    {
+      "world_id": "ru-peter3",
+      "dataset": "1762.json",
+      "resolution": "linked",
+      "basis": "explicit-existing-canonical-person-id",
+      "canonical_person_id": "person-3222ad215999569e",
+      "canonical_tenure_id": "tenure-r11"
+    },
+    {
+      "world_id": "sw-charles",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "sw-gustav3",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    },
+    {
+      "world_id": "sw-gustav4",
+      "dataset": "extension-1781-1800.json",
+      "resolution": "unresolved",
+      "basis": "no-canonical-id-in-pilot"
+    }
+  ],
+  "must_remain_distinct": [
+    {
+      "left": {
+        "origin": "world-pilots-1762-1800",
+        "native_id": "fr"
+      },
+      "right": {
+        "origin": "world-pilots-1762-1800",
+        "native_id": "frrep"
+      },
+      "reason": "French monarchy is not the French republic"
+    },
+    {
+      "left": {
+        "origin": "world-pilots-1762-1800",
+        "native_id": "hab"
+      },
+      "right": {
+        "origin": "world-pilots-1762-1800",
+        "native_id": "hre"
+      },
+      "reason": "Habsburg composite lands are not the elective imperial office"
+    },
+    {
+      "left": {
+        "origin": "world-pilots-1762-1800",
+        "native_id": "gb"
+      },
+      "right": {
+        "origin": "world-pilots-1762-1800",
+        "native_id": "han"
+      },
+      "reason": "Personal union does not merge the two polities"
+    },
+    {
+      "left": {
+        "origin": "atlas-state-v1",
+        "native_id": "tsardom"
+      },
+      "right": {
+        "origin": "atlas-state-v1",
+        "native_id": "empire"
+      },
+      "reason": "Historical regimes require explicit documented transition"
+    },
+    {
+      "left": {
+        "origin": "atlas-state-v1",
+        "native_id": "rsfsr"
+      },
+      "right": {
+        "origin": "atlas-state-v1",
+        "native_id": "ussr"
+      },
+      "reason": "RSFSR context and USSR are not identical"
+    }
+  ],
+  "method": "Only existing explicit canonical IDs connect persons or polities; unresolved identities stay unresolved. All source IDs are namespaced per dataset; no equality is inferred from names, dynasty, place or identical source labels."
+}
