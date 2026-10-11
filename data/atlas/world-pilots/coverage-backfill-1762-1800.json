@@ -30,7 +30,8 @@
           "name": "Браганса",
           "qualifier": "Правящий дом / род по источнику, не этнокультурное происхождение",
           "source_ids": [
-            "BG02"
+            "BG02",
+            "BG12"
           ]
         }
       ],
@@ -377,7 +378,8 @@
       "source_ids": [
         "BG02",
         "BG04",
-        "BG11"
+        "BG11",
+        "BG12"
       ],
       "members": [
         {
@@ -385,7 +387,8 @@
           "membership": "house",
           "branch": "Португальская правящая линия",
           "source_ids": [
-            "BG02"
+            "BG02",
+            "BG12"
           ]
         },
         {
@@ -393,7 +396,8 @@
           "membership": "house",
           "branch": "Правящая линия Марии I",
           "source_ids": [
-            "BG04"
+            "BG04",
+            "BG12"
           ]
         },
         {
@@ -401,7 +405,8 @@
           "membership": "house",
           "branch": "Браганса, но юридическая роль — консорт",
           "source_ids": [
-            "BG11"
+            "BG11",
+            "BG12"
           ]
         },
         {
@@ -410,7 +415,8 @@
           "branch": "Португальский наследник, в 1792–1800 регент",
           "source_ids": [
             "BG11",
-            "EX11"
+            "EX11",
+            "BG12"
           ]
         }
       ]
@@ -558,6 +564,13 @@
       "title": "Palácio de Queluz / Parques de Sintra: Мария I и Педру III, король-супруг",
       "url": "https://www.parquesdesintra.pt/en/parks-monuments/national-palace-and-gardens-of-queluz/history/",
       "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG12",
+      "title": "Парламент Португалии: династия Браганса и наследование португальского престола",
+      "url": "https://www.parlamento.pt/Parlamento/Paginas/bases-da-constituicao-1821.aspx",
+      "note": "Источник из 1821 года подтверждает правящий дом, но не используется для вывода правовой системы 1762 года из конституции 1821-го.",
       "verification": "reference_checked"
     }
   ],
