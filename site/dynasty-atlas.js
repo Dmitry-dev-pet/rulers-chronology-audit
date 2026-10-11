@@ -109,10 +109,12 @@
   viewSwitch.setAttribute('aria-label','Способ представления международной истории');
   const networkViewButton=create('button','dynasty-view-button','Люди и связи');
   const housesViewButton=create('button','dynasty-view-button','Династии × государства');
-  networkViewButton.type=housesViewButton.type='button';
+  const coverageViewButton=create('button','dynasty-view-button','Покрытие базы');
+  networkViewButton.type=housesViewButton.type=coverageViewButton.type='button';
   networkViewButton.dataset.dynastyView='network';
   housesViewButton.dataset.dynastyView='houses';
-  viewSwitch.append(networkViewButton,housesViewButton);
+  coverageViewButton.dataset.dynastyView='coverage';
+  viewSwitch.append(networkViewButton,housesViewButton,coverageViewButton);
   const networkPanel=create('section','dynasty-person-graph-panel');
   networkPanel.append(graphicTitle,key,countryJump,graphContainer,graphNote);
   const footprintPanel=create('section','dynasty-footprint-panel');
@@ -147,29 +149,75 @@
   // on a small phone instead of being pushed below the first screen.
   footprintPanel.append(footprintTools,footprintScroll,footprintLegend,
     footprintSummary,footprintDetail,footprintLead);
+  // A third source-aware view: coverage of the RESEARCH REGISTER,
+  // not a historical claim that a country did or did not have a ruler.
+  const coveragePanel=create('section','dynasty-coverage-panel');
+  coveragePanel.hidden=true;
+  coveragePanel.setAttribute('aria-label','Покрытие исторической базы по странам и годам');
+  const coverageIntro=create('p','dynasty-coverage-intro',
+    'Матрица отмечает наличие юридических и институциональных записей, а не полноту исторической науки. Пустые годы исследования не означают отсутствия правителя.');
+  const coverageOverview=create('p','dynasty-coverage-overview');
+  coverageOverview.setAttribute('role','status');
+  coverageOverview.setAttribute('aria-live','polite');
+  const coverageLegend=create('div','dynasty-coverage-legend');
+  const coverageStatusLabels=[
+    ['office','Должность главы / императора'],
+    ['institution','Коллективный орган'],
+    ['supplementary','Дополнительная роль'],
+    ['research_gap','Пробел в реестре'],
+    ['outside_sample','Вне нашей выборки'],
+    ['historically_not_in_force','Режим ещё не возник / прекращён'],
+    ['birthplace_context','Только место рождения']
+  ];
+  coverageStatusLabels.forEach(([status,label])=>{
+    const item=create('span','dynasty-coverage-legend-item',label);
+    item.dataset.coverageStatus=status;
+    coverageLegend.append(item);
+  });
+  const coverageScroll=create('div','dynasty-coverage-scroll');
+  coverageScroll.tabIndex=0;
+  coverageScroll.setAttribute('role','region');
+  coverageScroll.setAttribute('aria-label','Матрица покрытия реестра: 13 политических контекстов на 39 лет, горизонтальная прокрутка');
+  const coverageTable=create('div','dynasty-coverage-table');
+  coverageScroll.append(coverageTable);
+  const coverageDetail=create('section','dynasty-coverage-detail');
+  coverageDetail.id='dynasty-coverage-detail';
+  coverageDetail.setAttribute('aria-label','Источники и статус выбранного года и страны');
+  coverageDetail.tabIndex=-1;
+  const coverageTasks=create('section','dynasty-coverage-tasks');
+  const coverageMethod=create('p','dynasty-coverage-method',
+    'Одна длинная должность даёт много отмеченных годов. Ни одна ячейка не доказывает, что все документы эпохи изучены. Страны, которых ещё нет в данной исследовательской партии, не окрашены как исторически отсутствовавшие.');
+  // Mobile-first: the year-by-country chart is seen before long commentary.
+  coveragePanel.append(coverageOverview,coverageScroll,coverageLegend,
+    coverageDetail,coverageTasks,coverageIntro,coverageMethod);
   let selectedView='network';
   let showSecondary=false;
   let selectedFootprint=null;
   let lastCenteredFootprintYear=null;
-  const modeFromUrl=()=>new URL(location.href).searchParams.get('dynView')==='houses'?'houses':'network';
+  const modeFromUrl=()=>{
+    const candidate=new URL(location.href).searchParams.get('dynView');
+    return ['houses','coverage'].includes(candidate)?candidate:'network';
+  };
   function updateView(){
     networkPanel.hidden=selectedView!=='network';
     footprintPanel.hidden=selectedView!=='houses';
+    coveragePanel.hidden=selectedView!=='coverage';
     // These palette controls belong to the personal graph only: dynasty
     // colors in the matrix are fixed house identifiers, never ethnicity.
-    colorControls.hidden=selectedView==='houses';
-    notice.hidden=selectedView==='houses';
-    for(const button of [networkViewButton,housesViewButton]){
+    colorControls.hidden=selectedView!=='network';
+    notice.hidden=selectedView!=='network';
+    for(const button of [networkViewButton,housesViewButton,coverageViewButton]){
       button.setAttribute('aria-pressed',String(button.dataset.dynastyView===selectedView));
     }
     if(selectedView==='houses' && footprints && data && extension)renderFootprints();
+    if(selectedView==='coverage')renderCoverage();
   }
   function setView(next,push){
-    if(!['network','houses'].includes(next))return;
+    if(!['network','houses','coverage'].includes(next))return;
     selectedView=next;
     if(isNetworkURL()){
       const url=new URL(location.href);
-      if(next==='houses')url.searchParams.set('dynView','houses');
+      if(next==='houses'||next==='coverage')url.searchParams.set('dynView',next);
       else url.searchParams.delete('dynView');
       history[push?'pushState':'replaceState'](null,'',url.pathname+url.search+url.hash);
     }
@@ -177,6 +225,7 @@
   }
   networkViewButton.addEventListener('click',()=>setView('network',true));
   housesViewButton.addEventListener('click',()=>setView('houses',true));
+  coverageViewButton.addEventListener('click',()=>setView('coverage',true));
   showSecondaryInput.addEventListener('change',()=>{
     showSecondary=showSecondaryInput.checked;
     selectedFootprint=null;
@@ -197,13 +246,13 @@
   const original=create('a','dynasty-previous','← Открыть исходный пилот 1762 года');
   original.href='?world=1762#/timeline/1762';
   content.append(lede,timeline,colorControls,notice,viewSwitch,
-    networkPanel,footprintPanel,timelineTitle,events,institutionsTitle,
+    networkPanel,footprintPanel,coveragePanel,timelineTitle,events,institutionsTitle,
     polities,participantsTitle,persons,relationsTitle,relations,caveats,original);
   dialog.append(head,content);
   layer.append(dialog);
   document.body.append(layer);
 
-  let data=null,base=null,atlas=null,extension=null,footprints=null,pending=null,previousFocus=null;
+  let data=null,base=null,atlas=null,extension=null,footprints=null,coverage=null,pending=null,previousFocus=null;
   let year=1762;
   const abbr={
     ru:'Россия',fr:'Франция',pr:'Пруссия',gb:'Великобритания',
@@ -261,7 +310,8 @@
   function sources(ids) {
     const wrap=create('div','dynasty-sources');
     const index=new Map([...(base?.sources||[]),...(data?.sources||[]),
-      ...(extension?.sources||[]),...(footprints?.sources||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
+      ...(extension?.sources||[]),...(footprints?.sources||[]),
+      ...(coverage?.sources||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
     [...new Set(ids||[])].forEach(id=>{
       const source=index.get(id);
       if(!source||!validLink(source.url))return;
@@ -833,6 +883,234 @@
       lastCenteredFootprintYear=year;
     }
   }
+  // Coverage is evidence of registry entries, NOT a claim of complete history.
+  const COVERAGE_START=1762;
+  const COVERAGE_END=1800;
+  const COVERAGE_YEARS=COVERAGE_END-COVERAGE_START+1;
+  const COVERAGE_CORE_KINDS=new Set(['sovereign','elector','emperor']);
+  const COVERAGE_STATUS_TEXT={
+    office:'Есть запись о должности главы или императора',
+    institution:'Есть запись об учреждении (возможны и иные роли)',
+    supplementary:'Есть только дополнительные персональные роли',
+    research_gap:'Пробел реестра внутри заявленной выборки',
+    outside_sample:'Год ещё не исследовался в этой выборке',
+    historically_not_in_force:'Исторический режим ещё не возник либо уже прекратился',
+    birthplace_context:'Только исторический контекст места рождения'
+  };
+  let selectedCoverage=null;
+  let lastCoverageCenteredYear=null;
+  const coveragePolityName=id=>
+    allJurisdictions().find(p=>p.id===id)?.name||id;
+  function coverageFor(polity,selectedYear){
+    const roles=fullRoles().filter(r=>r.polity_id===polity.polity_id &&
+      isActive(r,selectedYear));
+    const institutions=(extension?.institutions||[]).filter(r=>
+      r.polity_id===polity.polity_id && isActive(r,selectedYear));
+    let status;
+    if(polity.display_only==='birthplace_context')status='birthplace_context';
+    else if((polity.historical_start && selectedYear<polity.historical_start) ||
+            (polity.historical_end && selectedYear>polity.historical_end))
+      status='historically_not_in_force';
+    // An explicitly sourced backfill role always counts as evidence, even
+    // if it predates the original pilot's editorial researched_from boundary.
+    // This keeps the matrix correct when other PRs extend country coverage.
+    else if((selectedYear<polity.researched_from ||
+             selectedYear>polity.researched_through) &&
+            !roles.length && !institutions.length)
+      status='outside_sample';
+    else if(roles.some(r=>COVERAGE_CORE_KINDS.has(r.role_kind)))
+      status='office';
+    else if(institutions.length)status='institution';
+    else if(roles.length)status='supplementary';
+    else status='research_gap';
+    return {polity,selectedYear,roles,institutions,status};
+  }
+  function coverageSourcesFor(result){
+    return [...new Set([
+      ...(result.polity.source_ids||[]),
+      ...result.roles.flatMap(r=>r.source_ids||[]),
+      ...result.institutions.flatMap(r=>r.source_ids||[])
+    ])];
+  }
+  function renderCoverageDetail(polity,selectedYear){
+    if(!polity)return;
+    selectedCoverage={polity_id:polity.polity_id,year:selectedYear};
+    const outcome=coverageFor(polity,selectedYear);
+    const article=create('div','dynasty-coverage-detail-body');
+    article.append(create('h3',null,
+      coveragePolityName(polity.polity_id)+' · '+selectedYear));
+    const status=create('p','dynasty-coverage-detail-status',
+      COVERAGE_STATUS_TEXT[outcome.status]);
+    status.dataset.coverageStatus=outcome.status;
+    article.append(status);
+    const caveat=outcome.status==='outside_sample'?
+      'За пределами исследовательской партии. Отсутствие записи не свидетельствует об отсутствии государственной власти.':
+      outcome.status==='research_gap'?
+      'Период входит в заявленную выборку, но роль главы и учреждение не занесены. Требуется источниковая сверка.':
+      outcome.status==='historically_not_in_force'?
+      'Это специально отмеченная историческая граница государственного режима, а не отсутствие найденной биографии.':
+      outcome.status==='birthplace_context'?
+      'Полития вносилась только как место рождения персоны, а не хронология её правителей.':
+      'Ячейка отражает пересечение записанного срока с годом, не полный список исторических событий.';
+    article.append(create('p','dynasty-coverage-detail-explain',caveat));
+    if(outcome.roles.length){
+      const list=create('ul','dynasty-coverage-evidence');
+      const people=new Map(allPeople().map(p=>[p.id,p]));
+      for(const role of outcome.roles){
+        const item=create('li');
+        item.append(create('strong',null,actorName(people.get(role.person_id))+
+          ' — '+titleFor(role)),
+          create('span','dynasty-coverage-evidence-years',
+            ' · '+role.start_year+'–'+role.end_year+'; тип '+role.role_kind),
+          sources(role.source_ids));
+        list.append(item);
+      }
+      article.append(list);
+    }
+    if(outcome.institutions.length){
+      const list=create('ul','dynasty-coverage-evidence');
+      for(const institution of outcome.institutions){
+        const item=create('li');
+        item.append(create('strong',null,institution.name),
+          create('span','dynasty-coverage-evidence-years',
+            ' · '+institution.start_year+'–'+institution.end_year+
+            ' · коллективный институт, не отдельный монарх'),
+          sources(institution.source_ids));
+        list.append(item);
+      }
+      article.append(list);
+    }
+    const tasks=(coverage?.known_research_tasks||[]).filter(t=>
+      t.polity_id===polity.polity_id &&
+      t.start_year<=selectedYear && selectedYear<=t.end_year);
+    tasks.forEach(task=>{
+      article.append(create('p','dynasty-coverage-open-task',
+        'Следующая проверка: '+task.title+' — '+task.note),
+        sources(task.source_ids));
+    });
+    article.append(create('p','dynasty-coverage-polity-note',polity.note),
+      create('p','dynasty-coverage-source-caption',
+        'Источники границ выборки и имеющихся записей (не доказательство отсутствия других событий):'),
+      sources(coverageSourcesFor(outcome)));
+    coverageDetail.replaceChildren(article);
+  }
+  function renderCoverageTasks(){
+    const section=create('section','dynasty-coverage-task-list');
+    section.append(create('h3',null,'Очередь исторической сверки'));
+    section.append(create('p',null,
+      'Сначала закрываем пробелы подтверждёнными источниками, не заполняем их догадками.'));
+    for(const task of coverage.known_research_tasks){
+      const card=create('article','dynasty-coverage-task-card');
+      card.dataset.coverageTask=task.id;
+      const action=create('button','dynasty-coverage-task-action',
+        task.title+' · '+task.start_year+'–'+task.end_year+' →');
+      action.type='button';
+      action.addEventListener('click',()=>{
+        const target=task.polity_id==='tusc'?Math.max(task.start_year,1795):
+          task.start_year;
+        selectedCoverage={polity_id:task.polity_id,year:target};
+        chooseYear(target,true);
+        renderCoverageDetail(coverage.polities.find(p=>
+          p.polity_id===task.polity_id),target);
+        coverageDetail.focus({preventScroll:true});
+      });
+      card.append(action,create('p',null,task.note),sources(task.source_ids));
+      section.append(card);
+    }
+    coverageTasks.replaceChildren(section);
+  }
+  function renderCoverage(){
+    if(!coverage || !data || !extension){
+      coverageOverview.textContent='Матрица покрытия не загружена. Другие режимы атласа остаются доступны.';
+      return;
+    }
+    const table=create('div','dynasty-coverage-matrix');
+    const head=create('div','dynasty-coverage-row dynasty-coverage-header');
+    head.append(create('div','dynasty-coverage-sticky dynasty-coverage-column-title',
+      'Полития / наличие записей'));
+    const years=create('div','dynasty-coverage-cells dynasty-coverage-years');
+    for(let y=COVERAGE_START;y<=COVERAGE_END;y++){
+      const h=create('span','dynasty-coverage-year-label',
+        (y===COVERAGE_START||y===COVERAGE_END||y%5===0)?String(y):'·');
+      h.dataset.year=String(y);
+      h.title=String(y);
+      if(y===year)h.classList.add('is-current');
+      years.append(h);
+    }
+    head.append(years);
+    table.append(head);
+    const counts={};
+    for(const polity of coverage.polities){
+      const row=create('div','dynasty-coverage-row');
+      row.dataset.polity=polity.polity_id;
+      const label=create('div','dynasty-coverage-sticky');
+      label.append(create('strong',null,coveragePolityName(polity.polity_id)));
+      const evidenceCount=Array.from({length:COVERAGE_YEARS},(_,i)=>
+        coverageFor(polity,COVERAGE_START+i)).filter(outcome=>
+          ['office','institution','supplementary'].includes(outcome.status)).length;
+      label.append(create('span','dynasty-coverage-row-count',
+        evidenceCount+' годов с записями'));
+      const cells=create('div','dynasty-coverage-cells');
+      for(let y=COVERAGE_START;y<=COVERAGE_END;y++){
+        const result=coverageFor(polity,y);
+        counts[result.status]=(counts[result.status]||0)+1;
+        const cell=create('button','dynasty-coverage-cell',String(y));
+        cell.type='button';
+        cell.dataset.polity=polity.polity_id;
+        cell.dataset.year=String(y);
+        cell.dataset.coverageStatus=result.status;
+        const aria=coveragePolityName(polity.polity_id)+', '+y+': '+
+          COVERAGE_STATUS_TEXT[result.status]+
+          '. Открыть сведения и источники.';
+        cell.title=aria;
+        cell.setAttribute('aria-label',aria);
+        cell.setAttribute('aria-controls','dynasty-coverage-detail');
+        if(y===year)cell.classList.add('is-current');
+        if(selectedCoverage?.polity_id===polity.polity_id &&
+          selectedCoverage?.year===y)cell.setAttribute('aria-pressed','true');
+        cell.addEventListener('click',()=>{
+          selectedCoverage={polity_id:polity.polity_id,year:y};
+          if(year!==y)chooseYear(y,true);
+          else renderCoverage();
+          renderCoverageDetail(polity,y);
+          coverageDetail.focus({preventScroll:true});
+        });
+        cells.append(cell);
+      }
+      row.append(label,cells);table.append(row);
+    }
+    coverageTable.replaceChildren(table);
+    coverageOverview.textContent='1762–1800 · '+coverage.polities.length+
+      ' исторических контекстов · '+(counts.research_gap||0)+
+      ' ячеек-пробелов внутри исследуемых интервалов; '+
+      (counts.outside_sample||0)+' ячеек вне нашей выборки. '+
+      'Эти числа не измеряют полноту исторической науки.';
+    const polity=coverage.polities.find(p=>
+      p.polity_id===(selectedCoverage?.polity_id||'tusc'));
+    if(polity){
+      selectedCoverage={polity_id:polity.polity_id,year};
+      renderCoverageDetail(polity,year);
+      const chosen=coverageTable.querySelector('.dynasty-coverage-cell[data-polity="'+
+        polity.polity_id+'"][data-year="'+year+'"]');
+      if(chosen)chosen.setAttribute('aria-pressed','true');
+    }
+    renderCoverageTasks();
+    // Center the selected year only when the year changes. The reader can
+    // otherwise manually pan this grid without forced re-centering.
+    if(lastCoverageCenteredYear!==year){
+      const current=coverageTable.querySelector(
+        '.dynasty-coverage-years [data-year="'+year+'"]');
+      if(current){
+        const center=coverageScroll.scrollLeft+
+          current.getBoundingClientRect().left-
+          coverageScroll.getBoundingClientRect().left+
+          current.getBoundingClientRect().width/2;
+        coverageScroll.scrollLeft=Math.max(0,
+          center-coverageScroll.clientWidth*.63);
+      }
+      lastCoverageCenteredYear=year;
+    }
+  }
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
@@ -874,6 +1152,7 @@
     graphContainer.replaceChildren(drawGraph());
     renderCountryJump();
     if(selectedView==='houses')renderFootprints();
+    if(selectedView==='coverage')renderCoverage();
     renderEvents();renderPolities();renderPersons();renderRelations();
   }
   function chooseYear(value,push){
@@ -898,8 +1177,13 @@
       fetch('./world-1762.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('base');return r.json();}),
       fetch('./atlas.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('atlas');return r.json();}),
       fetch('./world-extension-1800.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('extension');return r.json();}),
-      fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();})
-    ]).then(([d,b,a,e,houses])=>{
+      fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();}),
+      // If the new optional public asset is missing during CDN propagation,
+      // preserve the already-published people/dynasty views.
+      fetch('./world-coverage-1800.json',{cache:'no-cache'})
+        .then(r=>{if(!r.ok)throw Error('coverage');return r.json();})
+        .catch(()=>null)
+    ]).then(([d,b,a,e,houses,cov])=>{
       if(d.schema_version!=='dynasty-network-v1' ||
          b.schema_version!=='world-pilot-v1' ||
          e.schema_version!=='dynasty-extension-v1' ||
@@ -946,7 +1230,42 @@
             throw Error('unsourced family membership');
         }
       }
+      let coverageChecked=null;
+      try{
+        if(cov){
+          if(cov.schema_version!=='coverage-matrix-v1' ||
+             cov.period.start!==1762 || cov.period.end!==1800 ||
+             !Array.isArray(cov.polities) ||
+             cov.polities.length!==politiesAll.size ||
+             !Array.isArray(cov.known_research_tasks))
+            throw Error('coverage schema');
+          const knownSources=new Set([
+            ...b.sources,...d.sources,...e.sources,...a.sources,...cov.sources
+          ].map(s=>s.id));
+          const ids=new Set();
+          for(const policy of cov.polities){
+            if(!politiesAll.has(policy.polity_id) ||
+               ids.has(policy.polity_id) ||
+               policy.researched_from<1762 ||
+               policy.researched_through>1800 ||
+               policy.researched_from>policy.researched_through ||
+               !(policy.source_ids||[]).length ||
+               !policy.source_ids.every(id=>knownSources.has(id)))
+              throw Error('coverage policy invalid');
+            ids.add(policy.polity_id);
+          }
+          for(const task of cov.known_research_tasks){
+            if(!ids.has(task.polity_id) ||
+               task.start_year<1762||task.end_year>1800||
+               task.start_year>task.end_year ||
+               !(task.source_ids||[]).every(id=>knownSources.has(id)))
+              throw Error('coverage task invalid');
+          }
+          coverageChecked=cov;
+        }
+      }catch(_){coverageChecked=null;}
       data=d;base=b;atlas=a;extension=e;footprints=houses;
+      coverage=coverageChecked;
       slider.max=String(e.full_period.end);
       const rangeEnd=rangeLabel.querySelector('span:last-child');
       if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
@@ -957,6 +1276,7 @@
         return button;
       }));
       caveatList.replaceChildren(...[...d.caveats,...e.caveats].map(text=>create('li',null,text)));
+      if(!coverage)coverageOverview.textContent='Матрица покрытия не загружена; другие режимы сохранены.';
       selectedView=modeFromUrl();
       updateView();
       render();
