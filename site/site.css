@@ -2270,3 +2270,10 @@ button[disabled] {
   .dynasty-house-matrix{width:1150px}
   .dynasty-house-family-title{font-size:15px}
 }
+
+/* House view: chart first, concise controls; the unrelated personal-network
+   palette and status must not occupy the phone's first screen. */
+.dynasty-color-controls[hidden],.dynasty-notice[hidden]{display:none!important}
+.dynasty-house-family-title{position:sticky;left:12px;z-index:4;
+  width:fit-content;max-width:450px;padding-right:10px;
+  background:#fafbf6;border-radius:5px}
