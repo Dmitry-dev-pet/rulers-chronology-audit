@@ -113,6 +113,22 @@ class SPAContract(unittest.TestCase):
         self.assertIn("a.href = src.url", self.dashboard)
         self.assertNotIn("drive.google.com/file/d/", self.dashboard)
 
+    def test_histography_inspired_playback_reuses_canonical_year(self):
+        for literal in (
+            "atlas-year-playback", "atlas-year-playback-step",
+            "stepYear(Number(speed.value))", "window.setInterval(advancePlayback, 850)",
+            "slider.addEventListener('input'", "document.hidden",
+            "window.addEventListener('atlas:route'", "stopPlayback()",
+            "не анимация фактической передачи власти",
+        ):
+            self.assertIn(literal, self.dashboard)
+        self.assertIn("play.setAttribute('aria-pressed', 'true')", self.dashboard)
+        self.assertIn("play.setAttribute('aria-pressed', 'false')", self.dashboard)
+        self.assertIn(".atlas-app.atlas-mobile .atlas-year-playback", self.css)
+        self.assertIn("min-height:44px", self.css)
+        # Playback is a projection of atlas.json: no changes to source records.
+        self.assertNotIn("real_ruler=true", self.dashboard)
+
     def test_universal_atlas_is_cross_era_and_independent_of_local_map(self):
         code=(ROOT/'site/universal-atlas.js').read_text(encoding='utf-8')
         for key in (
