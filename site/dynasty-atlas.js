@@ -1209,8 +1209,11 @@
       // preserve the already-published people/dynasty views.
       fetch('./world-coverage-1800.json',{cache:'no-cache'})
         .then(r=>{if(!r.ok)throw Error('coverage');return r.json();})
+        .catch(()=>null),
+      fetch('./world-geographic-1800.json',{cache:'no-cache'})
+        .then(r=>{if(!r.ok)throw Error('geography');return r.json();})
         .catch(()=>null)
-    ]).then(([d,b,a,e,houses,cov])=>{
+    ]).then(([d,b,a,e,houses,cov,geo])=>{
       if(d.schema_version!=='dynasty-network-v1' ||
          b.schema_version!=='world-pilot-v1' ||
          e.schema_version!=='dynasty-extension-v1' ||
@@ -1293,6 +1296,20 @@
       }catch(_){coverageChecked=null;}
       data=d;base=b;atlas=a;extension=e;footprints=houses;
       coverage=coverageChecked;
+      // Optional: an unavailable map must not break the original network.
+      if(geo && geo.schema_version==='europe-geographic-reference-v1' &&
+         geo.period.start===1762 && geo.period.end===1800 &&
+         geo.historical_borders_verified===false &&
+         Array.isArray(geo.physical_outline?.paths) &&
+         Array.isArray(geo.anchors) && geo.anchors.length===politiesAll.size &&
+         new Set(geo.anchors.map(x=>x.polity_id)).size===politiesAll.size &&
+         geo.anchors.every(x=>politiesAll.has(x.polity_id) &&
+           ((x.lon===null && x.lat===null) ||
+            (Number.isFinite(x.lon)&&Number.isFinite(x.lat)&&
+             x.lon>=geo.extent.west&&x.lon<=geo.extent.east&&
+             x.lat>=geo.extent.south&&x.lat<=geo.extent.north))))
+        geography=geo;
+      else geography=null;
       slider.max=String(e.full_period.end);
       const rangeEnd=rangeLabel.querySelector('span:last-child');
       if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
@@ -1307,6 +1324,7 @@
       selectedView=modeFromUrl();
       updateView();
       render();
+      alignMainYear();
     }).catch(()=>{
       notice.textContent='Сеть не загружена: проверенная историческая модель недоступна. Не подменяем данные догадками.';
     }).finally(()=>{pending=null;});
