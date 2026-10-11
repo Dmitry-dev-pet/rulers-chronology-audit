@@ -2030,7 +2030,7 @@ button[disabled] {
 .dynasty-graph-scroll{overflow-x:auto;overflow-y:hidden;width:100%;max-width:100%;
   border:1px solid #d1dacf;border-radius:12px;background:
   linear-gradient(180deg,#fffffb,#f4f5ee);touch-action:pan-x pan-y}
-.dynasty-graph-scroll svg{display:block;width:1540px;height:590px;max-width:none}
+.dynasty-graph-scroll svg{display:block;width:100%;height:auto;max-width:none}
 .dynasty-graph-scroll svg g[role="button"]{cursor:pointer}
 .dynasty-graph-scroll svg g[role="button"]:focus-visible rect{
   stroke:#175d62;stroke-width:5}
@@ -2119,6 +2119,20 @@ button[disabled] {
   .dynasty-color-mode{flex:1 0 auto;min-width:80px}
   .dynasty-graph-scroll svg{width:1150px;height:440px}
   .dynasty-facts{grid-template-columns:105px minmax(0,1fr)}
+}
+/* Phone-first controls: three independent modes on one legible row. */
+@media(max-width:900px){
+  .dynasty-lede{display:none}
+  .dynasty-timeline{padding:8px 9px;margin-bottom:7px}
+  .dynasty-year-range{margin:7px 0 2px}
+  .dynasty-milestones{padding:6px 0 0;gap:4px}
+  .dynasty-milestone{min-width:54px;padding:7px 5px}
+  .dynasty-color-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0 0 5px}
+  .dynasty-color-mode{min-width:0;width:100%;font-size:12px;padding:7px 2px}
+  .dynasty-notice{margin:3px 0 7px;font-size:12px}
+  .dynasty-section-title{margin:9px 0 5px}
+  .dynasty-legend{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;gap:10px;scrollbar-width:thin}
+  .dynasty-legend-item{flex:0 0 auto;font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){
   .dynasty-layer *{scroll-behavior:auto!important}
