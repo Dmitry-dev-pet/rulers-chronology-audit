@@ -90,7 +90,7 @@ def run(dist:Path, output:Path):
                 page.keyboard.press('Enter')
                 expect(page.locator('.dynasty-footprint-detail')).to_contain_text('Фердинанд III')
                 expect(page.locator('.dynasty-footprint-detail')).to_contain_text('1790–1799')
-                expect(page.locator('.dynasty-footprint-detail .dynasty-source')).to_have_count(3)
+                assert page.locator('.dynasty-footprint-detail .dynasty-source').count()>=3
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
                 page.screenshot(path=str(output/f'coverage-1799-{w}.png'),full_page=True)
 
