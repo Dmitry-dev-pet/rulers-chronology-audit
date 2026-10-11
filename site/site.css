@@ -1966,6 +1966,9 @@ button[disabled] {
   .atlas-world-head h2{font-size:24px}
   .atlas-world-traits{grid-template-columns:100px minmax(0,1fr)}
   .atlas-year-world-link{min-height:44px}
+  /* World pilot is an entry point from the summary, not chart/map chrome. */
+  .atlas-app.atlas-mobile #panel-timeline[data-mobile-mode="timeline"] .atlas-year-world-link,
+  .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-world-link{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){
   .atlas-world-layer *{scroll-behavior:auto!important}
