@@ -2,6 +2,8 @@
   "id": "person-2e68f39bec46536b",
   "name": "Александр III",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q120180"
+  },
   "biography_status": "incomplete"
 }
