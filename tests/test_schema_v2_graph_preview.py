@@ -148,6 +148,7 @@ class HistoricalGraphPreviewContract(unittest.TestCase):
             self.assertEqual((output/"site.js").read_text(),"/* unchanged */\n")
             html=(output/"index.html").read_text(encoding="utf-8")
             self.assertIn("src='./atlas-v2-graph.js'",html)
+            self.assertIn("id='atlas-v2-launch'",html)
             self.assertIn("href='./atlas-v2-graph.css'",html)
             projection=json.loads((output/"atlas-v2-graph.json").read_text())
             self.assertEqual(projection,self.data)
