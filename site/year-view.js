@@ -58,7 +58,11 @@
   status.setAttribute('aria-live', 'polite');
   const cards = elem('div', 'atlas-year-dashboard-cards');
   cards.setAttribute('aria-label', 'Роли и центры власти');
-  dashboard.append(originalHead, range, caveat, status, cards);
+  // A compact, source-derived reading guide; never a newly inferred ruler list.
+  // On desktop this is hidden and the existing four-column layout is unchanged.
+  const highlights = elem('section', 'atlas-mobile-highlights');
+  highlights.setAttribute('aria-label', 'Краткий источниковый срез года');
+  dashboard.append(originalHead, range, caveat, status, highlights, cards);
   panel.insertBefore(dashboard, toolbar);
 
   // The historical statements remain in the canonical atlas database,
@@ -119,7 +123,9 @@
   }
   // Accordion state is presentation-only; keep each category's expanded
   // state when the selected year changes, without storing historical data.
-  const expandedMobileGroups = new Set(['formal']);
+  // All four categories start collapsed on a phone: the short, qualified
+  // year scan stays visible before the user chooses a detailed source card.
+  const expandedMobileGroups = new Set();
   function makeGroup(titleText, description, records, kind) {
     const card = elem('article', 'atlas-year-role-card');
     card.dataset.kind = kind;
@@ -189,6 +195,49 @@
     return card;
   }
 
+
+  // Names come only from the canonical year-overlap records. In particular,
+  // a year does not establish who held power on any one date within it.
+  function renderHighlights(groups) {
+    const rows = [elem('h3', 'atlas-mobile-highlights-title', 'Краткий срез года')];
+    const labels = {
+      formal:'Должности', effective:'Оценки влияния',
+      regency:'Регентство', institutions:'Учреждения'
+    };
+    for (const [title, , records, kind] of groups) {
+      // Show regents first instead of hiding them behind formal co-rulers.
+      const regentRecords = kind === 'regency'
+        ? records.filter(record => regencies.has(record.status)) : [];
+      const entries = regentRecords.length ? regentRecords : records;
+      if (!entries.length) continue;
+      const names = [...new Set(entries.map(qualifiedName))];
+      const button = elem('button', 'atlas-mobile-highlight');
+      button.type = 'button';
+      button.dataset.kind = kind;
+      button.setAttribute('aria-controls', 'atlas-mobile-items-' + kind);
+      button.setAttribute('aria-label', 'Раскрыть источниковые записи: ' + title);
+      button.append(
+        elem('span', 'atlas-mobile-highlight-kind', labels[kind]),
+        elem('span', 'atlas-mobile-highlight-names',
+          names.slice(0, 2).join(' · ') +
+          (names.length > 2 ? ' · +' + (names.length - 2) : '')),
+        elem('span', 'atlas-mobile-highlight-arrow', '›'));
+      button.addEventListener('click', () => {
+        const card = cards.querySelector('.atlas-year-role-card[data-kind="' + kind + '"]');
+        const toggle = card?.querySelector('.atlas-mobile-role-toggle');
+        if (toggle && !card.classList.contains('mobile-expanded')) toggle.click();
+        if (card && document.documentElement.classList.contains('atlas-mobile'))
+          card.scrollIntoView({block:'nearest'});
+      });
+      rows.push(button);
+    }
+    if (rows.length === 1) rows.push(elem('p', 'atlas-mobile-highlights-empty',
+      'Подтверждённых отдельных записей на этот год в реестре пока нет.'));
+    rows.push(elem('p', 'atlas-mobile-highlights-note',
+      'Это пересечения внутри года, не одновременный состав власти. Нажмите строку, чтобы увидеть сведения и источники.'));
+    highlights.replaceChildren(...rows);
+  }
+
   function render() {
     const year = Number(slider.value);
     prev.disabled = year <= Number(slider.min);
@@ -222,6 +271,7 @@
     ];
     cards.replaceChildren(...groups.map(([name, about, records, kind]) =>
       makeGroup(name, about, records, kind)));
+    renderHighlights(groups);
     window.dispatchEvent(new CustomEvent('atlas:year-cards-ready',
       {detail:{year,groups:groups.map(([title,,records,kind])=>
         ({title,count:records.length,kind}))}}));
