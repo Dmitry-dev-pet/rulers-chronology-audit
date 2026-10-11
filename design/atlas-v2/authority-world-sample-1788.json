@@ -1,0 +1,529 @@
+{
+  "schema_version": "authority-world-sample-v1",
+  "status": "research_pilot",
+  "historical_truth_verified_by_ci": false,
+  "focus_year": 1788,
+  "sample_covers_all_world": false,
+  "geographic_boundaries_verified": false,
+  "calendar_policy": "No day-level overlap is inferred from year-only records; 1788 is a research snapshot, not the start or end of every role.",
+  "methodology": "Typed statements about law, institutions, diplomacy, localized practice and military intervention, not a single sovereign/subject hierarchy.",
+  "regions": [
+    {
+      "id": "hre",
+      "label": "Священная Римская империя",
+      "subtitle": "Выборная императорская должность и самостоятельные княжества",
+      "explanation": "Императорский правовой порядок и правление курфюрстом — разные уровни власти; Ганновер не являлся провинцией Великобритании.",
+      "warning": "В этой выборке отражён один курфюрст, а не все территориальные образования СРИ."
+    },
+    {
+      "id": "india",
+      "label": "Индия",
+      "subtitle": "Императорский титул, военная власть и налоговая администрация",
+      "explanation": "В Дели формальный могольский титул существовал одновременно с борьбой за местную власть. Майсур и Бенгалия имеют отдельные истории полномочий.",
+      "warning": "Не изображена «единая Индия» или сплошная территория контроля; источник по Дели описывает события 1788 года, но не их длительность по дням."
+    },
+    {
+      "id": "qing",
+      "label": "Цин и Чосон",
+      "subtitle": "Имперское правление и иерархическая дипломатия",
+      "explanation": "Цинский император и король Чосона имели собственные дворы. Посольства/даннический порядок не тождественны прямому управлению Чосоном.",
+      "warning": "Посольства 1780-х подтверждают отношения дворов, а не провинциальный статус Чосона."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "h-joseph",
+      "region": "hre",
+      "kind": "person",
+      "label": "Иосиф II",
+      "p3_person_id": "hre-joseph",
+      "source_ids": [
+        "H01"
+      ],
+      "note": "В 1788 году занимал выборный императорский титул; он не был автоматически непосредственным правителем каждого княжества."
+    },
+    {
+      "id": "h-empire",
+      "region": "hre",
+      "kind": "constitutional_framework",
+      "label": "Священная Римская империя",
+      "p3_context_id": "ctx-world-hre",
+      "source_ids": [
+        "H02"
+      ],
+      "note": "Имперские институты и выборная императорская должность — не национальное унитарное государство."
+    },
+    {
+      "id": "h-hanover",
+      "region": "hre",
+      "kind": "polity",
+      "label": "Курфюршество Ганновер",
+      "p3_context_id": "ctx-world-han",
+      "source_ids": [
+        "H02",
+        "H03"
+      ],
+      "note": "Отдельный германский электорат; состоял в имперском правовом порядке и находился в личной унии с Британией."
+    },
+    {
+      "id": "h-george",
+      "region": "hre",
+      "kind": "person",
+      "label": "Георг III",
+      "p3_person_id": "gb-george3",
+      "source_ids": [
+        "H02",
+        "H03"
+      ],
+      "note": "Один человек занимал два разных поста: король Великобритании и курфюрст Ганновера."
+    },
+    {
+      "id": "h-britain",
+      "region": "hre",
+      "kind": "polity",
+      "label": "Великобритания",
+      "p3_context_id": "ctx-world-gb",
+      "source_ids": [
+        "H03"
+      ],
+      "note": "Отдельное королевство, не часть СРИ; общее лицо монарха не означает объединения государственных институтов."
+    },
+    {
+      "id": "i-shah-alam",
+      "region": "india",
+      "kind": "person",
+      "label": "Шах Алам II",
+      "source_ids": [
+        "I01"
+      ],
+      "note": "Императорский титул Великих Моголов в 1788 году; военная ситуация в Дели резко менялась."
+    },
+    {
+      "id": "i-mughal",
+      "region": "india",
+      "kind": "imperial_title_context",
+      "label": "Могольский престол",
+      "source_ids": [
+        "I01"
+      ],
+      "note": "Формальный императорский титул не отражает эффективное управление всей Индией."
+    },
+    {
+      "id": "i-ghulam",
+      "region": "india",
+      "kind": "person",
+      "label": "Гулам Кадир",
+      "source_ids": [
+        "I01"
+      ],
+      "note": "Рохилльский военачальник; захватил Дели и ослепил императора в 1788 году."
+    },
+    {
+      "id": "i-mahadji",
+      "region": "india",
+      "kind": "person",
+      "label": "Махаджи Синдия",
+      "source_ids": [
+        "I01"
+      ],
+      "note": "Маратхский военачальник; содействовал восстановлению Шаха Алама на престоле."
+    },
+    {
+      "id": "i-delhi",
+      "region": "india",
+      "kind": "locality",
+      "label": "Дели",
+      "source_ids": [
+        "I01"
+      ],
+      "note": "Локальный объект военных событий, не геометрия или карта непрерывного контроля."
+    },
+    {
+      "id": "i-company",
+      "region": "india",
+      "kind": "collective_institution",
+      "label": "Ост-Индская компания",
+      "source_ids": [
+        "I01"
+      ],
+      "note": "Корпоративная политико-фискальная администрация в Бенгалии; не английский монарх как прямой губернатор."
+    },
+    {
+      "id": "i-bengal",
+      "region": "india",
+      "kind": "fiscal_jurisdiction",
+      "label": "Бенгалия · дивани",
+      "source_ids": [
+        "I01"
+      ],
+      "note": "Право сбора доходов предоставлено компанией от имени императора в 1765 году; юридическая основа не равна всем видам фактической власти."
+    },
+    {
+      "id": "i-tipu",
+      "region": "india",
+      "kind": "person",
+      "label": "Типу Султан",
+      "source_ids": [
+        "I02"
+      ],
+      "note": "Правитель Майсура с 1782 по 1799 год; не приписываем ему подчинение Дели по наличию титула могольского императора."
+    },
+    {
+      "id": "i-mysore",
+      "region": "india",
+      "kind": "polity",
+      "label": "Майсур",
+      "source_ids": [
+        "I02"
+      ],
+      "note": "Самостоятельный центр власти в изучаемом эпизоде; не нарисован как единая провинция «Индии»."
+    },
+    {
+      "id": "q-qianlong",
+      "region": "qing",
+      "kind": "person",
+      "label": "Император Цяньлун",
+      "source_ids": [
+        "Q01"
+      ],
+      "note": "Император Цин, годы правления 1735–1796 по музейному источнику."
+    },
+    {
+      "id": "q-qing",
+      "region": "qing",
+      "kind": "imperial_title_context",
+      "label": "Империя Цин",
+      "source_ids": [
+        "Q01",
+        "Q03"
+      ],
+      "note": "Центральная императорская власть; правовые отношения с соседними дворами не обязательно являются провинциальным администрированием."
+    },
+    {
+      "id": "q-jeongjo",
+      "region": "qing",
+      "kind": "person",
+      "label": "Король Чонджо",
+      "source_ids": [
+        "Q02"
+      ],
+      "note": "Король Чосона, годы правления 1776–1800; отдельный королевский двор."
+    },
+    {
+      "id": "q-joseon",
+      "region": "qing",
+      "kind": "polity",
+      "label": "Королевство Чосон",
+      "source_ids": [
+        "Q02",
+        "Q03"
+      ],
+      "note": "Корейское королевство с собственным правлением, участвовавшее в дипломатическом и данническом порядке с Цин."
+    }
+  ],
+  "edges": [
+    {
+      "id": "h-e1",
+      "region": "hre",
+      "from": "h-joseph",
+      "to": "h-empire",
+      "kind": "elective_imperial_office",
+      "dimension": "legal",
+      "label": "Императорский титул",
+      "source_ids": [
+        "H01"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Иосиф II занимал императорскую должность (1765–1790).",
+      "caveat": "Не означает прямое управление всеми имперскими государствами."
+    },
+    {
+      "id": "h-e2",
+      "region": "hre",
+      "from": "h-hanover",
+      "to": "h-empire",
+      "kind": "constitutional_membership",
+      "dimension": "institutional",
+      "label": "Член имперского правового порядка",
+      "source_ids": [
+        "H02"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Ганновер был одним из курфюршеств Священной Римской империи.",
+      "caveat": "Имперская принадлежность не означает прямую административную власть императора на всей территории."
+    },
+    {
+      "id": "h-e3",
+      "region": "hre",
+      "from": "h-george",
+      "to": "h-hanover",
+      "kind": "electoral_office",
+      "dimension": "legal",
+      "label": "Курфюрст Ганновера",
+      "source_ids": [
+        "H02",
+        "H03"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Георг III являлся одновременно курфюрстом Ганновера.",
+      "caveat": "Курфюршество не становится частью Великобритании."
+    },
+    {
+      "id": "h-e4",
+      "region": "hre",
+      "from": "h-george",
+      "to": "h-britain",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Король Великобритании",
+      "source_ids": [
+        "H03"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Георг III был королём Великобритании в 1788 году.",
+      "caveat": "Два престола — не два человека и не единая общая администрация."
+    },
+    {
+      "id": "i-e1",
+      "region": "india",
+      "from": "i-shah-alam",
+      "to": "i-mughal",
+      "kind": "imperial_title",
+      "dimension": "legal",
+      "label": "Могольский императорский титул",
+      "source_ids": [
+        "I01"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Император Шах Алам II (1759–1806), при крупных перерывах и ограничениях реальной власти.",
+      "caveat": "В 1788 он подвергся военному насилию и временной потере контроля над Дели; не считать стабильным фактическим правлением."
+    },
+    {
+      "id": "i-e2",
+      "region": "india",
+      "from": "i-ghulam",
+      "to": "i-delhi",
+      "kind": "local_military_seizure",
+      "dimension": "practical",
+      "label": "Захват Дели",
+      "source_ids": [
+        "I01"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "event_in_year"
+      },
+      "explanation": "Гулам Кадир захватил Дели в 1788 году.",
+      "caveat": "Локальный насильственный эпизод, не годовой непрерывный контроль над всей Индией."
+    },
+    {
+      "id": "i-e3",
+      "region": "india",
+      "from": "i-mahadji",
+      "to": "i-delhi",
+      "kind": "military_restoration",
+      "dimension": "military",
+      "label": "Восстановление власти в Дели",
+      "source_ids": [
+        "I01"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "event_in_year"
+      },
+      "explanation": "Синдия восстановил Шаха Алама на престоле после захвата столицы.",
+      "caveat": "Военное вмешательство в конкретном городе не равнозначно юридическому суверенитету Синдии над империей."
+    },
+    {
+      "id": "i-e4",
+      "region": "india",
+      "from": "i-company",
+      "to": "i-bengal",
+      "kind": "fiscal_administration",
+      "dimension": "institutional",
+      "label": "Доходы Бенгалии (дивани)",
+      "source_ids": [
+        "I01"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Исторический источник относит предоставление дивани компании к 1765 году; это отдельный фискальный механизм в контексте 1788 года.",
+      "caveat": "Не переносить юридический акт 1765 года на все административные и военные полномочия по всей Индии."
+    },
+    {
+      "id": "i-e5",
+      "region": "india",
+      "from": "i-tipu",
+      "to": "i-mysore",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Правитель Майсура",
+      "source_ids": [
+        "I02"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Типу Султан правил Майсуром в 1782–1799 годах.",
+      "caveat": "Отсутствие связи с Моголами в данном срезе означает только неполноту исследования."
+    },
+    {
+      "id": "q-e1",
+      "region": "qing",
+      "from": "q-qianlong",
+      "to": "q-qing",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Император Цин",
+      "source_ids": [
+        "Q01"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Цяньлун — император Цин (1735–1796).",
+      "caveat": "Не каждый дипломатически связанный с Цин двор управлялся как провинция."
+    },
+    {
+      "id": "q-e2",
+      "region": "qing",
+      "from": "q-jeongjo",
+      "to": "q-joseon",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Король Чосона",
+      "source_ids": [
+        "Q02"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Чонджо правил Чосоном в 1776–1800 годах.",
+      "caveat": "Отдельный король и местные институты; не «цинский губернатор» Кореи."
+    },
+    {
+      "id": "q-e3",
+      "region": "qing",
+      "from": "q-joseon",
+      "to": "q-qing",
+      "kind": "tributary_diplomacy",
+      "dimension": "diplomatic",
+      "label": "Посольства и даннический порядок",
+      "source_ids": [
+        "Q03"
+      ],
+      "period": {
+        "start_year": 1788,
+        "end_year": 1788,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Исследование посольств Чосона ко двору Цин подтверждает активную дипломатическую связь в 1780-е годы.",
+      "caveat": "Дипломатическая иерархия не доказывает прямое цинское управление внутренними делами Чосона."
+    }
+  ],
+  "sources": [
+    {
+      "id": "H01",
+      "title": "Die Welt der Habsburger — Joseph II, Holy Roman Emperor (1765–1790)",
+      "url": "https://www.habsburger.net/en/persons/habsburg-emperor/joseph-ii",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "H02",
+      "title": "Encyclopaedia Britannica, 1771 — Electors of the Holy Roman Empire",
+      "url": "https://jimclifford.ca/britannica-articles-1/a/EB.1/144133902/3760.html",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "H03",
+      "title": "City of Hannover — Great Britain and Hanover personal union with distinct governments",
+      "url": "https://www.visit-hannover.com/en/Presse/Pressemitteilungen/Archiv/Pressemitteilungen-2014/Hannover-2014-Very-British/Hannover-2014-Very-British/Auf-den-Spuren-der-Personalunion/Very-British-Open-Air-Galerie-Hannover/S%C3%A4ule-Nr.-2-Die-%E2%80%9EPersonalunion%E2%80%9C-zwischen-Gro%C3%9Fbritannien-und-Hannover",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "I01",
+      "title": "Encyclopaedia Britannica (1911) — Shah Alam II: Delhi, Ghulam Qadir and Sindhia in 1788",
+      "url": "https://en.wikisource.org/wiki/1911_Encyclop%C3%A6dia_Britannica/Shah_Alam",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "I02",
+      "title": "World History Encyclopedia — Tipu Sultan and the Anglo-Mysore Wars",
+      "url": "https://www.worldhistory.org/Anglo-Mysore_Wars/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "Q01",
+      "title": "Smithsonian National Museum of Asian Art — Qianlong (r.1735–1796)",
+      "url": "https://asia.si.edu/education/educator-resources/teaching-china-with-the-smithsonian/explore-by-object/the-qianlong-emperor-as-manjushri-the-bodhisattva-of-wisdom/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "Q02",
+      "title": "National Museum of Korea — King Jeongjo (r.1776–1800)",
+      "url": "https://www.museum.go.kr/ENG/contents/E0403000000.do?relicId=4412&schM=relic_represent_view",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "Q03",
+      "title": "Koo Bumjin (2017), research on Qing treatment of Joseon embassies in the 1780s",
+      "url": "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002277944",
+      "verification": "reference_checked"
+    }
+  ]
+}
