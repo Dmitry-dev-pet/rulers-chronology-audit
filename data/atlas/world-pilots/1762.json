@@ -1,0 +1,279 @@
+{
+  "schema_version": "world-pilot-v1",
+  "year": 1762,
+  "title": "Европа, 1762: государства, династии, происхождение",
+  "historical_truth_verified_by_ci": false,
+  "geographic_boundaries_verified": false,
+  "methodology": "Годовой срез не означает одновременность всех сроков. Государство должности, место рождения, династический дом и этнокультурное происхождение являются разными отношениями. Цвет сам по себе не удостоверяет национальность.",
+  "countries": [
+    {
+      "id": "ru",
+      "label": "Российская империя",
+      "canonical_state_id": "empire",
+      "color": "#476d94",
+      "note": "Существующий слой атласа. Даты переворота уточняются отдельными источниками."
+    },
+    {
+      "id": "fr",
+      "label": "Королевство Франция",
+      "canonical_state_id": null,
+      "color": "#b58252",
+      "note": "В пилоте только монарх 1762 года, не полный состав французского управления."
+    },
+    {
+      "id": "pr",
+      "label": "Королевство Пруссия",
+      "canonical_state_id": null,
+      "color": "#528878",
+      "note": "В 1762 году титул Фридриха II формулировался как «король в Пруссии» (King in Prussia)."
+    }
+  ],
+  "persons": [
+    {
+      "id": "ru-peter3",
+      "country_id": "ru",
+      "canonical_person_id": "person-3222ad215999569e",
+      "canonical_tenure_id": "tenure-r11",
+      "name": null,
+      "role": "Император",
+      "term": {
+        "label": "Январь — июль 1762",
+        "precision": "historical_event_notes",
+        "sources": [
+          "WP01",
+          "WP02"
+        ]
+      },
+      "birth": {
+        "place": "Киль",
+        "historical_polity": "Герцогство Гольштейн-Готторп",
+        "country_id": null,
+        "sources": [
+          "WP01"
+        ]
+      },
+      "dynasty": {
+        "id": "holstein-gottorp",
+        "name": "Гольштейн-Готторп",
+        "qualifier": "дом по отцу",
+        "sources": [
+          "WP01"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "sources": [
+        "WP01",
+        "WP02"
+      ],
+      "note": "Вступил на престол 25 декабря 1761 (5 января 1762); отрёкся после провозглашения Екатерины II. Никакое происхождение из Киля не означает автоматически заданную этничность."
+    },
+    {
+      "id": "ru-catherine2",
+      "country_id": "ru",
+      "canonical_person_id": "person-a4d0a7000e965592",
+      "canonical_tenure_id": "tenure-r12",
+      "name": null,
+      "role": "Императрица",
+      "term": {
+        "label": "Провозглашена 28 июня (9 июля) 1762",
+        "precision": "day",
+        "calendar": "julian+gregorian",
+        "sources": [
+          "WP02"
+        ]
+      },
+      "birth": {
+        "place": "Штеттин",
+        "historical_polity": "Королевство Пруссия (сегодня Щецин, Польша)",
+        "country_id": "pr",
+        "sources": [
+          "WP04"
+        ]
+      },
+      "dynasty": {
+        "id": "anhalt-zerbst",
+        "name": "Ангальт-Цербстский дом",
+        "qualifier": "по рождению; данные есть в каноническом person_facts",
+        "sources": [
+          "BIO06"
+        ]
+      },
+      "ethnic_origin_fact_id": "bio-20261010-catherine-ethnic-origin-1",
+      "sources": [
+        "WP02",
+        "WP04",
+        "BIO06"
+      ],
+      "note": "Происхождение и рождение в прусском Штеттине — не утверждение о её гражданстве в 1762 году. Юридическое царствование и дворцовый переворот различаются."
+    },
+    {
+      "id": "fr-louis15",
+      "country_id": "fr",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "name": "Людовик XV",
+      "role": "Король Франции и Наварры",
+      "term": {
+        "start": "1715",
+        "end": "1774",
+        "precision": "year",
+        "calendar": "unspecified",
+        "sources": [
+          "WP05"
+        ]
+      },
+      "birth": {
+        "place": "Версаль",
+        "historical_polity": "Королевство Франция",
+        "country_id": "fr",
+        "sources": [
+          "WP06"
+        ]
+      },
+      "dynasty": {
+        "id": "bourbon",
+        "name": "Бурбоны",
+        "qualifier": "правящий дом; родственная линия Людовика XIV",
+        "sources": [
+          "WP05",
+          "WP07"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "sources": [
+        "WP05",
+        "WP06",
+        "WP07"
+      ],
+      "note": "Данные только о монархе и династии, не реконструкция французского кабинета министров. Этническая категория из места рождения не выводится."
+    },
+    {
+      "id": "pr-frederick2",
+      "country_id": "pr",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "name": "Фридрих II",
+      "role": "Король в Пруссии",
+      "term": {
+        "start": "1740",
+        "end": "1786",
+        "precision": "year",
+        "calendar": "unspecified",
+        "sources": [
+          "WP08",
+          "WP09"
+        ]
+      },
+      "birth": {
+        "place": "Берлин",
+        "historical_polity": "Королевство Пруссия",
+        "country_id": "pr",
+        "sources": [
+          "WP10"
+        ]
+      },
+      "dynasty": {
+        "id": "hohenzollern",
+        "name": "Гогенцоллерны",
+        "qualifier": "правящий дом",
+        "sources": [
+          "WP09"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "sources": [
+        "WP08",
+        "WP09",
+        "WP10"
+      ],
+      "note": "В 1762 году исторический титул — «король в Пруссии»; название «король Пруссии» возникает позднее. Династия не является этнической классификацией."
+    }
+  ],
+  "relations": [
+    {
+      "id": "wp-marriage-1745",
+      "kind": "marriage",
+      "from": "ru-peter3",
+      "to": "ru-catherine2",
+      "label": "Брак с 1745 года",
+      "detail": "Династическая супружеская связь, а не свидетельство совместного управления или этничности.",
+      "sources": [
+        "WP01",
+        "WP02"
+      ]
+    },
+    {
+      "id": "wp-petersburg-peace",
+      "kind": "treaty",
+      "from": "ru",
+      "to": "pr",
+      "label": "Петербургский мир, 24 апреля (5 мая) 1762",
+      "detail": "Межгосударственный договор России и Пруссии. Не родственная связь; позднейший союзный договор июня не был ратифицирован.",
+      "sources": [
+        "WP03"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "WP01",
+      "title": "Президентская библиотека — рождение Петра III, Киль, династическое происхождение и вступление на престол",
+      "url": "https://www.prlib.ru/node/619043",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP02",
+      "title": "Президентская библиотека — Екатерина II взошла на престол 28 июня (9 июля) 1762",
+      "url": "https://www.prlib.ru/node/619370",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP03",
+      "title": "Президентская библиотека — Петербургский мир с Пруссией 1762",
+      "url": "https://www.prlib.ru/history/619219",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP04",
+      "title": "Президентская библиотека — место рождения Екатерины II: прусский Штеттин",
+      "url": "https://www.prlib.ru/news/2108787",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP05",
+      "title": "Версаль — Людовик XV, король Франции с 1715",
+      "url": "https://en.chateauversailles.fr/discover/history/great-characters/louis-xv",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP06",
+      "title": "Муниципалитет Версаля — акт крещения и рождение Людовика XV 15 февраля 1710",
+      "url": "https://www.versailles.fr/15-1099/actualites/fiche/l-acte-de-bapteme-de-louis-xv.htm",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP07",
+      "title": "World History Encyclopedia — род Бурбонов, Людовик XIV и его потомки",
+      "url": "https://www.worldhistory.org/Louis_XIV_of_France/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP08",
+      "title": "Потсдам — Фридрих II, король Пруссии 1740–1786",
+      "url": "https://www.potsdam.de/de/content/frederick-ii-great",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP09",
+      "title": "World History Encyclopedia — Фридрих II из династии Гогенцоллернов",
+      "url": "https://www.worldhistory.org/Frederick_the_Great/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "WP10",
+      "title": "National Geographic — Фридрих II родился в Берлине, 1712",
+      "url": "https://www.nationalgeographic.com/history/history-magazine/article/frederick-the-great-king-prussia",
+      "verification": "reference_checked"
+    }
+  ]
+}
