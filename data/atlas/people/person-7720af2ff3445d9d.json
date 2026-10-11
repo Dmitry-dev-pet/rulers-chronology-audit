@@ -2,6 +2,8 @@
   "id": "person-7720af2ff3445d9d",
   "name": "Михаил Калинин",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q229828"
+  },
   "biography_status": "incomplete"
 }
