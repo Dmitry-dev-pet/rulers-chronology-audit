@@ -1,0 +1,28 @@
+{
+  "id": "archigos_return_to_power_v1",
+  "question": "Using Archigos 4.1, find all people who returned to effective leadership after a real gap in the same country between 1875 and 2015. Count re-entry events and distinct country-person IDs, compute the mean gap in days (three decimals), and report how many identity groups you exclude because their recorded birth years conflict. Give one excluded example with the original Archigos obsids and birth years. A zero-day gap does not count. If you cannot compute from data, say so rather than guessing.",
+  "data_source": "Archigos_4.1_stata14.dta",
+  "data_sha256": "3e3b4092a7ac5a7e78cd86df6e6287c69027bf6fe60c9396adf136a39b1943ad",
+  "source_url": "https://www.rochester.edu/college/faculty/hgoemans/data.htm",
+  "method": "group by (idacr,leadid); quarantine groups with >1 distinct positive yrborn; sort and merge intersecting or adjacent spells; for each later spell count reentry when previous end and later start fall inside 1875-2015 and delta >=1 day; retain multiple events per person; no same-day reentry",
+  "expected": {
+    "return_events": 597,
+    "unique_country_person_keys": 449,
+    "mean_gap_days": 1798.382,
+    "excluded_conflicting_identity_groups": 7
+  },
+  "known_false_link": {
+    "country_code": "SWD",
+    "obsids": [
+      "SWD-1888",
+      "SWD-1991"
+    ],
+    "yearborn": [
+      1820,
+      1949
+    ],
+    "reason": "The source reused one leadid for two distinct Swedish prime ministers, Gillis Bildt and Carl Bildt."
+  },
+  "caution": "This is a reproducible measurement of source codings, not proof that all identifiers denote the same person. The strict exclusion also quarantines benign metadata disagreements.",
+  "historical_truth_verified_by_ci": false
+}
