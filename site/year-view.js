@@ -103,6 +103,7 @@
   // Any direct navigation or a backgrounded tab cancels playback.
   slider.addEventListener('input', () => { if (!playbackFrame) stopPlayback(); });
   window.addEventListener('hashchange', stopPlayback);
+  window.addEventListener('atlas:world-open', stopPlayback);
   window.addEventListener('atlas:route', event => {
     if (event.detail?.view !== 'timeline') stopPlayback();
   });
@@ -124,7 +125,10 @@
   const worldLink = elem('a', 'atlas-year-world-link', '◈ Мир · 1762: происхождение и династии ↗');
   worldLink.href = '?world=1762#/timeline/1762';
   worldLink.dataset.worldOpen = '1762';
-  dashboard.append(originalHead, range, playback, worldLink, caveat, status, highlights, cards);
+  const geoLink = elem('a', 'atlas-year-geolink', '◈ Карта Европы · 1762–1800 ↗');
+  geoLink.href = '?world=dynasty18&dynYear=1762&dynView=map#/timeline/1762';
+  geoLink.setAttribute('aria-label', 'Открыть географические ориентиры, правителей и связи Европы');
+  dashboard.append(originalHead, range, playback, worldLink, geoLink, caveat, status, highlights, cards);
   panel.insertBefore(dashboard, toolbar);
 
   // The historical statements remain in the canonical atlas database,
@@ -302,6 +306,11 @@
 
   function render() {
     const year = Number(slider.value);
+    const pilotYear = year >= 1762 && year <= 1800 ? year : 1762;
+    geoLink.href = '?world=dynasty18&dynYear=' + pilotYear +
+      '&dynView=map#/timeline/' + pilotYear;
+    geoLink.textContent = '◈ Карта Европы · ' +
+      (year >= 1762 && year <= 1800 ? String(year) : '1762–1800') + ' ↗';
     prev.disabled = year <= Number(slider.min);
     next.disabled = year >= Number(slider.max);
     from.textContent = slider.min;

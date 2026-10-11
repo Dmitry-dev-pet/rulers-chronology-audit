@@ -2447,3 +2447,65 @@ button[disabled] {
   .atlas-app.atlas-mobile .atlas-year-playback-note{flex-basis:100%;font-size:12px}
   .atlas-app.atlas-mobile #panel-timeline:not(.smuta-map-active)[data-mobile-mode="timeline"] .atlas-year-playback{display:none!important}
 }
+
+/* Europe reference-map view: coastlines and city points, NOT historic borders. */
+.atlas-app .atlas-year-geolink{align-self:flex-start;display:inline-flex;align-items:center;
+  min-height:36px;padding:7px 11px;border:1px solid #9cbbae;border-radius:8px;
+  background:#eaf4ed;color:#245848;font:750 12px/1.4 system-ui,sans-serif;text-decoration:none}
+.atlas-app .atlas-year-geolink:hover{background:#dcefe2}
+.dynasty-geo-panel[hidden]{display:none!important}
+.dynasty-geo-panel{min-width:0;max-width:100%;margin-bottom:15px}
+.dynasty-geo-lead{font:550 14px/1.5 system-ui,sans-serif;color:#405e53;
+  border-left:4px solid #b48650;padding:7px 12px;margin:8px 0 10px;background:#f5f0e6}
+.dynasty-geo-status{font:680 12px/1.5 system-ui,sans-serif;color:#466b59;
+  margin:5px 0 10px}
+.dynasty-geo-jump{display:flex;gap:7px;overflow-x:auto;padding:3px 1px 10px;
+  overscroll-behavior-inline:contain;scrollbar-width:thin}
+.dynasty-geo-jump-button{flex:0 0 auto;min-height:44px;padding:8px 12px;border-radius:23px;
+  border:1px solid #c6d6c9;background:#fbfcf8;color:#355849;
+  font:730 12px/1.4 system-ui,sans-serif;cursor:pointer}
+.dynasty-geo-jump-button[aria-pressed="true"]{background:#315e4a;color:#fff;border-color:#315e4a}
+.dynasty-geo-jump-button:focus-visible,.dynasty-geo-viewport:focus-visible,
+.dynasty-geo-reference:focus-visible{outline:3px solid #bc8d45;outline-offset:2px}
+.dynasty-geo-viewport{width:100%;max-width:100%;overflow:auto;
+  overscroll-behavior:contain;border:1px solid #c8dbd4;border-radius:13px;
+  background:linear-gradient(#ecf5f3,#f5f9f8);scrollbar-width:thin}
+.dynasty-geo-svg{display:block;width:100%;min-width:980px;height:auto}
+.dynasty-geo-marker{cursor:pointer;outline:none}
+.dynasty-geo-marker[aria-pressed="true"] circle:nth-child(2){filter:drop-shadow(0 0 5px #b67e3e)}
+.dynasty-geo-marker:focus-visible circle:nth-child(2){stroke:#ca8543;stroke-width:5}
+.dynasty-geo-marker:hover text{fill:#1c6b51}
+.dynasty-geo-details{margin:12px 0;padding:13px;border:1px solid #d0dfd3;border-radius:11px;background:#fdfdfa}
+.dynasty-geo-details h3{font:800 18px/1.35 system-ui,sans-serif;margin:0 0 12px;color:#244b3d}
+.dynasty-geo-polity{padding:11px 0;border-top:1px solid #e0e8de}
+.dynasty-geo-polity h4{margin:0 0 5px;font:800 15px/1.4 system-ui,sans-serif;color:#334a3b}
+.dynasty-geo-coverage{display:inline-block;margin:2px 0 7px;padding:3px 7px;
+  border:1px solid #c8d6cc;border-radius:6px;font:700 12px/1.45 system-ui,sans-serif;color:#52665b}
+.dynasty-geo-role{display:flex;gap:5px;align-items:baseline;flex-wrap:wrap;
+  padding:6px 0;border-bottom:1px solid #edf0eb;font:480 13px/1.5 system-ui,sans-serif}
+.dynasty-geo-role strong{font-weight:790;color:#2d4e40}
+.dynasty-geo-role .dynasty-sources{display:inline-flex;gap:6px;flex-wrap:wrap}
+.dynasty-geo-institution{font:600 13px/1.45 system-ui,sans-serif;color:#426878}
+.dynasty-geo-polity-note{font:450 12px/1.45 system-ui,sans-serif;color:#60726a;margin:6px 0}
+.dynasty-geo-reference{font:700 12px/1.5 system-ui,sans-serif;color:#4e7262}
+.dynasty-geo-connections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;min-width:0;margin-top:10px}
+.dynasty-geo-connections h3{grid-column:1/-1;margin:6px 0 1px;
+  font:800 17px/1.35 system-ui,sans-serif;color:#2e5141}
+.dynasty-geo-connection{padding:10px;border:1px solid #d9e2d8;background:#fffefa;
+  border-radius:9px;font:480 12px/1.5 system-ui,sans-serif}
+.dynasty-geo-connection strong{color:#355845}
+.dynasty-geo-connection .dynasty-sources{margin-top:4px}
+@media(max-width:900px){
+  .atlas-app .atlas-year-geolink{min-height:44px;font-size:13px}
+  .atlas-app.atlas-mobile #panel-timeline[data-mobile-mode="timeline"] .atlas-year-geolink,
+  .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-geolink{display:none!important}
+  .dynasty-view-switch{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dynasty-view-button{font-size:12px}
+  .dynasty-geo-svg{min-width:980px}
+  .dynasty-geo-status{font-size:13px}
+  .dynasty-geo-details{padding:12px}
+  .dynasty-geo-role{font-size:14px}
+  .dynasty-geo-connections{grid-template-columns:1fr}
+  .dynasty-geo-lead{font-size:13px}
+}
