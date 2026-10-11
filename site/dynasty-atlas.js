@@ -744,7 +744,7 @@
           else lanes[lane]=entry.end;
           entry.lane=lane;
         }
-        bars.style.height=Math.max(42,lanes.length*36+6)+'px';
+        bars.style.height=Math.max(49,lanes.length*44+6)+'px';
         const cursor=create('span','dynasty-house-year-cursor');
         cursor.style.left=((year-FOOTPRINT_START+.5)/FOOTPRINT_YEARS*100)+'%';
         cursor.setAttribute('aria-hidden','true');
@@ -759,7 +759,7 @@
           button.dataset.roleKind=role.role_kind;
           button.style.left=((start-FOOTPRINT_START)/FOOTPRINT_YEARS*100)+'%';
           button.style.width=((end-start+1)/FOOTPRINT_YEARS*100)+'%';
-          button.style.top=(3+entry.lane*36)+'px';
+          button.style.top=(3+entry.lane*44)+'px';
           button.title=actorName(actor)+': '+role.title+' ('+start+'–'+end+') · '+member.branch;
           button.setAttribute('aria-label',
             family.name+', '+row.polity.name+', '+actorName(actor)+', '+role.title+
