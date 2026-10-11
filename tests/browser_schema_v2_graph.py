@@ -17,14 +17,17 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
-def run(dist:Path,output:Path):
+def run(dist:Path,output:Path,entry:str=''):
     output.mkdir(parents=True,exist_ok=True)
     assert (dist/"atlas-v2-graph.json").is_file(), "Missing opt-in P4 preview export"
+    assert entry in ('','v2.html'), 'Only reviewed Pages entry is allowed'
+    if entry: assert (dist/entry).is_file(), 'Standalone v2.html missing'
     server=http.server.ThreadingHTTPServer(
         ("127.0.0.1",0),functools.partial(QuietHandler,directory=str(dist.resolve())))
     thread=threading.Thread(target=server.serve_forever,daemon=True)
     thread.start()
     origin="http://127.0.0.1:"+str(server.server_port)+"/"
+    entry_origin=origin+entry
     report=[]
     try:
         with sync_playwright() as p:
@@ -36,7 +39,7 @@ def run(dist:Path,output:Path):
                     device_scale_factor=1)
                 errors=[]
                 page.on("pageerror",lambda e:errors.append(str(e)))
-                base=origin+"?atlasV2=graph&v2Year=1788#/timeline/1762"
+                base=entry_origin+"?atlasV2=graph&v2Year=1788#/timeline/1762"
                 page.goto(base)
                 expect(page.locator(".atlas-v2-layer")).to_be_visible()
                 expect(page.locator(".atlas-v2-heading")).to_have_text(
@@ -71,7 +74,7 @@ def run(dist:Path,output:Path):
                 expect(page.locator(".atlas-v2-node-house")).to_have_count(4)
 
                 # Relation-type filter and independent evidence/citation panel.
-                page.goto(origin+"?atlasV2=graph&v2Year=1762&v2Links=personal_union#/timeline/1762")
+                page.goto(entry_origin+"?atlasV2=graph&v2Year=1762&v2Links=personal_union#/timeline/1762")
                 expect(page.locator("#atlas-v2-year")).to_have_text("1762")
                 union=page.locator(
                     ".atlas-v2-relation[data-relation-id='v2-p3-rel-dn-union-gb-han']")
@@ -83,7 +86,7 @@ def run(dist:Path,output:Path):
                 page.screenshot(path=str(output/("v2-graph-union-1762-"+str(width)+".png")))
 
                 # Republic institutions: not two imaginary kings.
-                page.goto(origin+"?atlasV2=graph&v2Year=1795&v2Links=institutional#/timeline/1762")
+                page.goto(entry_origin+"?atlasV2=graph&v2Year=1795&v2Links=institutional#/timeline/1762")
                 expect(page.locator("#atlas-v2-year")).to_have_text("1795")
                 expect(page.locator(".atlas-v2-node-institution")).to_have_count(2)
                 expect(page.locator(".atlas-v2-node-person")).to_have_count(0)
@@ -132,5 +135,6 @@ if __name__=="__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("--dist",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--entry",default="",choices=["","v2.html"])
     args=parser.parse_args()
-    run(args.dist,args.output)
+    run(args.dist,args.output,args.entry)
