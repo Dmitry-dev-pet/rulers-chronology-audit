@@ -105,6 +105,14 @@ jobs:
           /tmp/atlas-browser/bin/python tests/browser_authority_epochs.py \
             --dist dist --output browser-evidence/world-epochs
 
+      - name: Browser-test source-based world research coverage matrix
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/atlas-browser/bin/python tests/browser_world_coverage.py \
+            --dist dist --output browser-evidence/research-coverage
+
       - name: Record result in job summary
         run: |
           python3 - <<'PY'
