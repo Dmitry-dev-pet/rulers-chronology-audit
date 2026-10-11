@@ -59,7 +59,7 @@ class ReviewedWorldIdentities(unittest.TestCase):
         self.assertEqual(by_id["world:pr-frederick2"]["wikidata_id"], "Q33550")
         self.assertEqual(by_id["world:hab-leopold"]["wikidata_id"], "Q151321")
         self.assertEqual(by_id["world:gb-george3"]["wikidata_id"], "Q127318")
-        self.assertIsNone(by_id["world:pt-joao"]["wikidata_id"])
+        self.assertEqual(by_id["world:pt-joao"]["wikidata_id"], "Q676301")
         self.assertEqual(by_id["person-e88112738c1054f5"]["wikidata_id"], "Q855")
         self.assertEqual(by_id["person-7720af2ff3445d9d"]["wikidata_id"], "Q229828")
         self.assertEqual(by_id["person-fccacd3aa737598e"]["wikidata_id"], "Q297032")
