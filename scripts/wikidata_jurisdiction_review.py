@@ -68,7 +68,7 @@ def registry(root: Path) -> tuple[dict[str, dict], dict[str, dict], tuple[int, i
         if (
             not isinstance(qid, str) or not wd.QID.fullmatch(qid) or
             qid in by_qid or qid in old_offices or
-            cid not in contexts or row.get("position_kind") not in POSITION_KIN or
+            cid not in contexts or row.get("position_kind") not in POSITION_KINDS or
             row.get("review_status") != "scope_reviewed_not_tenure" or
             row.get("evidence_url") != "https://www.wikidata.org/wiki/" + qid or
             not isinstance(row.get("caveat"), str) or not row["caveat"]
@@ -93,7 +93,8 @@ def boundary_year(qualifiers: dict, kind: str) -> int | None:
     if len(values) != 1:
         return None
     stamp = values[0].get("time")
-    if not isinstance(stamp, dict) or stamp.get("precision", 0) < 9:
+    if (not isinstance(stamp, dict) or not isinstance(stamp.get("precision"), int)
+            or stamp["precision"] < 9):
         return None
     matched = TIME.match(stamp.get("time", ""))
     return int(matched.group(1)) if matched else None
