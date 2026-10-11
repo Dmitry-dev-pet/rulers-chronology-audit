@@ -89,6 +89,37 @@ def roster(root: Path) -> list[dict]:
             world[native] = {"subject_id": "world:" + native,
                              "kind": "world_unlinked", "name": name,
                              "wikidata_id": None}
+    # P2: independent world identities may have reviewed QIDs, but never
+    # canonical_person_id. The reviewed registry is distinct from name-search
+    # candidates and never mutates source pilot JSON.
+    registry = root / "design/wikidata/reviewed-world-links-v1.json"
+    if registry.exists():
+        entries = read_json(registry)
+        if entries.get("schema_version") != "wikidata-reviewed-world-links-v1":
+            raise ValueError("Unknown world identity registry schema")
+        seen_world = set()
+        for item in entries.get("links", []):
+            native = item.get("world_id")
+            qid = item.get("wikidata_qid")
+            if (native not in world or native in seen_world or
+                    not isinstance(qid, str) or not QID.fullmatch(qid) or
+                    qid in qids or item.get("verification") != "identity_reviewed" or
+                    not isinstance(item.get("evidence"), list) or
+                    len(item["evidence"]) < 2):
+                raise ValueError("Invalid/duplicate reviewed world identity: " + str(native))
+            seen_world.add(native)
+            qids.add(qid)
+            world[native]["wikidata_id"] = qid
+        seen_rejections = set()
+        for item in entries.get("rejected_candidates", []):
+            native = item.get("world_id")
+            qid = item.get("wikidata_qid")
+            if (native not in world or not isinstance(qid, str) or
+                    not QID.fullmatch(qid) or
+                    (native, qid) in seen_rejections or
+                    not item.get("reason") or world[native]["wikidata_id"] == qid):
+                raise ValueError("Contradictory world QID exclusion: " + str(native))
+            seen_rejections.add((native, qid))
     subjects.extend(world.values())
     return sorted(subjects, key=lambda s: (s["kind"] != "canonical",
                                             (s["name"] or "").casefold(),
@@ -279,7 +310,9 @@ def run(root: Path = ROOT, *, api=http_api, discover: bool = False,
         person = dict(s)
         qid = s["wikidata_id"]
         if qid:
-            person["status"] = "confirmed_link_external_data_only"
+            person["status"] = ("confirmed_link_external_data_only" if
+                                s["kind"] == "canonical" else
+                                "reviewed_world_qid_no_canonical_merge")
             person["wikidata"] = entities[qid]
             if s["kind"] == "canonical":
                 person["date_review"] = {
@@ -302,7 +335,14 @@ def run(root: Path = ROOT, *, api=http_api, discover: bool = False,
             "summary": {"canonical_people": sum(s["kind"] == "canonical" for s in subjects),
                         "unlinked_world_people": sum(s["kind"] == "world_unlinked"
                                                      for s in subjects),
-                        "confirmed_qids": len(keys), "candidate_searches": searches,
+                        "confirmed_qids": len(keys),
+                        "confirmed_canonical_qids": sum(
+                            s["kind"] == "canonical" and bool(s["wikidata_id"])
+                            for s in subjects),
+                        "reviewed_world_qids": sum(
+                            s["kind"] == "world_unlinked" and bool(s["wikidata_id"])
+                            for s in subjects),
+                        "candidate_searches": searches,
                         "statuses": dict(sorted(statuses.items()))},
             "records": records,
             "policy": ("Names are search candidates, never identity joins. Rank, "
@@ -320,18 +360,18 @@ def render_markdown(report: dict) -> str:
              f"- Unlinked world-pilot people: **{s['unlinked_world_people']}**",
              f"- Confirmed QIDs read: **{s['confirmed_qids']}**",
              f"- Unverified name searches: **{s['candidate_searches']}**", "",
-             "## Confirmed identity references", "",
-             "| Canonical person | Wikidata | Birth review | Death review |",
-             "| --- | --- | --- | --- |"]
+             "## Reviewed identity references (not historical fact import)", "",
+             "| Subject | Kind | Wikidata | Birth review | Death review |",
+             "| --- | --- | --- | --- | --- |"]
     for p in report["records"]:
         if "wikidata" not in p:
             continue
         qid = p["wikidata_id"]
         clean = str(p["name"]).replace("|", "&#124;").replace("[", "&#91;")
         reviews = p.get("date_review", {})
-        lines.append(f"| {clean} | [{qid}](https://www.wikidata.org/wiki/{qid})"
-                     f" | {reviews.get('birth', {}).get('status', 'review')}"
-                     f" | {reviews.get('death', {}).get('status', 'review')} |")
+        lines.append(f"| {clean} | {p['kind']} | [{qid}](https://www.wikidata.org/wiki/{qid})"
+                     f" | {reviews.get('birth', {}).get('status', 'not_in_canonical')}"
+                     f" | {reviews.get('death', {}).get('status', 'not_in_canonical')} |")
     lines.extend(["", "## Discovery queue — candidates are NOT linked", "",
                   "| Subject | Unverified candidate QIDs |", "| --- | --- |"])
     for p in report["records"]:
