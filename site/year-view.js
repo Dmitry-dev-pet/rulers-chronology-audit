@@ -21,7 +21,13 @@
   dashboard.setAttribute('aria-label', 'Кто управлял в выбранном году');
   const heading = elem('div', 'atlas-year-dashboard-heading');
   const title = elem('h2');
-  title.append('Кто управлял в ', yearNumber, ' году?');
+  // Desktop keeps its full question; mobile elevates the selected year
+  // visually rather than wrapping a long sentence around 4 digits.
+  title.append(
+    elem('span','atlas-year-question-prefix','Кто управлял в '),
+    yearNumber,
+    elem('span','atlas-year-question-suffix',' году?'),
+    elem('span','atlas-mobile-year-caption','Кто управлял в этом году?'));
   const stepYear = (delta) => {
     const min = Number(slider.min), max = Number(slider.max);
     const next = Math.min(max, Math.max(min, Number(slider.value) + delta));
