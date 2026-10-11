@@ -2,6 +2,8 @@
   "id": "person-f9b5ac56c5c35adc",
   "name": "Александр I",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q15193"
+  },
   "biography_status": "incomplete"
 }

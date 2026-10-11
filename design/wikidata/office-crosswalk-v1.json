@@ -76,6 +76,16 @@
       "relation": "external_only",
       "evidence_url": "https://www.wikidata.org/wiki/Q181765",
       "note": "Elective Holy Roman emperor office; not sovereign nationality, territory, or Habsburg composite monarchy."
+    },
+    {
+      "wikidata_qid": "Q4376682",
+      "office_id": "snk-ussr",
+      "context_ids": [
+        "ussr"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q4376682",
+      "note": "USSR Council of People's Commissars chairman 1923–1946. Not the RSFSR SNK, nor the Council of Ministers after 1946; composite legacy-g06 remains unmapped and source-reviewed."
     }
   ]
 }

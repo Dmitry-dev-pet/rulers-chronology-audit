@@ -2,6 +2,8 @@
   "id": "person-e271c748e0ce5752",
   "name": "Алексей Рыков",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q294339"
+  },
   "biography_status": "incomplete"
 }

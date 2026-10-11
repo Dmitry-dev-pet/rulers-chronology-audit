@@ -1,7 +1,7 @@
 {
   "schema_version": "wikidata-reviewed-world-links-v1",
   "review_date": "2026-10-11",
-  "identity_policy": "QID is an external identity reference after name+period+role+polity review, not a canonical identity merger. World-pilot persons remain separate from v1 people. Historical truth and territorial control are not established.",
+  "identity_policy": "QID is an external identity reference after name+period+role+polity review, not a canonical identity merger. World-pilot persons remain separate from v1 people. Historical truth and territorial control are not established. P3 completes reviewed QIDs for all 24 world-only people while preserving them as independent IDs, not 24 historically verified rulers.",
   "links": [
     {
       "world_id": "gb-george3",
@@ -172,6 +172,76 @@
         "https://www.wikidata.org/wiki/Q161159"
       ],
       "note": "Charlotte of Mecklenburg-Strelitz, consort of George III."
+    },
+    {
+      "world_id": "sw-charles",
+      "wikidata_qid": "Q52928",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q52928"
+      ],
+      "note": "Duke Charles of Södermanland in 1781–1800, later Charles XIII of Sweden; later monarchy is not retroactive to the pilot window."
+    },
+    {
+      "world_id": "pt-joao",
+      "wikidata_qid": "Q676301",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q676301"
+      ],
+      "note": "Prince João, later João VI of Portugal; regency and subsequent reign are distinct roles."
+    },
+    {
+      "world_id": "es-carlos3",
+      "wikidata_qid": "Q36234",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q36234"
+      ],
+      "note": "Charles III of Spain (1759–1788); not King Charles III of the UK or Naples regnal number."
+    },
+    {
+      "world_id": "pt-maria1",
+      "wikidata_qid": "Q773874",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q773874"
+      ],
+      "note": "Maria I of Portugal, sovereign from 1777; consort and regency remain separate."
+    },
+    {
+      "world_id": "hab-maria-luisa",
+      "wikidata_qid": "Q229826",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q229826"
+      ],
+      "note": "Maria Luisa of Spain (1745–1792), spouse of Leopold II, Holy Roman Emperor; does not make consort a sovereign."
+    },
+    {
+      "world_id": "pt-pedro3",
+      "wikidata_qid": "Q964094",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q964094"
+      ],
+      "note": "Pedro III of Portugal, royal consort and co-monarch; record both legal concepts distinctly."
+    },
+    {
+      "world_id": "hre-francis",
+      "wikidata_qid": "Q151075",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q151075"
+      ],
+      "note": "Francis Stephen of Lorraine, Holy Roman Emperor Francis I (1745–1765), not Francis II (later)."
     }
   ],
   "rejected_candidates": [

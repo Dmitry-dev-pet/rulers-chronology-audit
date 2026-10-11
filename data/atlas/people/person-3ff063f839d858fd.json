@@ -2,6 +2,8 @@
   "id": "person-3ff063f839d858fd",
   "name": "Анна Иоанновна",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q160165"
+  },
   "biography_status": "incomplete"
 }

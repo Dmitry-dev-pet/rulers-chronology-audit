@@ -2,6 +2,8 @@
   "id": "person-dddb596a95495d62",
   "name": "Анастас Микоян",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q152738"
+  },
   "biography_status": "incomplete"
 }

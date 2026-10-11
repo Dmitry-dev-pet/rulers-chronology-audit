@@ -2,6 +2,8 @@
   "id": "person-0fca688b1e05539a",
   "name": "Анна Леопольдовна",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q159651"
+  },
   "biography_status": "incomplete"
 }

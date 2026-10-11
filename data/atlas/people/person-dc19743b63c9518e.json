@@ -2,6 +2,8 @@
   "id": "person-dc19743b63c9518e",
   "name": "Александр Трепов",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q620555"
+  },
   "biography_status": "incomplete"
 }
