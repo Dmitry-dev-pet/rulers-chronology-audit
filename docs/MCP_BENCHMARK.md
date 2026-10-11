@@ -62,7 +62,7 @@ leadid joins SWD-1888 and SWD-1991, reporting years 1820 and 1949,
 yet these are **Gillis Bildt and Carl Bildt**, two different Swedish
 prime ministers. The Swedish government's prime-minister timeline
 documents the relationship:
-https://www.regeringen.se/sa-styrsverige/statsministerambetet-i-sverige/
+https://www.regeringen.se/sa-styrs-sverige/statsministerambetet-i-sverige/
 
 For the pinned 1875–2015 test, excluding seven birth-year-conflicted
 ID groups leaves **597** coded re-entry events, **449** unique
