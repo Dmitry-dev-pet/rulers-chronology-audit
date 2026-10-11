@@ -24,6 +24,12 @@
   };
   const add=(parent,...children)=>parent.append(...children);
   const query=k=>new URL(location.href).searchParams.get(k);
+  const recordWord=n=>{
+    const r=n%100;
+    if(r>=11&&r<=14)return 'записей';
+    const u=n%10;
+    return u===1?'запись':(u>=2&&u<=4?'записи':'записей');
+  };
   const safeUrl=url=>{
     try{
       const x=new URL(url);
@@ -221,7 +227,7 @@
         button.setAttribute('aria-pressed',String(chosen));
         const count=dim==='all'?cell.edge_count:cell.dimension_counts[dim];
         if(cell.status==='partial_sample'){
-          add(button,element('strong',null,count+' '+(count===1?'запись':'записей')),
+          add(button,element('strong',null,count+' '+recordWord(count)),
             element('span',null,count===0?
               'Нет записей этого типа':'Частичный срез'));
         }else{
