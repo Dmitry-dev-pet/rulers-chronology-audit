@@ -2277,3 +2277,11 @@ button[disabled] {
 .dynasty-house-family-title{position:sticky;left:12px;z-index:4;
   width:fit-content;max-width:450px;padding-right:10px;
   background:#fafbf6;border-radius:5px}
+
+/* Ensure sticky labels paint over the late-century colored bars when the
+   reader pans horizontally to a specific year on a narrow phone. */
+.dynasty-house-row{isolation:isolate}
+.dynasty-house-row .dynasty-house-sticky-label{
+  z-index:12;box-shadow:4px 0 7px -4px rgba(30,51,37,.26)
+}
+.dynasty-house-axis .dynasty-house-sticky-label{z-index:13}
