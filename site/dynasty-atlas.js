@@ -209,7 +209,7 @@
       button.setAttribute('aria-pressed',String(button.dataset.dynastyView===selectedView));
     }
     if(selectedView==='houses' && footprints && data && extension)renderFootprints();
-    if(selectedView==='coverage' && coverage && data && extension)renderCoverage();
+    if(selectedView==='coverage')renderCoverage();
   }
   function setView(next,push){
     if(!['network','houses','coverage'].includes(next))return;
@@ -1147,6 +1147,7 @@
     graphContainer.replaceChildren(drawGraph());
     renderCountryJump();
     if(selectedView==='houses')renderFootprints();
+    if(selectedView==='coverage')renderCoverage();
     renderEvents();renderPolities();renderPersons();renderRelations();
   }
   function chooseYear(value,push){
@@ -1171,8 +1172,13 @@
       fetch('./world-1762.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('base');return r.json();}),
       fetch('./atlas.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('atlas');return r.json();}),
       fetch('./world-extension-1800.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('extension');return r.json();}),
-      fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();})
-    ]).then(([d,b,a,e,houses])=>{
+      fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();}),
+      // If the new optional public asset is missing during CDN propagation,
+      // preserve the already-published people/dynasty views.
+      fetch('./world-coverage-1800.json',{cache:'no-cache'})
+        .then(r=>{if(!r.ok)throw Error('coverage');return r.json();})
+        .catch(()=>null)
+    ]).then(([d,b,a,e,houses,cov])=>{
       if(d.schema_version!=='dynasty-network-v1' ||
          b.schema_version!=='world-pilot-v1' ||
          e.schema_version!=='dynasty-extension-v1' ||
@@ -1219,7 +1225,42 @@
             throw Error('unsourced family membership');
         }
       }
+      let coverageChecked=null;
+      try{
+        if(cov){
+          if(cov.schema_version!=='coverage-matrix-v1' ||
+             cov.period.start!==1762 || cov.period.end!==1800 ||
+             !Array.isArray(cov.polities) ||
+             cov.polities.length!==politiesAll.size ||
+             !Array.isArray(cov.known_research_tasks))
+            throw Error('coverage schema');
+          const knownSources=new Set([
+            ...b.sources,...d.sources,...e.sources,...a.sources,...cov.sources
+          ].map(s=>s.id));
+          const ids=new Set();
+          for(const policy of cov.polities){
+            if(!politiesAll.has(policy.polity_id) ||
+               ids.has(policy.polity_id) ||
+               policy.researched_from<1762 ||
+               policy.researched_through>1800 ||
+               policy.researched_from>policy.researched_through ||
+               !(policy.source_ids||[]).length ||
+               !policy.source_ids.every(id=>knownSources.has(id)))
+              throw Error('coverage policy invalid');
+            ids.add(policy.polity_id);
+          }
+          for(const task of cov.known_research_tasks){
+            if(!ids.has(task.polity_id) ||
+               task.start_year<1762||task.end_year>1800||
+               task.start_year>task.end_year ||
+               !(task.source_ids||[]).every(id=>knownSources.has(id)))
+              throw Error('coverage task invalid');
+          }
+          coverageChecked=cov;
+        }
+      }catch(_){coverageChecked=null;}
       data=d;base=b;atlas=a;extension=e;footprints=houses;
+      coverage=coverageChecked;
       slider.max=String(e.full_period.end);
       const rangeEnd=rangeLabel.querySelector('span:last-child');
       if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
@@ -1230,6 +1271,7 @@
         return button;
       }));
       caveatList.replaceChildren(...[...d.caveats,...e.caveats].map(text=>create('li',null,text)));
+      if(!coverage)coverageOverview.textContent='Матрица покрытия не загружена; другие режимы сохранены.';
       selectedView=modeFromUrl();
       updateView();
       render();
