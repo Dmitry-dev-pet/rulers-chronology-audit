@@ -287,6 +287,15 @@
       for(const r of data.roles.filter(r=>r.context_id===chosen.id&&active(r,year))){
         r.sources.forEach(s=>sources.add(s));
       }
+    }else if(chosen.kind==='institution'){
+      const institution=data.institutions.find(x=>x.id===chosen.id);
+      detail.append(element('p',null,
+        'Коллективное учреждение: '+(institution?.kind||'не определено')+
+        '. Не является индивидуальным правителем.'));
+      for(const r of data.roles.filter(r=>r.institution_id===chosen.id&&active(r,year))){
+        r.sources.forEach(s=>sources.add(s));
+        detail.append(element('p','atlas-v2-detail-line',r.title));
+      }
     }else if(chosen.kind==='relation'){
       const r=data.relations.find(x=>x.id===chosen.id);
       if(r){
@@ -330,7 +339,7 @@
     const people=data.people.filter(p=>activeSet.personIDs.has(p.id));
     const contexts=data.contexts.filter(c=>activeSet.contextIDs.has(c.id));
     const institutions=data.institutions.filter(i=>activeSet.institutionRoles.some(r=>r.institution_id===i.id));
-    const count=Math.max(families.length,people.length,contexts.length+institutions.length,5);
+    const count=Math.max(families.length,people.length+institutions.length,contexts.length,5);
     const height=Math.max(455,count*70+110);
     const board=svg('svg',{viewBox:'0 0 1460 '+height,width:'1460',height,
       role:'img','aria-label':'Граф выбранного года: дома слева, люди в центре, политические контексты справа'});
@@ -345,18 +354,21 @@
       }
     };
     register(families,165,'house');
-    register(people,710,'person');
+    // People and institutions share a column but never the same position.
+    const middle=[...people.map(node=>({node,kind:'person'})),
+                  ...institutions.map(node=>({node,kind:'institution'}))];
+    const middlePad=(height-(middle.length-1)*70)/2;
+    middle.forEach(({node,kind},i)=>positions.set(kind+':'+node.id,
+      {x:710,y:middlePad+i*70,node,kind}));
     register(contexts,1240,'context');
-    register(institutions,1240,'institution');
     const sourceKind=new Map();
     const addEdge=(a,b,kind,id,klass)=>{
       const one=positions.get(a),two=positions.get(b);
       if(!one||!two)return;
       const self=Math.abs(one.x-two.x)<10;
-      const d=self
-        ?'M '+(one.x+84)+' '+one.y+' C '+(one.x+168)+' '+one.y+', '+(two.x+168)+' '+two.y+', '+(two.x+84)+' '+two.y
-        :'M '+(one.x+one.x<two.x?100:0);
-      const actual=self?d:('M '+(one.x+(one.x<two.x?100:-100))+' '+one.y+
+      const actual=self
+        ?('M '+(one.x+84)+' '+one.y+' C '+(one.x+168)+' '+one.y+', '+(two.x+168)+' '+two.y+', '+(two.x+84)+' '+two.y)
+        :('M '+(one.x+(one.x<two.x?100:-100))+' '+one.y+
         ' C '+((one.x+two.x)/2)+' '+one.y+', '+((one.x+two.x)/2)+' '+two.y+
         ', '+(two.x+(one.x<two.x?-100:100))+' '+two.y);
       const path=svg('path',{d:actual,'class':'atlas-v2-edge atlas-v2-edge-'+klass,
@@ -410,7 +422,7 @@
       nodes.append(group);
     }
     const header=svg('g',{'class':'atlas-v2-columns'});
-    for(const [x,label] of [[165,'ДИНАСТИИ'],[710,'ЛЮДИ'],[1240,'ГОСУДАРСТВА / КОНТЕКСТЫ']]){
+    for(const [x,label] of [[165,'ДИНАСТИИ'],[710,'ЛЮДИ И ОРГАНЫ'],[1240,'ГОСУДАРСТВА / КОНТЕКСТЫ']]){
       const title=svg('text',{x,y:30,'text-anchor':'middle'});title.textContent=label;
       header.append(title);
     }
