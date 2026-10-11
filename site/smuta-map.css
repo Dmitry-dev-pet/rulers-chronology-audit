@@ -123,12 +123,9 @@
  .smuta-status{padding:4px;font-size:10px}
  .smuta-share{min-height:25px}
 }
-/* On a short landscape screen, retain a scrollable app panel after leaving
-   the map. The page itself and its navigation still do not scroll. */
-@media(max-height:560px){
- .atlas-app #panel-timeline:not(.smuta-map-active){display:block;overflow-y:auto;overscroll-behavior:contain}
- .atlas-app #panel-timeline:not(.smuta-map-active)>.atlas-timeline-workspace{height:300px;min-height:180px;flex:none}
-}
+/* The legacy short-landscape override for NON-map chronology was retired.
+   The universal mobile atlas owns that viewport's flex layout and action bar.
+   Smuta-specific styles and historical map assets remain unchanged. */
 
 
 /* Verified modern river vectors as a quiet geographical reference layer.
