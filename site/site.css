@@ -1734,19 +1734,19 @@ button[disabled] {
 }
 @media(max-width:900px) and (max-height:560px){
   .atlas-app.atlas-mobile body > header{display:none}
-  .atlas-app.atlas-mobile .mode-tab,.atlas-app.atlas-mobile .mode-tab:first-child{min-height:43px;font-size:12px}
+  .atlas-app.atlas-mobile .mode-tab,.atlas-app.atlas-mobile .mode-tab:first-child{min-height:44px;font-size:12px}
   .atlas-app.atlas-mobile .mode-panel{padding-top:4px;padding-bottom:4px}
   .atlas-app.atlas-mobile .atlas-year-dashboard{gap:5px;padding-top:4px}
   .atlas-app.atlas-mobile .atlas-year-dashboard-heading h2{font-size:20px}
   .atlas-app.atlas-mobile .atlas-year-dashboard-heading strong{font-size:23px}
-  .atlas-app.atlas-mobile .atlas-year-step{height:40px;min-height:40px;width:40px;min-width:40px}
+  .atlas-app.atlas-mobile .atlas-year-step{height:44px;min-height:44px;width:44px;min-width:44px}
   .atlas-app.atlas-mobile .atlas-year-dashboard-range{display:none}
-  .atlas-app.atlas-mobile .atlas-global-century{min-height:40px;font-size:12px}
+  .atlas-app.atlas-mobile .atlas-global-century{min-height:44px;font-size:12px}
   .atlas-app.atlas-mobile .atlas-mobile-actions{padding:3px 0}
-  .atlas-app.atlas-mobile .atlas-mobile-action{min-height:43px}
+  .atlas-app.atlas-mobile .atlas-mobile-action{min-height:44px}
   .atlas-app.atlas-mobile #panel-timeline .atlas-timeline-controls{padding:0}
-  .atlas-app.atlas-mobile #panel-timeline .atlas-control{min-height:40px}
-  .atlas-app.atlas-mobile #panel-timeline .era-btn{min-height:37px;padding:7px 8px}
+  .atlas-app.atlas-mobile #panel-timeline .atlas-control{min-height:44px}
+  .atlas-app.atlas-mobile #panel-timeline .era-btn{min-height:44px;padding:7px 8px}
   .atlas-app.atlas-mobile .atlas-mobile-method{display:none}
   .atlas-app.atlas-mobile .atlas-sidebar{height:min(84dvh,700px);max-height:min(84dvh,700px)}
   .atlas-app.atlas-mobile .atlas-global-sheet-foot{display:none}
