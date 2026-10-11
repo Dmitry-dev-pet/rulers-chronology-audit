@@ -1,4 +1,4 @@
-/* Europe 1762–1780: separate sourced network, no nationality inference.
+/* Europe 1762–1800: sourced network in two append-only historical layers, no nationality inference.
    Other centuries and the original ?world=1762 sheet remain untouched. */
 (() => {
   'use strict';
@@ -25,7 +25,7 @@
   const head=create('header','dynasty-head');
   const headText=create('div','dynasty-head-text');
   headText.append(
-    create('span','dynasty-eyebrow','Историческая сеть · 1762–1780'),
+    create('span','dynasty-eyebrow','Историческая сеть · 1762–1800'),
     create('h2','dynasty-title','Династические связи Европы')
   );
   headText.querySelector('h2').id='dynasty-title';
@@ -47,12 +47,12 @@
   forward.setAttribute('aria-label','Следующий год');
   yearRow.append(back,yearOutput,forward);
   const rangeLabel=create('label','dynasty-slider-label');
-  rangeLabel.append(create('span',null,'1762'),create('span',null,'1780'));
+  rangeLabel.append(create('span',null,'1762'),create('span',null,'1800'));
   const slider=create('input','dynasty-year-range');
   slider.id='dynasty-year-range';
   slider.type='range';
   slider.min='1762';
-  slider.max='1780';
+  slider.max='1800';
   slider.step='1';
   slider.value='1762';
   slider.setAttribute('aria-label','Выбранный год в международном атласе');
@@ -119,22 +119,25 @@
   layer.append(dialog);
   document.body.append(layer);
 
-  let data=null,base=null,atlas=null,pending=null,previousFocus=null;
+  let data=null,base=null,atlas=null,extension=null,pending=null,previousFocus=null;
   let year=1762;
   const abbr={
     ru:'Россия',fr:'Франция',pr:'Пруссия',gb:'Великобритания',
-    han:'Ганновер',hab:'Габсбурги',hre:'Римская империя',meck:'Мекленбург'
+    han:'Ганновер',hab:'Габсбурги',hre:'Римская империя',meck:'Мекленбург',
+    es:'Испания',pt:'Португалия',sw:'Швеция',tusc:'Тоскана',frrep:'Французская республика'
   };
   const familyPalette={
     romanov:'#6884ae','holstein-gottorp':'#8167a5',
     'anhalt-zerbst':'#c18d57',bourbon:'#4c78ad',
     hohenzollern:'#679a78',hanover:'#9c8056',mecklenburg:'#698d9a',
-    habsburg:'#bd688b','habsburg-lorraine':'#9d609a',lorraine:'#8b82ab'
+    habsburg:'#bd688b','habsburg-lorraine':'#9d609a',lorraine:'#8b82ab',
+    braganza:'#398875'
   };
   const edgePalette={
     marriage:'#926baa',parent:'#b08755',succession:'#318b78',
     imperial_succession:'#318b78',co_regency:'#5e91ad',
-    personal_union:'#6a66a9',treaty:'#a3754a'
+    personal_union:'#6a66a9',treaty:'#a3754a',regency:'#5380ad',
+    regime_change:'#a56a4b',institutional_change:'#6f8c88'
   };
   const positions={
     'ru-elizabeth':[115,120],
@@ -151,10 +154,17 @@
     'hre-joseph':[1190,460]
   };
   const isActive=(r,y)=>r.start_year<=y && y<=r.end_year;
-  const allPeople=()=>[...(base?.persons||[]),...(data?.additional_persons||[])];
-  const allPolities=()=>[...(base?.countries||[]),...(data?.additional_polities||[])].map(p=>({
-    ...p,name:p.name||p.label
-  }));
+  const allPeople=()=>[
+    ...(base?.persons||[]),...(data?.additional_persons||[]),
+    ...(extension?.additional_persons||[])
+  ];
+  const allPolities=()=>[
+    ...(base?.countries||[]),...(data?.additional_polities||[]),
+    ...(extension?.additional_polities||[])
+  ].map(p=>({...p,name:p.name||p.label})).filter(p=>
+    (!p.introduced_from||year>=p.introduced_from) &&
+    !(p.id==='fr' && year>1792)
+  );
   const getPerson=id=>allPeople().find(p=>p.id===id);
   const getPolity=id=>allPolities().find(p=>p.id===id);
   const validLink=url=>{
@@ -167,7 +177,7 @@
   function sources(ids) {
     const wrap=create('div','dynasty-sources');
     const index=new Map([...(base?.sources||[]),...(data?.sources||[]),
-      ...(atlas?.sources||[])].map(s=>[s.id,s]));
+      ...(extension?.sources||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
     [...new Set(ids||[])].forEach(id=>{
       const source=index.get(id);
       if(!source||!validLink(source.url))return;
@@ -199,12 +209,18 @@
       f.verification==='reference_checked');
     return match||null;
   }
-  function activeRoles(){return(data?.roles||[]).filter(r=>isActive(r,year));}
+  function activeRoles(){
+    return [...(data?.roles||[]),...(extension?.additional_roles||[])]
+      .filter(r=>isActive(r,year));
+  }
+  function activeInstitutions(){
+    return (extension?.institutions||[]).filter(r=>isActive(r,year));
+  }
   function activeIds(){return new Set(activeRoles().map(r=>r.person_id));}
   function activeRelations() {
     const people=activeIds();
-    return(data?.relations||[]).filter(r=>isActive(r,year) &&
-      (r.subjects||[]).every(id=>people.has(id)));
+    return [...(data?.relations||[]),...(extension?.additional_relations||[])]
+      .filter(r=>isActive(r,year) && (r.subjects||[]).every(id=>people.has(id)));
   }
   function mainHouse(actor){
     const h=actorHouses(actor);
@@ -310,7 +326,8 @@
     return canvas;
   }
   function renderEvents(){
-    const records=data.milestones.filter(e=>e.year===year);
+    const records=[...(data?.milestones||[]),...(extension?.milestones||[])]
+      .filter(e=>e.year===year);
     events.replaceChildren();
     if(!records.length)events.append(create('p','dynasty-empty','Для этого года в пилоте нет отдельного исследованного перехода. Это не означает отсутствия событий.'));
     for(const record of records){
@@ -340,10 +357,23 @@
         item.append(name,line);
         if(r.role_kind==='consort')item.append(create('em','dynasty-role-qualifier','Не правящий монарх'));
         if(r.role_kind==='co_regent')item.append(create('em','dynasty-role-qualifier','Соправительство ≠ единоличное правление'));
+        if(r.role_kind==='regent')item.append(create('em','dynasty-role-qualifier','Регент, не новый самостоятельный монарх'));
+        if(r.role_kind==='dynastic_person')item.append(create('em','dynasty-role-qualifier','Член династии, без правящего титула'));
+        if(r.role_kind==='first_consul')item.append(create('em','dynasty-role-qualifier','Республиканская должность, не император'));
+        if(r.actual_start_year) item.append(create('span','dynasty-role-start','Полный срок начался в '+r.actual_start_year+'; наш охват с '+r.start_year));
         item.append(sources(r.source_ids));
         article.append(item);
       }
-      if(!here.length) article.append(create('p','dynasty-empty',
+      for(const institution of activeInstitutions().filter(i=>i.polity_id===p.id)) {
+        const item=create('div','dynasty-office dynasty-institution');
+        item.dataset.roleKind='institution';
+        item.dataset.institutionId=institution.id;
+        item.append(create('strong',null,institution.name),
+          create('span',null,'Коллективный / институциональный орган, не отдельный монарх'),
+          create('p','dynasty-person-note',institution.note),sources(institution.source_ids));
+        article.append(item);
+      }
+      if(!here.length && !activeInstitutions().some(i=>i.polity_id===p.id)) article.append(create('p','dynasty-empty',
         p.kind==='birthplace_context_only'?
           'Представлено как историческое место рождения, не как ещё один британский престол.':
           'Политических должностей в этом году в пилоте нет; это пробел, не историческое отрицание.'));
@@ -404,6 +434,8 @@
       card.dataset.kind=r.kind;
       const kind={
         marriage:'Брак',parent:'Родство',personal_union:'Личная уния',
+        regency:'Регентство',regime_change:'Изменение государственного строя',
+        institutional_change:'Смена учреждений',
         co_regency:'Соправительство',imperial_succession:'Императорская должность',
         succession:'Смена монарха',treaty:'Межгосударственный договор'
       }[r.kind]||'Историческое отношение';
@@ -413,21 +445,21 @@
     }
   }
   function render(){
-    if(!data||!base||!atlas)return;
+    if(!data||!base||!atlas||!extension)return;
     slider.value=String(year);
     yearOutput.textContent=String(year);
     back.disabled=year<=data.period.start;
-    forward.disabled=year>=data.period.end;
+    forward.disabled=year>=extension.full_period.end;
     const active=activeIds(),roles=activeRoles();
     notice.textContent=year+' год · '+active.size+' участников · '+roles.length+
-      ' записей о должностях · '+activeRelations().length+' связей. '+
+      ' записей о должностях · '+activeInstitutions().length+' органов · '+activeRelations().length+' связей. '+
       (colorMode==='state'?'Цвет по государству':
        colorMode==='dynasty'?'Цвет по династии':'Цвет по доказанному происхождению');
     graphContainer.replaceChildren(drawGraph());
     renderEvents();renderPolities();renderPersons();renderRelations();
   }
   function chooseYear(value,push){
-    const next=Math.max(1762,Math.min(1780,Number(value)||1762));
+    const next=Math.max(1762,Math.min(1800,Number(value)||1762));
     year=next;
     if(isNetworkURL()){
       const u=new URL(location.href);
@@ -441,41 +473,55 @@
   slider.addEventListener('input',()=>chooseYear(slider.value,false));
   const isNetworkURL=()=>new URL(location.href).searchParams.get('world')==='dynasty18';
   async function load(){
-    if(data&&base&&atlas)return;
+    if(data&&base&&atlas&&extension)return;
     if(pending)return pending;
     pending=Promise.all([
       fetch('./world-dynasty-18c.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('network');return r.json();}),
       fetch('./world-1762.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('base');return r.json();}),
-      fetch('./atlas.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('atlas');return r.json();})
-    ]).then(([d,b,a])=>{
+      fetch('./atlas.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('atlas');return r.json();}),
+      fetch('./world-extension-1800.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('extension');return r.json();})
+    ]).then(([d,b,a,e])=>{
       if(d.schema_version!=='dynasty-network-v1' ||
          b.schema_version!=='world-pilot-v1' ||
+         e.schema_version!=='dynasty-extension-v1' ||
          d.period.start!==1762 || d.period.end!==1780 ||
+         e.full_period.start!==1762 || e.full_period.end!==1800 ||
          !Array.isArray(a.tenures) || !Array.isArray(a.people))
         throw Error('schema');
-      const ids=new Set([...b.persons,...d.additional_persons].map(x=>x.id));
-      if(ids.size!==b.persons.length+d.additional_persons.length)throw Error('duplicate persons');
-      const politiesAll=new Set([...b.countries,...d.additional_polities].map(x=>x.id));
-      for(const r of d.roles){
+      const everyone=[...b.persons,...d.additional_persons,...e.additional_persons];
+      const ids=new Set(everyone.map(x=>x.id));
+      if(ids.size!==everyone.length)throw Error('duplicate persons');
+      const politiesAll=new Set([...b.countries,...d.additional_polities,...e.additional_polities].map(x=>x.id));
+      for(const r of [...d.roles,...e.additional_roles]){
         if(!ids.has(r.person_id)||!politiesAll.has(r.polity_id)||r.start_year>r.end_year||
            !(r.source_ids||[]).length)throw Error('invalid roles');
       }
       const pids=new Set(a.people.map(x=>x.id));
       const tenures=new Map(a.tenures.map(x=>[x.id,x]));
-      for(const actor of [...b.persons,...d.additional_persons]){
+      const allSources=new Set([...b.sources,...d.sources,...e.sources,...a.sources].map(x=>x.id));
+      for(const row of [...e.additional_roles,...e.institutions,...e.additional_relations,...e.milestones]){
+        if(!(row.source_ids||[]).length || !row.source_ids.every(s=>allSources.has(s))) throw Error('missing source');
+      }
+      for(const rel of [...d.relations,...e.additional_relations]) {
+        if(!(rel.subjects||[]).every(id=>ids.has(id)))throw Error('missing relation person');
+      }
+      for(const actor of everyone){
         if(!actor.canonical_person_id)continue;
         if(!pids.has(actor.canonical_person_id) ||
            tenures.get(actor.canonical_tenure_id)?.person_id!==actor.canonical_person_id)
           throw Error('canonical identity mismatch');
       }
-      data=d;base=b;atlas=a;
-      milestones.replaceChildren(...d.period.presets.map(y=>{
+      data=d;base=b;atlas=a;extension=e;
+      slider.max=String(e.full_period.end);
+      const rangeEnd=rangeLabel.querySelector('span:last-child');
+      if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
+      milestones.replaceChildren(...[...d.period.presets,...e.additional_presets].map(y=>{
         const button=create('button','dynasty-milestone',String(y));
         button.type='button';button.dataset.year=String(y);
         button.addEventListener('click',()=>chooseYear(y,true));
         return button;
       }));
-      caveatList.replaceChildren(...d.caveats.map(text=>create('li',null,text)));
+      caveatList.replaceChildren(...[...d.caveats,...e.caveats].map(text=>create('li',null,text)));
       render();
     }).catch(()=>{
       notice.textContent='Сеть не загружена: проверенная историческая модель недоступна. Не подменяем данные догадками.';
@@ -489,7 +535,7 @@
     document.documentElement.classList.add('dynasty-open');
     const u=new URL(location.href);
     const number=Number(u.searchParams.get('dynYear'));
-    year=Number.isInteger(number)&&number>=1762&&number<=1780?number:1762;
+    year=Number.isInteger(number)&&number>=1762&&number<=1800?number:1762;
     close.focus({preventScroll:true});
     load();
   }
@@ -508,7 +554,7 @@
   function sync(){
     if(isNetworkURL()){
       const value=Number(new URL(location.href).searchParams.get('dynYear'));
-      year=Number.isInteger(value)&&value>=1762&&value<=1780?value:1762;
+      year=Number.isInteger(value)&&value>=1762&&value<=1800?value:1762;
       if(layer.hidden)openSheet(false);
       else render();
     } else if(!layer.hidden)closeSheet(false);
