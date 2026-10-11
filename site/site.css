@@ -2432,3 +2432,18 @@ button[disabled] {
   .dynasty-coverage-legend{gap:5px 10px}
   .dynasty-coverage-legend-item{font-size:10.5px}
 }
+
+/* Histography benchmark: readable, explicitly opted-in playback of canonical years. */
+.atlas-app .atlas-year-playback{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:2px 0}
+.atlas-app .atlas-year-play{min-height:36px;min-width:136px;padding:7px 12px;border:1px solid var(--green);border-radius:8px;background:var(--green);color:#fff;font:750 13px/1.3 system-ui,sans-serif;cursor:pointer}
+.atlas-app .atlas-year-play[aria-pressed="true"]{background:var(--red);border-color:var(--red)}
+.atlas-app .atlas-year-play:focus-visible,.atlas-app .atlas-year-playback-step:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.atlas-app .atlas-year-playback-speed{display:inline-flex;align-items:center;gap:6px;font:650 12px/1.4 system-ui,sans-serif;color:var(--muted)}
+.atlas-app .atlas-year-playback-step{min-height:36px;padding:5px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:650 13px system-ui,sans-serif}
+.atlas-app .atlas-year-playback-note{font:500 11px/1.4 system-ui,sans-serif;color:var(--muted)}
+@media(max-width:900px){
+  .atlas-app.atlas-mobile .atlas-year-playback{flex:0 0 auto;gap:9px;padding:1px 0}
+  .atlas-app.atlas-mobile .atlas-year-play,.atlas-app.atlas-mobile .atlas-year-playback-step{min-height:44px}
+  .atlas-app.atlas-mobile .atlas-year-playback-note{flex-basis:100%;font-size:12px}
+  .atlas-app.atlas-mobile #panel-timeline:not(.smuta-map-active)[data-mobile-mode="timeline"] .atlas-year-playback{display:none!important}
+}
