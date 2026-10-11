@@ -907,32 +907,36 @@
       fetch('./world-1762.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('base');return r.json();}),
       fetch('./atlas.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('atlas');return r.json();}),
       fetch('./world-extension-1800.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('extension');return r.json();}),
-      fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();})
-    ]).then(([d,b,a,e,houses])=>{
+      fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();}),
+      fetch('./world-coverage-backfill.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('coverage backfill');return r.json();})
+    ]).then(([d,b,a,e,houses,backfill])=>{
       if(d.schema_version!=='dynasty-network-v1' ||
          b.schema_version!=='world-pilot-v1' ||
          e.schema_version!=='dynasty-extension-v1' ||
          houses.schema_version!=='dynasty-footprints-v1' ||
+         backfill.schema_version!=='dynasty-coverage-backfill-v1' ||
+         backfill.coverage_window.start!==1762 || backfill.coverage_window.end!==1800 ||
          houses.period.start!==1762 || houses.period.end!==1800 ||
          d.period.start!==1762 || d.period.end!==1780 ||
          e.full_period.start!==1762 || e.full_period.end!==1800 ||
          !Array.isArray(a.tenures) || !Array.isArray(a.people))
         throw Error('schema');
-      const everyone=[...b.persons,...d.additional_persons,...e.additional_persons];
+      const everyone=[...b.persons,...d.additional_persons,...e.additional_persons,...backfill.person_additions];
       const ids=new Set(everyone.map(x=>x.id));
       if(ids.size!==everyone.length)throw Error('duplicate persons');
       const politiesAll=new Set([...b.countries,...d.additional_polities,...e.additional_polities].map(x=>x.id));
-      for(const r of [...d.roles,...e.additional_roles]){
+      for(const r of [...d.roles,...e.additional_roles,...backfill.role_additions]){
         if(!ids.has(r.person_id)||!politiesAll.has(r.polity_id)||r.start_year>r.end_year||
            !(r.source_ids||[]).length)throw Error('invalid roles');
       }
       const pids=new Set(a.people.map(x=>x.id));
       const tenures=new Map(a.tenures.map(x=>[x.id,x]));
-      const allSources=new Set([...b.sources,...d.sources,...e.sources,...a.sources].map(x=>x.id));
-      for(const row of [...e.additional_roles,...e.institutions,...e.additional_relations,...e.milestones]){
+      const allSources=new Set([...b.sources,...d.sources,...e.sources,...backfill.source_records,...a.sources].map(x=>x.id));
+      for(const row of [...e.additional_roles,...e.institutions,...e.additional_relations,...e.milestones,
+        ...backfill.role_additions,...backfill.relation_additions,...backfill.milestones]){
         if(!(row.source_ids||[]).length || !row.source_ids.every(s=>allSources.has(s))) throw Error('missing source');
       }
-      for(const rel of [...d.relations,...e.additional_relations]) {
+      for(const rel of [...d.relations,...e.additional_relations,...backfill.relation_additions]) {
         if(!(rel.subjects||[]).every(id=>ids.has(id)))throw Error('missing relation person');
       }
       for(const actor of everyone){
@@ -942,7 +946,7 @@
           throw Error('canonical identity mismatch');
       }
       const sourceKeys=new Set([
-        ...b.sources,...d.sources,...e.sources,...houses.sources,...a.sources
+        ...b.sources,...d.sources,...e.sources,...houses.sources,...backfill.source_records,...a.sources
       ].map(x=>x.id));
       for(const family of houses.families){
         if(!family.members.length || !(family.source_ids||[]).every(x=>sourceKeys.has(x)))
@@ -955,7 +959,36 @@
             throw Error('unsourced family membership');
         }
       }
-      data=d;base=b;atlas=a;extension=e;footprints=houses;
+      // Enrich the analytical four-house matrix only in memory. The historic
+      // source files keep their exact previous bytes and provenance.
+      const membersByFamily=new Map(backfill.family_member_additions.map(
+        row=>[row.family_id,row.members]));
+      const mergedFamilies=[
+        ...houses.families.map(f=>({
+          ...f,members:[...f.members,...(membersByFamily.get(f.id)||[])]
+        })),
+        ...backfill.family_additions
+      ];
+      if(new Set(mergedFamilies.map(f=>f.id)).size!==mergedFamilies.length)
+        throw Error('duplicate dynastic families');
+      for(const family of mergedFamilies){
+        if(!family.members.length ||
+           !(family.source_ids||[]).every(id=>sourceKeys.has(id)))
+          throw Error('unsourced dynastic family');
+        const seen=new Set();
+        for(const m of family.members){
+          if(!ids.has(m.person_id) || seen.has(m.person_id) ||
+             !['house','branch_lineage','dynastic_union'].includes(m.membership) ||
+             !(m.source_ids||[]).length ||
+             !m.source_ids.every(id=>sourceKeys.has(id)))
+            throw Error('invalid dynastic membership');
+          seen.add(m.person_id);
+        }
+      }
+      if(!backfill.covered_polity_ids.every(id=>politiesAll.has(id)))
+        throw Error('unknown restored polity');
+      data=d;base=b;atlas=a;extension=e;repair=backfill;
+      footprints={...houses,families:mergedFamilies};
       slider.max=String(e.full_period.end);
       const rangeEnd=rangeLabel.querySelector('span:last-child');
       if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
@@ -965,7 +998,11 @@
         button.addEventListener('click',()=>chooseYear(y,true));
         return button;
       }));
-      caveatList.replaceChildren(...[...d.caveats,...e.caveats].map(text=>create('li',null,text)));
+      caveatList.replaceChildren(...[
+        ...d.caveats,...e.caveats,
+        'Испания, Португалия, Швеция и Тоскана теперь документированы с 1762 года; это не полный международный реестр всех правительств и династий.',
+        'Тосканский великий герцог Фердинанд III был изгнан в 1799 году. Не изображаем непрерывную реальную власть после утраты территориального контроля.'
+      ].map(text=>create('li',null,text)));
       selectedView=modeFromUrl();
       updateView();
       render();
