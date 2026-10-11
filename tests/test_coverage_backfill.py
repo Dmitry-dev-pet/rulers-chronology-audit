@@ -42,7 +42,7 @@ class CoverageBackfillContract(unittest.TestCase):
         self.assertEqual(len(x['person_additions']),3)
         self.assertEqual(len(x['role_additions']),9)
         self.assertEqual(len(x['relation_additions']),5)
-        self.assertEqual(len(x['source_records']),11)
+        self.assertEqual(len(x['source_records']),12)
         self.assertEqual(len(x['family_additions']),2)
         self.assertEqual(len(x['family_member_additions']),2)
         self.assertEqual(len(self.people),31)
