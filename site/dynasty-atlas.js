@@ -992,7 +992,7 @@
       slider.max=String(e.full_period.end);
       const rangeEnd=rangeLabel.querySelector('span:last-child');
       if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
-      milestones.replaceChildren(...[...d.period.presets,...e.additional_presets].map(y=>{
+      milestones.replaceChildren(...[...new Set([...d.period.presets,...e.additional_presets,1771,1777])].sort((a,b)=>a-b).map(y=>{
         const button=create('button','dynasty-milestone',String(y));
         button.type='button';button.dataset.year=String(y);
         button.addEventListener('click',()=>chooseYear(y,true));
