@@ -43,6 +43,14 @@ jobs:
           python3 -m scripts.atlas_db build
           python3 -m scripts.smuta_map --revision "$SOURCE_REVISION"
 
+      # P4 is a PR-only, explicitly opt-in SPA preview. No Pages deployment.
+      - name: Build experimental P4 graph in separate preview folder
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m scripts.atlas_v2_graph_preview --dist dist --output p4-preview
+
       - name: Test actual Chromium navigation and four viewport sizes
         shell: bash
         run: |
@@ -58,6 +66,13 @@ jobs:
           /tmp/atlas-browser/bin/python tests/browser_dynasty_1800.py --dist dist --output browser-evidence
           /tmp/atlas-browser/bin/python tests/browser_house_footprints.py --dist dist --output browser-evidence
           /tmp/atlas-browser/bin/python tests/browser_coverage_matrix.py --dist dist --output browser-evidence
+
+      - name: Test experimental P4 graph at desktop and mobile sizes
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/atlas-browser/bin/python tests/browser_schema_v2_graph.py --dist p4-preview --output browser-evidence
 
       - name: Record result in job summary
         run: |
@@ -87,6 +102,16 @@ jobs:
           name: smuta-browser-evidence
           path: browser-evidence/
           if-no-files-found: warn
+          retention-days: 14
+          include-hidden-files: false
+
+      - name: Upload P4 historical graph preview (PR only)
+        if: ${{ success() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: historical-atlas-v2-graph-preview
+          path: p4-preview/
+          if-no-files-found: error
           retention-days: 14
           include-hidden-files: false
 
