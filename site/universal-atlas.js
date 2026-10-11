@@ -72,7 +72,6 @@
   const cache = new Map();
   let visible=false, mode='overview', leftYear=1685, rightYear=1953;
   let trigger=null;
-  let loading=false;
 
   // Keep all five eras in the same always-visible navigation: no historical
   // interpretation is encoded by these neutral *century* calendar ranges.
