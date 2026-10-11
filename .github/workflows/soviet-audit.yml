@@ -97,6 +97,14 @@ jobs:
           /tmp/atlas-browser/bin/python tests/browser_world_authority.py \
             --dist dist --output browser-evidence/world-authority
 
+      - name: Browser-test source-qualified authority epochs 1688 and 1888
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/atlas-browser/bin/python tests/browser_authority_epochs.py \
+            --dist dist --output browser-evidence/world-epochs
+
       - name: Record result in job summary
         run: |
           python3 - <<'PY'
