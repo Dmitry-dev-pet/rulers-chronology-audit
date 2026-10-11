@@ -57,8 +57,9 @@ jobs:
           assert report['historical_truth_verified'] is False
           assert report['mutated_canonical_data'] is False
           s = report['summary']
-          assert s['canonical_people'] == 83
-          assert s['unlinked_world_people'] == 24
+          assert len(report['records']) == s['canonical_people'] + s['unlinked_world_people']
+          assert sum(s['statuses'].values()) == len(report['records'])
+          assert s['confirmed_qids'] <= s['canonical_people']
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
               f.write('## Wikidata external reconciliation\n\n')
               f.write(f"Canonical people: {s['canonical_people']}; "
