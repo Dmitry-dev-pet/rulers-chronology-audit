@@ -380,7 +380,8 @@ def build(root: Path, out: Path, revision: str) -> dict:
               root / "data/soviet-period-review.csv", root / "site/site.css", root / "site/site.js", root / "site/year-view.js",
               root / "site/transition-view.js", root / "site/universal-atlas.js", root / "site/mobile-atlas.js",
                root / "site/world-atlas.js", root / "data/atlas/world-pilots/1762.json",
-               root / "site/dynasty-atlas.js", root / "data/atlas/world-pilots/dynasty-1762-1780.json"]
+               root / "site/dynasty-atlas.js", root / "data/atlas/world-pilots/dynasty-1762-1780.json",
+               root / "data/atlas/world-pilots/extension-1781-1800.json"]
     data = json.loads(inputs[0].read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys)
     sources = source_index(inputs[1].read_text(encoding="utf-8"))
     result = validate(data, sources)
@@ -401,6 +402,7 @@ def build(root: Path, out: Path, revision: str) -> dict:
     shutil.copyfile(root / "data/atlas/world-pilots/1762.json", out / "world-1762.json")
     shutil.copyfile(root / "site/dynasty-atlas.js", out / "dynasty-atlas.js")
     shutil.copyfile(root / "data/atlas/world-pilots/dynasty-1762-1780.json", out / "world-dynasty-18c.json")
+    shutil.copyfile(root / "data/atlas/world-pilots/extension-1781-1800.json", out / "world-extension-1800.json")
     dump_json(out / "validation.json", result)
     dump_json(out / "chronology.json", data)
     dump_json(out / "sources.json", list(sources.values()))
