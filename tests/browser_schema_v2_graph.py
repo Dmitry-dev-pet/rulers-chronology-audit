@@ -107,7 +107,7 @@ def run(dist:Path,output:Path):
                 page.locator(".atlas-v2-close").click()
                 page.go_back()
                 expect(page.locator(".atlas-v2-layer")).to_be_visible()
-                expect(page.locator("#atlas-v2-year")).to_have_text("1795")
+                expect(page.locator("#atlas-v2-year")).to_have_text("1788")
                 assert not errors,errors
                 report.append({
                     "viewport":[width,height],"status":"passed",
