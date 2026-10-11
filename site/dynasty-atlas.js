@@ -275,7 +275,13 @@
       });
       group.append(svgNode('rect',{x:x-98,y:y-38,width:196,height:79,rx:12,
         fill:'#fffefa',stroke:ink,'stroke-width':3}));
-      const title=actorName(actor)
+      // Abbreviations are purely visual; full sourced names remain in cards.
+      const title=({
+        'gb-charlotte':'Шарлотта', 'hre-francis':'Франц I',
+        'ru-peter3':'Пётр III', 'ru-catherine2':'Екатерина II',
+        'fr-antoinette':'Мария-Антуанетта',
+        'hab-maria':'Мария Терезия'
+      }[actor.id]) || actorName(actor)
         .replace('Алексеевна','').replace('Петровна','');
       group.append(svgNode('text',{x,y:y-8,'text-anchor':'middle',
         fill:'#28382f','font-size':title.length>23?12:14,'font-weight':750},title));
