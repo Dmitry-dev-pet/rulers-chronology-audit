@@ -103,7 +103,7 @@ class WorldAuthority1788(unittest.TestCase):
         for edge in d["edges"]:
             self.assertEqual(edge["start_year"],1788)
             self.assertEqual(edge["end_year"],1788)
-            self.assertIn("Research slice",edge["caveat"])
+            self.assertIn("Источниковый срез",edge["caveat"])
 
     def test_prohibits_unsupported_world_completeness(self):
         for key in ("historical_truth_verified_by_ci",
