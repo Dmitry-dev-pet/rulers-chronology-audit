@@ -2,6 +2,8 @@
   "id": "person-8ace0ae735b35ada",
   "name": "Михаил Горбачёв",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q30487"
+  },
   "biography_status": "incomplete"
 }
