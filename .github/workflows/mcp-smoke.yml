@@ -8,6 +8,10 @@ on:
       - scripts/atlas_mcp_query.py
       - scripts/archigos_returnees.py
       - tests/test_atlas_mcp.py
+      - tests/test_atlas_mcp_mac.py
+      - scripts/atlas_mcp_returnees.py
+      - benchmarks/run_agy_mac_ab.py
+      - ops/mac/**
       - tests/test_atlas_mcp_benchmark.py
       - .github/workflows/mcp-smoke.yml
   workflow_dispatch:
