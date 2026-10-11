@@ -71,6 +71,7 @@
   let people=new Map(), bodies=new Map(), sources=new Map(), offices=new Map(), states=new Map();
   const cache = new Map();
   let visible=false, mode='overview', leftYear=1685, rightYear=1953;
+  let mobileComparisonTab='a';
   let trigger=null;
 
   // Keep all five eras in the same always-visible navigation: no historical
@@ -157,6 +158,10 @@
     if(next!==location.pathname+location.search+location.hash)
       history[push?'pushState':'replaceState'](null,'',next);
   }
+  // The mobile action bar can open this same canonical drawer without
+  // clicking a hidden desktop control or inventing a second comparison app.
+  window.addEventListener('atlas:mobile-open-overview',()=>openSheet('overview'));
+  window.addEventListener('atlas:mobile-open-compare',()=>openSheet('compare'));
   function openSheet(which,element=null) {
     if(!['overview','compare'].includes(which))return;
     if(!visible) {
@@ -374,6 +379,51 @@
       'Масштаб — календарные века. Государственные границы, национальность людей, реальное осуществление законов и источниковая полнота из этих полос не выводятся.'));
   }
 
+  function setMobileComparisonTab(tab){
+    if(!['a','b','diff'].includes(tab))return;
+    mobileComparisonTab=tab;
+    const switches=body.querySelectorAll('.atlas-mobile-compare-segment button');
+    switches.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
+    const columns=body.querySelector('.atlas-global-compare-columns');
+    if(columns)columns.dataset.mobileSelected=tab;
+    const changes=body.querySelector('.atlas-mobile-differences');
+    if(changes)changes.hidden=tab!=='diff';
+  }
+  function makeDifferenceRow(group,label,year){
+    const area=el('div','atlas-mobile-diff-side');
+    area.dataset.year=String(year);
+    area.append(el('h6',null,label+' · '+group.length));
+    if(!group.length)
+      area.append(el('p','atlas-global-missing','Отдельных записей только за этот год в данном разделе нет.'));
+    else{
+      group.slice(0,5).forEach(r=>area.append(recordCard(r)));
+      if(group.length>5)
+        area.append(el('p','atlas-global-missing','Остальные '+(group.length-5)+' записей доступны при выборе года.'));
+    }
+    return area;
+  }
+  function renderMobileDifferences() {
+    const container=el('section','atlas-mobile-differences');
+    container.setAttribute('aria-label','Различия записей между годами');
+    container.append(el('h4',null,'Различия источниковых записей'),
+      el('p','atlas-global-intro',
+        'Показаны записи, пересекающие только один из двух выбранных годов. Это НЕ доказательство смены правителя, исчезновения власти или непрерывности его полномочий между датами.'));
+    const a=groupsFor(leftYear),b=groupsFor(rightYear);
+    for(const [key,label] of GROUPS){
+      const leftIds=new Set(a[key].map(x=>x.id));
+      const rightIds=new Set(b[key].map(x=>x.id));
+      const onlyLeft=a[key].filter(x=>!rightIds.has(x.id));
+      const onlyRight=b[key].filter(x=>!leftIds.has(x.id));
+      const group=el('section','atlas-mobile-diff-group');
+      group.dataset.kind=key;
+      group.append(el('h5',null,label));
+      group.append(
+        makeDifferenceRow(onlyLeft,'Только в '+leftYear,leftYear),
+        makeDifferenceRow(onlyRight,'Только в '+rightYear,rightYear));
+      container.append(group);
+    }
+    return container;
+  }
   function renderComparison() {
     body.append(el('p','atlas-global-intro',
       'Сопоставьте два любых года от 1417 до 1991. Годовые пересечения могут включать несколько последовательных должностей: это не доказательство их одновременной власти.'));
@@ -411,9 +461,20 @@
       presets.append(pick);
     }
     body.append(presets);
+    const mobileTabs=el('nav','atlas-mobile-compare-segment');
+    mobileTabs.setAttribute('aria-label','Выберите год или различия');
+    for(const [tab,label] of [['a',leftYear+' год'],['b',rightYear+' год'],['diff','Различия']]){
+      const choice=button(label,'atlas-mobile-compare-tab',()=>setMobileComparisonTab(tab));
+      choice.dataset.tab=tab;
+      mobileTabs.append(choice);
+    }
+    body.append(mobileTabs);
     const cols=el('div','atlas-global-compare-columns');
     cols.append(renderYearColumn(leftYear),renderYearColumn(rightYear));
     body.append(cols);
+    const differences=renderMobileDifferences();
+    body.append(differences);
+    setMobileComparisonTab(mobileComparisonTab);
     body.append(el('p','atlas-global-method',
       'Сравниваются записанные должности, отдельные оценки политического влияния, регентство и коллективные органы. Отсутствие записи об оценке влияния не доказывает отсутствия реальной власти. Примечания о неопределённости каждого источника сохранены.'));
   }
