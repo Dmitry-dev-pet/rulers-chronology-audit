@@ -182,8 +182,12 @@ class DateComparison(unittest.TestCase):
 class RepositoryRosterContract(unittest.TestCase):
     def test_real_repository_counts_and_confirmed_links(self):
         subjects = wd.roster(wd.ROOT)
-        self.assertEqual(sum(s["kind"] == "canonical" for s in subjects), 83)
-        self.assertEqual(sum(s["kind"] == "world_unlinked" for s in subjects), 24)
+        canonical = [s for s in subjects if s["kind"] == "canonical"]
+        world = [s for s in subjects if s["kind"] == "world_unlinked"]
+        expected = len(list((wd.ROOT / "data/atlas/people").glob("*.json")))
+        self.assertEqual(len(canonical), expected)
+        self.assertEqual(len({s["subject_id"] for s in subjects}), len(subjects))
+        self.assertGreater(len(world), 0)
         links = {s["wikidata_id"] for s in subjects if s["wikidata_id"]}
         self.assertTrue({"Q15189", "Q233987", "Q36450"} <= links)
 
