@@ -1,0 +1,112 @@
+name: Historical Atlas A/B with Gemini on Mac
+description: Fixed read-only Archigos/MCP comparison, using only a dedicated runner-local Antigravity session.
+outputs:
+  result:
+    description: Bounded sanitized evidence; never contains session data.
+    value: ${{ steps.receipt.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - name: Run fixed source-pinned read-only A/B experiment
+      shell: bash
+      env:
+        ATLAS_ACTION_DIR: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        test "$(uname -s)" = Darwin
+        test "$(uname -m)" = arm64
+        ATLAS_ROOT="$(cd "$ATLAS_ACTION_DIR/../../.." && pwd)"
+        work="$RUNNER_TEMP/atlas-gemini-mac-v1"
+        mkdir -p "$work"
+        chmod 700 "$work"
+        python3 -m venv "$work/venv"
+        "$work/venv/bin/python" -m pip install --disable-pip-version-check           "mcp>=2,<3" "pandas==2.2.3" >/dev/null
+        (
+          cd "$ATLAS_ROOT"
+          "$work/venv/bin/python" -m unittest discover             -s tests -p test_atlas_mcp_mac.py -v
+          "$work/venv/bin/python" -m scripts.atlas_db validate >/dev/null
+          "$work/venv/bin/python" -m scripts.atlas_db build --output "$work/build" >/dev/null
+        )
+        source="$work/Archigos_4.1_stata14.dta"
+        curl --fail --silent --show-error --location           --retry 2 --connect-timeout 15 --max-time 150           "https://www.rochester.edu/college/faculty/hgoemans/Archigos_4.1_stata14.dta"           -o "$source"
+        echo "3e3b4092a7ac5a7e78cd86df6e6287c69027bf6fe60c9396adf136a39b1943ad  $source" | sha256sum -c --status
+        # Only the dedicated non-admin runner user's previously authorized CLI
+        # is permitted. Never retrieve another account's profiles or a Rubik secret.
+        agy="$(command -v agy || true)"
+        test -n "$agy" && test -x "$agy" || {
+          echo "::error::AGY CLI missing for dedicated macOS runner account"
+          exit 3
+        }
+        auth="$HOME/.gemini/antigravity-cli/antigravity-oauth-token"
+        test -f "$auth" && test -s "$auth" || {
+          echo "::error::Dedicated runner AGY OAuth session not initialized"
+          exit 4
+        }
+        mkdir -p "$work/results"
+        "$work/venv/bin/python" "$ATLAS_ROOT/benchmarks/run_agy_mac_ab.py"           --atlas "$ATLAS_ROOT"           --sqlite "$work/build/atlas.sqlite"           --archigos "$source"           --auth-file "$auth"           --python "$work/venv/bin/python"           --agy "$agy"           --work "$work/sessions"           --output "$work/results/report.json"
+    - name: Create bounded, sanitized result
+      id: receipt
+      shell: bash
+      run: |
+        set -euo pipefail
+        python3 - <<'PY'
+        import json
+        import os
+        from pathlib import Path
+        folder = Path("artifacts/atlas-gemini-mcp")
+        folder.mkdir(parents=True, exist_ok=True)
+        path = Path(os.environ["RUNNER_TEMP"]) / "atlas-gemini-mac-v1/results/report.json"
+        assert path.is_file(), "Experiment has no verified report"
+        report = json.loads(path.read_text(encoding="utf-8"))
+        runs = report["results"]
+        evidence = {}
+        for lane in ("baseline", "with_mcp"):
+            r = runs[lane]
+            grade = r["evaluation"]
+            evidence[lane] = {
+                "status": r["status"],
+                "diagnostic": r["diagnostic"],
+                "trial_valid": grade["trial_valid"],
+                "exact_aggregate_match": grade["exact_aggregate_match"],
+                "honest_abstention": grade["honest_abstention"],
+                "invoked_archigos_mcp": grade["invoked_archigos_mcp"],
+                "forbidden_tool_calls": grade["forbidden_tool_calls"],
+                "duration_seconds": r["duration_seconds"],
+                "usage": r["usage"],
+            }
+        passed = all(evidence[lane]["trial_valid"] for lane in evidence)
+        summary = {
+            "operation": "atlas-gemini-benchmark",
+            "verified": passed,
+            "verification": {"status": "verified" if passed else "blocked"},
+            "benchmark_id": report["benchmark"],
+            "model": report["model"],
+            "archigos_sha256": report["archigos_sha256"],
+            "historical_truth_verified_by_ci": False,
+            "meaning": "Validation of controlled A/B execution, not historical truth.",
+            "trials": evidence,
+        }
+        (folder / "receipt.json").write_text(
+            json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        one_line = json.dumps(summary, ensure_ascii=False, separators=(",", ":"))
+        assert len(one_line.encode()) < 14000, "Evidence too large"
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as stream:
+            stream.write("result=" + one_line + "\n")
+        if not passed:
+            raise SystemExit("Benchmark protocol not verified")
+        PY
+    - name: Upload only sanitized result
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: atlas-gemini-mcp-receipt
+        path: artifacts/atlas-gemini-mcp/receipt.json
+        if-no-files-found: error
+        retention-days: 3
+    - name: Delete temporary research and OAuth copies
+      if: always()
+      shell: bash
+      run: |
+        rm -rf "$RUNNER_TEMP/atlas-gemini-mac-v1"
