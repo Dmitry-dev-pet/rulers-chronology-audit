@@ -77,10 +77,9 @@ def run(dist:Path,output:Path):
 
                 page.locator('.dynasty-milestone[data-year="1770"]').click()
                 expect(page.locator('#dynasty-year')).to_have_text('1770')
-                expect(page.locator('.dynasty-relation[data-kind="marriage"]')).to_contain_text('Марии-Антуанетты')
+                expect(page.locator('.dynasty-relation[data-kind="marriage"]').filter(has_text='Марии-Антуанетты')).to_have_count(1)
                 expect(page.locator('.dynasty-polity[data-polity="fr"]')).to_contain_text('Дофин')
                 expect(page.locator('.dynasty-polity[data-polity="fr"]')).to_contain_text('Дофина')
-                expect(page.locator('.dynasty-polity[data-polity="fr"]')).not_to_contain_text('Людовик XVI</')
                 expect(page.locator('.dynasty-person[data-person-id="fr-antoinette"]')).to_have_count(1)
                 page.screenshot(path=str(output/f'dynasty-network-1770-{width}.png'),full_page=True)
 
