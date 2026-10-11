@@ -44,7 +44,7 @@ CREATE TABLE v2_periods (
   end_year INTEGER NOT NULL,
   start_date_json TEXT,
   end_date_json TEXT,
-  meaning TEXT NOT NULL CHECK(meaning IN ('term', 'event', 'observation', 'research_window', 'role_window')),
+  meaning TEXT NOT NULL CHECK(meaning IN ('term', 'event', 'observation', 'research_window', 'role_window', 'relation_evidence_window')),
   note TEXT NOT NULL DEFAULT '',
   CHECK(start_year BETWEEN 1 AND 9999 AND end_year BETWEEN 1 AND 9999),
   CHECK(start_year <= end_year),
@@ -134,7 +134,7 @@ CREATE TABLE v2_house_affiliations (
   external_person_id TEXT,
   affiliation TEXT NOT NULL CHECK(affiliation IN (
     'by_birth', 'official_dynasty', 'by_marriage',
-    'branch_lineage', 'dynastic_union', 'other_documented')),
+    'branch_lineage', 'dynastic_union', 'documented_house', 'other_documented')),
   branch_label TEXT NOT NULL DEFAULT '',
   period_id TEXT REFERENCES v2_periods(id),
   assertion_id TEXT NOT NULL REFERENCES v2_assertions(id),
@@ -307,3 +307,107 @@ WHERE e.kind='institution_periods';
 -- Does not certify completeness or actual uninterrupted control of territory.
 -- Duplicates within a calendar year are not automatically same-day coexistence.
 CREATE INDEX v2_world_import_kind ON v2_world_imports(kind,dataset);
+
+
+-- P3 typed, source-qualified international relationship graph.
+-- The time range of a parent or marriage relationship is an observed SOURCE
+-- window, not an assertion about when parenthood began or when a marriage ended.
+-- One-off succession/treaty/regime changes are represented by event-year periods.
+CREATE TABLE v2_relationships (
+  id TEXT PRIMARY KEY,
+  kind TEXT NOT NULL CHECK(kind IN (
+    'personal_union', 'marriage', 'parent', 'imperial_succession',
+    'co_regency', 'succession', 'regency', 'treaty',
+    'regime_change', 'institutional_change')),
+  domain TEXT NOT NULL CHECK(domain IN (
+    'kinship', 'political_roles', 'interstate', 'institutional')),
+  period_id TEXT NOT NULL REFERENCES v2_periods(id),
+  event_year INTEGER CHECK(event_year IS NULL OR event_year BETWEEN 1 AND 9999),
+  assertion_id TEXT NOT NULL REFERENCES v2_assertions(id),
+  title TEXT NOT NULL,
+  note TEXT NOT NULL,
+  origin TEXT NOT NULL,
+  native_id TEXT NOT NULL,
+  UNIQUE(origin,native_id)
+);
+
+CREATE TABLE v2_relationship_people (
+  relation_id TEXT NOT NULL REFERENCES v2_relationships(id),
+  position INTEGER NOT NULL CHECK(position>=1),
+  person_id TEXT REFERENCES people(id),
+  external_person_origin TEXT,
+  external_person_id TEXT,
+  FOREIGN KEY(external_person_origin,external_person_id)
+    REFERENCES v2_external_people(origin,native_id),
+  PRIMARY KEY(relation_id,position),
+  CHECK((external_person_origin IS NULL)=(external_person_id IS NULL)),
+  CHECK((person_id IS NOT NULL)+(external_person_origin IS NOT NULL)=1)
+);
+CREATE INDEX v2_rel_people_person ON v2_relationship_people(person_id);
+CREATE INDEX v2_rel_people_external ON v2_relationship_people(external_person_origin,external_person_id);
+
+CREATE TABLE v2_relationship_contexts (
+  relation_id TEXT NOT NULL REFERENCES v2_relationships(id),
+  position INTEGER NOT NULL CHECK(position>=1),
+  context_id TEXT NOT NULL REFERENCES v2_contexts(id),
+  PRIMARY KEY(relation_id,position)
+);
+CREATE INDEX v2_rel_contexts_context ON v2_relationship_contexts(context_id);
+
+-- Every source JSON relation is retained, including the two explicitly
+-- reconciled duplicate pilot records. 'Normalized' does NOT mean historical
+-- verification. One normalized relationship may have two raw records.
+CREATE TABLE v2_relationship_imports (
+  origin TEXT NOT NULL,
+  native_id TEXT NOT NULL,
+  dataset TEXT NOT NULL CHECK(dataset IN (
+    '1762.json', 'dynasty-1762-1780.json', 'extension-1781-1800.json')),
+  relationship_id TEXT NOT NULL REFERENCES v2_relationships(id),
+  raw_json TEXT NOT NULL CHECK(json_valid(raw_json)),
+  alias_of TEXT REFERENCES v2_relationships(id),
+  PRIMARY KEY(origin,native_id),
+  CHECK(alias_of IS NULL OR alias_of=relationship_id)
+);
+CREATE INDEX v2_relationship_imports_rel ON v2_relationship_imports(relationship_id);
+
+-- v2_houses / v2_house_affiliations above are typed house data; these P3 audit
+-- rows keep both source family and each source membership losslessly.
+CREATE TABLE v2_house_imports (
+  origin TEXT NOT NULL,
+  native_id TEXT NOT NULL,
+  house_id TEXT NOT NULL REFERENCES v2_houses(id),
+  assertion_id TEXT NOT NULL REFERENCES v2_assertions(id),
+  raw_json TEXT NOT NULL CHECK(json_valid(raw_json)),
+  PRIMARY KEY(origin,native_id)
+);
+CREATE TABLE v2_affiliation_imports (
+  origin TEXT NOT NULL,
+  native_id TEXT NOT NULL,
+  affiliation_id TEXT NOT NULL UNIQUE REFERENCES v2_house_affiliations(id),
+  raw_json TEXT NOT NULL CHECK(json_valid(raw_json)),
+  PRIMARY KEY(origin,native_id)
+);
+
+-- Ruling candidates, not proof of continuous or same-day reigns.
+-- Consorts, heirs, regents, merely genealogical branch relations and
+-- elective imperial office context are excluded from 'ruling house' counts.
+-- A composite monarchy (Habsburg lands) remains explicitly typed as such:
+-- client analyses must never count it as an ordinary independent state.
+CREATE VIEW v2_house_ruling_year_candidates AS
+SELECT h.id AS house_id, h.name AS house_name,
+       a.id AS affiliation_id, a.branch_label,
+       r.id AS role_id, r.context_id, c.label AS context_label, c.kind AS context_kind,
+       r.role_kind, r.person_id, r.external_person_origin, r.external_person_id,
+       p.start_year, p.end_year
+FROM v2_house_affiliations a
+JOIN v2_houses h ON h.id=a.house_id
+JOIN v2_roles r ON (
+    (a.person_id IS NOT NULL AND a.person_id=r.person_id)
+    OR (a.external_person_origin IS NOT NULL AND
+        a.external_person_origin=r.external_person_origin AND
+        a.external_person_id=r.external_person_id))
+JOIN v2_periods p ON p.id=r.period_id
+JOIN v2_contexts c ON c.id=r.context_id
+WHERE a.affiliation='documented_house'
+  AND r.role_kind IN ('sovereign','elector')
+  AND c.kind NOT IN ('elective_office_context','birthplace_context');
