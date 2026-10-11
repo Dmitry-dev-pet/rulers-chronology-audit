@@ -22,7 +22,7 @@ class MobileAtlasContract(unittest.TestCase):
 
     def test_summary_is_default_and_chart_is_opt_in(self):
         for term in [
-            "mode='summary'","data-mobile-mode","atlas-mobile-actions",
+            "mode='summary'","panel.dataset.mobileMode","atlas-mobile-actions",
             "atlas-mobile-action","setMode('summary')","setMode('timeline')",
             "atlas-mobile-open-overview","atlas:mobile-open-compare",
             "atlas:mobile-open-overview","atlas-global-sheet",
