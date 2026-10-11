@@ -19,10 +19,12 @@ class SiteViewsTests(unittest.TestCase):
         for path in ("data", "data/atlas/world-pilots", "research", "site", "assets/original"):
             (self.root / path).mkdir(parents=True, exist_ok=True)
         source = Path(audit.__file__).resolve().parents[1] / "site"
-        for f in ("site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js"):
+        for f in ("site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js", "dynasty-atlas.js"):
             shutil.copyfile(source / f, self.root / "site" / f)
         shutil.copyfile(source.parent / "data/atlas/world-pilots/1762.json",
                         self.root / "data/atlas/world-pilots/1762.json")
+        shutil.copyfile(source.parent / "data/atlas/world-pilots/dynasty-1762-1780.json",
+                        self.root / "data/atlas/world-pilots/dynasty-1762-1780.json")
         self.transcript = self.root / "data/poster-transcription.tsv"
         self.review = self.root / "data/soviet-period-review.csv"
         with self.transcript.open("w", encoding="utf-8", newline="") as fp:
@@ -92,6 +94,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("universal-atlas.js?v=revision-tes", markup)
         self.assertIn("mobile-atlas.js?v=revision-tes", markup)
         self.assertIn("world-atlas.js?v=revision-tes", markup)
+        self.assertIn("dynasty-atlas.js?v=revision-tes", markup)
         self.assertIn("site.css?v=revision-tes", markup)
         self.assertIn("aria-selected='true'", markup)
         self.assertIn("&lt;script&gt;", markup)
@@ -110,7 +113,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertFalse(result["historical_truth_verified_by_ci"])
         self.assertEqual(result["records"], 4)
         files = {p.name for p in (self.root / "dist").iterdir()}
-        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js", "world-1762.json", "README.md", "SHA256SUMS",
+        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js", "world-1762.json", "dynasty-atlas.js", "world-dynasty-18c.json", "README.md", "SHA256SUMS",
                                  "chronology.json", "sources.json", "validation.json", "party.csv",
                                  "government.csv", "state_institutions.csv", "separate_records.csv"})
         for p in (self.root / "dist").iterdir():
@@ -125,6 +128,8 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("mobile-atlas.js", sums)
         self.assertIn("world-atlas.js", sums)
         self.assertIn("world-1762.json", sums)
+        self.assertIn("dynasty-atlas.js", sums)
+        self.assertIn("world-dynasty-18c.json", sums)
         self.assertEqual(len(sums.strip().splitlines()), len(files) - 1)
 
 
