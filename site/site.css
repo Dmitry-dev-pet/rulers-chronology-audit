@@ -1764,7 +1764,7 @@ button[disabled] {
 
 /* Visual QA at 320px and 390px: keep labels legible and declutter
    the universal view without deleting the older research pilot. */
-.atlas-app .atlas-mobile-tab-label{display:none}
+.atlas-app .atlas-mobile-tab-label,.atlas-app .atlas-mobile-year-caption{display:none}
 @media(max-width:900px){
   .atlas-app.atlas-mobile .mode-tab .atlas-desktop-tab-label{display:none}
   .atlas-app.atlas-mobile .mode-tab .atlas-mobile-tab-label{display:inline;font-size:13px;font-weight:800;line-height:1.25;white-space:nowrap}
