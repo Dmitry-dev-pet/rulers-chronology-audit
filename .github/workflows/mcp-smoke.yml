@@ -1,0 +1,39 @@
+name: MCP read-only smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/atlas_mcp.py
+      - scripts/atlas_mcp_query.py
+      - scripts/archigos_returnees.py
+      - tests/test_atlas_mcp.py
+      - tests/test_atlas_mcp_benchmark.py
+      - .github/workflows/mcp-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protocol-and-query:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install protocol SDK only for the test job
+        run: |
+          python3 -m pip install --disable-pip-version-check 'mcp>=2,<3'
+      - name: Test source-qualified queries and real MCP protocol
+        run: |
+          python3 -m unittest discover -s tests -p 'test_atlas_mcp*.py' -v
+      - name: Verify no binary research data or auth material was added
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e data/atlas/Archigos_4.1_stata14.dta
+          test ! -e .agents/mcp_config.json
+          test ! -e .gemini
