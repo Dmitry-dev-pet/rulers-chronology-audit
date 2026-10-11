@@ -2,6 +2,8 @@
   "id": "person-bca2db3cdd0d521e",
   "name": "Александр Керенский",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q48211"
+  },
   "biography_status": "incomplete"
 }
