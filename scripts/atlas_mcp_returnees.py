@@ -7,7 +7,12 @@ Only official SHA-pinned Archigos 4.1 data may be read.
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from mcp.server import MCPServer
 
 from scripts.archigos_returnees import calculate_returnees, read_archigos
