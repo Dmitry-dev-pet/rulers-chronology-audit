@@ -225,6 +225,9 @@ def preview_build(root:Path,dist:Path,output:Path)->dict:
     require("</body>" in page and "id='chronology-data'" in page,
             "unrecognized SPA app shell")
     page=page.replace("</body>",
+        "<a id='atlas-v2-launch' href='?atlasV2=graph&amp;v2Year=1788#/timeline/1762'"
+        " aria-label='Открыть экспериментальный граф династий v2'>"
+        "Сеть династий v2 · открыть ↗</a>\n"
         "<link rel='stylesheet' href='./atlas-v2-graph.css'>\n"
         "<script defer src='./atlas-v2-graph.js'></script>\n</body>")
     (output/"index.html").write_text(page,encoding="utf-8")
