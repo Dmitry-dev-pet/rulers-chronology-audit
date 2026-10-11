@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from pathlib import Path
+from contextlib import contextmanager
 
 
 class AtlasQuery:
@@ -22,11 +23,15 @@ class AtlasQuery:
             if not required <= tables or db.execute("PRAGMA user_version").fetchone()[0] != 1:
                 raise ValueError("Not canonical atlas.sqlite schema v1")
 
-    def _connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connect(self):
         con = sqlite3.connect(self.path.as_uri() + "?mode=ro&immutable=1", uri=True, timeout=2)
-        con.row_factory = sqlite3.Row
-        con.execute("PRAGMA query_only=ON")
-        return con
+        try:
+            con.row_factory = sqlite3.Row
+            con.execute("PRAGMA query_only=ON")
+            yield con
+        finally:
+            con.close()
 
     @staticmethod
     def _limit(n: int, maximum: int = 100) -> int:
