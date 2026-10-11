@@ -15,12 +15,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: wikidata-reconciliation-${ github.ref }}
+  group: wikidata-reconciliation-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   read-only-audit:
-    if: ${ github.event.repository.private == false }}
+    if: ${{ github.event.repository.private == false }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     permissions:
@@ -77,7 +77,7 @@ jobs:
 
   propose-report-pr:
     needs: read-only-audit
-    if: ${ github.event_name == 'workflow_dispatch' && inputs.open_report_pr == true && github.ref == 'refs/heads/main' && github.event.repository.private == false }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.open_report_pr == true && github.ref == 'refs/heads/main' && github.event.repository.private == false }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -95,7 +95,7 @@ jobs:
       - name: Open PR only when report changed
         shell: bash
         env:
-          GH_TOKEN: ${ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           test -s reports/wikidata/latest.json
