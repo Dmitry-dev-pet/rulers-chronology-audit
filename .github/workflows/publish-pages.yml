@@ -17,6 +17,7 @@ on:
       - scripts/atlas_v2_crosswalk.py
       - scripts/atlas_v2_roles.py
       - scripts/atlas_v2_relations.py
+      - scripts/atlas_v2_authority.py
       - design/atlas-v2/**
       - schemas/**
       - data/atlas/**
@@ -94,12 +95,21 @@ jobs:
               'atlas.json', 'atlas.sqlite', 'atlas-manifest.json', 'atlas-schema.sql', 'database.html', 'transition-cases.json',
               'smuta-map.js', 'smuta-map.css', 'smuta-map.json',
               'v2.html', 'atlas-v2-graph.js', 'atlas-v2-graph.css', 'atlas-v2-graph.json',
+              'authority.html', 'world-authority.js', 'world-authority.css', 'world-authority-1788.json',
           }
           actual = {p.name for p in dist.iterdir() if p.is_file()}
           assert actual == expected, f'Unexpected site files: {actual ^ expected}'
           assert all(p.is_file() for p in dist.iterdir()), 'No nested artifacts'
           assert b'atlas-v2-graph.js' not in (dist/'index.html').read_bytes(), 'Original homepage changed'
           assert b'atlas-v2-graph.js' in (dist/'v2.html').read_bytes(), 'Missing standalone v2 SPA'
+          assert b'world-authority.js' in (dist/'authority.html').read_bytes(), 'Missing world authority mode'
+          assert b'world-authority.js' not in (dist/'index.html').read_bytes(), 'Canonical homepage changed'
+          authority=json.loads((dist/'world-authority-1788.json').read_text())
+          assert authority['focus_year']==1788
+          assert not authority['historical_truth_verified_by_ci']
+          assert not authority['geographic_boundaries_verified']
+          assert not authority['sample_covers_all_world']
+          assert len(authority['edges'])==12, 'Authority pilot missing scoped edges'
           for path in dist.iterdir():
               content = path.read_bytes()
               assert b'drive.google.com' not in content, f'Drive reference: {path}'
@@ -144,5 +154,6 @@ jobs:
             echo "Smuta map: ${SITE_URL}?map=smuta#/timeline/1608"
             echo "Database browser: ${SITE_URL}database.html"
             echo "Dynasty graph v2: ${SITE_URL}v2.html?atlasV2=graph&v2Year=1788#/timeline/1762"
+            echo "World authority research pilot: ${SITE_URL}authority.html?region=hre"
             echo 'CI validates structure, not historical truth. Original photo remains private.'
           } >> "$GITHUB_STEP_SUMMARY"
