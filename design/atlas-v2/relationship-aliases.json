@@ -1,0 +1,23 @@
+{
+  "schema_version": "p3-explicit-aliases-v1",
+  "status": "draft_not_canonical",
+  "historical_truth_verified_by_ci": false,
+  "aliases": [
+    {
+      "dataset": "1762.json",
+      "native_id": "wp-marriage-1745",
+      "canonical_dataset": "dynasty-1762-1780.json",
+      "canonical_id": "dn-ru-marriage",
+      "kind": "marriage",
+      "reason": "Both documented source entries name Peter III and Catherine II and cite WP01/WP02; one normalized relation, two preserved records."
+    },
+    {
+      "dataset": "1762.json",
+      "native_id": "wp-petersburg-peace",
+      "canonical_dataset": "dynasty-1762-1780.json",
+      "canonical_id": "dn-ru-pr-peace",
+      "kind": "treaty",
+      "reason": "Both source entries name the 1762 Petersburg peace between Russia and Prussia and cite WP03; one normalized relation, two preserved records."
+    }
+  ]
+}
