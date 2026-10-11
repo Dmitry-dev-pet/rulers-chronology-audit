@@ -2,6 +2,8 @@
   "id": "person-d47693fb6f7d5e2a",
   "name": "Андрей Громыко",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q184267"
+  },
   "biography_status": "incomplete"
 }
