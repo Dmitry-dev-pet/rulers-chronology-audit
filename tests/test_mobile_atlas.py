@@ -37,7 +37,8 @@ class MobileAtlasContract(unittest.TestCase):
 
     def test_per_group_toggle_preserves_history_and_rejects_fake_effective(self):
         for phrase in [
-            "expandedMobileGroups = new Set(['formal'])",
+            "expandedMobileGroups = new Set()","atlas-mobile-highlights",
+            "renderHighlights(groups)","atlas-mobile-highlight",
             "atlas-mobile-role-toggle","mobile-expanded","aria-expanded",
             "Формальные должности","Политическое влияние",
             "Регентство и соправители","Учреждения и коллегии",
@@ -47,6 +48,9 @@ class MobileAtlasContract(unittest.TestCase):
             self.assertIn(phrase,self.dashboard)
         self.assertIn("atlas:year-cards-ready",self.dashboard)
         self.assertIn(".atlas-mobile-role-title",self.css)
+        self.assertIn(".atlas-mobile-highlights{",self.css)
+        self.assertIn('#panel-timeline.smuta-map-active .atlas-mobile-highlights{display:none!important}',self.css)
+        self.assertIn('[data-mobile-mode="timeline"] .atlas-mobile-highlights{display:none!important}',self.css)
         self.assertIn(".atlas-year-role-card.mobile-expanded",self.css)
         self.assertIn('status',self.dashboard)
 
