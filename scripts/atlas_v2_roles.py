@@ -311,10 +311,46 @@ def preview(snapshot: dict) -> tuple[sqlite3.Connection, dict]:
         raise
 
 
+
+
+def year_candidates(conn: sqlite3.Connection, year: int,
+                    context_id: str | None = None) -> list[dict]:
+    """Read-only YEAR-CANDIDATE projection; never infer exact simultaneity."""
+    require(type(year) is int and 1<=year<=9999, "invalid candidate year")
+    sql = """SELECT v.item_id, v.item_kind, v.origin_layer, v.context_id,
+                    c.label AS context_label,
+                    COALESCE(p.name, ep.display_label, b.name, inst.label)
+                      AS actor_label,
+                    v.role_kind, v.start_year, v.end_year
+             FROM v2_timeline_year_candidates v
+             JOIN v2_contexts c ON c.id=v.context_id
+             LEFT JOIN people p ON p.id=v.person_id
+             LEFT JOIN v2_external_people ep
+               ON ep.origin=v.external_person_origin
+              AND ep.native_id=v.external_person_id
+             LEFT JOIN bodies b ON b.id=v.body_id
+             LEFT JOIN v2_institutions inst ON inst.id=v.institution_id
+             WHERE v.start_year<=? AND v.end_year>=?"""
+    params = [year, year]
+    if context_id is not None:
+        require(isinstance(context_id,str) and bool(context_id),
+                "invalid context identifier")
+        sql += " AND v.context_id=?"
+        params.append(context_id)
+    sql += " ORDER BY c.label,v.origin_layer,v.item_id"
+    cursor=conn.execute(sql,params)
+    keys=[x[0] for x in cursor.description]
+    return [dict(zip(keys,row)) for row in cursor.fetchall()]
+
+
 def main() -> None:
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root",type=Path,default=ROOT)
+    parser.add_argument("--year",type=int,help="Inspect a year as a source-candidate slice")
+    parser.add_argument("--context",help="Optional v2 context ID, e.g. ctx-world-frrep")
     args=parser.parse_args()
+    if args.context and args.year is None:
+        parser.error("--context requires --year")
     snap=crosswalk.load_snapshot(args.root)
     snap["root"]=args.root
     conn,result=preview(snap)
@@ -331,6 +367,13 @@ def main() -> None:
             "world_timeline_candidates_deduped":conn.execute(
                 "SELECT count(*) FROM v2_timeline_year_candidates WHERE origin_layer='world-pilot'").fetchone()[0],
         }
+        if args.year is not None:
+            result["year_candidate_slice"]={
+                "year":args.year,
+                "context":args.context,
+                "warning":"Year overlap is not confirmed same-day rule or practical control.",
+                "rows":year_candidates(conn,args.year,args.context),
+            }
     finally:
         conn.close()
     print(json.dumps(result,indent=2,ensure_ascii=False,sort_keys=True))
