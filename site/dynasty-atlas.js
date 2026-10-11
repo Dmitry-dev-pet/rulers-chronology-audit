@@ -187,8 +187,9 @@
   const coverageTasks=create('section','dynasty-coverage-tasks');
   const coverageMethod=create('p','dynasty-coverage-method',
     'Одна длинная должность даёт много отмеченных годов. Ни одна ячейка не доказывает, что все документы эпохи изучены. Страны, которых ещё нет в данной исследовательской партии, не окрашены как исторически отсутствовавшие.');
-  coveragePanel.append(coverageIntro,coverageOverview,coverageLegend,
-    coverageScroll,coverageDetail,coverageTasks,coverageMethod);
+  // Mobile-first: the year-by-country chart is seen before long commentary.
+  coveragePanel.append(coverageOverview,coverageScroll,coverageLegend,
+    coverageDetail,coverageTasks,coverageIntro,coverageMethod);
   let selectedView='network';
   let showSecondary=false;
   let selectedFootprint=null;
