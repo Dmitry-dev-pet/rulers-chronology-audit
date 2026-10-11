@@ -82,6 +82,9 @@
   notice.setAttribute('role','status');
   notice.setAttribute('aria-live','polite');
   const graphicTitle=create('h3','dynasty-section-title','Граф связей');
+  const countryJump=create('nav','dynasty-country-jump');
+  countryJump.setAttribute('aria-label','Быстрый переход к государству на графе');
+  countryJump.hidden=true;
   const graphContainer=create('div','dynasty-graph-scroll');
   graphContainer.setAttribute('role','region');
   graphContainer.setAttribute('aria-label','Граф родственных и династических отношений с горизонтальной прокруткой');
@@ -113,7 +116,7 @@
   const original=create('a','dynasty-previous','← Открыть исходный пилот 1762 года');
   original.href='?world=1762#/timeline/1762';
   content.append(lede,timeline,colorControls,notice,graphicTitle,key,
-    graphContainer,graphNote,timelineTitle,events,institutionsTitle,
+    countryJump,graphContainer,graphNote,timelineTitle,events,institutionsTitle,
     polities,participantsTitle,persons,relationsTitle,relations,caveats,original);
   dialog.append(head,content);
   layer.append(dialog);
@@ -545,6 +548,33 @@
       relations.append(card);
     }
   }
+  function renderCountryJump(){
+    // Each tab scrolls only the independent SVG viewport, not the entire page.
+    countryJump.replaceChildren();
+    countryJump.hidden=year<=1780;
+    if(countryJump.hidden)return;
+    const groups=[
+      ['ru','Россия'],['fr','Франция'],['pr','Пруссия'],
+      ['gb','Великобритания / Ганновер'],['hab','Габсбурги / Империя'],
+      ['es','Испания'],['pt','Португалия'],['sw','Швеция']
+    ];
+    groups.forEach(([id,label],index)=>{
+      const button=create('button','dynasty-country-button',label);
+      button.type='button';
+      button.dataset.country=id;
+      button.setAttribute('aria-pressed',String(index===0));
+      button.addEventListener('click',()=>{
+        for(const item of countryJump.querySelectorAll('button'))
+          item.setAttribute('aria-pressed',String(item===button));
+        const x=155+index*255;
+        graphContainer.scrollTo({
+          left:Math.max(0,x-graphContainer.clientWidth/2),
+          behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'
+        });
+      });
+      countryJump.append(button);
+    });
+  }
   function render(){
     if(!data||!base||!atlas||!extension)return;
     slider.value=String(year);
@@ -557,6 +587,7 @@
       (colorMode==='state'?'Цвет по государству':
        colorMode==='dynasty'?'Цвет по династии':'Цвет по доказанному происхождению');
     graphContainer.replaceChildren(drawGraph());
+    renderCountryJump();
     renderEvents();renderPolities();renderPersons();renderRelations();
   }
   function chooseYear(value,push){
