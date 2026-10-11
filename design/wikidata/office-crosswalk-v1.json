@@ -52,7 +52,10 @@
       ],
       "relation": "office_family_only",
       "evidence_url": "https://www.wikidata.org/wiki/Q1048744",
-      "note": "Wikidata item groups general secretary and first secretary; canon distinguishes titles, Stalin 1934 changes, and leadership interpretations."
+      "note": "Wikidata item groups general secretary and first secretary; canon distinguishes titles, Stalin 1934 changes, and leadership interpretations.",
+      "related_office_ids": [
+        "first-secretary"
+      ]
     },
     {
       "wikidata_qid": "Q3240735",
