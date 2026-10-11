@@ -2134,6 +2134,35 @@ button[disabled] {
   .dynasty-legend{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;gap:10px;scrollbar-width:thin}
   .dynasty-legend-item{flex:0 0 auto;font-size:11px}
 }
+/* New republic cards make the institutional distinction visible without
+   inventing a single-person ruler for the Convention or Directory. */
+.dynasty-institution{border-left:4px dashed #628694;background:#eef4f4}
+.dynasty-institution strong{font-size:14px;color:#2c606c}
+.dynasty-role-start{font-size:11px!important;color:#69786d!important}
+.dynasty-polity[data-polity="frrep"]{background:#f5fafa}
+.dynasty-graph-scroll svg g[data-institution-id]{cursor:pointer}
+.dynasty-graph-scroll svg g[data-institution-id]:focus-visible rect{
+  stroke:#13566a;stroke-width:4
+}
 @media(prefers-reduced-motion:reduce){
   .dynasty-layer *{scroll-behavior:auto!important}
+}
+
+
+/* Independent quick jumps across the eight late-century state columns. */
+.dynasty-country-jump[hidden]{display:none!important}
+.dynasty-country-jump{display:flex;align-items:stretch;gap:5px;
+  overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;
+  padding:7px 0 9px}
+.dynasty-country-button{flex:0 0 auto;min-height:41px;
+  padding:8px 12px;border:1px solid #c4d4c7;border-radius:8px;
+  background:#f8faf5;color:#315941;cursor:pointer;
+  font:700 12px/1.3 system-ui,sans-serif;white-space:nowrap}
+.dynasty-country-button:hover{background:#e4f0e6}
+.dynasty-country-button[aria-pressed="true"]{background:#345f4b;
+  border-color:#345f4b;color:#fff}
+.dynasty-country-button:focus-visible{outline:3px solid #52886f;outline-offset:1px}
+@media(max-width:900px){
+  .dynasty-country-jump{padding:4px 0 6px;gap:4px}
+  .dynasty-country-button{min-height:44px;padding:7px 10px}
 }

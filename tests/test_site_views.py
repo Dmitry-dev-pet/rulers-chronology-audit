@@ -25,6 +25,8 @@ class SiteViewsTests(unittest.TestCase):
                         self.root / "data/atlas/world-pilots/1762.json")
         shutil.copyfile(source.parent / "data/atlas/world-pilots/dynasty-1762-1780.json",
                         self.root / "data/atlas/world-pilots/dynasty-1762-1780.json")
+        shutil.copyfile(source.parent / "data/atlas/world-pilots/extension-1781-1800.json",
+                        self.root / "data/atlas/world-pilots/extension-1781-1800.json")
         self.transcript = self.root / "data/poster-transcription.tsv"
         self.review = self.root / "data/soviet-period-review.csv"
         with self.transcript.open("w", encoding="utf-8", newline="") as fp:
@@ -113,7 +115,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertFalse(result["historical_truth_verified_by_ci"])
         self.assertEqual(result["records"], 4)
         files = {p.name for p in (self.root / "dist").iterdir()}
-        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js", "world-1762.json", "dynasty-atlas.js", "world-dynasty-18c.json", "README.md", "SHA256SUMS",
+        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js", "world-1762.json", "dynasty-atlas.js", "world-dynasty-18c.json", "world-extension-1800.json", "README.md", "SHA256SUMS",
                                  "chronology.json", "sources.json", "validation.json", "party.csv",
                                  "government.csv", "state_institutions.csv", "separate_records.csv"})
         for p in (self.root / "dist").iterdir():
@@ -130,6 +132,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("world-1762.json", sums)
         self.assertIn("dynasty-atlas.js", sums)
         self.assertIn("world-dynasty-18c.json", sums)
+        self.assertIn("world-extension-1800.json", sums)
         self.assertEqual(len(sums.strip().splitlines()), len(files) - 1)
 
 
