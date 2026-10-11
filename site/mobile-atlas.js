@@ -46,6 +46,21 @@
   compareBtn.setAttribute('aria-controls','atlas-global-sheet');
   panel.append(controls);
 
+  // Preserve the original historical disclaimer, but reveal it on demand
+  // rather than consuming several lines of the first phone screen.
+  const originalCaveat=dashboard.querySelector('.atlas-year-dashboard-caveat');
+  const sliderRange=dashboard.querySelector('.atlas-year-dashboard-range');
+  if(originalCaveat && sliderRange){
+    const more=document.createElement('details');
+    more.className='atlas-mobile-method';
+    const summary=document.createElement('summary');
+    summary.textContent='Как понимать эти сведения?';
+    const explanation=document.createElement('p');
+    explanation.textContent=originalCaveat.textContent;
+    more.append(summary,explanation);
+    sliderRange.after(more);
+  }
+
   // The universal sheet was mounted inside the desktop chart workspace.
   // That workspace is hidden in summary mode, so move ONLY the presentation
   // panel to its independent parent on mobile, then restore on desktop.
