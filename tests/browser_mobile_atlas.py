@@ -185,7 +185,7 @@ def run(dist: Path, output: Path) -> None:
             desktop.goto(origin+'#/timeline/1685')
             expect(desktop.locator('html')).not_to_have_class(re.compile(r'\batlas-mobile\b'))
             expect(desktop.locator('.atlas-mobile-actions')).to_be_hidden()
-            expect(desktop.locator('.atlas-year-role-head h3')).to_be_visible()
+            expect(desktop.locator('.atlas-year-role-head h3').first).to_be_visible()
             expect(desktop.locator('.atlas-timeline-workspace')).to_be_visible()
             expect(desktop.locator('.timeline-toolbar')).to_be_visible()
             desktop.close()
