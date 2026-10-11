@@ -31,7 +31,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Verify offline identity and calendar rules
-        run: python3 -m unittest tests.test_wikidata_sync tests.test_wikidata_office_review -v
+        run: python3 -m unittest tests.test_wikidata_sync tests.test_wikidata_office_review tests.test_wikidata_jurisdiction_review -v
       - name: Fetch Wikidata claims and discover unverified names
         run: |
           set -euo pipefail
@@ -46,6 +46,13 @@ jobs:
             --input reports/wikidata/latest.json \
             --json-output reports/wikidata/offices.json \
             --markdown-output reports/wikidata/offices.md
+      - name: Classify office jurisdictions without interpreting power or borders
+        run: |
+          set -euo pipefail
+          python3 -m scripts.wikidata_jurisdiction_review \
+            --input reports/wikidata/latest.json \
+            --json-output reports/wikidata/jurisdictions.json \
+            --markdown-output reports/wikidata/jurisdictions.md
       - name: Verify read-only canonical data
         shell: bash
         run: |
@@ -58,6 +65,8 @@ jobs:
           test -s reports/wikidata/latest.md
           test -s reports/wikidata/offices.json
           test -s reports/wikidata/offices.md
+          test -s reports/wikidata/jurisdictions.json
+          test -s reports/wikidata/jurisdictions.md
           python3 - <<'PY'
           import json
           import os
@@ -70,10 +79,16 @@ jobs:
           assert offices['mutated_canonical_data'] is False
           assert offices['asserted_real_power'] is False
           assert len(offices['subjects']) == report['summary']['confirmed_qids']
+          jurisdictions = json.loads(Path('reports/wikidata/jurisdictions.json').read_text())
+          assert jurisdictions['schema_version'] == 'wikidata-jurisdiction-review-v1'
+          assert jurisdictions['mutated_canonical_data'] is False
+          assert jurisdictions['actual_power_inferred'] is False
+          assert jurisdictions['historical_borders_verified'] is False
           s = report['summary']
           assert len(report['records']) == s['canonical_people'] + s['unlinked_world_people']
           assert sum(s['statuses'].values()) == len(report['records'])
-          assert s['confirmed_qids'] <= s['canonical_people']
+          assert s['confirmed_qids'] == s['confirmed_canonical_qids'] + s['reviewed_world_qids']
+          assert s['confirmed_qids'] <= len(report['records'])
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
               f.write('## Wikidata external reconciliation\n\n')
               f.write(f"Canonical people: {s['canonical_people']}; "
@@ -115,7 +130,7 @@ jobs:
           set -euo pipefail
           test -s reports/wikidata/latest.json
           test -s reports/wikidata/latest.md
-          git add -- reports/wikidata/latest.json reports/wikidata/latest.md reports/wikidata/offices.json reports/wikidata/offices.md
+          git add -- reports/wikidata/latest.json reports/wikidata/latest.md reports/wikidata/offices.json reports/wikidata/offices.md reports/wikidata/jurisdictions.json reports/wikidata/jurisdictions.md
           if git diff --cached --quiet; then
             echo 'No external-data changes since the last reviewed main report.'
             exit 0
@@ -127,5 +142,5 @@ jobs:
               commit -m 'data(wikidata): propose external review report'
           git push origin "$branch"
           gh pr create --base main --head "$branch" \
-            --title 'Wikidata: reviewed QIDs, identity candidates and P39 office differences' \
+            --title 'Wikidata: reviewed identities, P39 offices and historic jurisdiction candidates' \
             --body 'Review-only Wikidata report (JSON and Markdown). No canonical people, historical facts, real-power assessments, SQLite, or GitHub Pages changed. Name matches are unverified. Created by explicit manual workflow dispatch; do not auto-merge. GITHUB_TOKEN-created PRs may not trigger PR workflows; inspect the completed audit and run independent checks as needed.'
