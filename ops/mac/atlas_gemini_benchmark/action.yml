@@ -29,10 +29,17 @@ runs:
         )
         source="$work/Archigos_4.1_stata14.dta"
         curl --fail --silent --show-error --location           --retry 2 --connect-timeout 15 --max-time 150           "https://www.rochester.edu/college/faculty/hgoemans/Archigos_4.1_stata14.dta"           -o "$source"
-        echo "3e3b4092a7ac5a7e78cd86df6e6287c69027bf6fe60c9396adf136a39b1943ad  $source" | sha256sum -c --status
+        SOURCE="$source" python3 - <<'PY'
+        import hashlib, os
+        from pathlib import Path
+        actual = hashlib.sha256(Path(os.environ["SOURCE"]).read_bytes()).hexdigest()
+        if actual != "3e3b4092a7ac5a7e78cd86df6e6287c69027bf6fe60c9396adf136a39b1943ad":
+            raise SystemExit("Archigos version hash mismatch")
+        PY
         # Only the dedicated non-admin runner user's previously authorized CLI
         # is permitted. Never retrieve another account's profiles or a Rubik secret.
         agy="$(command -v agy || true)"
+        if [ -z "$agy" ] && [ -x "$HOME/.local/bin/agy" ]; then agy="$HOME/.local/bin/agy"; fi
         test -n "$agy" && test -x "$agy" || {
           echo "::error::AGY CLI missing for dedicated macOS runner account"
           exit 3
