@@ -84,9 +84,7 @@ class AuthorityEpochsContract(unittest.TestCase):
         self.assertNotEqual(edges["e1688-emperor-higashiyama"]["to"],
                             edges["e1688-shogun-tsunayoshi"]["to"])
         self.assertEqual(edges["e1688-aurangzeb-title"]["dimension"],"legal")
-        self.assertIn("срез",edges["e1688-aurangzeb-title"]["caveat"].lower()
-                      if "срез" in edges["e1688-aurangzeb-title"]["caveat"].lower()
-                      else "срез")
+        self.assertIn("не удостоверяет",edges["e1688-aurangzeb-title"]["caveat"])
 
     def test_1888_japan_exact_cabinet_day_not_year_co_rule(self):
         edges=self.edges[1888]
