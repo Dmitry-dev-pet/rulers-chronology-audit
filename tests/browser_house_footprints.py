@@ -14,6 +14,40 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
 
 
+def click_visible_house_bar(page, role_id:str):
+    """Click the visible portion of a bar outside the sticky country label.
+
+    Playwright's default center click can land UNDER an intentionally pinned
+    country name, even while the rest of the colored bar is fully tappable.
+    Test genuine pointer hit-testing instead of force-clicking a hidden area.
+    """
+    bar=page.locator(f'.dynasty-house-bar[data-role-id="{role_id}"]')
+    bar.scroll_into_view_if_needed()
+    for _ in range(7):
+        point=bar.evaluate("""node=>{
+            const r=node.getBoundingClientRect();
+            const label=node.closest('.dynasty-house-row')
+                .querySelector('.dynasty-house-sticky-label');
+            const boundary=label.getBoundingClientRect();
+            const lo=Math.max(r.left+5,boundary.right+6,5);
+            const hi=Math.min(r.right-5,innerWidth-5);
+            const y=r.top+r.height/2;
+            if(lo>hi||y<5||y>innerHeight-5)return null;
+            for(let k=0;k<=5;k++){
+                const x=lo+(hi-lo)*k/5;
+                const hit=document.elementFromPoint(x,y);
+                if(hit===node||node.contains(hit))return {x,y};
+            }
+            return null;
+        }""")
+        if point:
+            page.mouse.click(point['x'],point['y'])
+            return
+        page.locator('.dynasty-footprint-scroll').evaluate(
+            "el=>el.scrollLeft=Math.max(0,el.scrollLeft-140)")
+    raise AssertionError('No visible pointer target for role: '+role_id)
+
+
 def run(dist:Path, output:Path):
     output.mkdir(parents=True,exist_ok=True)
     server=http.server.ThreadingHTTPServer(
@@ -57,7 +91,7 @@ def run(dist:Path, output:Path):
                     page.wait_for_function("document.querySelector('.dynasty-footprint-scroll').scrollLeft>200")
                 page.screenshot(path=str(output/f'house-footprints-1788-{width}.png'),full_page=True)
 
-                page.locator('.dynasty-house-bar[data-role-id="ex-es-carlos4"]').click()
+                click_visible_house_bar(page,'ex-es-carlos4')
                 expect(page.locator('.dynasty-footprint-detail')).to_contain_text('Карл IV')
                 expect(page.locator('.dynasty-footprint-detail')).to_contain_text('Бурбоны')
                 expect(page.locator('.dynasty-footprint-detail .dynasty-source').first).to_have_attribute('href',
@@ -81,7 +115,8 @@ def run(dist:Path, output:Path):
                 expect(page.locator('.dynasty-house-summary-line').filter(has_text='Гольштейн-Готторпские')).to_contain_text('родственные ветви')
                 expect(page.locator('.dynasty-house-bar[data-role-id="ex-ru-paul"]')).to_have_attribute('data-category','lineage')
                 expect(page.locator('.dynasty-house-bar[data-role-id="ex-pt-carlota"]')).to_have_attribute('data-category','extra')
-                page.locator('.dynasty-house-bar[data-role-id="ex-ru-paul"]').click()
+                page.locator('.dynasty-house-bar[data-role-id="ex-ru-paul"]').focus()
+                page.keyboard.press('Enter')
                 expect(page.locator('.dynasty-footprint-detail')).to_contain_text('Романов')
                 expect(page.locator('.dynasty-footprint-detail')).to_contain_text('Генеалогическая ветвь')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
