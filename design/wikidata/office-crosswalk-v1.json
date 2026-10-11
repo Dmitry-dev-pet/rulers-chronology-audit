@@ -1,0 +1,78 @@
+{
+  "schema_version": "wikidata-office-crosswalk-v1",
+  "review_date": "2026-10-11",
+  "office_policy": "Map P39 QIDs only, never office labels or similar strings. Only exact_office rows can propose an office equivalence; family_only and external_only require separate historical research. No claim of actual power or continuity of legal jurisdiction.",
+  "mappings": [
+    {
+      "wikidata_qid": "Q2618625",
+      "office_id": "emperor",
+      "context_ids": [
+        "empire"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q2618625",
+      "note": "Emperor of all the Russias is a legal imperial title. Does not assert practical dominance."
+    },
+    {
+      "wikidata_qid": "Q1255261",
+      "office_id": "president-ussr",
+      "context_ids": [
+        "ussr"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q1255261",
+      "note": "Soviet presidency 1990–1991. Legal office only."
+    },
+    {
+      "wikidata_qid": "Q4376657",
+      "office_id": "vs-ussr",
+      "context_ids": [
+        "ussr"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q4376657",
+      "note": "Chairman of the Supreme Soviet of USSR; do not conflate with Presidium chair."
+    },
+    {
+      "wikidata_qid": "Q4376674",
+      "office_id": "cm-ussr",
+      "context_ids": [
+        "ussr"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q4376674",
+      "note": "Chairman of USSR Council of Ministers from 1946; not Council of People's Commissars or composite legacy-g06."
+    },
+    {
+      "wikidata_qid": "Q1048744",
+      "office_id": "general-secretary",
+      "context_ids": [
+        "rsfsr",
+        "ussr"
+      ],
+      "relation": "office_family_only",
+      "evidence_url": "https://www.wikidata.org/wiki/Q1048744",
+      "note": "Wikidata item groups general secretary and first secretary; canon distinguishes titles, Stalin 1934 changes, and leadership interpretations."
+    },
+    {
+      "wikidata_qid": "Q3240735",
+      "office_id": null,
+      "context_ids": [
+        "world:pr"
+      ],
+      "relation": "external_only",
+      "evidence_url": "https://www.wikidata.org/wiki/Q3240735",
+      "note": "King of Prussia is a foreign juridical office and has no v1 canonical office ID."
+    },
+    {
+      "wikidata_qid": "Q181765",
+      "office_id": null,
+      "context_ids": [
+        "world:hre"
+      ],
+      "relation": "external_only",
+      "evidence_url": "https://www.wikidata.org/wiki/Q181765",
+      "note": "Elective Holy Roman emperor office; not sovereign nationality, territory, or Habsburg composite monarchy."
+    }
+  ]
+}
