@@ -201,15 +201,15 @@ class AtlasV2Candidate(unittest.TestCase):
             [("law",),("military",)])
 
     def test_research_gap_not_historical_absence_and_evidence_gate(self):
-        tus=next(p for p in self.coverage["polities"] if p["polity_id"]=="tos")
+        tus=next(p for p in self.coverage["polities"] if p["polity_id"]=="tusc")
         self.assertEqual((tus["researched_from"],tus["researched_through"]),(1781,1800))
         self.assertNotIn("historical_end",tus)
-        self.context("tos")
+        self.context("tusc")
         self.period("tuscany-research",1781,1800,"research_window")
         self.assertion("scope-claim",tus["source_ids"][0],"coverage")
         self.db.execute("""INSERT INTO v2_research_scopes
             (id,context_id,domain,period_id,assertion_id) VALUES(?,?,?,?,?)""",
-            ("tos-offices","tos","formal_offices","tuscany-research","scope-claim"))
+            ("tos-offices","tusc","formal_offices","tuscany-research","scope-claim"))
         self.assertEqual(self.db.execute(
             "SELECT id FROM v2_assertions_without_sources").fetchall(),[])
         self.db.execute("INSERT INTO v2_assertions VALUES(?,?,?,?,?,?)",
