@@ -1688,7 +1688,8 @@ button[disabled] {
   .atlas-app.atlas-mobile .atlas-global-preset{min-height:44px;font-size:14px;padding:9px 11px}
   .atlas-app.atlas-mobile .atlas-global-goto label,
   .atlas-app.atlas-mobile .atlas-global-year-inputs label{font-size:14px}
-  .atlas-app.atlas-mobile .atlas-global-presets{gap:6px}
+  .atlas-app.atlas-mobile .atlas-global-presets{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:thin;overscroll-behavior-inline:contain;padding:2px 1px 7px}
+  .atlas-app.atlas-mobile .atlas-global-presets .atlas-global-preset{flex:0 0 auto;white-space:nowrap}
   .atlas-app.atlas-mobile .atlas-global-compare-columns{display:flex;flex-direction:column;gap:12px}
   .atlas-app.atlas-mobile .atlas-mobile-compare-segment{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:10px 0 13px}
   .atlas-app.atlas-mobile .atlas-mobile-compare-tab{min-width:0;min-height:45px;padding:8px 3px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:7px;font-size:14px;font-weight:800;line-height:1.25}
