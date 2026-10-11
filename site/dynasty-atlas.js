@@ -109,10 +109,12 @@
   viewSwitch.setAttribute('aria-label','Способ представления международной истории');
   const networkViewButton=create('button','dynasty-view-button','Люди и связи');
   const housesViewButton=create('button','dynasty-view-button','Династии × государства');
-  networkViewButton.type=housesViewButton.type='button';
+  const coverageViewButton=create('button','dynasty-view-button','Покрытие базы');
+  networkViewButton.type=housesViewButton.type=coverageViewButton.type='button';
   networkViewButton.dataset.dynastyView='network';
   housesViewButton.dataset.dynastyView='houses';
-  viewSwitch.append(networkViewButton,housesViewButton);
+  coverageViewButton.dataset.dynastyView='coverage';
+  viewSwitch.append(networkViewButton,housesViewButton,coverageViewButton);
   const networkPanel=create('section','dynasty-person-graph-panel');
   networkPanel.append(graphicTitle,key,countryJump,graphContainer,graphNote);
   const footprintPanel=create('section','dynasty-footprint-panel');
@@ -147,29 +149,74 @@
   // on a small phone instead of being pushed below the first screen.
   footprintPanel.append(footprintTools,footprintScroll,footprintLegend,
     footprintSummary,footprintDetail,footprintLead);
+  // A third source-aware view: coverage of the RESEARCH REGISTER,
+  // not a historical claim that a country did or did not have a ruler.
+  const coveragePanel=create('section','dynasty-coverage-panel');
+  coveragePanel.hidden=true;
+  coveragePanel.setAttribute('aria-label','Покрытие исторической базы по странам и годам');
+  const coverageIntro=create('p','dynasty-coverage-intro',
+    'Матрица отмечает наличие юридических и институциональных записей, а не полноту исторической науки. Пустые годы исследования не означают отсутствия правителя.');
+  const coverageOverview=create('p','dynasty-coverage-overview');
+  coverageOverview.setAttribute('role','status');
+  coverageOverview.setAttribute('aria-live','polite');
+  const coverageLegend=create('div','dynasty-coverage-legend');
+  const coverageStatusLabels=[
+    ['office','Должность главы / императора'],
+    ['institution','Коллективный орган'],
+    ['supplementary','Дополнительная роль'],
+    ['research_gap','Пробел в реестре'],
+    ['outside_sample','Вне нашей выборки'],
+    ['historically_not_in_force','Режим ещё не возник / прекращён'],
+    ['birthplace_context','Только место рождения']
+  ];
+  coverageStatusLabels.forEach(([status,label])=>{
+    const item=create('span','dynasty-coverage-legend-item',label);
+    item.dataset.coverageStatus=status;
+    coverageLegend.append(item);
+  });
+  const coverageScroll=create('div','dynasty-coverage-scroll');
+  coverageScroll.tabIndex=0;
+  coverageScroll.setAttribute('role','region');
+  coverageScroll.setAttribute('aria-label','Матрица покрытия реестра: 13 политических контекстов на 39 лет, горизонтальная прокрутка');
+  const coverageTable=create('div','dynasty-coverage-table');
+  coverageScroll.append(coverageTable);
+  const coverageDetail=create('section','dynasty-coverage-detail');
+  coverageDetail.id='dynasty-coverage-detail';
+  coverageDetail.setAttribute('aria-label','Источники и статус выбранного года и страны');
+  coverageDetail.tabIndex=-1;
+  const coverageTasks=create('section','dynasty-coverage-tasks');
+  const coverageMethod=create('p','dynasty-coverage-method',
+    'Одна длинная должность даёт много отмеченных годов. Ни одна ячейка не доказывает, что все документы эпохи изучены. Страны, которых ещё нет в данной исследовательской партии, не окрашены как исторически отсутствовавшие.');
+  coveragePanel.append(coverageIntro,coverageOverview,coverageLegend,
+    coverageScroll,coverageDetail,coverageTasks,coverageMethod);
   let selectedView='network';
   let showSecondary=false;
   let selectedFootprint=null;
   let lastCenteredFootprintYear=null;
-  const modeFromUrl=()=>new URL(location.href).searchParams.get('dynView')==='houses'?'houses':'network';
+  const modeFromUrl=()=>{
+    const candidate=new URL(location.href).searchParams.get('dynView');
+    return ['houses','coverage'].includes(candidate)?candidate:'network';
+  };
   function updateView(){
     networkPanel.hidden=selectedView!=='network';
     footprintPanel.hidden=selectedView!=='houses';
+    coveragePanel.hidden=selectedView!=='coverage';
     // These palette controls belong to the personal graph only: dynasty
     // colors in the matrix are fixed house identifiers, never ethnicity.
-    colorControls.hidden=selectedView==='houses';
-    notice.hidden=selectedView==='houses';
-    for(const button of [networkViewButton,housesViewButton]){
+    colorControls.hidden=selectedView!=='network';
+    notice.hidden=selectedView!=='network';
+    for(const button of [networkViewButton,housesViewButton,coverageViewButton]){
       button.setAttribute('aria-pressed',String(button.dataset.dynastyView===selectedView));
     }
     if(selectedView==='houses' && footprints && data && extension)renderFootprints();
+    if(selectedView==='coverage' && coverage && data && extension)renderCoverage();
   }
   function setView(next,push){
-    if(!['network','houses'].includes(next))return;
+    if(!['network','houses','coverage'].includes(next))return;
     selectedView=next;
     if(isNetworkURL()){
       const url=new URL(location.href);
-      if(next==='houses')url.searchParams.set('dynView','houses');
+      if(next==='houses'||next==='coverage')url.searchParams.set('dynView',next);
       else url.searchParams.delete('dynView');
       history[push?'pushState':'replaceState'](null,'',url.pathname+url.search+url.hash);
     }
@@ -177,6 +224,7 @@
   }
   networkViewButton.addEventListener('click',()=>setView('network',true));
   housesViewButton.addEventListener('click',()=>setView('houses',true));
+  coverageViewButton.addEventListener('click',()=>setView('coverage',true));
   showSecondaryInput.addEventListener('change',()=>{
     showSecondary=showSecondaryInput.checked;
     selectedFootprint=null;
@@ -197,13 +245,13 @@
   const original=create('a','dynasty-previous','← Открыть исходный пилот 1762 года');
   original.href='?world=1762#/timeline/1762';
   content.append(lede,timeline,colorControls,notice,viewSwitch,
-    networkPanel,footprintPanel,timelineTitle,events,institutionsTitle,
+    networkPanel,footprintPanel,coveragePanel,timelineTitle,events,institutionsTitle,
     polities,participantsTitle,persons,relationsTitle,relations,caveats,original);
   dialog.append(head,content);
   layer.append(dialog);
   document.body.append(layer);
 
-  let data=null,base=null,atlas=null,extension=null,footprints=null,pending=null,previousFocus=null;
+  let data=null,base=null,atlas=null,extension=null,footprints=null,coverage=null,pending=null,previousFocus=null;
   let year=1762;
   const abbr={
     ru:'Россия',fr:'Франция',pr:'Пруссия',gb:'Великобритания',
@@ -261,7 +309,8 @@
   function sources(ids) {
     const wrap=create('div','dynasty-sources');
     const index=new Map([...(base?.sources||[]),...(data?.sources||[]),
-      ...(extension?.sources||[]),...(footprints?.sources||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
+      ...(extension?.sources||[]),...(footprints?.sources||[]),
+      ...(coverage?.sources||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
     [...new Set(ids||[])].forEach(id=>{
       const source=index.get(id);
       if(!source||!validLink(source.url))return;
