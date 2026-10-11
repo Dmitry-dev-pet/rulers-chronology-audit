@@ -258,6 +258,21 @@ class InternationalRoleCandidate(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"HRE elective"):
             roles.validate_records(bad)
 
+
+    def test_read_only_global_year_projection_and_filtered_republic(self):
+        year=roles.year_candidates(self.conn,1795,"ctx-world-frrep")
+        self.assertEqual({r["item_id"] for r in year},
+                         {"v2-role-ex-fr-convention","v2-role-ex-fr-directory"})
+        self.assertTrue(all(r["role_kind"]=="institutional"
+                            and r["actor_label"] is not None for r in year))
+        year_1685=roles.year_candidates(self.conn,1685,"ctx-tsardom")
+        ids={r["item_id"] for r in year_1685}
+        self.assertTrue({"tenure-r04","tenure-r05-joint","tenure-r22"}.issubset(ids))
+        with self.assertRaises(ValueError):
+            roles.year_candidates(self.conn,0)
+        with self.assertRaises(ValueError):
+            roles.year_candidates(self.conn,1795,"")
+
     def test_no_historical_claim_in_validation_receipt(self):
         self.assertFalse(self.report["p1"]["historical_truth_verified_by_ci"])
         self.assertFalse(self.report["p2"]["historical_truth_verified_by_ci"])
