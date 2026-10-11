@@ -55,7 +55,7 @@ def run(dist:Path,output:Path):
                 expect(page.locator("#atlas-v2-detail")).to_contain_text("Георг III")
                 expect(page.locator("#atlas-v2-detail")).to_contain_text("Ганновер")
                 first_source=page.locator("#atlas-v2-detail .atlas-v2-source").first
-                expect(first_source).to_have_attribute("href",r"^https://")
+                assert first_source.get_attribute("href").startswith("https://")
                 assert first_source.get_attribute("rel")=="noopener noreferrer"
                 if width<=390:
                     scroll=page.locator(".atlas-v2-graph-scroll")
@@ -101,13 +101,17 @@ def run(dist:Path,output:Path):
                 expect(page.locator(".atlas-v2-layer")).to_be_hidden()
                 assert "atlasV2=graph" not in page.url
                 expect(page.locator("#panel-timeline")).to_be_visible()
+                expect(page.locator("#atlas-v2-launch")).to_be_visible()
+                page.locator("#atlas-v2-launch").click()
+                expect(page.locator(".atlas-v2-layer")).to_be_visible()
+                page.locator(".atlas-v2-close").click()
                 page.go_back()
                 expect(page.locator(".atlas-v2-layer")).to_be_visible()
                 expect(page.locator("#atlas-v2-year")).to_have_text("1795")
                 assert not errors,errors
                 report.append({
                     "viewport":[width,height],"status":"passed",
-                    "features":["year","filters","SVG keyboard selection","sources",
+                    "features":["year","filters","SVG keyboard selection","sources","preview launch",
                                 "personal_union","French collective institutions",
                                 "history","mobile scrolling"],
                     "js_errors":errors,
