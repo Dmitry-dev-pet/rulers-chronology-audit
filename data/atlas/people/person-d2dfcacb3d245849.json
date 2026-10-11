@@ -2,6 +2,8 @@
   "id": "person-d2dfcacb3d245849",
   "name": "Пётр I Алексеевич",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q8479"
+  },
   "biography_status": "incomplete"
 }
