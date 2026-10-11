@@ -363,7 +363,8 @@ def render(data: dict, sources: dict, result: dict, revision: str,
     head.extend([f"<script defer src='./site.js?v={revision[:12]}'></script>",
                  f"<script defer src='./year-view.js?v={revision[:12]}'></script>",
                  f"<script defer src='./transition-view.js?v={revision[:12]}'></script>",
-                  f"<script defer src='./universal-atlas.js?v={revision[:12]}'></script>", "</body></html>"])
+                  f"<script defer src='./universal-atlas.js?v={revision[:12]}'></script>",
+                  f"<script defer src='./mobile-atlas.js?v={revision[:12]}'></script>", "</body></html>"])
     return "\n".join(head)
 
 
@@ -375,7 +376,7 @@ def build(root: Path, out: Path, revision: str) -> dict:
     require(out.resolve() == (root / "dist").resolve(), "Output must be the repository dist directory")
     inputs = [root / DATA_PATH, root / SOURCE_PATH, root / "data/poster-transcription.tsv",
               root / "data/soviet-period-review.csv", root / "site/site.css", root / "site/site.js", root / "site/year-view.js",
-              root / "site/transition-view.js", root / "site/universal-atlas.js"]
+              root / "site/transition-view.js", root / "site/universal-atlas.js", root / "site/mobile-atlas.js"]
     data = json.loads(inputs[0].read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys)
     sources = source_index(inputs[1].read_text(encoding="utf-8"))
     result = validate(data, sources)
@@ -391,6 +392,7 @@ def build(root: Path, out: Path, revision: str) -> dict:
     shutil.copyfile(root / "site/year-view.js", out / "year-view.js")
     shutil.copyfile(root / "site/transition-view.js", out / "transition-view.js")
     shutil.copyfile(root / "site/universal-atlas.js", out / "universal-atlas.js")
+    shutil.copyfile(root / "site/mobile-atlas.js", out / "mobile-atlas.js")
     dump_json(out / "validation.json", result)
     dump_json(out / "chronology.json", data)
     dump_json(out / "sources.json", list(sources.values()))
