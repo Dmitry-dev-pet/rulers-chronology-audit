@@ -1592,7 +1592,7 @@ button[disabled] {
   .atlas-app.atlas-mobile #atlas-year-range{min-height:36px;touch-action:pan-x;accent-color:var(--green)}
   .atlas-app.atlas-mobile .atlas-year-dashboard-caveat,
   .atlas-app.atlas-mobile .atlas-year-dashboard-status{display:none!important}
-  .atlas-app.atlas-mobile .atlas-mobile-method{flex:0 0 auto;display:block;order:3;border-bottom:1px solid var(--line);padding:0 0 8px;margin:0}
+  .atlas-app.atlas-mobile .atlas-mobile-method{flex:0 0 auto;display:block;border-bottom:1px solid var(--line);padding:0 0 8px;margin:0}
   .atlas-app.atlas-mobile .atlas-mobile-method summary{display:list-item;min-height:36px;padding:7px 4px;cursor:pointer;font-size:13px;font-weight:750;color:var(--green)}
   .atlas-app.atlas-mobile .atlas-mobile-method p{font-size:14px;line-height:1.45;color:var(--muted);margin:5px 2px}
   .atlas-app.atlas-mobile .atlas-global-controls{display:block;flex:0 0 auto;border-top:0;padding:0}
