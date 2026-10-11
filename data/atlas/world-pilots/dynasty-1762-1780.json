@@ -1,0 +1,867 @@
+{
+  "schema_version": "dynasty-network-v1",
+  "period": {
+    "start": 1762,
+    "end": 1780,
+    "initial": 1762,
+    "presets": [
+      1762,
+      1765,
+      1770,
+      1774,
+      1780
+    ]
+  },
+  "base_pilot": "world-1762.json",
+  "historical_truth_verified_by_ci": false,
+  "historical_borders_verified": false,
+  "caveats": [
+    "Срез по году — пересечение документированных периодов, не утверждение об одновременном правлении в конкретный день.",
+    "Курфюршество Ганновер и Великобритания находились в личной унии, оставаясь разными государствами.",
+    "Священная Римская империя — не современная Германия и не часть единого государства Габсбургов; императорский титул был выборным.",
+    "Мария Терезия — самостоятельная правительница владений Габсбургов, но не император Священной Римской империи. Шарлотта и Мария-Антуанетта — консорты, не правящие монархи.",
+    "Династия, место рождения и государственная должность не определяют этническое происхождение: неизвестное показываем серым.",
+    "Календарные границы 1762, 1765, 1774, 1780 трактуются по событиям в соответствующих источниках; UI не вычисляет точные дни из годового пересечения."
+  ],
+  "additional_polities": [
+    {
+      "id": "gb",
+      "name": "Королевство Великобритания",
+      "kind": "kingdom",
+      "color": "#516fa5",
+      "source_ids": [
+        "DN01"
+      ],
+      "note": "Ирландское королевство не приписывается автоматически этому узлу. Это Великобритания до унии 1801 года."
+    },
+    {
+      "id": "han",
+      "name": "Курфюршество Ганновер",
+      "kind": "electorate",
+      "color": "#9a7c43",
+      "source_ids": [
+        "DN03"
+      ],
+      "note": "Брауншвейг-Люнебург, часто именуемый Ганновером; самостоятельное германское курфюршество, в персональной унии с британской короной."
+    },
+    {
+      "id": "hab",
+      "name": "Владения Габсбургов",
+      "kind": "composite_monarchy",
+      "color": "#a35473",
+      "source_ids": [
+        "DN04"
+      ],
+      "note": "Австрийские наследственные земли, а также короны Венгрии и Богемии — составная монархия, не современная республика Австрия."
+    },
+    {
+      "id": "hre",
+      "name": "Священная Римская империя",
+      "kind": "imperial_office_context",
+      "color": "#827094",
+      "source_ids": [
+        "DN05",
+        "DN06"
+      ],
+      "note": "Выборное императорское достоинство над многими политиями; не единое государство, где император занимал все местные престолы."
+    },
+    {
+      "id": "meck",
+      "name": "Мекленбург-Стрелиц",
+      "kind": "birthplace_context_only",
+      "color": "#728b76",
+      "source_ids": [
+        "DN02"
+      ],
+      "note": "Герцогство, место рождения Шарлотты; здесь не представлен государь, родство с Шарлоттой не означает британской власти над герцогством."
+    }
+  ],
+  "additional_persons": [
+    {
+      "id": "ru-elizabeth",
+      "name": null,
+      "canonical_person_id": "person-494d1e31134351ec",
+      "canonical_tenure_id": "tenure-r10",
+      "houses": [
+        {
+          "id": "romanov",
+          "name": "Романовы",
+          "qualifier": "династия при рождении",
+          "source_ids": [
+            "BIO05"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Коломенское (Московское царство)",
+        "polity_id": "ru",
+        "source_ids": [
+          "DN10"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN10",
+        "BIO05"
+      ]
+    },
+    {
+      "id": "gb-george3",
+      "name": "Георг III",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "hanover",
+          "name": "Ганноверский дом",
+          "qualifier": "правящий дом",
+          "source_ids": [
+            "DN03",
+            "DN01"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Лондон",
+        "polity_id": "gb",
+        "source_ids": [
+          "DN01"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN01",
+        "DN03"
+      ]
+    },
+    {
+      "id": "gb-charlotte",
+      "name": "Шарлотта Мекленбург-Стрелицкая",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "mecklenburg",
+          "name": "Мекленбург-Стрелицкий дом",
+          "qualifier": "по рождению; консорт Британии",
+          "source_ids": [
+            "DN02"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Миров, Мекленбург-Стрелиц",
+        "polity_id": "meck",
+        "source_ids": [
+          "DN02"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN02"
+      ]
+    },
+    {
+      "id": "hab-maria",
+      "name": "Мария Терезия",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "habsburg",
+          "name": "Габсбурги",
+          "qualifier": "по рождению",
+          "source_ids": [
+            "DN04"
+          ]
+        },
+        {
+          "id": "habsburg-lorraine",
+          "name": "Габсбург-Лотарингский дом",
+          "qualifier": "династический союз с Францем с 1736 года",
+          "source_ids": [
+            "DN09"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Вена",
+        "polity_id": "hab",
+        "source_ids": [
+          "DN04"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN04",
+        "DN09"
+      ]
+    },
+    {
+      "id": "hre-francis",
+      "name": "Франц I Стефан Лотарингский",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "lorraine",
+          "name": "Лотарингский дом",
+          "qualifier": "по рождению",
+          "source_ids": [
+            "DN05"
+          ]
+        },
+        {
+          "id": "habsburg-lorraine",
+          "name": "Габсбург-Лотарингский дом",
+          "qualifier": "основан браком 1736 года",
+          "source_ids": [
+            "DN09"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Нанси, Лотарингия",
+        "polity_id": null,
+        "source_ids": [
+          "DN05"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN05",
+        "DN09"
+      ]
+    },
+    {
+      "id": "hre-joseph",
+      "name": "Иосиф II",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "habsburg-lorraine",
+          "name": "Габсбург-Лотарингский дом",
+          "qualifier": "дом родителей",
+          "source_ids": [
+            "DN06",
+            "DN09"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Вена",
+        "polity_id": "hab",
+        "source_ids": [
+          "DN06"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN06"
+      ]
+    },
+    {
+      "id": "fr-louis16",
+      "name": "Людовик XVI",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "bourbon",
+          "name": "Бурбоны",
+          "qualifier": "правящая линия Франции",
+          "source_ids": [
+            "DN08"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Версаль",
+        "polity_id": "fr",
+        "source_ids": [
+          "DN08"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN07",
+        "DN08"
+      ]
+    },
+    {
+      "id": "fr-antoinette",
+      "name": "Мария-Антуанетта",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "habsburg-lorraine",
+          "name": "Габсбург-Лотарингский дом",
+          "qualifier": "по рождению; королева-консорт Франции",
+          "source_ids": [
+            "DN07",
+            "DN09"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Вена",
+        "polity_id": "hab",
+        "source_ids": [
+          "DN07"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "DN07",
+        "DN09"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "dn-ru-elizabeth",
+      "person_id": "ru-elizabeth",
+      "polity_id": "ru",
+      "title": "Императрица России — до 5 января 1762 нового стиля",
+      "role_kind": "sovereign",
+      "start_year": 1741,
+      "end_year": 1762,
+      "end_gregorian": "1762-01-05",
+      "canonical_tenure_id": "tenure-r10",
+      "source_ids": [
+        "DN10"
+      ],
+      "note": "На 1–5 января 1762 года по новому стилю; канонический срок заканчивается годом 1762 без уточнения календаря. Не является одновременным царствованием с Екатериной II."
+    },
+    {
+      "id": "dn-ru-peter3",
+      "person_id": "ru-peter3",
+      "polity_id": "ru",
+      "title": "Император России",
+      "role_kind": "sovereign",
+      "start_year": 1762,
+      "end_year": 1762,
+      "canonical_tenure_id": "tenure-r11",
+      "source_ids": [
+        "WP01",
+        "WP02"
+      ],
+      "note": "С 5 января 1762 нового стиля до июльского переворота, не весь год."
+    },
+    {
+      "id": "dn-ru-catherine2",
+      "person_id": "ru-catherine2",
+      "polity_id": "ru",
+      "title": "Императрица России",
+      "role_kind": "sovereign",
+      "start_year": 1762,
+      "end_year": 1796,
+      "canonical_tenure_id": "tenure-r12",
+      "source_ids": [
+        "WP02"
+      ],
+      "note": "Провозглашена 28 июня (9 июля) 1762 года."
+    },
+    {
+      "id": "dn-fr-louis15",
+      "person_id": "fr-louis15",
+      "polity_id": "fr",
+      "title": "Король Франции и Наварры",
+      "role_kind": "sovereign",
+      "start_year": 1715,
+      "end_year": 1774,
+      "source_ids": [
+        "WP05",
+        "DN08"
+      ],
+      "note": "Умер 10 мая 1774; 1774 как год пересекает также срок Людовика XVI."
+    },
+    {
+      "id": "dn-fr-louis16",
+      "person_id": "fr-louis16",
+      "polity_id": "fr",
+      "title": "Король Франции",
+      "role_kind": "sovereign",
+      "start_year": 1774,
+      "end_year": 1792,
+      "source_ids": [
+        "DN08"
+      ],
+      "note": "Вступил на престол 10 мая 1774 после смерти деда Людовика XV."
+    },
+    {
+      "id": "dn-fr-louis16-dauphin",
+      "person_id": "fr-louis16",
+      "polity_id": "fr",
+      "title": "Дофин Франции (показан период с брака)",
+      "role_kind": "heir",
+      "start_year": 1770,
+      "end_year": 1774,
+      "source_ids": [
+        "DN07"
+      ],
+      "note": "1765–1770 не охватываются этим пилотом; 1770 — год брака, а не назначение дофином."
+    },
+    {
+      "id": "dn-fr-antoinette-dauphine",
+      "person_id": "fr-antoinette",
+      "polity_id": "fr",
+      "title": "Дофина, супруга наследника",
+      "role_kind": "consort",
+      "start_year": 1770,
+      "end_year": 1774,
+      "source_ids": [
+        "DN07"
+      ],
+      "note": "Супруга дофина с 16 мая 1770, не правящая королева."
+    },
+    {
+      "id": "dn-fr-antoinette-queen",
+      "person_id": "fr-antoinette",
+      "polity_id": "fr",
+      "title": "Королева-консорт Франции",
+      "role_kind": "consort",
+      "start_year": 1774,
+      "end_year": 1792,
+      "source_ids": [
+        "DN07",
+        "DN08"
+      ],
+      "note": "Консорт Людовика XVI, не самостоятельный монарх."
+    },
+    {
+      "id": "dn-pr-frederick2",
+      "person_id": "pr-frederick2",
+      "polity_id": "pr",
+      "title": "Король в Пруссии (титул для 1762 года)",
+      "role_kind": "sovereign",
+      "start_year": 1740,
+      "end_year": 1786,
+      "source_ids": [
+        "WP08",
+        "WP09"
+      ],
+      "note": "Титул 'король в Пруссии' применим до 1772; после 1772 титул меняется. Для выбранного 1774–1780 подписывать корректно 'король Пруссии'."
+    },
+    {
+      "id": "dn-gb-george",
+      "person_id": "gb-george3",
+      "polity_id": "gb",
+      "title": "Король Великобритании",
+      "role_kind": "sovereign",
+      "start_year": 1760,
+      "end_year": 1820,
+      "source_ids": [
+        "DN01"
+      ],
+      "note": "Также король Ирландии, но это отдельно не смоделированное государство."
+    },
+    {
+      "id": "dn-han-george",
+      "person_id": "gb-george3",
+      "polity_id": "han",
+      "title": "Курфюрст Брауншвейг-Люнебурга (Ганновера)",
+      "role_kind": "elector",
+      "start_year": 1760,
+      "end_year": 1806,
+      "source_ids": [
+        "DN03"
+      ],
+      "note": "То же лицо, но отдельная полития и юридическая роль. В 1762 не король Ганновера (королевство с 1814)."
+    },
+    {
+      "id": "dn-gb-charlotte",
+      "person_id": "gb-charlotte",
+      "polity_id": "gb",
+      "title": "Королева-консорт Великобритании",
+      "role_kind": "consort",
+      "start_year": 1761,
+      "end_year": 1818,
+      "source_ids": [
+        "DN02"
+      ],
+      "note": "Не обладает автоматически отдельной королевской должностью в Мекленбурге-Стрелиц."
+    },
+    {
+      "id": "dn-hab-maria",
+      "person_id": "hab-maria",
+      "polity_id": "hab",
+      "title": "Правительница владений Габсбургов (Австрия, Венгрия, Богемия)",
+      "role_kind": "sovereign",
+      "start_year": 1740,
+      "end_year": 1780,
+      "source_ids": [
+        "DN04"
+      ],
+      "note": "Умерла 29 ноября 1780. Не была носителем императорского достоинства Священной Римской империи."
+    },
+    {
+      "id": "dn-hab-francis",
+      "person_id": "hre-francis",
+      "polity_id": "hab",
+      "title": "Официальный соправитель Марии Терезии",
+      "role_kind": "co_regent",
+      "start_year": 1740,
+      "end_year": 1765,
+      "source_ids": [
+        "DN05"
+      ],
+      "note": "Не подменяет роль самой Марии Терезии."
+    },
+    {
+      "id": "dn-hre-francis",
+      "person_id": "hre-francis",
+      "polity_id": "hre",
+      "title": "Император Священной Римской империи",
+      "role_kind": "emperor",
+      "start_year": 1745,
+      "end_year": 1765,
+      "source_ids": [
+        "DN05"
+      ],
+      "note": "Избран императором; не титул правителя всех германских земель."
+    },
+    {
+      "id": "dn-hre-joseph",
+      "person_id": "hre-joseph",
+      "polity_id": "hre",
+      "title": "Император Священной Римской империи",
+      "role_kind": "emperor",
+      "start_year": 1765,
+      "end_year": 1790,
+      "source_ids": [
+        "DN06"
+      ],
+      "note": "1764 избран королём римлян, а в 1765 после смерти Франца I занял императорский престол."
+    },
+    {
+      "id": "dn-hab-joseph-co",
+      "person_id": "hre-joseph",
+      "polity_id": "hab",
+      "title": "Соправитель Марии Терезии",
+      "role_kind": "co_regent",
+      "start_year": 1765,
+      "end_year": 1780,
+      "source_ids": [
+        "DN06"
+      ],
+      "note": "Мать продолжала самостоятельно определять многие важные решения."
+    },
+    {
+      "id": "dn-hab-joseph-sole",
+      "person_id": "hre-joseph",
+      "polity_id": "hab",
+      "title": "Самостоятельный правитель после смерти Марии Терезии",
+      "role_kind": "sovereign",
+      "start_year": 1780,
+      "end_year": 1790,
+      "source_ids": [
+        "DN06"
+      ],
+      "note": "Начало самостоятельного управления после смерти Марии Терезии 29 ноября 1780; годовые полосы обеих ролей пересекаются."
+    }
+  ],
+  "relations": [
+    {
+      "id": "dn-union-gb-han",
+      "kind": "personal_union",
+      "subjects": [
+        "gb-george3"
+      ],
+      "polity_ids": [
+        "gb",
+        "han"
+      ],
+      "start_year": 1760,
+      "end_year": 1780,
+      "source_ids": [
+        "DN03"
+      ],
+      "title": "Личная уния Великобритании и Ганновера",
+      "note": "Два независимых государства — один монарх; не объединение территорий."
+    },
+    {
+      "id": "dn-marriage-gb",
+      "kind": "marriage",
+      "subjects": [
+        "gb-george3",
+        "gb-charlotte"
+      ],
+      "start_year": 1761,
+      "end_year": 1780,
+      "event_year": 1761,
+      "source_ids": [
+        "DN01",
+        "DN02"
+      ],
+      "title": "Брак Георга III и Шарлотты (1761)",
+      "note": "Её род — Мекленбург-Стрелиц; это не британское владение."
+    },
+    {
+      "id": "dn-marriage-hab",
+      "kind": "marriage",
+      "subjects": [
+        "hab-maria",
+        "hre-francis"
+      ],
+      "start_year": 1736,
+      "end_year": 1765,
+      "event_year": 1736,
+      "source_ids": [
+        "DN05",
+        "DN09"
+      ],
+      "title": "Брак Марии Терезии и Франца (1736)",
+      "note": "Династическая линия Габсбург-Лотарингских; после смерти Франца в 1765 брак не показывается действующим."
+    },
+    {
+      "id": "dn-marriage-france",
+      "kind": "marriage",
+      "subjects": [
+        "fr-louis16",
+        "fr-antoinette"
+      ],
+      "start_year": 1770,
+      "end_year": 1780,
+      "event_year": 1770,
+      "source_ids": [
+        "DN07"
+      ],
+      "title": "Брак будущего Людовика XVI и Марии-Антуанетты (1770)",
+      "note": "Династический союз Франции с владениями Габсбургов; 1770 не начало царствования."
+    },
+    {
+      "id": "dn-mother-joseph",
+      "kind": "parent",
+      "subjects": [
+        "hab-maria",
+        "hre-joseph"
+      ],
+      "start_year": 1765,
+      "end_year": 1780,
+      "source_ids": [
+        "DN06",
+        "DN09"
+      ],
+      "title": "Мария Терезия — мать Иосифа II",
+      "note": "Родство не доказывает передачу императорского титула по наследству."
+    },
+    {
+      "id": "dn-mother-antoinette",
+      "kind": "parent",
+      "subjects": [
+        "hab-maria",
+        "fr-antoinette"
+      ],
+      "start_year": 1770,
+      "end_year": 1780,
+      "source_ids": [
+        "DN07",
+        "DN09"
+      ],
+      "title": "Мария Терезия — мать Марии-Антуанетты",
+      "note": "Мария-Антуанетта занимает положение консорта во Франции."
+    },
+    {
+      "id": "dn-hre-change-1765",
+      "kind": "imperial_succession",
+      "subjects": [
+        "hre-francis",
+        "hre-joseph"
+      ],
+      "event_year": 1765,
+      "start_year": 1765,
+      "end_year": 1780,
+      "source_ids": [
+        "DN06",
+        "DN05"
+      ],
+      "title": "1765 · императорский титул перешёл к Иосифу II",
+      "note": "Выборный титул, не автоматическое наследование немецких государств."
+    },
+    {
+      "id": "dn-hab-coregency",
+      "kind": "co_regency",
+      "subjects": [
+        "hab-maria",
+        "hre-joseph"
+      ],
+      "start_year": 1765,
+      "end_year": 1780,
+      "source_ids": [
+        "DN06"
+      ],
+      "title": "1765–1780 · совместное управление Марии Терезии и Иосифа",
+      "note": "Их полномочия пересекались; самостоятельная власть Марии Терезии сохранилась."
+    },
+    {
+      "id": "dn-france-change-1774",
+      "kind": "succession",
+      "subjects": [
+        "fr-louis15",
+        "fr-louis16"
+      ],
+      "event_year": 1774,
+      "start_year": 1774,
+      "end_year": 1780,
+      "source_ids": [
+        "DN08"
+      ],
+      "title": "1774 · Людовик XVI сменил Людовика XV",
+      "note": "Людовик XV умер 10 мая 1774; Людовик XVI был его внуком."
+    },
+    {
+      "id": "dn-ru-marriage",
+      "kind": "marriage",
+      "subjects": [
+        "ru-peter3",
+        "ru-catherine2"
+      ],
+      "start_year": 1745,
+      "end_year": 1762,
+      "event_year": 1745,
+      "source_ids": [
+        "WP01",
+        "WP02"
+      ],
+      "title": "Брак Петра III и Екатерины II (1745)",
+      "note": "Брачная связь не означает совместное правление в 1762 году."
+    },
+    {
+      "id": "dn-ru-pr-peace",
+      "kind": "treaty",
+      "subjects": [],
+      "polity_ids": [
+        "ru",
+        "pr"
+      ],
+      "event_year": 1762,
+      "start_year": 1762,
+      "end_year": 1762,
+      "source_ids": [
+        "WP03"
+      ],
+      "title": "Петербургский мир России и Пруссии (1762)",
+      "note": "Межгосударственный договор, не родство."
+    }
+  ],
+  "milestones": [
+    {
+      "year": 1762,
+      "title": "Три последовательные царствующие фигуры России",
+      "description": "Елизавета умерла 5 января; Пётр III правил до переворота; Екатерина II провозглашена 9 июля по новому стилю.",
+      "source_ids": [
+        "DN10",
+        "WP01",
+        "WP02"
+      ]
+    },
+    {
+      "year": 1765,
+      "title": "Императором стал Иосиф II",
+      "description": "После смерти Франца I избранный ранее король римлян Иосиф получил императорский титул и стал соправителем матери.",
+      "source_ids": [
+        "DN06"
+      ]
+    },
+    {
+      "year": 1770,
+      "title": "Австро-французская династическая свадьба",
+      "description": "Брак дофина Людовика и Марии-Антуанетты; это связь домов, а не передача престола.",
+      "source_ids": [
+        "DN07"
+      ]
+    },
+    {
+      "year": 1774,
+      "title": "Смена короля Франции",
+      "description": "Людовик XV умер 10 мая; ему наследовал внук Людовик XVI.",
+      "source_ids": [
+        "DN08"
+      ]
+    },
+    {
+      "year": 1780,
+      "title": "Смерть Марии Терезии",
+      "description": "29 ноября умерла правительница владений Габсбургов; Иосиф II продолжил управление самостоятельно.",
+      "source_ids": [
+        "DN04",
+        "DN06"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "DN01",
+      "title": "The Royal Family — King George III acceded 25 Oct 1760; Charlotte married Sep 1761",
+      "url": "https://www.royal.uk/royal-archives-coronation",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN02",
+      "title": "The Royal Family — Queen Charlotte of Mecklenburg-Strelitz, born in Mirow, consort",
+      "url": "https://www.royal.uk/queen-charlotte",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN03",
+      "title": "City of Hannover — personal union of Great Britain and Hanover, separate governments",
+      "url": "https://www.visit-hannover.com/en/Presse/Pressemitteilungen/Archiv/Pressemitteilungen-2014/Hannover-2014-Very-British/Hannover-2014-Very-British/Auf-den-Spuren-der-Personalunion/Very-British-Open-Air-Galerie-Hannover/S%C3%A4ule-Nr.-2-Die-%E2%80%9EPersonalunion%E2%80%9C-zwischen-Gro%C3%9Fbritannien-und-Hannover",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN04",
+      "title": "Die Welt der Habsburger — Maria Theresa ruler of Habsburg lands 1740–1780, not emperor",
+      "url": "https://www.habsburger.net/en/persons/habsburg-emperor/maria-theresa",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN05",
+      "title": "Die Welt der Habsburger — Francis I Holy Roman Emperor 1745–1765 and co-ruler",
+      "url": "https://www.habsburger.net/en/persons/habsburg-emperor/franz-i-stephan-lorraine",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN06",
+      "title": "Die Welt der Habsburger — Joseph II emperor 1765–1790, co-regent 1765–1780",
+      "url": "https://www.habsburger.net/en/persons/habsburg-emperor/joseph-ii",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN07",
+      "title": "Château de Versailles — marriage of Dauphin Louis and Marie Antoinette 1770",
+      "url": "https://en.chateauversailles.fr/discover/history/key-dates/marriage-dauphin-louis-and-marie-antoinette",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN08",
+      "title": "Château de Versailles — death of Louis XV 10 May 1774 and accession of Louis XVI",
+      "url": "https://en.chateauversailles.fr/discover/history/key-dates",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN09",
+      "title": "Die Welt der Habsburger — dynastic family marriage 1736 and children",
+      "url": "https://www.habsburger.net/en/chapter/producing-dynasty",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "DN10",
+      "title": "Президентская библиотека — Елизавета умерла 25 Dec 1761 / 5 Jan 1762",
+      "url": "https://www.prlib.ru/history/619854",
+      "note": "",
+      "verification": "reference_checked"
+    }
+  ]
+}

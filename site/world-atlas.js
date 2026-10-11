@@ -75,7 +75,9 @@
     'Это не полный состав правительств и не карта исторических границ. ' +
     'Годовое пересечение не доказывает одновременность монархов. ' +
     'Неизвестное происхождение обозначено явно; гражданство не вычисляется.');
-  main.append(lead,controls,status,graph,graphHint,countryCards,relations,limitations);
+  const networkLink=el('a','atlas-world-network-link', '◈ Династическая сеть Европы · 1762–1780 ↗');
+  networkLink.href='?world=dynasty18&dynYear=1762#/timeline/1762';
+  main.append(networkLink,lead,controls,status,graph,graphHint,countryCards,relations,limitations);
   dialog.append(head,main);
   layer.appendChild(dialog);
   document.body.appendChild(layer);
