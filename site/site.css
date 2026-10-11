@@ -2134,6 +2134,16 @@ button[disabled] {
   .dynasty-legend{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;gap:10px;scrollbar-width:thin}
   .dynasty-legend-item{flex:0 0 auto;font-size:11px}
 }
+/* New republic cards make the institutional distinction visible without
+   inventing a single-person ruler for the Convention or Directory. */
+.dynasty-institution{border-left:4px dashed #628694;background:#eef4f4}
+.dynasty-institution strong{font-size:14px;color:#2c606c}
+.dynasty-role-start{font-size:11px!important;color:#69786d!important}
+.dynasty-polity[data-polity="frrep"]{background:#f5fafa}
+.dynasty-graph-scroll svg g[data-institution-id]{cursor:pointer}
+.dynasty-graph-scroll svg g[data-institution-id]:focus-visible rect{
+  stroke:#13566a;stroke-width:4
+}
 @media(prefers-reduced-motion:reduce){
   .dynasty-layer *{scroll-behavior:auto!important}
 }
