@@ -39,7 +39,12 @@ def check(dist: Path, output: Path) -> None:
                 expect(page.locator('#atlas-year-value')).to_have_text('1685')
                 expect(page.locator('.atlas-global-controls')).to_be_visible()
                 expect(page.locator('.atlas-global-century')).to_have_count(5)
-                page.locator('.atlas-global-open').filter(has_text='Обзор веков').click()
+                if width<=900:
+                    # Desktop header actions are intentionally hidden on a
+                    # phone; the persistent mobile action opens the SAME pane.
+                    page.locator('.atlas-mobile-action[data-mobile-action="overview"]').click()
+                else:
+                    page.locator('.atlas-global-open').filter(has_text='Обзор веков').click()
                 expect(page.locator('.atlas-global-sheet')).to_be_visible()
                 expect(page.locator('.atlas-global-century-card')).to_have_count(5)
                 expect(page.locator('.atlas-global-coverage-row')).to_have_count(20)
