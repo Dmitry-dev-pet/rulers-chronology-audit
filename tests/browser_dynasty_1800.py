@@ -36,6 +36,7 @@ def run(dist:Path,output:Path):
                 expect(page.locator('.dynasty-polity[data-polity="es"]')).to_have_count(0)
                 expect(page.locator('.dynasty-polity[data-polity="pt"]')).to_have_count(0)
                 expect(page.locator('.dynasty-polity[data-polity="frrep"]')).to_have_count(0)
+                expect(page.locator('.dynasty-country-jump')).to_be_hidden()
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
 
                 page.locator('.dynasty-milestone[data-year="1788"]').click()
@@ -79,6 +80,11 @@ def run(dist:Path,output:Path):
                 expect(page.locator('.dynasty-polity[data-polity="pt"]')).to_contain_text('Принц-регент')
                 expect(page.locator('.dynasty-graph-scroll svg g[data-actor-id="fr-napoleon"]')).to_have_count(1)
                 expect(page.locator('.dynasty-graph-scroll svg g[data-institution-id="ex-fr-consulate"]')).to_have_count(1)
+                expect(page.locator('.dynasty-country-jump')).to_be_visible()
+                expect(page.locator('.dynasty-country-button')).to_have_count(8)
+                page.locator('.dynasty-country-button[data-country="pt"]').click()
+                expect(page.locator('.dynasty-country-button[data-country="pt"]')).to_have_attribute('aria-pressed','true')
+                page.wait_for_function("document.querySelector('.dynasty-graph-scroll').scrollLeft > 400")
                 expect(page.locator('.dynasty-polity[data-polity="fr"]')).to_have_count(0)
                 page.screenshot(path=str(output/f'dynasty-1799-{w}.png'),full_page=True)
 
