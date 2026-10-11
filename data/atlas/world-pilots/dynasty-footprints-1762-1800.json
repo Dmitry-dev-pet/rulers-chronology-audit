@@ -1,0 +1,281 @@
+{
+  "schema_version": "dynasty-footprints-v1",
+  "period": {
+    "start": 1762,
+    "end": 1800
+  },
+  "historical_truth_verified_by_ci": false,
+  "description": "Сверенные династические связи накладываются на сроки должностей трёх уже существующих источниковых партий. Вспомогательная проекция; не этническая статистика.",
+  "role_policy": {
+    "ruling": [
+      "sovereign",
+      "elector"
+    ],
+    "qualified": [
+      "emperor",
+      "co_regent",
+      "consort",
+      "regent",
+      "heir",
+      "dynastic_person"
+    ],
+    "excluded": [
+      "first_consul"
+    ],
+    "context_excluded_from_states": [
+      "hre",
+      "meck",
+      "frrep"
+    ],
+    "note": "Император Священной Римской империи — выборный титул, не доказательство государственного контроля над множеством политий; консорты и регенты не приравниваются к правящим монархам."
+  },
+  "caveats": [
+    "Одинаковый дом не равен политическому союзу, совместной власти или одной национальности.",
+    "Основные полосы: лишь официальная должность правящего монарха либо ганноверского курфюрста. Соправительство, консортство, регентство, выборное императорское достоинство — отдельный дополнительный слой.",
+    "По обеим ветвям Гольштейн-Готторпа показано родословное пересечение, а не единое официальное название русского и шведского престолов.",
+    "Для Испании источниковая модель пока начинается с 1781 года; нельзя истолковывать годы до 1781 как отсутствие династии.",
+    "Тосканский источник в нашей модели заканчивается 1790 годом. Это пробел дальнейшего покрытия, а не утверждение, что династия прекратила править Тосканой.",
+    "Годовые пересечения юридических сроков сами по себе не доказывают одновременное управление в конкретный день.",
+    "Национальность и этническое происхождение нигде не выводятся из фамилии, династии, гражданства или государства должности."
+  ],
+  "families": [
+    {
+      "id": "bourbon",
+      "name": "Бурбоны",
+      "color": "#427db7",
+      "description": "Отдельные французская и испанская правящие ветви; консорты из этого дома не означают передачу власти их супругам.",
+      "source_ids": [
+        "FP01",
+        "WP07",
+        "EX07"
+      ],
+      "members": [
+        {
+          "person_id": "fr-louis15",
+          "membership": "house",
+          "branch": "Французская ветвь",
+          "source_ids": [
+            "WP05",
+            "WP07"
+          ]
+        },
+        {
+          "person_id": "fr-louis16",
+          "membership": "house",
+          "branch": "Французская ветвь",
+          "source_ids": [
+            "DN08",
+            "FP01"
+          ]
+        },
+        {
+          "person_id": "es-carlos3",
+          "membership": "house",
+          "branch": "Испанская ветвь",
+          "source_ids": [
+            "EX07",
+            "FP01"
+          ]
+        },
+        {
+          "person_id": "es-carlos4",
+          "membership": "house",
+          "branch": "Испанская ветвь",
+          "source_ids": [
+            "EX08",
+            "FP01"
+          ]
+        },
+        {
+          "person_id": "hab-maria-luisa",
+          "membership": "house",
+          "branch": "Испанские Бурбоны по рождению; консорт Тосканы и владений Габсбургов",
+          "source_ids": [
+            "EX05"
+          ]
+        },
+        {
+          "person_id": "pt-carlota",
+          "membership": "house",
+          "branch": "Испанские Бурбоны по рождению; консорт Португалии",
+          "source_ids": [
+            "EX10"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "habsburg-lorraine",
+      "name": "Габсбург-Лотарингские",
+      "color": "#995e96",
+      "description": "Владения Габсбургов и отдельная тосканская ветвь. Выборная императорская должность Священной Римской империи — особый контекст, не самостоятельное государство семьи.",
+      "source_ids": [
+        "FP02",
+        "DN09",
+        "EX04"
+      ],
+      "members": [
+        {
+          "person_id": "hre-joseph",
+          "membership": "house",
+          "branch": "Габсбург-Лотарингский дом по рождению",
+          "source_ids": [
+            "DN06",
+            "DN09"
+          ]
+        },
+        {
+          "person_id": "hab-leopold",
+          "membership": "house",
+          "branch": "Габсбург-Лотарингская тосканская ветвь",
+          "source_ids": [
+            "EX04",
+            "FP02"
+          ]
+        },
+        {
+          "person_id": "hab-francis2",
+          "membership": "house",
+          "branch": "Габсбург-Лотарингский дом, сын Леопольда",
+          "source_ids": [
+            "EX06",
+            "FP02"
+          ]
+        },
+        {
+          "person_id": "fr-antoinette",
+          "membership": "house",
+          "branch": "По рождению; во Франции только консорт, не правящая монархиня",
+          "source_ids": [
+            "DN07",
+            "DN09"
+          ]
+        },
+        {
+          "person_id": "hab-maria",
+          "membership": "dynastic_union",
+          "branch": "Габсбург по рождению, династический союз с Лотарингским домом через брак",
+          "source_ids": [
+            "DN04",
+            "DN09"
+          ]
+        },
+        {
+          "person_id": "hre-francis",
+          "membership": "dynastic_union",
+          "branch": "Лотарингский дом по рождению; династический союз с Габсбургами",
+          "source_ids": [
+            "DN05",
+            "DN09"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hanover",
+      "name": "Ганноверский дом",
+      "color": "#a17e43",
+      "description": "Один Георг III одновременно британский король и ганноверский курфюрст: личная уния, а не две правящие семьи или объединённое государство.",
+      "source_ids": [
+        "DN01",
+        "DN03"
+      ],
+      "members": [
+        {
+          "person_id": "gb-george3",
+          "membership": "house",
+          "branch": "Британская ветвь Ганноверского дома; тот же курфюрст Ганновера",
+          "source_ids": [
+            "DN01",
+            "DN03"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "holstein-gottorp",
+      "name": "Гольштейн-Готторпские линии",
+      "color": "#5e8e81",
+      "description": "Шведская и российская ветви одного происхождения. Павел I в основном реестре остаётся Романовым; родство по отцовской линии — отдельное источниковое утверждение, не переименование русского правящего дома.",
+      "source_ids": [
+        "FP03",
+        "FP04",
+        "EX13"
+      ],
+      "members": [
+        {
+          "person_id": "ru-peter3",
+          "membership": "house",
+          "branch": "Российский император 1762, принадлежал Гольштейн-Готторпскому дому по рождению",
+          "source_ids": [
+            "FP03",
+            "FP04",
+            "WP01"
+          ]
+        },
+        {
+          "person_id": "sw-gustav3",
+          "membership": "house",
+          "branch": "Шведская ветвь",
+          "source_ids": [
+            "FP03",
+            "EX12"
+          ]
+        },
+        {
+          "person_id": "sw-gustav4",
+          "membership": "house",
+          "branch": "Шведская ветвь",
+          "source_ids": [
+            "FP03",
+            "EX13"
+          ]
+        },
+        {
+          "person_id": "sw-charles",
+          "membership": "house",
+          "branch": "Шведская ветвь; в 1792–1796 регент, не третий шведский король",
+          "source_ids": [
+            "FP03",
+            "EX13"
+          ]
+        },
+        {
+          "person_id": "ru-paul1",
+          "membership": "branch_lineage",
+          "branch": "Российская линия Романовых; происхождение от Петра III по отцу связывает с Гольштейн-Готторпской семьёй. Не заявляется как смена официального династического наименования.",
+          "source_ids": [
+            "FP04",
+            "EX01"
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "FP01",
+      "title": "Château de Versailles: французская и испанская ветви дома Бурбонов",
+      "url": "https://en.chateauversailles.fr/discover/history/key-dates/spain-and-versailles",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "FP02",
+      "title": "Die Welt der Habsburger: Тоскана — младшая ветвь Габсбург-Лотарингского дома",
+      "url": "https://www.habsburger.net/en/chapter/tuscany-habsburg-secundogeniture",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "FP03",
+      "title": "Svenskt Biografiskt Lexikon (Riksarkivet): Гольштейн-Готторпские, шведская и русская линии",
+      "url": "https://sok.riksarkivet.se/sbl/Artikel/13783",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "FP04",
+      "title": "Neue Deutsche Biographie: Пётр III Гольштейн-Готторпский и его сын Павел I",
+      "url": "https://www.deutsche-biographie.de/gnd118740180.html",
+      "verification": "reference_checked"
+    }
+  ]
+}
