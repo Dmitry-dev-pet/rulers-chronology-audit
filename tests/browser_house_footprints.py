@@ -53,6 +53,8 @@ def run(dist:Path, output:Path):
                 expect(page.locator('.dynasty-house-summary-line').filter(has_text='Бурбоны')).to_contain_text('нескольких государствах')
                 expect(page.locator('.dynasty-house-summary-line').filter(has_text='Ганноверский')).to_contain_text('личная уния')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
+                if width<=390 and height>=640:
+                    page.wait_for_function("document.querySelector('.dynasty-footprint-scroll').scrollLeft>200")
                 page.screenshot(path=str(output/f'house-footprints-1788-{width}.png'),full_page=True)
 
                 page.locator('.dynasty-house-bar[data-role-id="ex-es-carlos4"]').click()
