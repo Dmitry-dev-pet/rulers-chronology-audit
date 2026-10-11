@@ -1425,6 +1425,24 @@
     if(selectedView==='map')renderGeography();
     renderEvents();renderPolities();renderPersons();renderRelations();
   }
+  // The two interfaces share one year when the world pilot is open. The
+  // canonical domestic slider remains authoritative outside 1762–1800.
+  function alignMainYear(){
+    if(layer.hidden||!isNetworkURL())return;
+    const main=document.getElementById('atlas-year-range');
+    if(!main)return;
+    const expected=year;
+    if(expected<Number(main.min)||expected>Number(main.max)){
+      const all=document.querySelector('.era-btn[data-era="all"]');
+      if(all && all.getAttribute('aria-pressed')!=='true')all.click();
+    }
+    queueMicrotask(()=>{
+      if(layer.hidden||year!==expected||!isNetworkURL())return;
+      if(Number(main.value)===expected)return;
+      main.value=String(expected);
+      main.dispatchEvent(new Event('input',{bubbles:true}));
+    });
+  }
   function chooseYear(value,push){
     const next=Math.max(1762,Math.min(1800,Number(value)||1762));
     year=next;
@@ -1434,6 +1452,7 @@
       history[push?'pushState':'replaceState'](null,'',u.pathname+u.search+u.hash);
     }
     render();
+    alignMainYear();
   }
   back.addEventListener('click',()=>chooseYear(year-1,true));
   forward.addEventListener('click',()=>chooseYear(year+1,true));
@@ -1578,6 +1597,7 @@
     if(fromUser)previousFocus=document.activeElement;
     layer.hidden=false;
     document.documentElement.classList.add('dynasty-open');
+    window.dispatchEvent(new Event('atlas:world-open'));
     const u=new URL(location.href);
     const number=Number(u.searchParams.get('dynYear'));
     year=Number.isInteger(number)&&number>=1762&&number<=1800?number:1762;
@@ -1605,7 +1625,7 @@
       year=Number.isInteger(value)&&value>=1762&&value<=1800?value:1762;
       selectedView=modeFromUrl();
       if(layer.hidden)openSheet(false);
-      else {updateView();render();}
+      else {updateView();render();alignMainYear();}
     } else if(!layer.hidden)closeSheet(false);
   }
   close.addEventListener('click',()=>closeSheet(true));
@@ -1619,6 +1639,12 @@
     const first=elements[0],last=elements[elements.length-1];
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  });
+  window.addEventListener('atlas:year-cards-ready',event=>{
+    if(layer.hidden||!isNetworkURL()||!data)return;
+    const chosen=Number(event.detail?.year);
+    if(Number.isInteger(chosen)&&chosen>=1762&&chosen<=1800&&chosen!==year)
+      chooseYear(chosen,false);
   });
   window.addEventListener('popstate',sync);
   window.addEventListener('hashchange',sync);
