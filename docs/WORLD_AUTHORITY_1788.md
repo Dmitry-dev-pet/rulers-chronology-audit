@@ -47,7 +47,7 @@
 Источники:
 - [Smithsonian: правление Цяньлуна (1735–1796)](https://asia.si.edu/education/educator-resources/teaching-china-with-the-smithsonian/explore-by-object/the-qianlong-emperor-as-manjushri-the-bodhisattva-of-wisdom/)
 - [Национальный музей Кореи: Чонджо (1776–1800)](https://www.museum.go.kr/ENG/contents/E0403000000.do?relicId=4412&schM=relic_represent_view)
-- [Ку Бомджин, 2017: дипломатия Чосон–Цин в 1780-х](https://www.kci.go.kr/kciportal/ci/sereArtiSearch/ciSereArtiView.kci?sereArtiSearchBean.artiId=ART002277944) — полный URL документа записан в JSON-реестре, в том числе особенности квалификации источника
+- [Ку Бомджин, 2017: дипломатия Чосон–Цин в 1780-х](https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002277944) — полный URL документа записан в JSON-реестре, в том числе особенности квалификации источника
 
 ## Откуда берётся отображаемая сеть
 
