@@ -31,7 +31,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Verify offline identity and calendar rules
-        run: python3 -m unittest tests.test_wikidata_sync -v
+        run: python3 -m unittest tests.test_wikidata_sync tests.test_wikidata_office_review -v
       - name: Fetch Wikidata claims and discover unverified names
         run: |
           set -euo pipefail
@@ -39,6 +39,13 @@ jobs:
             --discover --max-searches 107 --request-delay 0.4 \
             --json-output reports/wikidata/latest.json \
             --markdown-output reports/wikidata/latest.md
+      - name: Reconcile legal positions using explicit P39 office QIDs
+        run: |
+          set -euo pipefail
+          python3 -m scripts.wikidata_office_review \
+            --input reports/wikidata/latest.json \
+            --json-output reports/wikidata/offices.json \
+            --markdown-output reports/wikidata/offices.md
       - name: Verify read-only canonical data
         shell: bash
         run: |
@@ -49,6 +56,8 @@ jobs:
           fi
           test -s reports/wikidata/latest.json
           test -s reports/wikidata/latest.md
+          test -s reports/wikidata/offices.json
+          test -s reports/wikidata/offices.md
           python3 - <<'PY'
           import json
           import os
@@ -56,6 +65,11 @@ jobs:
           report = json.loads(Path('reports/wikidata/latest.json').read_text())
           assert report['historical_truth_verified'] is False
           assert report['mutated_canonical_data'] is False
+          offices = json.loads(Path('reports/wikidata/offices.json').read_text())
+          assert offices['schema_version'] == 'wikidata-office-review-v1'
+          assert offices['mutated_canonical_data'] is False
+          assert offices['asserted_real_power'] is False
+          assert len(offices['subjects']) == report['summary']['confirmed_qids']
           s = report['summary']
           assert len(report['records']) == s['canonical_people'] + s['unlinked_world_people']
           assert sum(s['statuses'].values()) == len(report['records'])
@@ -101,7 +115,7 @@ jobs:
           set -euo pipefail
           test -s reports/wikidata/latest.json
           test -s reports/wikidata/latest.md
-          git add -- reports/wikidata/latest.json reports/wikidata/latest.md
+          git add -- reports/wikidata/latest.json reports/wikidata/latest.md reports/wikidata/offices.json reports/wikidata/offices.md
           if git diff --cached --quiet; then
             echo 'No external-data changes since the last reviewed main report.'
             exit 0
@@ -113,5 +127,5 @@ jobs:
               commit -m 'data(wikidata): propose external review report'
           git push origin "$branch"
           gh pr create --base main --head "$branch" \
-            --title 'Wikidata: external claims and identity candidates for review' \
+            --title 'Wikidata: reviewed QIDs, identity candidates and P39 office differences' \
             --body 'Review-only Wikidata report (JSON and Markdown). No canonical people, historical facts, real-power assessments, SQLite, or GitHub Pages changed. Name matches are unverified. Created by explicit manual workflow dispatch; do not auto-merge. GITHUB_TOKEN-created PRs may not trigger PR workflows; inspect the completed audit and run independent checks as needed.'
