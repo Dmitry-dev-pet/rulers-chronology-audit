@@ -1,6 +1,8 @@
 name: Wikidata reconciliation (read-only historical audit)
 
 on:
+  push:
+    branches: [feature/wikidata-readonly-sync-20261011] # TEMP live smoke, remove after success
   schedule:
     - cron: '17 4 * * 1'
   workflow_dispatch:
