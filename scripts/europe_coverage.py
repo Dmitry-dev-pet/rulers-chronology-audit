@@ -28,7 +28,11 @@ def classify(policy: dict, year: int, roles: list, institutions: list) -> str:
     if ((policy.get("historical_start") and year < policy["historical_start"]) or
             (policy.get("historical_end") and year > policy["historical_end"])):
         return "historically_not_in_force"
-    if year < policy["researched_from"] or year > policy["researched_through"]:
+    # A documented role imported later supersedes an old research-window
+    # boundary. Absence of records before the baseline remains unresearched.
+    if ((year < policy["researched_from"] or
+         year > policy["researched_through"]) and
+            not roles and not institutions):
         return "outside_sample"
     if any(role["role_kind"] in CORE for role in roles):
         return "office"
