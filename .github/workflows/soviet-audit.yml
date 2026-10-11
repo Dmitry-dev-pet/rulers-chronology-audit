@@ -74,6 +74,21 @@ jobs:
           set -euo pipefail
           /tmp/atlas-browser/bin/python tests/browser_schema_v2_graph.py --dist p4-preview --output browser-evidence
 
+      - name: Simulate existing Pages v2.html publication (PR only)
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m scripts.atlas_v2_pages --dist dist
+
+      - name: Browser-test standalone Pages /v2.html (PR only)
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/atlas-browser/bin/python tests/browser_schema_v2_graph.py \
+            --dist dist --entry v2.html --output browser-evidence/pages-v2
+
       - name: Record result in job summary
         run: |
           python3 - <<'PY'
