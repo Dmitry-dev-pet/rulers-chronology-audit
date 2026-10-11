@@ -720,6 +720,16 @@
   timeline.querySelectorAll(':scope > .timeline-footnote').forEach(node => sidebar.appendChild(node));
   work.append(chart, sidebar);
 
+  // A real, dismissible backdrop makes historical details a readable mobile
+  // bottom sheet instead of the old narrow sidebar crammed alongside a chart.
+  const scrim=document.createElement('button');
+  scrim.type='button';
+  scrim.className='atlas-mobile-scrim';
+  scrim.hidden=true;
+  scrim.textContent='Закрыть сведения';
+  scrim.setAttribute('aria-label','Закрыть сведения о выбранном периоде');
+  document.body.appendChild(scrim);
+
   // Explicit zoom and century navigation; track rows are panned together by
   // their own horizontal scroll container. Touch uses native scrolling.
   const controls = document.createElement('div');
@@ -836,22 +846,39 @@
     work.classList.add('atlas-sidebar-open');
     toggle.setAttribute('aria-expanded', 'true');
     sidebar.removeAttribute('inert');
+    sidebar.setAttribute('role','dialog');
+    sidebar.setAttribute('aria-modal','true');
+    scrim.hidden=false;
+    document.documentElement.classList.add('atlas-mobile-details-open');
     close.focus({preventScroll: true});
   }
   function closeSidebar() {
+    work.classList.remove('atlas-year-overview-open');
     work.classList.remove('atlas-sidebar-open');
     toggle.setAttribute('aria-expanded', 'false');
     if (narrow.matches) sidebar.setAttribute('inert', '');
-    toggle.focus({preventScroll: true});
+    scrim.hidden=true;
+    document.documentElement.classList.remove('atlas-mobile-details-open');
+    sidebar.removeAttribute('aria-modal');
+    sidebar.removeAttribute('role');
+    if (!timeline.hidden) toggle.focus({preventScroll: true});
   }
   function syncSidebar() {
     if (narrow.matches && !work.classList.contains('atlas-sidebar-open'))
       sidebar.setAttribute('inert', '');
     else sidebar.removeAttribute('inert');
+    if (!narrow.matches){
+      scrim.hidden=true;
+      document.documentElement.classList.remove('atlas-mobile-details-open');
+      sidebar.removeAttribute('aria-modal');
+      sidebar.removeAttribute('role');
+    }
   }
   // Year summary cards can show the full, sourced dossier on demand.
   window.addEventListener('atlas:show-year-details', () => {
     if (timeline.hidden) return;
+    work.classList.add('atlas-year-overview-open');
+    sidebarTitle.textContent='Все записи · '+selectedYear()+' год';
     if (narrow.matches) openSidebar();
     else {
       sidebar.scrollTop = 0;
@@ -864,10 +891,36 @@
     else openSidebar();
   });
   close.addEventListener('click', closeSidebar);
+  scrim.addEventListener('click',closeSidebar);
+  // Touch-down on the sheet heading allows a familiar downward dismissal
+  // without stealing vertical scrolling inside historical evidence text.
+  let sheetTouch=null;
+  sidebarHeading.addEventListener('pointerdown',event=>{
+    if(event.pointerType!=='touch'||event.target.closest('button'))return;
+    sheetTouch={id:event.pointerId,x:event.clientX,y:event.clientY};
+  });
+  sidebarHeading.addEventListener('pointerup',event=>{
+    if(!sheetTouch||sheetTouch.id!==event.pointerId)return;
+    const dy=event.clientY-sheetTouch.y,dx=event.clientX-sheetTouch.x;
+    sheetTouch=null;
+    if(dy>70&&Math.abs(dx)<65)closeSidebar();
+  });
+  sidebarHeading.addEventListener('pointercancel',()=>{sheetTouch=null;});
   timeline.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && work.classList.contains('atlas-sidebar-open')) {
-      event.preventDefault();
-      closeSidebar();
+    if(!work.classList.contains('atlas-sidebar-open'))return;
+    if(event.key === 'Escape'){
+      event.preventDefault();closeSidebar();return;
+    }
+    if(event.key==='Tab'&&narrow.matches){
+      const items=[...sidebar.querySelectorAll('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), [tabindex="0"]')]
+        .filter(node=>node.getClientRects().length);
+      if(!items.length)return;
+      const first=items[0],last=items[items.length-1];
+      if(event.shiftKey&&document.activeElement===first){
+        event.preventDefault();last.focus();
+      }else if(!event.shiftKey&&document.activeElement===last){
+        event.preventDefault();first.focus();
+      }
     }
   });
   if (narrow.addEventListener) narrow.addEventListener('change', syncSidebar);
@@ -878,6 +931,8 @@
   const plots = timeline.querySelector('#time-canvas');
   if (plots) plots.addEventListener('click', event => {
     if (event.target.closest('.time-bar')) {
+      work.classList.remove('atlas-year-overview-open');
+      sidebarTitle.textContent='Выбранный период';
       if (narrow.matches) openSidebar();
       else sidebar.scrollTop = 0;
     }
@@ -914,7 +969,12 @@
       focusYear(selectedYear());
     } else {
       work.classList.remove('atlas-sidebar-open');
+      work.classList.remove('atlas-year-overview-open');
       toggle.setAttribute('aria-expanded', 'false');
+      scrim.hidden=true;
+      document.documentElement.classList.remove('atlas-mobile-details-open');
+      sidebar.removeAttribute('aria-modal');
+      sidebar.removeAttribute('role');
       syncSidebar();
     }
   });

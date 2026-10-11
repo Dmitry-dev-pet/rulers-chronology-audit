@@ -93,7 +93,7 @@ class MuscovyExtensionTests(unittest.TestCase):
         self.assertFalse(check["historical_truth_verified_by_ci"])
         self.assertFalse(check["muscovy_primary_acts_verified"])
         self.assertTrue((ROOT / "dist/muscovy.csv").is_file())
-        self.assertEqual(len(list((ROOT / "dist").iterdir())), 18)
+        self.assertEqual(len(list((ROOT / "dist").iterdir())), 19)
         for artifact in (ROOT / "dist").iterdir():
             content = artifact.read_text(encoding="utf-8-sig")
             self.assertNotIn("drive.google.com", content)

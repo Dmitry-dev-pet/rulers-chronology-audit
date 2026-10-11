@@ -21,7 +21,13 @@
   dashboard.setAttribute('aria-label', 'Кто управлял в выбранном году');
   const heading = elem('div', 'atlas-year-dashboard-heading');
   const title = elem('h2');
-  title.append('Кто управлял в ', yearNumber, ' году?');
+  // Desktop keeps its full question; mobile elevates the selected year
+  // visually rather than wrapping a long sentence around 4 digits.
+  title.append(
+    elem('span','atlas-year-question-prefix','Кто управлял в '),
+    yearNumber,
+    elem('span','atlas-year-question-suffix',' году?'),
+    elem('span','atlas-mobile-year-caption','Кто управлял в этом году?'));
   const stepYear = (delta) => {
     const min = Number(slider.min), max = Number(slider.max);
     const next = Math.min(max, Math.max(min, Number(slider.value) + delta));
@@ -111,13 +117,40 @@
     }
     if (unique.length > 2) parent.appendChild(elem('span', 'atlas-year-more-sources', '+' + (unique.length - 2)));
   }
+  // Accordion state is presentation-only; keep each category's expanded
+  // state when the selected year changes, without storing historical data.
+  const expandedMobileGroups = new Set(['formal']);
   function makeGroup(titleText, description, records, kind) {
     const card = elem('article', 'atlas-year-role-card');
     card.dataset.kind = kind;
+    card.classList.toggle('mobile-expanded', expandedMobileGroups.has(kind));
     const header = elem('div', 'atlas-year-role-head');
-    header.append(elem('h3', null, titleText), elem('span', 'atlas-year-role-count', records.length));
+    const heading = elem('h3', null, titleText);
+    const count = elem('span', 'atlas-year-role-count', records.length);
+    header.append(heading, count);
+    // The existing desktop headings remain unchanged. Touch users receive
+    // a real button, an accessible count, and an independent expandable area.
+    const mobileToggle = elem('button', 'atlas-mobile-role-toggle');
+    mobileToggle.type = 'button';
+    const listId = 'atlas-mobile-items-' + kind;
+    mobileToggle.setAttribute('aria-controls', listId);
+    mobileToggle.setAttribute('aria-expanded', String(expandedMobileGroups.has(kind)));
+    mobileToggle.setAttribute('aria-label', titleText + ': ' + records.length + ' записей');
+    mobileToggle.append(
+      elem('span','atlas-mobile-role-title', titleText),
+      elem('span','atlas-mobile-role-count',records.length),
+      elem('span','atlas-mobile-role-chevron','⌄'));
+    mobileToggle.addEventListener('click', () => {
+      const next = !card.classList.contains('mobile-expanded');
+      card.classList.toggle('mobile-expanded', next);
+      mobileToggle.setAttribute('aria-expanded', String(next));
+      if (next) expandedMobileGroups.add(kind);
+      else expandedMobileGroups.delete(kind);
+    });
+    header.append(mobileToggle);
     card.append(header, elem('p', 'atlas-year-role-description', description));
     const list = elem('ul', 'atlas-year-role-items');
+    list.id = listId;
     const shown = records.slice(0, 3);
     for (const record of shown) {
       const row = elem('li', 'atlas-year-role-item');
@@ -189,6 +222,9 @@
     ];
     cards.replaceChildren(...groups.map(([name, about, records, kind]) =>
       makeGroup(name, about, records, kind)));
+    window.dispatchEvent(new CustomEvent('atlas:year-cards-ready',
+      {detail:{year,groups:groups.map(([title,,records,kind])=>
+        ({title,count:records.length,kind}))}}));
     status.textContent = 'Исторический срез: ' + year + ' · ' +
       'оценки власти и юридические должности показаны отдельно.';
   }

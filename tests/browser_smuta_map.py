@@ -106,7 +106,16 @@ def check(dist: Path, output: Path):
                 expect(page.locator('.smuta-unlocated')).to_be_visible()
                 page.locator('.smuta-return').click()
                 expect(page.locator('.smuta-workspace')).to_be_hidden()
-                expect(page.locator('.atlas-timeline-workspace')).to_be_visible()
+                if w<=900:
+                    # Leaving a historic map returns to the NEW readable
+                    # summary-first universal atlas, not a hidden chart.
+                    expect(page.locator('#panel-timeline')).to_have_attribute('data-mobile-mode','summary')
+                    expect(page.locator('.atlas-timeline-workspace')).to_be_hidden()
+                    expect(page.locator('.atlas-year-dashboard-cards')).to_be_visible()
+                    page.locator('.atlas-mobile-action[data-mobile-action="timeline"]').click()
+                    expect(page.locator('.atlas-timeline-workspace')).to_be_visible()
+                else:
+                    expect(page.locator('.atlas-timeline-workspace')).to_be_visible()
                 assert not errors,errors
                 reports.append({'viewport':[w,h],'status':'passed','js_errors':errors})
                 page.close()

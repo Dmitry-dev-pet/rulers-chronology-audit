@@ -39,7 +39,12 @@ def check(dist: Path, output: Path) -> None:
                 expect(page.locator('#atlas-year-value')).to_have_text('1685')
                 expect(page.locator('.atlas-global-controls')).to_be_visible()
                 expect(page.locator('.atlas-global-century')).to_have_count(5)
-                page.locator('.atlas-global-open').filter(has_text='Обзор веков').click()
+                if width<=900:
+                    # Desktop header actions are intentionally hidden on a
+                    # phone; the persistent mobile action opens the SAME pane.
+                    page.locator('.atlas-mobile-action[data-mobile-action="overview"]').click()
+                else:
+                    page.locator('.atlas-global-open').filter(has_text='Обзор веков').click()
                 expect(page.locator('.atlas-global-sheet')).to_be_visible()
                 expect(page.locator('.atlas-global-century-card')).to_have_count(5)
                 expect(page.locator('.atlas-global-coverage-row')).to_have_count(20)
@@ -55,6 +60,17 @@ def check(dist: Path, output: Path) -> None:
                 page.locator('.atlas-global-tab').filter(has_text='Сравнить годы').click()
                 expect(page.locator('.atlas-global-compare-columns')).to_be_visible()
                 expect(page.locator('.atlas-global-year-column')).to_have_count(2)
+                if width<=900:
+                    expect(page.locator('.atlas-mobile-compare-tab')).to_have_count(3)
+                    expect(page.locator('.atlas-global-year-column[data-year="1685"]')).to_be_visible()
+                    expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_hidden()
+                    page.locator('.atlas-mobile-compare-tab[data-tab="b"]').click()
+                    expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_visible()
+                    page.locator('.atlas-mobile-compare-tab[data-tab="diff"]').click()
+                    expect(page.locator('.atlas-mobile-differences')).to_be_visible()
+                    expect(page.locator('.atlas-mobile-diff-group')).to_have_count(4)
+                    expect(page.locator('.atlas-mobile-differences')).to_contain_text('НЕ доказательство')
+                    page.locator('.atlas-mobile-compare-tab[data-tab="a"]').click()
                 expect(page.locator('.atlas-global-year-column[data-year="1685"]')).to_contain_text('Иван')
                 expect(page.locator('.atlas-global-year-column[data-year="1685"]')).to_contain_text('Пётр')
                 expect(page.locator('.atlas-global-year-column[data-year="1685"]')).to_contain_text('Софья')
@@ -72,22 +88,34 @@ def check(dist: Path, output: Path) -> None:
                 # The comparison is linkable: it survives reload and browser Back.
                 page.locator('.atlas-global-preset[data-left="1917"][data-right="1991"]').click()
                 expect(page.locator('.atlas-global-year-column[data-year="1917"]')).to_be_visible()
-                expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_visible()
+                if width<=900:
+                    expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_hidden()
+                else:
+                    expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_visible()
                 expect(page).to_have_url(re.compile('atlasYears=1917%2C1991'))
                 permalink=page.url
                 page.reload()
                 expect(page).to_have_url(permalink)
                 expect(page.locator('.atlas-global-year-column[data-year="1917"]')).to_be_visible()
-                expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_visible()
+                if width<=900:
+                    expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_hidden()
+                else:
+                    expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_visible()
                 page.go_back()
                 expect(page.locator('.atlas-global-year-column[data-year="1685"]')).to_be_visible()
-                expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_visible()
+                if width<=900:
+                    expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_hidden()
+                else:
+                    expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_visible()
                 # Changing one comparison year does not create an inferred ruler.
                 first=page.get_by_role('spinbutton',name='Первый год')
                 first.fill('1812')
                 first.press('Tab')
                 expect(page.locator('.atlas-global-year-column[data-year="1812"]')).to_be_visible()
-                expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_visible()
+                if width<=900:
+                    expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_hidden()
+                else:
+                    expect(page.locator('.atlas-global-year-column[data-year="1953"]')).to_be_visible()
                 # Return to canonical timeline; no stale comparison URL or new
                 # route incompatible with the existing 4-tab SPA.
                 page.locator('.atlas-global-year-jump[data-year="1812"]').click()
@@ -99,7 +127,10 @@ def check(dist: Path, output: Path) -> None:
                 # prior navigation or which century was last selected.
                 page.goto(origin + '?atlasView=compare&atlasYears=1917%2C1991#/timeline/1917')
                 expect(page.locator('.atlas-global-year-column[data-year="1917"]')).to_be_visible()
-                expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_visible()
+                if width<=900:
+                    expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_hidden()
+                else:
+                    expect(page.locator('.atlas-global-year-column[data-year="1991"]')).to_be_visible()
                 page.locator('.atlas-global-close').click()
                 expect(page.locator('.atlas-global-sheet')).to_be_hidden()
                 assert 'atlasView=' not in page.url

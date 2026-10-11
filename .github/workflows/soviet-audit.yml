@@ -52,6 +52,7 @@ jobs:
           /tmp/atlas-browser/bin/python -m playwright install --with-deps chromium
           /tmp/atlas-browser/bin/python tests/browser_smuta_map.py --dist dist --output browser-evidence
           /tmp/atlas-browser/bin/python tests/browser_universal_atlas.py --dist dist --output browser-evidence
+          /tmp/atlas-browser/bin/python tests/browser_mobile_atlas.py --dist dist --output browser-evidence
 
       - name: Record result in job summary
         run: |
@@ -70,6 +71,8 @@ jobs:
               global_browser = json.loads(Path('browser-evidence/universal-receipt.json').read_text())
               f.write('Universal atlas: ' + str(len(global_browser)) + ' viewport scenarios passed (1417–1991 navigation and cross-year comparisons).\n')
               f.write('Screenshots and receipts are a separate test artifact.\n')
+              mobile = json.loads(Path('browser-evidence/mobile-receipt.json').read_text())
+              f.write('Mobile-first UX: ' + str(len(mobile)) + ' viewport scenarios passed (summary, timeline, bottom sheet, comparison, biography).\n')
           PY
 
       - name: Upload browser acceptance evidence
