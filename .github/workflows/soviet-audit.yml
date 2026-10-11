@@ -89,6 +89,14 @@ jobs:
           /tmp/atlas-browser/bin/python tests/browser_schema_v2_graph.py \
             --dist dist --entry v2.html --output browser-evidence/pages-v2
 
+      - name: Browser-test 1788 world authority and source classifications
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/atlas-browser/bin/python tests/browser_world_authority.py \
+            --dist dist --output browser-evidence/world-authority
+
       - name: Record result in job summary
         run: |
           python3 - <<'PY'
