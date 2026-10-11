@@ -1836,3 +1836,140 @@ button[disabled] {
 @media print{
   .atlas-app .atlas-mobile-highlights{display:none!important}
 }
+
+
+/* International pilot · source-qualified 1762 graph, one sheet within the SPA. */
+.atlas-world-layer[hidden]{display:none!important}
+.atlas-world-layer{
+  position:fixed;inset:0;z-index:1600;background:rgba(25,34,32,.68);
+  padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right))
+          max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.atlas-world-open body{overflow:hidden}
+.atlas-world-dialog{
+  width:min(1180px,100%);max-height:100%;display:flex;flex-direction:column;
+  min-height:0;background:#fbfaf6;color:#24312c;overflow:hidden;
+  border:1px solid #d9d9ce;border-radius:15px;
+  box-shadow:0 20px 65px rgba(0,0,0,.24)
+}
+.atlas-world-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid #dedfd5;gap:12px;flex:0 0 auto;
+  background:#f4f3ed
+}
+.atlas-world-head-title{min-width:0}
+.atlas-world-eyebrow{
+  display:block;font:700 11px/1.35 system-ui,sans-serif;
+  letter-spacing:.065em;text-transform:uppercase;color:#5c6e66
+}
+.atlas-world-head h2{font:750 clamp(22px,3.2vw,29px)/1.15 system-ui,sans-serif;
+  margin:3px 0 0;color:#27342f}
+.atlas-world-close,.atlas-world-mode{
+  font:700 14px/1.3 system-ui,sans-serif;min-height:44px;cursor:pointer;
+  border:1px solid #bcc7c1;border-radius:8px;background:#fffdfa;color:#29453e;
+  padding:8px 14px
+}
+.atlas-world-close:hover,.atlas-world-mode:hover{background:#e6eee8}
+.atlas-world-close:focus-visible,.atlas-world-mode:focus-visible,
+.atlas-world-source:focus-visible,.atlas-world-person-link:focus-visible{
+  outline:3px solid #548d72;outline-offset:2px
+}
+.atlas-world-content{overflow-y:auto;overscroll-behavior:contain;
+  min-height:0;max-width:100%;padding:15px 19px 25px}
+.atlas-world-lead,.atlas-world-limitations{
+  font:400 14px/1.55 system-ui,sans-serif;color:#485b52;margin:0 0 14px
+}
+.atlas-world-switches{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.atlas-world-mode[aria-pressed="true"]{
+  color:#fff;background:#335e4d;border-color:#335e4d
+}
+.atlas-world-status{color:#59695e;font:650 13px/1.45 system-ui,sans-serif;
+  margin:5px 0 11px}
+.atlas-world-graph-scroll{
+  min-width:0;width:100%;overflow-x:auto;overflow-y:hidden;
+  background:linear-gradient(180deg,#fffefa,#f2f2ea);border:1px solid #d4d9d1;
+  border-radius:11px;touch-action:pan-x pan-y
+}
+.atlas-world-graph-scroll svg{display:block;width:1040px;height:390px;max-width:none}
+.atlas-world-graph-hint{font:400 12px/1.45 system-ui,sans-serif;
+  color:#62726a;margin:7px 0 17px}
+.atlas-world-country-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:13px;align-items:start}
+.atlas-world-country{
+  min-width:0;padding:12px 12px 14px;background:#fff;
+  border:1px solid #d9ddd5;border-top:4px solid var(--country-color);
+  border-radius:10px;box-shadow:0 2px 5px rgba(23,49,37,.045)
+}
+.atlas-world-country h3{
+  color:#2e4539;font:800 16px/1.3 system-ui,sans-serif;
+  margin:0 0 10px
+}
+.atlas-world-people{display:grid;gap:10px}
+.atlas-world-person{border-left:4px solid var(--person-color);
+  background:#f7f8f4;padding:10px;border-radius:7px;min-width:0}
+.atlas-world-person h4{font:750 17px/1.3 system-ui,sans-serif;
+  color:#25372f;margin:0 0 3px}
+.atlas-world-role{font:700 13px/1.4 system-ui,sans-serif;color:#315446;
+  margin:0}
+.atlas-world-dates{font:400 13px/1.4 system-ui,sans-serif;color:#5a625a;
+  margin:2px 0 8px}
+.atlas-world-person-link,.atlas-world-source{color:#215c61;
+  text-decoration:underline;text-underline-offset:3px}
+.atlas-world-person-link{font:650 13px/1.45 system-ui,sans-serif;
+  display:inline-block;margin:3px 0 7px}
+.atlas-world-traits{
+  margin:10px 0;padding:9px 0;border-top:1px solid #dfe6df;
+  display:grid;grid-template-columns:minmax(0,100px) minmax(0,1fr);
+  column-gap:8px;row-gap:7px
+}
+.atlas-world-traits dt{color:#61746b;font:600 12px/1.35 system-ui,sans-serif}
+.atlas-world-traits dd{margin:0;min-width:0;overflow-wrap:anywhere;
+  color:#293d34;font:550 13px/1.45 system-ui,sans-serif}
+.atlas-world-person-note,.atlas-world-country-note{
+  font:400 12px/1.5 system-ui,sans-serif;color:#647168;margin:8px 0 0
+}
+.atlas-world-citations{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.atlas-world-source{font:650 12px/1.5 system-ui,sans-serif}
+.atlas-world-relations{margin-top:20px}
+.atlas-world-relations h3{font:800 18px/1.3 system-ui,sans-serif;margin:0 0 10px}
+.atlas-world-relation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.atlas-world-relation{border:1px solid #dbdfd6;border-radius:9px;
+  padding:12px;background:#f7f8f4;min-width:0}
+.atlas-world-relation-type{font:750 11px/1.4 system-ui,sans-serif;
+  letter-spacing:.05em;text-transform:uppercase;color:#5d7267}
+.atlas-world-relation h4{font:750 14px/1.35 system-ui,sans-serif;
+  margin:4px 0;color:#2a4035}
+.atlas-world-relation p,.atlas-world-insight{
+  font:400 13px/1.5 system-ui,sans-serif;color:#526358;margin:4px 0
+}
+.atlas-world-insight{margin:13px 0;background:#eaf1eb;padding:12px;
+  border-left:3px solid #609075;border-radius:4px}
+.atlas-world-limitations{margin:16px 0 0;border-top:1px solid #d9e0d9;padding-top:12px}
+.atlas-year-world-link{
+  display:inline-flex;align-items:center;min-height:34px;
+  padding:5px 11px;background:#e8f0eb;color:#275342;
+  border:1px solid #c4d6c8;border-radius:7px;
+  font:750 13px/1.4 system-ui,sans-serif;text-decoration:none;
+  width:fit-content;margin:5px 0 1px
+}
+.atlas-year-world-link:hover{background:#d9e8df}
+.atlas-year-world-link:focus-visible{outline:3px solid #407c67;outline-offset:2px}
+@media(max-width:900px){
+  .atlas-world-layer{padding:0}
+  .atlas-world-dialog{width:100%;height:100%;max-height:100dvh;border:0;border-radius:0}
+  .atlas-world-head{padding:11px 13px}
+  .atlas-world-content{padding:12px 13px 25px}
+  .atlas-world-country-grid{grid-template-columns:1fr}
+  .atlas-world-relation-grid{grid-template-columns:1fr}
+  .atlas-world-graph-scroll svg{height:350px;width:935px}
+  .atlas-world-head h2{font-size:24px}
+  .atlas-world-traits{grid-template-columns:100px minmax(0,1fr)}
+  .atlas-year-world-link{min-height:44px}
+  /* World pilot is an entry point from the summary, not chart/map chrome. */
+  .atlas-app.atlas-mobile #panel-timeline[data-mobile-mode="timeline"] .atlas-year-world-link,
+  .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-world-link{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .atlas-world-layer *{scroll-behavior:auto!important}
+}
