@@ -622,6 +622,196 @@
       relations.append(card);
     }
   }
+  // Projection of sourced house memberships onto juridical terms. A shared
+  // surname or birthplace NEVER creates a member or a political relation.
+  // Only the vetted membership/source arrays authorize a new timeline bar.
+  const FOOTPRINT_START=1762;
+  const FOOTPRINT_END=1800;
+  const FOOTPRINT_YEARS=FOOTPRINT_END-FOOTPRINT_START+1;
+  const coreKinds=new Set(['sovereign','elector']);
+  const additionalKinds=new Set([
+    'emperor','co_regent','consort','regent','heir','dynastic_person'
+  ]);
+  const excludesFromStateCount=new Set(['hre','frrep','meck']);
+  const fullRoles=()=>[...(data?.roles||[]),...(extension?.additional_roles||[])];
+  const allJurisdictions=()=>[...(base?.countries||[]),
+    ...(data?.additional_polities||[]),...(extension?.additional_polities||[])]
+    .map(p=>({...p,name:p.name||p.label}));
+  function segmentsForHouse(family,secondary){
+    const byPolity=new Map();
+    const actors=new Map(allPeople().map(p=>[p.id,p]));
+    for(const member of family.members){
+      const actor=actors.get(member.person_id);
+      if(!actor)continue;
+      for(const role of fullRoles().filter(r=>r.person_id===member.person_id)){
+        if(role.end_year<FOOTPRINT_START || role.start_year>FOOTPRINT_END)
+          continue;
+        const isCore=coreKinds.has(role.role_kind) && member.membership!=='dynastic_union';
+        const extra=additionalKinds.has(role.role_kind) || member.membership==='dynastic_union';
+        if(!isCore && !(secondary&&extra))continue;
+        const entry={
+          role,member,actor,
+          start:Math.max(FOOTPRINT_START,role.start_year),
+          end:Math.min(FOOTPRINT_END,role.end_year),
+          category:member.membership==='branch_lineage'?'lineage':
+            !isCore?'extra':'core'
+        };
+        if(!byPolity.has(role.polity_id))byPolity.set(role.polity_id,[]);
+        byPolity.get(role.polity_id).push(entry);
+      }
+    }
+    const jurisdictions=new Map(allJurisdictions().map(p=>[p.id,p]));
+    return [...byPolity.entries()].map(([id,bars])=>({
+      polity:jurisdictions.get(id),id,
+      bars:bars.sort((a,b)=>a.start-b.start||a.end-b.end)
+    })).sort((a,b)=>
+      (a.polity?.name||a.id).localeCompare(b.polity?.name||b.id,'ru'));
+  }
+  function summaryForHouse(family,selectedYear){
+    const matches=family.members.flatMap(member=>
+      fullRoles().filter(r=>r.person_id===member.person_id &&
+        isActive(r,selectedYear) && coreKinds.has(r.role_kind) &&
+        !excludesFromStateCount.has(r.polity_id))
+        .map(role=>({role,member})));
+    const strict=matches.filter(x=>x.member.membership==='house');
+    const sovereignStates=new Set(strict.map(x=>x.role.polity_id));
+    const strictPersons=new Set(strict.map(x=>x.role.person_id));
+    const withLineage=new Set(matches.map(x=>x.role.polity_id));
+    const names=ids=>[...ids].map(id=>allJurisdictions().find(p=>p.id===id)?.name||
+      id).join(' · ');
+    return {strictStates:sovereignStates.size,strictPersons:strictPersons.size,
+      coreText:names(sovereignStates),
+      lineageText:names(withLineage),
+      lineageOnly:withLineage.size>1 && sovereignStates.size<2};
+  }
+  function footprintBarDetail(family,entry){
+    const {role,actor,member,start,end,category}=entry;
+    selectedFootprint={familyId:family.id,roleId:role.id};
+    footprintDetail.replaceChildren();
+    const title=create('h4',null,actorName(actor)+' · '+family.name);
+    const qual=category==='lineage'
+      ? 'Генеалогическая ветвь; НЕ официальный династический ярлык российской короны.'
+      : category==='extra'
+        ? 'Дополнительная роль / династический союз, НЕ доказательство правления этим домом.'
+        : role.role_kind==='elector'?'Курфюрст, отдельная должность в Ганновере.'
+        : 'Правящая юридическая должность; действительную власть исследуем отдельно.';
+    footprintDetail.append(title,
+      create('p',null,role.title+' · '+start+'–'+end+' годы. '+qual),
+      create('p','dynasty-footprint-branch','Ветвь: '+member.branch),
+      create('p','dynasty-footprint-caution',
+        'Годы включены с календарной точностью источника; совпадение полос не доказывает общего дня правления.'),
+      sources([...family.source_ids,...member.source_ids,...role.source_ids]));
+  }
+  function renderFootprints(){
+    if(!footprints||!data||!base||!extension)return;
+    const jurisdictionIndex=new Map(allJurisdictions().map(p=>[p.id,p]));
+    const rows=create('div','dynasty-house-matrix');
+    const axis=create('div','dynasty-house-axis');
+    axis.append(create('div','dynasty-house-sticky-label','Династия / государство'));
+    const axisYears=create('div','dynasty-house-years');
+    for(const tick of [1762,1770,1780,1790,1800]){
+      const item=create('span','dynasty-house-year',String(tick));
+      item.style.left=((tick-FOOTPRINT_START+.5)/FOOTPRINT_YEARS*100)+'%';
+      axisYears.append(item);
+    }
+    axis.append(axisYears);rows.append(axis);
+    for(const family of footprints.families){
+      const group=create('section','dynasty-house-group');
+      group.dataset.familyId=family.id;
+      group.style.setProperty('--dynasty-family-color',family.color);
+      const label=create('h4','dynasty-house-family-title',family.name);
+      const synopsis=summaryForHouse(family,year);
+      if(synopsis.strictStates>=2){
+        label.append(create('span','dynasty-house-multistate',
+          synopsis.strictPersons===1?'Личная уния':'Несколько государств'));
+      } else if(synopsis.lineageOnly){
+        label.append(create('span','dynasty-house-lineage-tag','Родственные ветви'));
+      }
+      group.append(label);
+      group.append(create('p','dynasty-house-family-note',family.description));
+      const groups=segmentsForHouse(family,showSecondary);
+      for(const row of groups){
+        if(!row.polity)continue;
+        const node=create('div','dynasty-house-row');
+        node.dataset.country=row.id;
+        const left=create('div','dynasty-house-sticky-label',row.polity.name);
+        const bars=create('div','dynasty-house-track');
+        // Same-year legal transitions must not be flattened into one reign.
+        const lanes=[];
+        for(const entry of row.bars){
+          let lane=lanes.findIndex(end=>entry.start>end);
+          if(lane<0){lane=lanes.length;lanes.push(entry.end);}
+          else lanes[lane]=entry.end;
+          entry.lane=lane;
+        }
+        bars.style.height=Math.max(42,lanes.length*36+6)+'px';
+        const cursor=create('span','dynasty-house-year-cursor');
+        cursor.style.left=((year-FOOTPRINT_START+.5)/FOOTPRINT_YEARS*100)+'%';
+        cursor.setAttribute('aria-hidden','true');
+        bars.append(cursor);
+        row.bars.forEach(entry=>{
+          const {role,actor,member,start,end,category}=entry;
+          const button=create('button','dynasty-house-bar',actorName(actor));
+          button.type='button';
+          button.dataset.roleId=role.id;
+          button.dataset.familyId=family.id;
+          button.dataset.category=category;
+          button.dataset.roleKind=role.role_kind;
+          button.style.left=((start-FOOTPRINT_START)/FOOTPRINT_YEARS*100)+'%';
+          button.style.width=((end-start+1)/FOOTPRINT_YEARS*100)+'%';
+          button.style.top=(3+entry.lane*36)+'px';
+          button.title=actorName(actor)+': '+role.title+' ('+start+'–'+end+') · '+member.branch;
+          button.setAttribute('aria-label',
+            family.name+', '+row.polity.name+', '+actorName(actor)+', '+role.title+
+            ', '+start+'–'+end+'. Показать источники.');
+          if(selectedFootprint?.familyId===family.id &&
+            selectedFootprint?.roleId===role.id)button.setAttribute('aria-pressed','true');
+          button.addEventListener('click',()=>{
+            selectedFootprint={familyId:family.id,roleId:role.id};
+            if(year<start||year>end){
+              chooseYear(Math.min(end,Math.max(start,year)),true);
+            }else renderFootprints();
+            footprintBarDetail(family,entry);
+            footprintDetail.focus({preventScroll:true});
+          });
+          bars.append(button);
+        });
+        node.append(left,bars);
+        group.append(node);
+      }
+      if(!groups.length)group.append(create('p','dynasty-house-empty',
+        'В выбранной выборке нет должностных записей данного типа. Это не доказательство отсутствия семьи.'));
+      rows.append(group);
+    }
+    footprintRows.replaceChildren(rows);
+    const conclusions=create('div','dynasty-house-conclusions');
+    const strict=[];
+    const lineage=[];
+    for(const family of footprints.families){
+      const stat=summaryForHouse(family,year);
+      if(stat.strictStates>=2){
+        const sentence=stat.strictPersons===1?
+          'личная уния: один человек занимает две должности':
+          'разные представители одного дома в нескольких государствах';
+        strict.push(create('p','dynasty-house-summary-line',
+          family.name+': '+stat.coreText+' — '+sentence+'.'));
+      }
+      if(stat.lineageOnly)
+        lineage.push(create('p','dynasty-house-summary-line',
+          family.name+': '+stat.lineageText+
+          ' — совпадают документированные родственные ветви, но не официальные имена правящих домов.'));
+    }
+    conclusions.append(create('h4',null,'Срез '+year+' года'));
+    if(strict.length)conclusions.append(...strict);
+    else conclusions.append(create('p','dynasty-house-summary-line',
+      'Среди исследованных правящих должностей нет строго подтверждённого совпадения одного дома в нескольких государствах.'));
+    conclusions.append(...lineage);
+    conclusions.append(create('p','dynasty-house-summary-caveat',
+      'Считаем только правящие должности и должность курфюрста. Император Священной Римской империи — отдельное выборное достоинство. Консорты и регенты не увеличивают число государств дома.'));
+    footprintSummary.replaceChildren(conclusions);
+    if(!selectedFootprint)footprintDetail.replaceChildren(create('p',null,
+      'Нажмите на цветную полосу, чтобы увидеть имя, тип отношения, годы и источники. Используйте Tab и Enter для клавиатуры.'));
+  }
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
