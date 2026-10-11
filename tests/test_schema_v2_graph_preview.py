@@ -159,11 +159,12 @@ class HistoricalGraphPreviewContract(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"preview output"):
                 p4.preview_build(ROOT,origin,output)
 
-    def test_no_change_to_main_pages_allowlist(self):
+    def test_pages_v2_standalone_opt_in_without_main_builder_modification(self):
         public=(ROOT/".github/workflows/publish-pages.yml").read_text(encoding="utf-8")
-        self.assertNotIn("'atlas-v2-graph.json'",public)
-        self.assertNotIn("'atlas-v2-graph.js'",public)
-        self.assertNotIn("'atlas-v2-graph.css'",public)
+        for name in ("v2.html","atlas-v2-graph.json",
+                     "atlas-v2-graph.js","atlas-v2-graph.css"):
+            self.assertIn("'"+name+"'",public)
+        self.assertIn("python3 -m scripts.atlas_v2_pages",public)
         builder=(ROOT/"scripts/soviet_audit.py").read_text(encoding="utf-8")
         self.assertNotIn("atlas-v2-graph.js",builder)
 
