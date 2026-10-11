@@ -8,6 +8,7 @@ on:
       - scripts/atlas_mcp_query.py
       - scripts/archigos_returnees.py
       - tests/test_atlas_mcp.py
+      - tests/test_atlas_mcp_benchmark.py
       - .github/workflows/mcp-smoke.yml
   workflow_dispatch:
 
@@ -28,7 +29,7 @@ jobs:
           python3 -m pip install --disable-pip-version-check 'mcp>=2,<3'
       - name: Test source-qualified queries and real MCP protocol
         run: |
-          python3 -m unittest discover -s tests -p test_atlas_mcp.py -v
+          python3 -m unittest discover -s tests -p 'test_atlas_mcp*.py' -v
       - name: Verify no binary research data or auth material was added
         shell: bash
         run: |
