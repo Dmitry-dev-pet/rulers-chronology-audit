@@ -247,9 +247,72 @@
     if(role.id==='dn-pr-frederick2' && year>=1772)return 'Король Пруссии';
     return role.title;
   }
+  // The original year graph keeps its reviewed positions. Later years use
+  // a data-driven layout that places one PERSON once, regardless of offices.
+  function layoutForYear(){
+    if(year<=1780)return {positions, width:1540,height:590,groups:[],institutions:[]};
+    const groups=[
+      ['ru','Россия'],['fr','Франция'],['pr','Пруссия'],['gb','Великобритания / Ганновер'],
+      ['hab','Габсбургские владения / Империя'],
+      ['es','Испания'],['pt','Португалия'],['sw','Швеция']
+    ];
+    const groupKey=id=>
+      id==='han'?'gb':id==='hre'||id==='tusc'?'hab':
+      id==='frrep'?'fr':id;
+    const occupied=new Map(groups.map(([id])=>[id,[]]));
+    for(const person of allPeople()){
+      const roles=activeRoles().filter(r=>r.person_id===person.id);
+      if(!roles.length)continue;
+      const chosen=roles.find(r=>r.role_kind==='sovereign'||r.role_kind==='emperor')||roles[0];
+      const key=groupKey(chosen.polity_id);
+      if(occupied.has(key))occupied.get(key).push(person.id);
+    }
+    const icons=(activeInstitutions()||[]).map(i=>({
+      ...i,group:groupKey(i.polity_id)
+    }));
+    const nodes={};
+    let longest=0;
+    groups.forEach(([id],index)=>{
+      const people=occupied.get(id)||[];
+      const corp=icons.filter(i=>i.group===id);
+      const total=people.length+corp.length;
+      longest=Math.max(longest,total);
+      const cx=155+index*255;
+      people.forEach((pid,row)=>{nodes[pid]=[cx,134+row*145];});
+      corp.forEach((institution,row)=>{institution.x=cx;institution.y=134+(people.length+row)*145;});
+    });
+    return {
+      positions:nodes,width:groups.length*255+65,
+      height:Math.max(500,195+Math.max(longest,2)*145),
+      groups,institutions:icons
+    };
+  }
   function drawGraph(){
-    const canvas=svgNode('svg',{viewBox:'0 0 1540 590',width:1540,height:590,
-      role:'img','aria-label':'Источник: граф родства, браков, переходов и совместных полномочий по выбранному году'});
+    const layout=layoutForYear();
+    const positions=layout.positions;
+    const canvas=svgNode('svg',{
+      viewBox:'0 0 '+layout.width+' '+layout.height,
+      width:layout.width,height:layout.height,
+      role:'img',
+      'aria-label':'Источник: граф людей, институтов, родства, переходов и отдельных государственных должностей по выбранному году'
+    });
+    // Inline width is intentional: >1780 has eight state columns. The container,
+    // not the page, handles sideways touch/keyboard scrolling.
+    canvas.style.width=layout.width+'px';
+    canvas.style.height=layout.height+'px';
+    if(layout.groups.length){
+      layout.groups.forEach(([id,label],index)=>{
+        const cx=155+index*255;
+        canvas.append(svgNode('rect',{
+          x:cx-120,y:62,width:240,height:layout.height-112,rx:12,
+          fill:index%2===0?'#f3f6f2':'#f8f8f4',stroke:'#dce5db','stroke-width':1
+        }));
+        canvas.append(svgNode('text',{
+          x:cx,y:44,'text-anchor':'middle','font-size':13,
+          'font-weight':750,fill:'#40584b'
+        },label.length>22?label.slice(0,22)+'…':label));
+      });
+    }
     canvas.append(svgNode('title',{},'Династические связи Европы · '+year));
     canvas.append(svgNode('desc',{},'Узел — отдельная личность, двойная государственная роль Георга III сохраняется в одной вершине. Связи имеют различные значения и источники.'));
     const people=activeIds();
@@ -296,17 +359,28 @@
         'gb-charlotte':'Шарлотта', 'hre-francis':'Франц I',
         'ru-peter3':'Пётр III', 'ru-catherine2':'Екатерина II',
         'fr-antoinette':'Мария-Антуанетта',
-        'hab-maria':'Мария Терезия'
+        'hab-maria':'Мария Терезия',
+        'sw-charles':'Герцог Карл', 'pt-carlota':'Карлота Жоакина',
+        'hab-maria-luisa':'Мария Луиза', 'pr-fw2':'Фридрих Вильгельм II',
+        'pr-fw3':'Фридрих Вильгельм III', 'sw-gustav3':'Густав III',
+        'sw-gustav4':'Густав IV Адольф', 'hab-leopold':'Леопольд II',
+        'hab-francis2':'Франц II', 'ru-paul1':'Павел I',
+        'pt-joao':'Жуан', 'pt-maria1':'Мария I', 'pt-pedro3':'Педру III',
+        'es-carlos3':'Карл III', 'es-carlos4':'Карл IV',
+        'fr-napoleon':'Бонапарт'
       }[actor.id]) || actorName(actor)
         .replace('Алексеевна','').replace('Петровна','');
       group.append(svgNode('text',{x,y:y-8,'text-anchor':'middle',
-        fill:'#28382f','font-size':title.length>23?12:14,'font-weight':750},title));
+        fill:'#28382f','font-size':title.length>18?11.5:14,'font-weight':750},title));
       const ownRoles=activeRoles().filter(r=>r.person_id===actor.id);
       const lead=ownRoles.find(r=>r.role_kind==='sovereign'||r.role_kind==='emperor')||ownRoles[0];
       const shortRole=lead?.role_kind==='consort'?'Консорт':
         lead?.role_kind==='co_regent'?'Соправительство':
         lead?.role_kind==='heir'?'Наследник':
-        lead?.role_kind==='emperor'?'Император':'Правитель';
+        lead?.role_kind==='emperor'?'Император':
+        lead?.role_kind==='regent'?'Регент':
+        lead?.role_kind==='first_consul'?'Первый консул':
+        lead?.role_kind==='dynastic_person'?'Член династии':'Правитель';
       group.append(svgNode('text',{x,y:y+13,'text-anchor':'middle',
         fill:'#607167','font-size':12},shortRole));
       const codes=[...new Set(ownRoles.map(r=>r.polity_id))];
@@ -321,8 +395,34 @@
       });
       canvas.append(group);
     }
-    if(!people.size)canvas.append(svgNode('text',{x:770,y:280,
-      'text-anchor':'middle','font-size':20},'Нет изученных ролей для этого года'));
+    for(const institution of layout.institutions){
+      const {x,y}=institution;
+      const node=svgNode('g',{
+        role:'button',tabindex:'0','data-institution-id':institution.id,
+        'aria-label':institution.name+' — коллективное учреждение. Перейти к источникам.'
+      });
+      node.append(svgNode('rect',{
+        x:x-99,y:y-38,width:198,height:78,rx:6,fill:'#e6edf1',
+        stroke:'#547c86','stroke-width':2.5,'stroke-dasharray':'5 4'
+      }));
+      node.append(svgNode('text',{
+        x,y:y-4,'text-anchor':'middle','font-size':14,'font-weight':750,
+        fill:'#2b5664'
+      },institution.name));
+      node.append(svgNode('text',{
+        x,y:y+19,'text-anchor':'middle','font-size':12,fill:'#426878'
+      },'Институт · не монарх'));
+      const focus=()=>{
+        const card=polities.querySelector('[data-institution-id="'+institution.id+'"]');
+        if(card){card.scrollIntoView({block:'center',behavior:'auto'});card.focus({preventScroll:true});}
+      };
+      node.addEventListener('click',focus);
+      node.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focus();}});
+      canvas.append(node);
+    }
+    if(!people.size && !layout.institutions.length)canvas.append(svgNode('text',{
+      x:layout.width/2,y:layout.height/2,'text-anchor':'middle','font-size':20
+    },'На этот год исследованных ролей нет'));
     return canvas;
   }
   function renderEvents(){
@@ -368,6 +468,7 @@
         const item=create('div','dynasty-office dynasty-institution');
         item.dataset.roleKind='institution';
         item.dataset.institutionId=institution.id;
+        item.tabIndex=-1;
         item.append(create('strong',null,institution.name),
           create('span',null,'Коллективный / институциональный орган, не отдельный монарх'),
           create('p','dynasty-person-note',institution.note),sources(institution.source_ids));
