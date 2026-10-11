@@ -191,7 +191,7 @@
       group.dataset.nodeId=n.id;
       group.append(svg('rect',{x:-113,y:-25,width:226,height:50,rx:11}));
       const title=svg('text',{x:0,y:5,'text-anchor':'middle'});
-      title.textContent=shorten(n.label,27);
+      title.textContent=shorten(n.label,23);
       group.append(title);
       group.addEventListener('click',()=>choose('node',n.id));
       group.addEventListener('keydown',ev=>{
