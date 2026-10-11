@@ -1014,6 +1014,98 @@
     }
     coverageTasks.replaceChildren(section);
   }
+  function renderCoverage(){
+    if(!coverage || !data || !extension){
+      coverageOverview.textContent='Матрица покрытия не загружена. Другие режимы атласа остаются доступны.';
+      return;
+    }
+    const table=create('div','dynasty-coverage-matrix');
+    const head=create('div','dynasty-coverage-row dynasty-coverage-header');
+    head.append(create('div','dynasty-coverage-sticky dynasty-coverage-column-title',
+      'Полития / наличие записей'));
+    const years=create('div','dynasty-coverage-cells dynasty-coverage-years');
+    for(let y=COVERAGE_START;y<=COVERAGE_END;y++){
+      const h=create('span','dynasty-coverage-year-label',
+        (y===COVERAGE_START||y===COVERAGE_END||y%5===0)?String(y):'·');
+      h.dataset.year=String(y);
+      h.title=String(y);
+      if(y===year)h.classList.add('is-current');
+      years.append(h);
+    }
+    head.append(years);
+    table.append(head);
+    const counts={};
+    for(const polity of coverage.polities){
+      const row=create('div','dynasty-coverage-row');
+      row.dataset.polity=polity.polity_id;
+      const label=create('div','dynasty-coverage-sticky');
+      label.append(create('strong',null,coveragePolityName(polity.polity_id)));
+      const evidenceCount=Array.from({length:COVERAGE_YEARS},(_,i)=>
+        coverageFor(polity,COVERAGE_START+i)).filter(outcome=>
+          ['office','institution','supplementary'].includes(outcome.status)).length;
+      label.append(create('span','dynasty-coverage-row-count',
+        evidenceCount+' годов с записями'));
+      const cells=create('div','dynasty-coverage-cells');
+      for(let y=COVERAGE_START;y<=COVERAGE_END;y++){
+        const result=coverageFor(polity,y);
+        counts[result.status]=(counts[result.status]||0)+1;
+        const cell=create('button','dynasty-coverage-cell',String(y));
+        cell.type='button';
+        cell.dataset.polity=polity.polity_id;
+        cell.dataset.year=String(y);
+        cell.dataset.coverageStatus=result.status;
+        const aria=coveragePolityName(polity.polity_id)+', '+y+': '+
+          COVERAGE_STATUS_TEXT[result.status]+
+          '. Открыть сведения и источники.';
+        cell.title=aria;
+        cell.setAttribute('aria-label',aria);
+        cell.setAttribute('aria-controls','dynasty-coverage-detail');
+        if(y===year)cell.classList.add('is-current');
+        if(selectedCoverage?.polity_id===polity.polity_id &&
+          selectedCoverage?.year===y)cell.setAttribute('aria-pressed','true');
+        cell.addEventListener('click',()=>{
+          selectedCoverage={polity_id:polity.polity_id,year:y};
+          if(year!==y)chooseYear(y,true);
+          else renderCoverage();
+          renderCoverageDetail(polity,y);
+          coverageDetail.focus({preventScroll:true});
+        });
+        cells.append(cell);
+      }
+      row.append(label,cells);table.append(row);
+    }
+    coverageTable.replaceChildren(table);
+    coverageOverview.textContent='1762–1800 · '+coverage.polities.length+
+      ' исторических контекстов · '+(counts.research_gap||0)+
+      ' ячеек-пробелов внутри исследуемых интервалов; '+
+      (counts.outside_sample||0)+' ячеек вне нашей выборки. '+
+      'Эти числа не измеряют полноту исторической науки.';
+    const polity=coverage.polities.find(p=>
+      p.polity_id===(selectedCoverage?.polity_id||'tusc'));
+    if(polity){
+      selectedCoverage={polity_id:polity.polity_id,year};
+      renderCoverageDetail(polity,year);
+      const chosen=coverageTable.querySelector('.dynasty-coverage-cell[data-polity="'+
+        polity.polity_id+'"][data-year="'+year+'"]');
+      if(chosen)chosen.setAttribute('aria-pressed','true');
+    }
+    renderCoverageTasks();
+    // Center the selected year only when the year changes. The reader can
+    // otherwise manually pan this grid without forced re-centering.
+    if(lastCoverageCenteredYear!==year){
+      const current=coverageTable.querySelector(
+        '.dynasty-coverage-years [data-year="'+year+'"]');
+      if(current){
+        const center=coverageScroll.scrollLeft+
+          current.getBoundingClientRect().left-
+          coverageScroll.getBoundingClientRect().left+
+          current.getBoundingClientRect().width/2;
+        coverageScroll.scrollLeft=Math.max(0,
+          center-coverageScroll.clientWidth*.63);
+      }
+      lastCoverageCenteredYear=year;
+    }
+  }
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
