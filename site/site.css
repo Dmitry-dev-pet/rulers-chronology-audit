@@ -1732,6 +1732,7 @@ button[disabled] {
   .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-dashboard{flex:0 0 auto;overflow:visible;padding:3px 0 5px}
   .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-dashboard-range{display:grid}
   .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-dashboard-cards{display:none!important}
+  .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-mobile-highlights{display:none!important}
 }
 @media(max-width:900px) and (max-height:560px){
   .atlas-app.atlas-mobile body > header{display:none}
