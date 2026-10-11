@@ -56,6 +56,7 @@ jobs:
           /tmp/atlas-browser/bin/python tests/browser_world_pilot.py --dist dist --output browser-evidence
           /tmp/atlas-browser/bin/python tests/browser_dynasty_network.py --dist dist --output browser-evidence
           /tmp/atlas-browser/bin/python tests/browser_dynasty_1800.py --dist dist --output browser-evidence
+          /tmp/atlas-browser/bin/python tests/browser_house_footprints.py --dist dist --output browser-evidence
 
       - name: Record result in job summary
         run: |
