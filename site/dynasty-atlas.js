@@ -150,6 +150,7 @@
   let selectedView='network';
   let showSecondary=false;
   let selectedFootprint=null;
+  let lastCenteredFootprintYear=null;
   const modeFromUrl=()=>new URL(location.href).searchParams.get('dynView')==='houses'?'houses':'network';
   function updateView(){
     networkPanel.hidden=selectedView!=='network';
@@ -817,6 +818,20 @@
     footprintSummary.replaceChildren(conclusions);
     if(!selectedFootprint)footprintDetail.replaceChildren(create('p',null,
       'Нажмите на цветную полосу, чтобы увидеть имя, тип отношения, годы и источники. Используйте Tab и Enter для клавиатуры.'));
+    // The selected year must be on screen when opening a mobile deep link
+    // (e.g. 1788); do not strand the user at the historical start of 1762.
+    // Re-center only if the YEAR changed, not when opening sources/toggling
+    // secondary roles, so the reader may pan the matrix freely.
+    if(lastCenteredFootprintYear!==year){
+      const axis=footprintRows.querySelector('.dynasty-house-years');
+      if(axis){
+        const axisX=axis.getBoundingClientRect().left-
+          footprintScroll.getBoundingClientRect().left+footprintScroll.scrollLeft;
+        const yearX=axisX+(year-FOOTPRINT_START+.5)/FOOTPRINT_YEARS*axis.clientWidth;
+        footprintScroll.scrollLeft=Math.max(0,yearX-footprintScroll.clientWidth*.62);
+      }
+      lastCenteredFootprintYear=year;
+    }
   }
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
