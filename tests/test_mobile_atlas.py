@@ -49,6 +49,7 @@ class MobileAtlasContract(unittest.TestCase):
         self.assertIn("atlas:year-cards-ready",self.dashboard)
         self.assertIn(".atlas-mobile-role-title",self.css)
         self.assertIn(".atlas-mobile-highlights{",self.css)
+        self.assertIn('#panel-timeline.smuta-map-active .atlas-mobile-highlights{display:none!important}',self.css)
         self.assertIn(".atlas-year-role-card.mobile-expanded",self.css)
         self.assertIn('status',self.dashboard)
 
