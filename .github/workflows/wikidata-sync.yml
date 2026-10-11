@@ -1,8 +1,6 @@
 name: Wikidata reconciliation (read-only historical audit)
 
 on:
-  push:
-    branches: [feature/wikidata-p3-jurisdiction-contexts-20261011] # TEMP P3 smoke; REMOVE before PR merge
   schedule:
     - cron: '17 4 * * 1'
   workflow_dispatch:
