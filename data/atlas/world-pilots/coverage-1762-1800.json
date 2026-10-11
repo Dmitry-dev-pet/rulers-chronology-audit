@@ -1,0 +1,259 @@
+{
+  "schema_version": "coverage-matrix-v1",
+  "period": {
+    "start": 1762,
+    "end": 1800
+  },
+  "historical_truth_verified_by_ci": false,
+  "historical_borders_verified": false,
+  "methodology": "Эта матрица показывает наличие источниковых записей и известные границы исследования. Наличие должностной записи ≠ завершённая проверка всех годов и реальная фактическая власть. Отсутствие записи не доказывает отсутствие правителя.",
+  "policy": {
+    "core_role_kinds": [
+      "sovereign",
+      "elector",
+      "emperor"
+    ],
+    "supplementary_role_kinds": [
+      "consort",
+      "regent",
+      "co_regent",
+      "heir",
+      "dynastic_person",
+      "first_consul"
+    ],
+    "statuses": [
+      "office",
+      "institution",
+      "supplementary",
+      "research_gap",
+      "outside_sample",
+      "historically_not_in_force",
+      "birthplace_context"
+    ],
+    "scope_meaning": "researched_from отражает покрытие данной выборки, не дату возникновения страны",
+    "historic_boundary_meaning": "Только специально источниково подтверждённое прекращение королевства Франция в 1792 и возникновение Французской республики; годы прекращения не сужаются до дней автоматически."
+  },
+  "polities": [
+    {
+      "polity_id": "ru",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "государство",
+      "source_ids": [
+        "WP01",
+        "WP02",
+        "EX01"
+      ],
+      "note": "Существуют записи о юридических царствованиях; один срок может закрывать много лет, это не означает полноты изучения событий."
+    },
+    {
+      "polity_id": "fr",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "историческая_монархия",
+      "source_ids": [
+        "WP05",
+        "DN08",
+        "EX15",
+        "CV01"
+      ],
+      "note": "Монархия прекратила действие в 1792 году. 1792 включает смену строя, а не одновременные юридические полномочия короля и Конвента.",
+      "historical_end": 1792,
+      "ended_status": "monarchy_ended"
+    },
+    {
+      "polity_id": "frrep",
+      "researched_from": 1792,
+      "researched_through": 1800,
+      "classification": "историческая_республика",
+      "source_ids": [
+        "EX15",
+        "EX16",
+        "EX17",
+        "CV01"
+      ],
+      "note": "До 21 сентября 1792 республиканского режима не было; в 1792 годовой срез включает республиканский переход.",
+      "historical_start": 1792,
+      "before_status": "republic_not_established"
+    },
+    {
+      "polity_id": "pr",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "королевство",
+      "source_ids": [
+        "WP08",
+        "EX02",
+        "EX03"
+      ],
+      "note": "Годовые интервалы смены Фридриха II, Фридриха Вильгельма II и III взяты только как записи, а не все события правления."
+    },
+    {
+      "polity_id": "gb",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "королевство",
+      "source_ids": [
+        "DN01"
+      ],
+      "note": "Юридическое царствование Георга III не раскрывает состава кабинета и полномочий парламента."
+    },
+    {
+      "polity_id": "han",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "курфюршество",
+      "source_ids": [
+        "DN03"
+      ],
+      "note": "Персональная уния с Великобританией; отдельное курфюршество, не британская территория."
+    },
+    {
+      "polity_id": "hab",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "составная_монархия",
+      "source_ids": [
+        "DN04",
+        "DN06",
+        "EX04",
+        "EX06"
+      ],
+      "note": "Династические владения включали несколько корон и земель; единая полоса не означает современное национальное государство."
+    },
+    {
+      "polity_id": "hre",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "выборная_императорская_должность",
+      "source_ids": [
+        "DN05",
+        "DN06",
+        "EX04",
+        "EX06"
+      ],
+      "note": "Отдельное императорское достоинство, не контроль над всеми землями Священной Римской империи."
+    },
+    {
+      "polity_id": "es",
+      "researched_from": 1781,
+      "researched_through": 1800,
+      "classification": "королевство",
+      "source_ids": [
+        "EX07",
+        "EX08"
+      ],
+      "note": "Исследованы отдельные монархи лишь с 1781 года. До 1781 — за пределами нашей выборки, не историческое отсутствие государства."
+    },
+    {
+      "polity_id": "pt",
+      "researched_from": 1781,
+      "researched_through": 1800,
+      "classification": "королевство",
+      "source_ids": [
+        "EX09",
+        "EX10",
+        "EX11"
+      ],
+      "note": "Формальное царствование Марии I и регентство Жуана хранятся разными ролями; до 1781 — вне текущей выборки."
+    },
+    {
+      "polity_id": "sw",
+      "researched_from": 1781,
+      "researched_through": 1800,
+      "classification": "королевство",
+      "source_ids": [
+        "EX12",
+        "EX13"
+      ],
+      "note": "Густав IV Адольф и регент Карл — отдельные роли. До 1781 — вне текущей выборки."
+    },
+    {
+      "polity_id": "tusc",
+      "researched_from": 1781,
+      "researched_through": 1800,
+      "classification": "великое_герцогство",
+      "source_ids": [
+        "EX05",
+        "CV02"
+      ],
+      "note": "Наши роли заканчиваются 1790 годом. Музей Габсбургов подтверждает Фердинанда III в 1790–1799, которого пока нет в графе. 1791–1800 — пробел данных, не отсутствие правителя."
+    },
+    {
+      "polity_id": "meck",
+      "researched_from": 1762,
+      "researched_through": 1800,
+      "classification": "только_контекст_места_рождения",
+      "source_ids": [
+        "DN02"
+      ],
+      "note": "Мекленбург-Стрелиц учитывается как родина Шарлотты. В этой модели нет списка его правителей; это не пустое царствование.",
+      "display_only": "birthplace_context"
+    }
+  ],
+  "known_research_tasks": [
+    {
+      "id": "coverage-tuscany-1791-1800",
+      "polity_id": "tusc",
+      "start_year": 1791,
+      "end_year": 1800,
+      "title": "Великие герцоги Тосканы после Леопольда II",
+      "priority": "high",
+      "note": "В наш реестр не включено правление Фердинанда III (1790–1799). Уточнить последующие события конца столетия, смены режимов и даты.",
+      "source_ids": [
+        "CV02",
+        "EX05"
+      ]
+    },
+    {
+      "id": "coverage-spain-1762-1780",
+      "polity_id": "es",
+      "start_year": 1762,
+      "end_year": 1780,
+      "title": "Раннее исследование испанской монархии",
+      "priority": "medium",
+      "note": "Отсутствие записей в текущем слое до 1781 года не является доказательством отсутствия испанской короны.",
+      "source_ids": [
+        "EX07"
+      ]
+    },
+    {
+      "id": "coverage-portugal-1762-1780",
+      "polity_id": "pt",
+      "start_year": 1762,
+      "end_year": 1780,
+      "title": "Ранний португальский ряд",
+      "priority": "medium",
+      "note": "Достроить первичный список португальских монархов до начала исследованной партии 1781 года.",
+      "source_ids": [
+        "EX09"
+      ]
+    },
+    {
+      "id": "coverage-sweden-1762-1780",
+      "polity_id": "sw",
+      "start_year": 1762,
+      "end_year": 1780,
+      "title": "Ранний шведский ряд",
+      "priority": "medium",
+      "note": "Добавить ранее не внесённые юридические периоды шведской монархии без вывода из уже имеющегося списка Гольштейн-Готторпских.",
+      "source_ids": [
+        "EX12"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "CV01",
+      "title": "Assemblée nationale — 21 сентября 1792: Национальный конвент и упразднение монархии",
+      "url": "https://www.assemblee-nationale.fr/dyn/histoire-et-patrimoine/revolution-francaise/la-convention-nationale-et-la-fin-de-la-royaute",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "CV02",
+      "title": "Die Welt der Habsburger — Фердинанд III великий герцог Тосканский (1790–1799), отсутствует в текущем реестре",
+      "url": "https://www.habsburger.net/en/persons/habsburg/ferdinand-iii-tuscany",
+      "verification": "reference_checked"
+    }
+  ]
+}
