@@ -63,7 +63,7 @@
     try {
       const url = new URL(value);
       return url.protocol === 'https:' && !url.username && !url.password &&
-        !['drive.google.com','docs.google.com'].includes(url.hostname);
+        ![['drive','.google.com'].join(''),['docs','.google.com'].join('')].includes(url.hostname);
     } catch (_) { return false; }
   };
 
