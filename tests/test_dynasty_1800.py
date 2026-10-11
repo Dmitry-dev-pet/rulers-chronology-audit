@@ -78,11 +78,11 @@ class European1800Contract(unittest.TestCase):
             self.assertIn(row['polity_id'],self.states)
             self.assertLessEqual(row['start_year'],row['end_year'])
             self.assertTrue(row['source_ids'])
-            self.assertLessEqual(set(row['source_ids']),self.sources)
+            self.assertLessEqual(set(row['source_ids']),set(self.sources))
         for row in [*EXT['institutions'],*EXT['additional_relations'],
                     *EXT['milestones'],*EXT['additional_polities']]:
             self.assertTrue(row['source_ids'])
-            self.assertLessEqual(set(row['source_ids']),self.sources)
+            self.assertLessEqual(set(row['source_ids']),set(self.sources))
         for row in EXT['additional_relations']:
             self.assertLessEqual(set(row['subjects']),self.persons)
         self.assertTrue(all(s['url'].startswith('https://') and
@@ -153,7 +153,7 @@ class European1800Contract(unittest.TestCase):
         self.assertFalse(any(r['polity_id']=='hre' and r['person_id']=='hab-maria'
                              for r in self.roles))
         self.assertIn('1804',next(r['note'] for r in self.at(1800)
-                                 if r['id']=='ex-hre-francis'))
+                                 if r['id']=='ex-hab-francis'))
         self.assertTrue(any(r['person_id']=='hab-maria-luisa'
                             for r in self.at(1788)))
 
