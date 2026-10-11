@@ -411,3 +411,52 @@ JOIN v2_contexts c ON c.id=r.context_id
 WHERE a.affiliation='documented_house'
   AND r.role_kind IN ('sovereign','elector')
   AND c.kind NOT IN ('elective_office_context','birthplace_context');
+
+
+-- P5: authority IS NOT ONE SINGLE HIERARCHY. A legal title, imperial
+-- constitutional membership, local seizure, military intervention,
+-- fiscal jurisdiction and diplomatic tributary link must not be conflated.
+-- This is an additive RESEARCH candidate over a DISPOSABLE v1 SQLite.
+CREATE TABLE v2_authority_nodes (
+  id TEXT PRIMARY KEY,
+  region_id TEXT NOT NULL CHECK(region_id IN ('hre','india','qing')),
+  kind TEXT NOT NULL CHECK(kind IN (
+    'person','polity','constitutional_framework','imperial_title_context',
+    'collective_institution','locality','fiscal_jurisdiction')),
+  label TEXT NOT NULL,
+  p3_context_id TEXT REFERENCES v2_contexts(id),
+  p3_person_origin TEXT,
+  p3_person_id TEXT,
+  assertion_id TEXT NOT NULL REFERENCES v2_assertions(id),
+  FOREIGN KEY(p3_person_origin,p3_person_id)
+    REFERENCES v2_external_people(origin,native_id),
+  CHECK((p3_person_origin IS NULL)=(p3_person_id IS NULL)),
+  CHECK((p3_context_id IS NULL) OR (p3_person_id IS NULL))
+);
+
+CREATE TABLE v2_authority_edges (
+  id TEXT PRIMARY KEY,
+  region_id TEXT NOT NULL CHECK(region_id IN ('hre','india','qing')),
+  from_node TEXT NOT NULL REFERENCES v2_authority_nodes(id),
+  to_node TEXT NOT NULL REFERENCES v2_authority_nodes(id),
+  kind TEXT NOT NULL CHECK(kind IN (
+    'elective_imperial_office','constitutional_membership','electoral_office',
+    'sovereign_office','imperial_title','local_military_seizure',
+    'military_restoration','fiscal_administration','tributary_diplomacy')),
+  dimension TEXT NOT NULL CHECK(dimension IN (
+    'legal','practical','military','diplomatic','institutional')),
+  period_id TEXT NOT NULL REFERENCES v2_periods(id),
+  assertion_id TEXT NOT NULL REFERENCES v2_assertions(id),
+  label TEXT NOT NULL,
+  explanation TEXT NOT NULL,
+  caveat TEXT NOT NULL,
+  CHECK(from_node<>to_node)
+);
+CREATE INDEX v2_authority_edges_dimension ON v2_authority_edges(dimension,region_id);
+
+-- Source-qualified candidates only. Research windows do not infer duration.
+CREATE VIEW v2_authority_year_candidates AS
+SELECT e.id,e.region_id,e.from_node,e.to_node,e.kind,e.dimension,
+       e.label,e.explanation,e.caveat,p.start_year,p.end_year,p.meaning,
+       e.assertion_id
+FROM v2_authority_edges e JOIN v2_periods p ON p.id=e.period_id;
