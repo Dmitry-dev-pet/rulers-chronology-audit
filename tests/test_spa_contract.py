@@ -113,10 +113,33 @@ class SPAContract(unittest.TestCase):
         self.assertIn("a.href = src.url", self.dashboard)
         self.assertNotIn("drive.google.com/file/d/", self.dashboard)
 
+    def test_universal_atlas_is_cross_era_and_independent_of_local_map(self):
+        code=(ROOT/'site/universal-atlas.js').read_text(encoding='utf-8')
+        for key in (
+            "'XV–XVI века'","'XVII век'","'XVIII век'",
+            "'XIX век'","'XX век'",'1417','1991',
+            "atlas-global-century","atlas-global-compare-columns",
+            "atlasView","atlasYears","Сравнить два года",
+            "Оценки политического влияния","Юридические должности",
+            "Регентство и соправители","Коллективные органы",
+            "Годовые пересечения","Историческое утверждение", # source cautions
+        ):
+            self.assertIn(key,code)
+        self.assertIn("!nominal.has(x.status)",code)
+        self.assertIn("!regencies.has(x.status)",code)
+        self.assertIn("history[push?'pushState':'replaceState']",code)
+        self.assertIn("return url.protocol === 'https:'",code)
+        self.assertNotIn("drive.google.com/file/d/",code)
+        self.assertNotIn("smuta-map.json",code)
+        self.assertIn(".atlas-global-sheet[hidden]{display:none!important}",self.css)
+        self.assertIn(".atlas-global-compare-columns",self.css)
+        self.assertIn(".atlas-global-coverage-track",self.css)
+
     def test_script_syntax_if_node_present(self):
         if shutil.which('node'):
             subprocess.run(['node','--check',str(ROOT/'site/site.js')],check=True,capture_output=True)
             subprocess.run(['node','--check',str(ROOT/'site/year-view.js')],check=True,capture_output=True)
+            subprocess.run(['node','--check',str(ROOT/'site/universal-atlas.js')],check=True,capture_output=True)
 
     def test_historical_db_not_mutated(self):
         db=atlas_db.load(ROOT)
