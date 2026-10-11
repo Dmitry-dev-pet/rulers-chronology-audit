@@ -38,6 +38,8 @@
   const heading=make('h1',null,'Мировая сеть власти · 1788');
   const intro=make('p','world-auth-intro',
     'Три исследовательских примера: имперский правовой порядок, конкурирующие власти в Индии и дипломатия Цин—Чосон. Это не полная карта мира и не доказательство непрерывного контроля территории.');
+  const yearTabs=make('nav','world-auth-year-tabs');
+  yearTabs.setAttribute('aria-label','Исторические годы исследовательского атласа');
   const regionTabs=make('div','world-auth-region-tabs');
   regionTabs.setAttribute('role','group');
   regionTabs.setAttribute('aria-label','Выберите исторический регион');
@@ -55,14 +57,20 @@
   const detail=make('section','world-auth-detail');
   detail.tabIndex=-1;detail.id='world-auth-detail';
   detail.setAttribute('aria-label','Описание и исторические источники');
-  root.append(heading,intro,regionTabs,controls,status,regionNote,
+  root.append(heading,intro,yearTabs,regionTabs,controls,status,regionNote,
               graphScroll,helper,make('h2',null,'Документированные отношения'),
               relations,detail);
   app.replaceChildren(root);
-  let data=null,region='hre',dimensions=new Set(allowed),selected=null;
+  const YEARS=[1688,1788,1888];
+  const readYear=()=>{
+    const raw=Number(getParam('year'));
+    return YEARS.includes(raw)?raw:1788;
+  };
+  let year=readYear(),data=null,region='hre',dimensions=new Set(allowed),
+      selected=null,revision=0;
   function params(){
     const wanted=getParam('region');
-    region=data.regions.some(x=>x.id===wanted)?wanted:'hre';
+    region=data.regions.some(x=>x.id===wanted)?wanted:data.regions[0].id;
     const set=getParam('dims');
     dimensions=set===null?new Set(allowed):set==='none'?new Set():
       new Set(set.split(',').filter(x=>allowed.has(x)));
@@ -70,6 +78,8 @@
   function updateURL(push){
     const u=new URL(location.href);
     u.searchParams.set('region',region);
+    if(year===1788)u.searchParams.delete('year');
+    else u.searchParams.set('year',String(year));
     const chosen=[...dimensions].sort();
     if(chosen.length===allowed.size)u.searchParams.delete('dims');
     else u.searchParams.set('dims',chosen.length?chosen.join(','):'none');
@@ -114,8 +124,14 @@
         make('p',null,item.explanation),
         make('p','world-auth-caution',item.caveat),
         make('p','world-auth-caution',
-          item.meaning==='event'?'Разовое событие, отнесённое к 1788 году.':
-            'Годовой срез, а не датировка начала или конца всех полномочий.'));
+          item.meaning==='event'
+            ?'Разовое событие '+year+' года, а не непрерывное правление.'
+            :'Годовой срез, а не датировка начала или конца всех полномочий.'));
+      if(item.documented_day){
+        detail.append(make('p','world-auth-tag',
+          'Точная дата по источнику: '+item.documented_day.value+
+          ' · '+item.documented_day.calendar));
+      }
     }
     detail.append(citations(item.source_ids));
   }
@@ -207,6 +223,27 @@
   }
   function render(){
     if(!data)return;
+    heading.textContent='Мировая сеть власти · '+year;
+    document.title='Мировая сеть власти · '+year+' — исторический атлас';
+    intro.textContent='Выборочные политические отношения '+year+
+      ' года: юридические должности, административное управление, военные '+
+      'события и дипломатия. Это НЕ полная карта мира, границ или фактической власти.';
+    helper.textContent='Все связи датированы исследовательским годом '+year+
+      '. Пересечение по году не доказывает правление в один день. '+
+      'Смена должности и военное вмешательство показаны как разные отношения.';
+    yearTabs.replaceChildren();
+    for(const value of YEARS){
+      const b=make('button','world-auth-year',String(value));
+      b.type='button';b.dataset.year=String(value);
+      b.setAttribute('aria-current',value===year?'date':'false');
+      b.setAttribute('aria-pressed',String(value===year));
+      b.addEventListener('click',()=>{
+        if(value===year)return;
+        year=value;data=null;selected=null;region='';
+        updateURL(true);loadYear();
+      });
+      yearTabs.append(b);
+    }
     regionTabs.replaceChildren();
     for(const r of data.regions){
       const b=make('button','world-auth-region',r.label);
@@ -235,7 +272,7 @@
     const visible=data.edges.filter(e=>e.region===region&&dimensions.has(e.dimension));
     const ids=new Set(visible.flatMap(e=>[e.from,e.to]));
     const nodes=data.nodes.filter(n=>ids.has(n.id));
-    status.textContent='1788 · '+r.label+' · '+nodes.length+' узлов · '+
+    status.textContent=year+' · '+r.label+' · '+nodes.length+' узлов · '+
       visible.length+' отношений · не полный список правителей';
     drawGraph(nodes,visible);
     relations.replaceChildren();
@@ -257,7 +294,7 @@
     }else details(null,null);
   }
   function accepted(d){
-    if(d.schema_version!=='authority-network-web-v1'||d.focus_year!==1788||
+    if(d.schema_version!=='authority-network-web-v1'||d.focus_year!==year||
        d.sample_covers_all_world!==false||
        d.geographic_boundaries_verified!==false||
        d.historical_truth_verified_by_ci!==false||
@@ -267,14 +304,25 @@
     }
     data=d;params();render();
   }
-  fetch('./world-authority-1788.json',{cache:'no-cache'})
-    .then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();})
-    .then(accepted)
-    .catch(error=>{
-      status.textContent='Не удалось открыть исследовательскую сеть: '+
-        String(error.message||error);
-    });
+  function loadYear(){
+    const token=++revision;
+    const file=year===1788?'./world-authority-1788.json':
+      './world-authority-'+year+'.json';
+    status.textContent='Загружаем исторические источники '+year+' года…';
+    return fetch(file,{cache:'no-cache'})
+      .then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();})
+      .then(result=>{if(token===revision)accepted(result);})
+      .catch(error=>{
+        if(token===revision)
+          status.textContent='Не удалось открыть исследовательскую сеть: '+
+            String(error.message||error);
+      });
+  }
   window.addEventListener('popstate',()=>{
-    if(data){params();render();}
+    const target=readYear();
+    if(target!==year){
+      year=target;data=null;selected=null;loadYear();
+    }else if(data){params();render();}
   });
+  loadYear();
 })();

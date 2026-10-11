@@ -419,7 +419,7 @@ WHERE a.affiliation='documented_house'
 -- This is an additive RESEARCH candidate over a DISPOSABLE v1 SQLite.
 CREATE TABLE v2_authority_nodes (
   id TEXT PRIMARY KEY,
-  region_id TEXT NOT NULL CHECK(region_id IN ('hre','india','qing')),
+  region_id TEXT NOT NULL CHECK(region_id IN ('hre','india','qing','eng','jp','mughal','et')),
   kind TEXT NOT NULL CHECK(kind IN (
     'person','polity','constitutional_framework','imperial_title_context',
     'collective_institution','locality','fiscal_jurisdiction')),
@@ -437,13 +437,15 @@ CREATE TABLE v2_authority_nodes (
 
 CREATE TABLE v2_authority_edges (
   id TEXT PRIMARY KEY,
-  region_id TEXT NOT NULL CHECK(region_id IN ('hre','india','qing')),
+  region_id TEXT NOT NULL CHECK(region_id IN ('hre','india','qing','eng','jp','mughal','et')),
   from_node TEXT NOT NULL REFERENCES v2_authority_nodes(id),
   to_node TEXT NOT NULL REFERENCES v2_authority_nodes(id),
   kind TEXT NOT NULL CHECK(kind IN (
     'elective_imperial_office','constitutional_membership','electoral_office',
     'sovereign_office','imperial_title','local_military_seizure',
-    'military_restoration','fiscal_administration','tributary_diplomacy')),
+    'military_restoration','fiscal_administration','tributary_diplomacy',
+    'military_intervention','shogunate_office','cabinet_office',
+    'cabinet_transition','formal_overlordship')),
   dimension TEXT NOT NULL CHECK(dimension IN (
     'legal','practical','military','diplomatic','institutional')),
   period_id TEXT NOT NULL REFERENCES v2_periods(id),

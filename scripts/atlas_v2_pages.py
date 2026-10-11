@@ -20,6 +20,7 @@ from pathlib import Path
 
 from scripts import atlas_v2_graph_preview as preview
 from scripts import atlas_v2_authority as authority
+from scripts import atlas_v2_epochs as epochs
 
 ROOT = preview.ROOT
 PUBLIC_FILES = (
@@ -31,6 +32,8 @@ PUBLIC_FILES = (
     "world-authority.js",
     "world-authority.css",
     "world-authority-1788.json",
+    "world-authority-1688.json",
+    "world-authority-1888.json",
 )
 
 
@@ -89,6 +92,15 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
         (dist / "world-authority-1788.json").write_text(
             json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+"\n",
             encoding="utf-8")
+        # New independent source snapshots from a shared disposable SQLite.
+        # No rewriting the checked-in 1788 model or the main SPA.
+        epoch_payloads = epochs.build(root)
+        require(set(epoch_payloads) == {1688,1888},
+                "missing additional researched epochs")
+        for yr,payload in epoch_payloads.items():
+            (dist / epochs.WEB_FILES[yr]).write_text(
+                json.dumps(payload,ensure_ascii=False,indent=2,sort_keys=True)+"\n",
+                encoding="utf-8")
         for name in ("world-authority.js","world-authority.css"):
             shutil.copyfile(root / "site" / name,dist / name)
         world_page = """<!doctype html>
@@ -145,7 +157,8 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
         "new_files": list(PUBLIC_FILES),
         "original_index_unchanged": True,
         "original_file_count": len(before),
-        "counts": {**receipt["counts"], "world_authority":result["counts"]},
+        "counts": {**receipt["counts"], "world_authority":result["counts"],
+                   "epoch_authority": {str(y):p["counts"] for y,p in epoch_payloads.items()}},
     }
 
 

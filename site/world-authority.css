@@ -78,3 +78,16 @@ button:focus-visible,input:focus-visible,a:focus-visible,[tabindex="0"]:focus-vi
  .world-auth-relations{grid-template-columns:1fr}
  .world-auth-source{width:100%}
 }
+
+/* Epoch navigation reuses the same static GitHub Pages page and source model. */
+.world-auth-year-tabs{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  margin:10px 0 16px}
+.world-auth-year{min-width:92px;min-height:48px;border:1px solid #b9c9bd;
+  border-radius:10px;padding:9px 17px;background:#fffdf9;color:#4c685a;
+  font:800 17px/1.2 system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.world-auth-year[aria-pressed="true"]{background:#244f55;border-color:#244f55;
+  color:white}
+.world-auth-year:hover:not([aria-pressed="true"]){background:#e8f1e9}
+@media(max-width:700px){.world-auth-year-tabs{display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .world-auth-year{min-width:0;width:100%;min-height:48px;padding:9px 5px}}
