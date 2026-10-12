@@ -1,8 +1,6 @@
 name: Wikidata reconciliation (read-only historical audit)
 
 on:
-  push:
-    branches: [feature/wikidata-p4-crown-timeline-20261012] # TEMP P4 live smoke; remove before merge
   schedule:
     - cron: '17 4 * * 1'
   workflow_dispatch:
