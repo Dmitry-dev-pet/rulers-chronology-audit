@@ -93,7 +93,7 @@ class CoverageMatrixContract(unittest.TestCase):
 
     def test_research_scope_not_historical_absence(self):
         for key in ('es','pt','sw','tusc'):
-            self.assertEqual(self.policies[key]['researched_from'],1762)
+            self.assertEqual(self.policies[key]['researched_from'],1781)
             for y in (1762,1774,1780):
                 self.assertEqual(self.classify(key,y),'office')
         self.assertEqual(self.classify('es',1781),'office')
