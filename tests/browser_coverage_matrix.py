@@ -63,7 +63,6 @@ def run(dist:Path,output:Path):
                        ).to_have_attribute('data-coverage-status','birthplace_context')
                 expect(page.locator('.dynasty-coverage-task-card')).to_have_count(4)
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Фердинанд')
-                expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Фердинанд')
                 expect(page.locator('.dynasty-coverage-detail a.dynasty-source')).not_to_have_count(0)
                 expect(page.locator('.dynasty-coverage-detail a').last).to_have_attribute(
                     'href',re.compile('^https://'))
@@ -80,7 +79,7 @@ def run(dist:Path,output:Path):
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text('1795')
                 page.locator('.dynasty-coverage-cell[data-polity="tusc"][data-year="1800"]').click()
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Пробел реестра')
-                expect(page.locator('#dynasty-year')).to_have_text('1795')
+                expect(page.locator('#dynasty-year')).to_have_text('1800')
 
                 # Keyboard reaches cells outside the currently visible scroll
                 # segment and the row labels remain non-interactive captions.
