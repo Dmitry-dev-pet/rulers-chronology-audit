@@ -2,6 +2,8 @@
   "id": "person-e88112738c1054f5",
   "name": "Иосиф Сталин",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q855"
+  },
   "biography_status": "incomplete"
 }

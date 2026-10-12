@@ -65,6 +65,30 @@ def run(dist: Path, output: Path) -> None:
                 expect(page.locator('.atlas-mobile-highlight[data-kind="effective"]')).to_contain_text('Софья')
                 expect(page.locator('.atlas-mobile-highlight[data-kind="regency"]')).to_contain_text('Софья')
                 expect(page.locator('.atlas-mobile-highlights-note')).to_contain_text('не одновременный')
+                # Histography-inspired playback advances only canonical year
+                # queries, stops on request and never fabricates transitions.
+                play=page.locator('.atlas-year-play')
+                expect(play).to_be_visible()
+                expect(play).to_have_attribute('aria-pressed','false')
+                expect(page.locator('.atlas-year-playback-note')).to_contain_text(
+                    'не анимация фактической передачи власти')
+                assert play.bounding_box()['height']>=43.5
+                page.locator('.atlas-year-playback-step').select_option('1')
+                play.click()
+                expect(play).to_have_attribute('aria-pressed','true')
+                expect(page.locator('#atlas-year-value')).to_have_text('1686',timeout=5000)
+                play.click()
+                expect(play).to_have_attribute('aria-pressed','false')
+                paused=page.locator('#atlas-year-value').inner_text()
+                page.wait_for_timeout(1000)
+                assert page.locator('#atlas-year-value').inner_text()==paused
+                page.evaluate("""() => {
+                    const s=document.getElementById('atlas-year-range');
+                    s.value='1685';
+                    s.dispatchEvent(new Event('input',{bubbles:true}));
+                }""")
+                expect(page.locator('#atlas-year-value')).to_have_text('1685')
+
                 # Mobile tap targets must be physically large, while body itself
                 # fits the viewport. Horizontal chips and the chart scroll locally.
                 for loc in [
@@ -116,6 +140,7 @@ def run(dist: Path, output: Path) -> None:
                 expect(page.locator('.atlas-timeline-workspace')).to_be_visible()
                 expect(page.locator('.era-btn[data-era="dual"]')).to_have_attribute('aria-pressed','true')
                 expect(page.locator('.atlas-year-dashboard-cards')).to_be_hidden()
+                expect(page.locator('.atlas-year-playback')).to_be_hidden()
                 expect(page.locator('.timeline-scroll')).to_be_visible()
                 expect(page.locator('.time-bar')).not_to_have_count(0)
                 page.screenshot(path=str(output/f'mobile-timeline-{width}.png'),full_page=True)
@@ -205,6 +230,7 @@ def run(dist: Path, output: Path) -> None:
             desktop.goto(origin+'#/timeline/1685')
             expect(desktop.locator('html')).not_to_have_class(re.compile(r'\batlas-mobile\b'))
             expect(desktop.locator('.atlas-mobile-actions')).to_be_hidden()
+            expect(desktop.locator('.atlas-year-play')).to_be_visible()
             expect(desktop.locator('.atlas-year-role-head h3').first).to_be_visible()
             expect(desktop.locator('.atlas-timeline-workspace')).to_be_visible()
             expect(desktop.locator('.timeline-toolbar')).to_be_visible()

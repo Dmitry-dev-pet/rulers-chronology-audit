@@ -109,10 +109,14 @@
   viewSwitch.setAttribute('aria-label','Способ представления международной истории');
   const networkViewButton=create('button','dynasty-view-button','Люди и связи');
   const housesViewButton=create('button','dynasty-view-button','Династии × государства');
-  networkViewButton.type=housesViewButton.type='button';
+  const coverageViewButton=create('button','dynasty-view-button','Покрытие базы');
+  const mapViewButton=create('button','dynasty-view-button','Карта и связи');
+  networkViewButton.type=housesViewButton.type=coverageViewButton.type=mapViewButton.type='button';
   networkViewButton.dataset.dynastyView='network';
   housesViewButton.dataset.dynastyView='houses';
-  viewSwitch.append(networkViewButton,housesViewButton);
+  coverageViewButton.dataset.dynastyView='coverage';
+  mapViewButton.dataset.dynastyView='map';
+  viewSwitch.append(networkViewButton,housesViewButton,coverageViewButton,mapViewButton);
   const networkPanel=create('section','dynasty-person-graph-panel');
   networkPanel.append(graphicTitle,key,countryJump,graphContainer,graphNote);
   const footprintPanel=create('section','dynasty-footprint-panel');
@@ -147,29 +151,98 @@
   // on a small phone instead of being pushed below the first screen.
   footprintPanel.append(footprintTools,footprintScroll,footprintLegend,
     footprintSummary,footprintDetail,footprintLead);
+  // A third source-aware view: coverage of the RESEARCH REGISTER,
+  // not a historical claim that a country did or did not have a ruler.
+  const coveragePanel=create('section','dynasty-coverage-panel');
+  coveragePanel.hidden=true;
+  coveragePanel.setAttribute('aria-label','Покрытие исторической базы по странам и годам');
+  const coverageIntro=create('p','dynasty-coverage-intro',
+    'Матрица отмечает наличие юридических и институциональных записей, а не полноту исторической науки. Пустые годы исследования не означают отсутствия правителя.');
+  const coverageOverview=create('p','dynasty-coverage-overview');
+  coverageOverview.setAttribute('role','status');
+  coverageOverview.setAttribute('aria-live','polite');
+  const coverageLegend=create('div','dynasty-coverage-legend');
+  const coverageStatusLabels=[
+    ['office','Должность главы / императора'],
+    ['institution','Коллективный орган'],
+    ['supplementary','Дополнительная роль'],
+    ['research_gap','Пробел в реестре'],
+    ['outside_sample','Вне нашей выборки'],
+    ['historically_not_in_force','Режим ещё не возник / прекращён'],
+    ['birthplace_context','Только место рождения']
+  ];
+  coverageStatusLabels.forEach(([status,label])=>{
+    const item=create('span','dynasty-coverage-legend-item',label);
+    item.dataset.coverageStatus=status;
+    coverageLegend.append(item);
+  });
+  const coverageScroll=create('div','dynasty-coverage-scroll');
+  coverageScroll.tabIndex=0;
+  coverageScroll.setAttribute('role','region');
+  coverageScroll.setAttribute('aria-label','Матрица покрытия реестра: 13 политических контекстов на 39 лет, горизонтальная прокрутка');
+  const coverageTable=create('div','dynasty-coverage-table');
+  coverageScroll.append(coverageTable);
+  const coverageDetail=create('section','dynasty-coverage-detail');
+  coverageDetail.id='dynasty-coverage-detail';
+  coverageDetail.setAttribute('aria-label','Источники и статус выбранного года и страны');
+  coverageDetail.tabIndex=-1;
+  const coverageTasks=create('section','dynasty-coverage-tasks');
+  const coverageMethod=create('p','dynasty-coverage-method',
+    'Одна длинная должность даёт много отмеченных годов. Ни одна ячейка не доказывает, что все документы эпохи изучены. Страны, которых ещё нет в данной исследовательской партии, не окрашены как исторически отсутствовавшие.');
+  // Mobile-first: the year-by-country chart is seen before long commentary.
+  coveragePanel.append(coverageOverview,coverageScroll,coverageLegend,
+    coverageDetail,coverageTasks,coverageIntro,coverageMethod);
+  // Geographic reference-only view of existing roles, not historic borders.
+  const geoPanel=create('section','dynasty-geo-panel');
+  geoPanel.hidden=true;
+  geoPanel.setAttribute('aria-label','Европа: ориентиры, правители и документированные связи');
+  const geoLead=create('p','dynasty-geo-lead',
+    'Береговая линия и точки городов — современные географические ориентиры. НЕ границы государств XVIII века. Связи людей не означают союза стран.');
+  const geoStatus=create('p','dynasty-geo-status','Загружаем географические ориентиры…');
+  geoStatus.setAttribute('role','status');
+  const geoJump=create('nav','dynasty-geo-jump');
+  geoJump.setAttribute('aria-label','Выбрать ориентир на карте');
+  const geoViewport=create('div','dynasty-geo-viewport');
+  geoViewport.setAttribute('role','region');
+  geoViewport.setAttribute('aria-label','Прокручиваемая карта береговой линии Европы с городами-ориентирами');
+  geoViewport.tabIndex=0;
+  const geoDetails=create('section','dynasty-geo-details');
+  geoDetails.setAttribute('aria-label','Подтверждённые должности выбранного места');
+  geoDetails.tabIndex=-1;
+  const geoConnections=create('section','dynasty-geo-connections');
+  geoConnections.setAttribute('aria-label','Документированные связи на карте');
+  geoPanel.append(geoLead,geoStatus,geoJump,geoViewport,geoDetails,geoConnections);
+  let selectedGeoPlace='saint-petersburg';
   let selectedView='network';
   let showSecondary=false;
   let selectedFootprint=null;
   let lastCenteredFootprintYear=null;
-  const modeFromUrl=()=>new URL(location.href).searchParams.get('dynView')==='houses'?'houses':'network';
+  const modeFromUrl=()=>{
+    const candidate=new URL(location.href).searchParams.get('dynView');
+    return ['houses','coverage','map'].includes(candidate)?candidate:'network';
+  };
   function updateView(){
     networkPanel.hidden=selectedView!=='network';
     footprintPanel.hidden=selectedView!=='houses';
+    coveragePanel.hidden=selectedView!=='coverage';
+    geoPanel.hidden=selectedView!=='map';
     // These palette controls belong to the personal graph only: dynasty
     // colors in the matrix are fixed house identifiers, never ethnicity.
-    colorControls.hidden=selectedView==='houses';
-    notice.hidden=selectedView==='houses';
-    for(const button of [networkViewButton,housesViewButton]){
+    colorControls.hidden=selectedView!=='network';
+    notice.hidden=selectedView!=='network';
+    for(const button of [networkViewButton,housesViewButton,coverageViewButton,mapViewButton]){
       button.setAttribute('aria-pressed',String(button.dataset.dynastyView===selectedView));
     }
     if(selectedView==='houses' && footprints && data && extension)renderFootprints();
+    if(selectedView==='coverage')renderCoverage();
+    if(selectedView==='map')renderGeography();
   }
   function setView(next,push){
-    if(!['network','houses'].includes(next))return;
+    if(!['network','houses','coverage','map'].includes(next))return;
     selectedView=next;
     if(isNetworkURL()){
       const url=new URL(location.href);
-      if(next==='houses')url.searchParams.set('dynView','houses');
+      if(next==='houses'||next==='coverage'||next==='map')url.searchParams.set('dynView',next);
       else url.searchParams.delete('dynView');
       history[push?'pushState':'replaceState'](null,'',url.pathname+url.search+url.hash);
     }
@@ -177,6 +250,8 @@
   }
   networkViewButton.addEventListener('click',()=>setView('network',true));
   housesViewButton.addEventListener('click',()=>setView('houses',true));
+  coverageViewButton.addEventListener('click',()=>setView('coverage',true));
+  mapViewButton.addEventListener('click',()=>setView('map',true));
   showSecondaryInput.addEventListener('change',()=>{
     showSecondary=showSecondaryInput.checked;
     selectedFootprint=null;
@@ -197,13 +272,13 @@
   const original=create('a','dynasty-previous','← Открыть исходный пилот 1762 года');
   original.href='?world=1762#/timeline/1762';
   content.append(lede,timeline,colorControls,notice,viewSwitch,
-    networkPanel,footprintPanel,timelineTitle,events,institutionsTitle,
+    networkPanel,footprintPanel,coveragePanel,geoPanel,timelineTitle,events,institutionsTitle,
     polities,participantsTitle,persons,relationsTitle,relations,caveats,original);
   dialog.append(head,content);
   layer.append(dialog);
   document.body.append(layer);
 
-  let data=null,base=null,atlas=null,extension=null,footprints=null,repair=null,pending=null,previousFocus=null;
+  let data=null,base=null,atlas=null,extension=null,footprints=null,repair=null,coverage=null,geography=null,pending=null,previousFocus=null;
   let year=1762;
   const abbr={
     ru:'Россия',fr:'Франция',pr:'Пруссия',gb:'Великобритания',
@@ -247,7 +322,7 @@
     ...(extension?.additional_polities||[])
   ].map(p=>({...p,name:p.name||p.label})).filter(p=>
     (!p.introduced_from||year>=p.introduced_from ||
-      (year>=1762 && (repair?.covered_polity_ids||[]).includes(p.id))) &&
+      (year>=1762&&(repair?.covered_polity_ids||[]).includes(p.id))) &&
     !(p.id==='fr' && year>1792)
   );
   const getPerson=id=>allPeople().find(p=>p.id===id);
@@ -263,7 +338,8 @@
     const wrap=create('div','dynasty-sources');
     const index=new Map([...(base?.sources||[]),...(data?.sources||[]),
       ...(extension?.sources||[]),...(footprints?.sources||[]),
-      ...(repair?.source_records||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
+      ...(coverage?.sources||[]),...(repair?.source_records||[]),
+      ...(atlas?.sources||[])].map(s=>[s.id,s]));
     [...new Set(ids||[])].forEach(id=>{
       const source=index.get(id);
       if(!source||!validLink(source.url))return;
@@ -517,8 +593,7 @@
   }
   function renderEvents(){
     const records=[...(data?.milestones||[]),...(extension?.milestones||[]),
-      ...(repair?.milestones||[])]
-      .filter(e=>e.year===year);
+      ...(repair?.milestones||[])].filter(e=>e.year===year);
     events.replaceChildren();
     if(!records.length)events.append(create('p','dynasty-empty','Для этого года в пилоте нет отдельного исследованного перехода. Это не означает отсутствия событий.'));
     for(const record of records){
@@ -570,7 +645,8 @@
           'Представлено как историческое место рождения, не как ещё один британский престол.':
           'Политических должностей в этом году в пилоте нет; это пробел, не историческое отрицание.'));
       const coverageNote=(repair?.polity_coverage_notes||[]).find(n=>n.id===p.id);
-      article.append(create('p','dynasty-polity-note',coverageNote?.note||p.note||'Даты и полномочия сохраняют исходную точность.'));
+      article.append(create('p','dynasty-polity-note',
+        coverageNote?.note||p.note||'Даты и полномочия сохраняют исходную точность.'));
       polities.append(article);
     }
   }
@@ -842,6 +918,481 @@
       lastCenteredFootprintYear=year;
     }
   }
+  // Coverage is evidence of registry entries, NOT a claim of complete history.
+  const COVERAGE_START=1762;
+  const COVERAGE_END=1800;
+  const COVERAGE_YEARS=COVERAGE_END-COVERAGE_START+1;
+  const COVERAGE_CORE_KINDS=new Set(['sovereign','elector','emperor']);
+  const COVERAGE_STATUS_TEXT={
+    office:'Есть запись о должности главы или императора',
+    institution:'Есть запись об учреждении (возможны и иные роли)',
+    supplementary:'Есть только дополнительные персональные роли',
+    research_gap:'Пробел реестра внутри заявленной выборки',
+    outside_sample:'Год ещё не исследовался в этой выборке',
+    historically_not_in_force:'Исторический режим ещё не возник либо уже прекратился',
+    birthplace_context:'Только исторический контекст места рождения'
+  };
+  let selectedCoverage=null;
+  let lastCoverageCenteredYear=null;
+  const coveragePolityName=id=>
+    allJurisdictions().find(p=>p.id===id)?.name||id;
+  function coverageFor(polity,selectedYear){
+    const roles=fullRoles().filter(r=>r.polity_id===polity.polity_id &&
+      isActive(r,selectedYear));
+    const institutions=(extension?.institutions||[]).filter(r=>
+      r.polity_id===polity.polity_id && isActive(r,selectedYear));
+    let status;
+    if(polity.display_only==='birthplace_context')status='birthplace_context';
+    else if((polity.historical_start && selectedYear<polity.historical_start) ||
+            (polity.historical_end && selectedYear>polity.historical_end))
+      status='historically_not_in_force';
+    // An explicitly sourced backfill role always counts as evidence, even
+    // if it predates the original pilot's editorial researched_from boundary.
+    // This keeps the matrix correct when other PRs extend country coverage.
+    else if((selectedYear<polity.researched_from ||
+             selectedYear>polity.researched_through) &&
+            !roles.length && !institutions.length)
+      status='outside_sample';
+    else if(roles.some(r=>COVERAGE_CORE_KINDS.has(r.role_kind)))
+      status='office';
+    else if(institutions.length)status='institution';
+    else if(roles.length)status='supplementary';
+    else status='research_gap';
+    return {polity,selectedYear,roles,institutions,status};
+  }
+  function coverageSourcesFor(result){
+    return [...new Set([
+      ...(result.polity.source_ids||[]),
+      ...result.roles.flatMap(r=>r.source_ids||[]),
+      ...result.institutions.flatMap(r=>r.source_ids||[])
+    ])];
+  }
+  function renderCoverageDetail(polity,selectedYear){
+    if(!polity)return;
+    selectedCoverage={polity_id:polity.polity_id,year:selectedYear};
+    const outcome=coverageFor(polity,selectedYear);
+    const article=create('div','dynasty-coverage-detail-body');
+    article.append(create('h3',null,
+      coveragePolityName(polity.polity_id)+' · '+selectedYear));
+    const status=create('p','dynasty-coverage-detail-status',
+      COVERAGE_STATUS_TEXT[outcome.status]);
+    status.dataset.coverageStatus=outcome.status;
+    article.append(status);
+    const caveat=outcome.status==='outside_sample'?
+      'За пределами исследовательской партии. Отсутствие записи не свидетельствует об отсутствии государственной власти.':
+      outcome.status==='research_gap'?
+      'Период входит в заявленную выборку, но роль главы и учреждение не занесены. Требуется источниковая сверка.':
+      outcome.status==='historically_not_in_force'?
+      'Это специально отмеченная историческая граница государственного режима, а не отсутствие найденной биографии.':
+      outcome.status==='birthplace_context'?
+      'Полития вносилась только как место рождения персоны, а не хронология её правителей.':
+      'Ячейка отражает пересечение записанного срока с годом, не полный список исторических событий.';
+    article.append(create('p','dynasty-coverage-detail-explain',caveat));
+    if(outcome.roles.length){
+      const list=create('ul','dynasty-coverage-evidence');
+      const people=new Map(allPeople().map(p=>[p.id,p]));
+      for(const role of outcome.roles){
+        const item=create('li');
+        item.append(create('strong',null,actorName(people.get(role.person_id))+
+          ' — '+titleFor(role)),
+          create('span','dynasty-coverage-evidence-years',
+            ' · '+role.start_year+'–'+role.end_year+'; тип '+role.role_kind),
+          sources(role.source_ids));
+        list.append(item);
+      }
+      article.append(list);
+    }
+    if(outcome.institutions.length){
+      const list=create('ul','dynasty-coverage-evidence');
+      for(const institution of outcome.institutions){
+        const item=create('li');
+        item.append(create('strong',null,institution.name),
+          create('span','dynasty-coverage-evidence-years',
+            ' · '+institution.start_year+'–'+institution.end_year+
+            ' · коллективный институт, не отдельный монарх'),
+          sources(institution.source_ids));
+        list.append(item);
+      }
+      article.append(list);
+    }
+    const tasks=(coverage?.known_research_tasks||[]).filter(t=>
+      t.polity_id===polity.polity_id &&
+      t.start_year<=selectedYear && selectedYear<=t.end_year);
+    tasks.forEach(task=>{
+      article.append(create('p','dynasty-coverage-open-task',
+        'Следующая проверка: '+task.title+' — '+task.note),
+        sources(task.source_ids));
+    });
+    article.append(create('p','dynasty-coverage-polity-note',polity.note),
+      create('p','dynasty-coverage-source-caption',
+        'Источники границ выборки и имеющихся записей (не доказательство отсутствия других событий):'),
+      sources(coverageSourcesFor(outcome)));
+    coverageDetail.replaceChildren(article);
+  }
+  function renderCoverageTasks(){
+    const section=create('section','dynasty-coverage-task-list');
+    section.append(create('h3',null,'Очередь исторической сверки'));
+    section.append(create('p',null,
+      'Сначала закрываем пробелы подтверждёнными источниками, не заполняем их догадками.'));
+    for(const task of coverage.known_research_tasks){
+      const card=create('article','dynasty-coverage-task-card');
+      card.dataset.coverageTask=task.id;
+      const action=create('button','dynasty-coverage-task-action',
+        task.title+' · '+task.start_year+'–'+task.end_year+' →');
+      action.type='button';
+      action.addEventListener('click',()=>{
+        const target=task.polity_id==='tusc'?Math.max(task.start_year,1795):
+          task.start_year;
+        selectedCoverage={polity_id:task.polity_id,year:target};
+        chooseYear(target,true);
+        renderCoverageDetail(coverage.polities.find(p=>
+          p.polity_id===task.polity_id),target);
+        coverageDetail.focus({preventScroll:true});
+      });
+      card.append(action,create('p',null,task.note),sources(task.source_ids));
+      section.append(card);
+    }
+    coverageTasks.replaceChildren(section);
+  }
+  function renderCoverage(){
+    if(!coverage || !data || !extension){
+      coverageOverview.textContent='Матрица покрытия не загружена. Другие режимы атласа остаются доступны.';
+      return;
+    }
+    const table=create('div','dynasty-coverage-matrix');
+    const head=create('div','dynasty-coverage-row dynasty-coverage-header');
+    head.append(create('div','dynasty-coverage-sticky dynasty-coverage-column-title',
+      'Полития / наличие записей'));
+    const years=create('div','dynasty-coverage-cells dynasty-coverage-years');
+    for(let y=COVERAGE_START;y<=COVERAGE_END;y++){
+      const h=create('span','dynasty-coverage-year-label',
+        (y===COVERAGE_START||y===COVERAGE_END||y%5===0)?String(y):'·');
+      h.dataset.year=String(y);
+      h.title=String(y);
+      if(y===year)h.classList.add('is-current');
+      years.append(h);
+    }
+    head.append(years);
+    table.append(head);
+    const counts={};
+    for(const polity of coverage.polities){
+      const row=create('div','dynasty-coverage-row');
+      row.dataset.polity=polity.polity_id;
+      const label=create('div','dynasty-coverage-sticky');
+      label.append(create('strong',null,coveragePolityName(polity.polity_id)));
+      const evidenceCount=Array.from({length:COVERAGE_YEARS},(_,i)=>
+        coverageFor(polity,COVERAGE_START+i)).filter(outcome=>
+          ['office','institution','supplementary'].includes(outcome.status)).length;
+      label.append(create('span','dynasty-coverage-row-count',
+        evidenceCount+' годов с записями'));
+      const cells=create('div','dynasty-coverage-cells');
+      for(let y=COVERAGE_START;y<=COVERAGE_END;y++){
+        const result=coverageFor(polity,y);
+        counts[result.status]=(counts[result.status]||0)+1;
+        const cell=create('button','dynasty-coverage-cell',String(y));
+        cell.type='button';
+        cell.dataset.polity=polity.polity_id;
+        cell.dataset.year=String(y);
+        cell.dataset.coverageStatus=result.status;
+        const aria=coveragePolityName(polity.polity_id)+', '+y+': '+
+          COVERAGE_STATUS_TEXT[result.status]+
+          '. Открыть сведения и источники.';
+        cell.title=aria;
+        cell.setAttribute('aria-label',aria);
+        cell.setAttribute('aria-controls','dynasty-coverage-detail');
+        if(y===year)cell.classList.add('is-current');
+        if(selectedCoverage?.polity_id===polity.polity_id &&
+          selectedCoverage?.year===y)cell.setAttribute('aria-pressed','true');
+        cell.addEventListener('click',()=>{
+          selectedCoverage={polity_id:polity.polity_id,year:y};
+          if(year!==y)chooseYear(y,true);
+          else renderCoverage();
+          renderCoverageDetail(polity,y);
+          coverageDetail.focus({preventScroll:true});
+        });
+        cells.append(cell);
+      }
+      row.append(label,cells);table.append(row);
+    }
+    coverageTable.replaceChildren(table);
+    const gaps=counts.research_gap||0,outside=counts.outside_sample||0;
+    const form=(n,one,few,many)=>n===1?one:(n%10>=2&&n%10<=4&&
+      (n%100<12||n%100>14))?few:many;
+    coverageOverview.textContent='1762–1800 · '+coverage.polities.length+
+      ' исторических контекстов · '+gaps+' '+
+      form(gaps,'ячейка-пробел','ячейки-пробела','ячеек-пробелов')+
+      ' внутри исследуемых интервалов; '+outside+' '+
+      form(outside,'ячейка','ячейки','ячеек')+' вне нашей выборки. '+
+      'Эти числа не измеряют полноту исторической науки.';
+    const polity=coverage.polities.find(p=>
+      p.polity_id===(selectedCoverage?.polity_id||'tusc'));
+    if(polity){
+      selectedCoverage={polity_id:polity.polity_id,year};
+      renderCoverageDetail(polity,year);
+      const chosen=coverageTable.querySelector('.dynasty-coverage-cell[data-polity="'+
+        polity.polity_id+'"][data-year="'+year+'"]');
+      if(chosen)chosen.setAttribute('aria-pressed','true');
+    }
+    renderCoverageTasks();
+    // Center the selected year only when the year changes. The reader can
+    // otherwise manually pan this grid without forced re-centering.
+    if(lastCoverageCenteredYear!==year){
+      const current=coverageTable.querySelector(
+        '.dynasty-coverage-years [data-year="'+year+'"]');
+      if(current){
+        const center=coverageScroll.scrollLeft+
+          current.getBoundingClientRect().left-
+          coverageScroll.getBoundingClientRect().left+
+          current.getBoundingClientRect().width/2;
+        coverageScroll.scrollLeft=Math.max(0,
+          center-coverageScroll.clientWidth*.63);
+      }
+      lastCoverageCenteredYear=year;
+    }
+  }
+
+  // Spatial projection from externally sourced CURRENT geographic reference
+  // points and the Natural Earth physical coastline. Historical information
+  // still comes exclusively from role / relationship / institution records.
+  const geoCoreRoles=new Set(['sovereign','elector','first_consul']);
+  const geoRoleLabels={
+    sovereign:'Правящий титул',elector:'Курфюрст',emperor:'Императорский титул',
+    regent:'Регентство',co_regent:'Соправительство',consort:'Консорт',
+    heir:'Наследник',first_consul:'Первый консул',dynastic_person:'Династический контекст'
+  };
+  function geoPoint(lon,lat) {
+    const e=geography.extent;
+    return [
+      36+(lon-e.west)/(e.east-e.west)*1048,
+      26+(e.north-lat)/(e.north-e.south)*570
+    ];
+  }
+  function geoPlaces(){
+    if(!geography)return [];
+    const allowed=new Map(allPolities().map(p=>[p.id,p]));
+    const places=new Map();
+    for(const anchor of geography.anchors){
+      if(!allowed.has(anchor.polity_id))continue;
+      const key=anchor.place_id||('unplaced-'+anchor.polity_id);
+      if(!places.has(key))places.set(key,{...anchor,id:key,polities:[]});
+      places.get(key).polities.push(allowed.get(anchor.polity_id));
+    }
+    return [...places.values()];
+  }
+  function geoRelationArcs(places){
+    const pos=new Map();
+    for(const place of places)for(const polity of place.polities)pos.set(polity.id,place);
+    const roles=activeRoles();
+    function polityOf(personId){
+      const selected=roles.filter(r=>r.person_id===personId &&
+        pos.has(r.polity_id) && pos.get(r.polity_id).lon!==null);
+      const weight={sovereign:0,elector:1,first_consul:2,regent:3,
+        co_regent:4,consort:5,heir:6,dynastic_person:7,emperor:8};
+      selected.sort((a,b)=>(weight[a.role_kind]??9)-(weight[b.role_kind]??9));
+      return selected[0]?.polity_id||null;
+    }
+    const links=[];
+    for(const relation of activeRelations()){
+      if(!(relation.source_ids||[]).length)continue;
+      let pair=null,kind='relation';
+      if(relation.polity_ids?.length===2){
+        pair=relation.polity_ids;
+        kind='interstate';
+      }else if(relation.subjects?.length===2 &&
+          ['marriage','parent','regency','co_regency'].includes(relation.kind)){
+        pair=relation.subjects.map(polityOf);
+        kind='person_relation';
+      }
+      if(!pair||!pair[0]||!pair[1]||pair[0]===pair[1])continue;
+      const a=pos.get(pair[0]),b=pos.get(pair[1]);
+      if(!a||!b||a.id===b.id||a.lon===null||b.lon===null)continue;
+      links.push({relation,a,b,kind});
+    }
+    return links;
+  }
+  function renderGeoDetails(places){
+    const place=places.find(p=>p.id===selectedGeoPlace)||places[0];
+    geoDetails.replaceChildren();
+    if(!place)return;
+    selectedGeoPlace=place.id;
+    geoDetails.append(create('h3',null,
+      (place.place_name||'Вне географической точки')+' · '+year));
+    for(const polity of place.polities){
+      const section=create('article','dynasty-geo-polity');
+      section.dataset.polity=polity.id;
+      const caption=create('h4',null,polity.name);
+      const policy=coverage?.polities?.find(p=>p.polity_id===polity.id);
+      const c=policy?coverageFor(policy,year):null;
+      const statusLabels={
+        office:'Должность в выборке',institution:'Коллективное учреждение',
+        supplementary:'Дополнительная роль',research_gap:'Пробел исследования',
+        outside_sample:'Вне исследованной выборки',
+        historically_not_in_force:'Режим не действовал',
+        birthplace_context:'Только контекст места рождения'
+      };
+      section.append(caption,create('p','dynasty-geo-coverage',
+        c?(statusLabels[c.status]||c.status):
+          'Охват не определён; отсутствие записи не означает отсутствия власти'));
+      const records=activeRoles().filter(r=>r.polity_id===polity.id);
+      const institutions=activeInstitutions().filter(r=>r.polity_id===polity.id);
+      if(!records.length&&!institutions.length)section.append(create('p',null,
+        'На этот год в нашей выборке нет записи. Это не отрицание существования правителя.'));
+      for(const role of records){
+        const actor=getPerson(role.person_id);
+        const item=create('div','dynasty-geo-role');
+        item.dataset.roleKind=role.role_kind;
+        item.append(create('strong',null,actor?actorName(actor):'Неизвестная персона'),
+          create('span',null,' · '+(geoRoleLabels[role.role_kind]||role.role_kind)+': '+titleFor(role)),
+          sources(role.source_ids));
+        section.append(item);
+      }
+      for(const institution of institutions) section.append(
+        create('p','dynasty-geo-institution','Коллективный орган: '+institution.name),
+        sources(institution.source_ids));
+      if(polity.note)section.append(create('p','dynasty-geo-polity-note',polity.note));
+      geoDetails.append(section);
+    }
+    if(place.source_url&&validLink(place.source_url)){
+      const link=create('a','dynasty-geo-reference','Источник координат города ↗');
+      link.href=place.source_url;link.target='_blank';link.rel='noopener noreferrer';
+      geoDetails.append(link);
+    }else geoDetails.append(create('p','dynasty-geo-reference',
+      'Единой географической точки для этого исторического института нет.'));
+    for(const b of geoJump.querySelectorAll('button'))
+      b.setAttribute('aria-pressed',String(b.dataset.place===selectedGeoPlace));
+    for(const node of geoViewport.querySelectorAll('[data-place]'))
+      node.setAttribute('aria-pressed',String(node.dataset.place===selectedGeoPlace));
+  }
+  function renderGeography(){
+    if(!geography||!data||!base||!atlas||!extension){
+      geoStatus.textContent='Проверенная географическая подложка пока не загружена. Исторические данные доступны в других режимах.';
+      return;
+    }
+    const places=geoPlaces();
+    const visible=places.filter(p=>p.lon!==null&&p.lat!==null);
+    const links=geoRelationArcs(places);
+    const svg=svgNode('svg',{viewBox:'0 0 1120 630',
+      width:1120,height:630,role:'group',
+      'aria-label':'Современная береговая линия Европы, города-ориентиры для '+year+' года; не политические границы'});
+    svg.classList.add('dynasty-geo-svg');
+    svg.append(svgNode('title',{},'Европа, географические ориентиры · '+year));
+    svg.append(svgNode('desc',{},
+      'Береговая линия Natural Earth. Точки городов не обозначают исторические территории или юридические границы. Линии обозначают только документированные отношения.'));
+    for(const lon of [-10,0,10,20,30,40]){
+      const [x]=geoPoint(lon,50);
+      svg.append(svgNode('line',{x1:x,y1:26,x2:x,y2:596,
+        stroke:'#dfebe8','stroke-width':1,'stroke-dasharray':'4 7'}));
+    }
+    for(const lat of [40,50,60]){
+      const [,y]=geoPoint(0,lat);
+      svg.append(svgNode('line',{x1:36,y1:y,x2:1084,y2:y,
+        stroke:'#dfebe8','stroke-width':1,'stroke-dasharray':'4 7'}));
+    }
+    for(const path of geography.physical_outline.paths){
+      if(path.length<2)continue;
+      const d=path.map((p,i)=>{
+        const [x,y]=geoPoint(p[0],p[1]);
+        return (i===0?'M':'L')+x.toFixed(1)+' '+y.toFixed(1);
+      }).join(' ');
+      svg.append(svgNode('path',{d,class:'dynasty-geo-coast',
+        fill:'none',stroke:'#92b5a9','stroke-width':1.55,
+        'stroke-linejoin':'round','stroke-linecap':'round'}));
+    }
+    for(const [index,edge] of links.entries()){
+      const a=geoPoint(edge.a.lon,edge.a.lat),b=geoPoint(edge.b.lon,edge.b.lat);
+      const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2-22-(index%3)*13;
+      const path=svgNode('path',{
+        d:'M'+a[0]+' '+a[1]+' Q'+mx+' '+my+' '+b[0]+' '+b[1],
+        fill:'none',stroke:edgePalette[edge.relation.kind]||'#627e91',
+        'stroke-width':edge.kind==='interstate'?3:2.5,
+        'stroke-dasharray':edge.kind==='person_relation'?'6 6':'',
+        opacity:.85,class:'dynasty-geo-edge'
+      });
+      path.dataset.relationId=edge.relation.id;
+      path.append(svgNode('title',{},
+        edge.relation.title+' · '+(edge.kind==='person_relation'?
+          'Связь людей, не государств':'Документированное межгосударственное отношение')+
+          ' · '+edge.relation.source_ids.join(', ')));
+      svg.append(path);
+    }
+    for(const place of visible){
+      const [x,y]=geoPoint(place.lon,place.lat);
+      const roles=activeRoles().filter(r=>place.polities.some(p=>p.id===r.polity_id));
+      const institutions=activeInstitutions().filter(r=>place.polities.some(p=>p.id===r.polity_id));
+      const core=roles.some(r=>geoCoreRoles.has(r.role_kind));
+      const known=roles.length>0||institutions.length>0;
+      const color=core?'#316d62':known?'#a67e45':'#9da9a6';
+      const group=svgNode('g',{role:'button',tabindex:'0',
+        'aria-label':place.place_name+': '+place.polities.map(p=>p.name).join(', ')+
+          '; '+roles.length+' задокументированных ролей. Показать источники.',
+        'aria-pressed':String(place.id===selectedGeoPlace),
+        class:'dynasty-geo-marker'});
+      group.dataset.place=place.id;
+      group.append(svgNode('circle',{cx:x,cy:y,r:24,fill:'transparent',
+        class:'dynasty-geo-hit'}));
+      group.append(svgNode('circle',{cx:x,cy:y,r:core?11:9,
+        fill:color,stroke:'#fff','stroke-width':3}));
+      if(place.id===selectedGeoPlace)group.append(svgNode('circle',{cx:x,cy:y,r:16,
+        fill:'none',stroke:'#c39249','stroke-width':2.8}));
+      const off=place.label_offset||[18,-17];
+      const tx=x+off[0],ty=y+off[1];
+      group.append(svgNode('path',{d:'M'+x+' '+y+' L'+tx+' '+ty,
+        stroke:color,opacity:.6,fill:'none','stroke-width':1}));
+      group.append(svgNode('text',{x:tx,y:ty-4,'text-anchor':'middle',
+        fill:'#243f37','font-size':15,'font-weight':750,
+        'paint-order':'stroke',stroke:'#f5f9f8','stroke-width':5},
+        place.place_name));
+      if(place.polities.length>1)group.append(svgNode('text',{
+        x:tx,y:ty+13,'text-anchor':'middle','font-size':11,
+        fill:'#526a60'},'2 политических контекста'));
+      const select=()=>{selectedGeoPlace=place.id;renderGeoDetails(places);};
+      group.addEventListener('click',select);
+      group.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();select();}
+      });
+      svg.append(group);
+    }
+    svg.append(svgNode('text',{x:42,y:618,'font-size':14,
+      fill:'#5d7972'},'Natural Earth · физическая береговая линия · без границ стран'));
+    geoViewport.replaceChildren(svg);
+    geoJump.replaceChildren();
+    for(const place of places){
+      const label=place.place_name||place.polities.map(p=>p.name).join(', ');
+      const button=create('button','dynasty-geo-jump-button',label);
+      button.type='button';button.dataset.place=place.id;
+      button.setAttribute('aria-pressed',String(place.id===selectedGeoPlace));
+      button.addEventListener('click',()=>{
+        selectedGeoPlace=place.id;renderGeoDetails(places);
+        if(place.lon!==null){
+          const [x]=geoPoint(place.lon,place.lat);
+          const width=svg.getBoundingClientRect().width;
+          geoViewport.scrollLeft=Math.max(0,x*width/1120-geoViewport.clientWidth/2);
+        }
+      });
+      geoJump.append(button);
+    }
+    renderGeoDetails(places);
+    geoConnections.replaceChildren(create('h3',null,
+      'Подтверждённые отношения · '+links.length+' линий'));
+    if(!links.length)geoConnections.append(create('p',null,
+      'В этом году межгородских связей из выбранных документов не выделено. Это пробел, а не отсутствие связей.'));
+    for(const edge of links){
+      const card=create('article','dynasty-geo-connection');
+      card.dataset.relationKind=edge.relation.kind;
+      const suffix=edge.kind==='person_relation'?
+        'Связь конкретных людей, не союз государств':
+        'Отношение государств из источников';
+      card.append(create('strong',null,edge.relation.title),
+        create('span',null,' · '+suffix),sources(edge.relation.source_ids));
+      geoConnections.append(card);
+    }
+    const roleCount=visible.reduce((n,p)=>n+activeRoles().filter(r=>
+      p.polities.some(x=>x.id===r.polity_id)).length,0);
+    geoStatus.textContent=year+' · '+visible.length+' точек-ориентиров · '+
+      roleCount+' документированных ролей у точек · '+links.length+
+      ' отображённых источниковых связей. Вне географии: '+(places.length-visible.length)+
+      ' институциональный контекст. Карта не показывает исторические границы.';
+  }
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
@@ -870,7 +1421,7 @@
     });
   }
   function render(){
-    if(!data||!base||!atlas||!extension||!footprints||!repair)return;
+    if(!data||!base||!atlas||!extension||!footprints)return;
     slider.value=String(year);
     yearOutput.textContent=String(year);
     back.disabled=year<=data.period.start;
@@ -883,7 +1434,27 @@
     graphContainer.replaceChildren(drawGraph());
     renderCountryJump();
     if(selectedView==='houses')renderFootprints();
+    if(selectedView==='coverage')renderCoverage();
+    if(selectedView==='map')renderGeography();
     renderEvents();renderPolities();renderPersons();renderRelations();
+  }
+  // The two interfaces share one year when the world pilot is open. The
+  // canonical domestic slider remains authoritative outside 1762–1800.
+  function alignMainYear(){
+    if(layer.hidden||!isNetworkURL())return;
+    const main=document.getElementById('atlas-year-range');
+    if(!main)return;
+    const expected=year;
+    if(expected<Number(main.min)||expected>Number(main.max)){
+      const all=document.querySelector('.era-btn[data-era="all"]');
+      if(all && all.getAttribute('aria-pressed')!=='true')all.click();
+    }
+    queueMicrotask(()=>{
+      if(layer.hidden||year!==expected||!isNetworkURL())return;
+      if(Number(main.value)===expected)return;
+      main.value=String(expected);
+      main.dispatchEvent(new Event('input',{bubbles:true}));
+    });
   }
   function chooseYear(value,push){
     const next=Math.max(1762,Math.min(1800,Number(value)||1762));
@@ -894,13 +1465,14 @@
       history[push?'pushState':'replaceState'](null,'',u.pathname+u.search+u.hash);
     }
     render();
+    alignMainYear();
   }
   back.addEventListener('click',()=>chooseYear(year-1,true));
   forward.addEventListener('click',()=>chooseYear(year+1,true));
   slider.addEventListener('input',()=>chooseYear(slider.value,false));
   const isNetworkURL=()=>new URL(location.href).searchParams.get('world')==='dynasty18';
   async function load(){
-    if(data&&base&&atlas&&extension&&footprints&&repair)return;
+    if(data&&base&&atlas&&extension&&footprints)return;
     if(pending)return pending;
     pending=Promise.all([
       fetch('./world-dynasty-18c.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('network');return r.json();}),
@@ -908,35 +1480,58 @@
       fetch('./atlas.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('atlas');return r.json();}),
       fetch('./world-extension-1800.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('extension');return r.json();}),
       fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();}),
-      fetch('./world-coverage-backfill.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('coverage backfill');return r.json();})
-    ]).then(([d,b,a,e,houses,backfill])=>{
+      fetch('./world-coverage-backfill.json',{cache:'no-cache'})
+        .then(r=>{if(!r.ok)throw Error('backfill');return r.json();})
+        .catch(()=>null),
+      // If the new optional public asset is missing during CDN propagation,
+      // preserve the already-published people/dynasty views.
+      fetch('./world-coverage-1800.json',{cache:'no-cache'})
+        .then(r=>{if(!r.ok)throw Error('coverage');return r.json();})
+        .catch(()=>null),
+      fetch('./world-geographic-1800.json',{cache:'no-cache'})
+        .then(r=>{if(!r.ok)throw Error('geography');return r.json();})
+        .catch(()=>null)
+    ]).then(([d,b,a,e,houses,backfill,cov,geo])=>{
       if(d.schema_version!=='dynasty-network-v1' ||
          b.schema_version!=='world-pilot-v1' ||
          e.schema_version!=='dynasty-extension-v1' ||
          houses.schema_version!=='dynasty-footprints-v1' ||
-         backfill.schema_version!=='dynasty-coverage-backfill-v1' ||
-         backfill.coverage_window.start!==1762 || backfill.coverage_window.end!==1800 ||
          houses.period.start!==1762 || houses.period.end!==1800 ||
          d.period.start!==1762 || d.period.end!==1780 ||
          e.full_period.start!==1762 || e.full_period.end!==1800 ||
          !Array.isArray(a.tenures) || !Array.isArray(a.people))
         throw Error('schema');
-      const everyone=[...b.persons,...d.additional_persons,...e.additional_persons,...backfill.person_additions];
+      if(backfill && (backfill.schema_version!=='dynasty-coverage-backfill-v1' ||
+          backfill.coverage_window?.start!==1762 ||
+          backfill.coverage_window?.end!==1800 ||
+          !Array.isArray(backfill.role_additions) ||
+          !Array.isArray(backfill.person_additions) ||
+          !Array.isArray(backfill.family_additions) ||
+          !Array.isArray(backfill.family_member_additions) ||
+          !Array.isArray(backfill.relation_additions) ||
+          !Array.isArray(backfill.source_records) ||
+          !Array.isArray(backfill.covered_polity_ids)))
+        throw Error('backfill schema');
+      const everyone=[...b.persons,...d.additional_persons,...e.additional_persons,
+        ...(backfill?.person_additions||[])];
       const ids=new Set(everyone.map(x=>x.id));
       if(ids.size!==everyone.length)throw Error('duplicate persons');
       const politiesAll=new Set([...b.countries,...d.additional_polities,...e.additional_polities].map(x=>x.id));
-      for(const r of [...d.roles,...e.additional_roles,...backfill.role_additions]){
+      for(const r of [...d.roles,...e.additional_roles,...(backfill?.role_additions||[])]){
         if(!ids.has(r.person_id)||!politiesAll.has(r.polity_id)||r.start_year>r.end_year||
            !(r.source_ids||[]).length)throw Error('invalid roles');
       }
       const pids=new Set(a.people.map(x=>x.id));
       const tenures=new Map(a.tenures.map(x=>[x.id,x]));
-      const allSources=new Set([...b.sources,...d.sources,...e.sources,...backfill.source_records,...a.sources].map(x=>x.id));
+      const allSources=new Set([...b.sources,...d.sources,...e.sources,
+        ...(backfill?.source_records||[]),...a.sources].map(x=>x.id));
       for(const row of [...e.additional_roles,...e.institutions,...e.additional_relations,...e.milestones,
-        ...backfill.role_additions,...backfill.relation_additions,...backfill.milestones]){
+        ...(backfill?.role_additions||[]),...(backfill?.relation_additions||[]),
+        ...(backfill?.milestones||[])]){
         if(!(row.source_ids||[]).length || !row.source_ids.every(s=>allSources.has(s))) throw Error('missing source');
       }
-      for(const rel of [...d.relations,...e.additional_relations,...backfill.relation_additions]) {
+      for(const rel of [...d.relations,...e.additional_relations,
+        ...(backfill?.relation_additions||[])]) {
         if(!(rel.subjects||[]).every(id=>ids.has(id)))throw Error('missing relation person');
       }
       for(const actor of everyone){
@@ -946,7 +1541,8 @@
           throw Error('canonical identity mismatch');
       }
       const sourceKeys=new Set([
-        ...b.sources,...d.sources,...e.sources,...houses.sources,...backfill.source_records,...a.sources
+        ...b.sources,...d.sources,...e.sources,...houses.sources,
+        ...(backfill?.source_records||[]),...a.sources
       ].map(x=>x.id));
       for(const family of houses.families){
         if(!family.members.length || !(family.source_ids||[]).every(x=>sourceKeys.has(x)))
@@ -959,53 +1555,105 @@
             throw Error('unsourced family membership');
         }
       }
-      // Enrich the analytical four-house matrix only in memory. The historic
-      // source files keep their exact previous bytes and provenance.
-      const membersByFamily=new Map(backfill.family_member_additions.map(
-        row=>[row.family_id,row.members]));
+      const restoredMembers=new Map((backfill?.family_member_additions||[])
+        .map(group=>[group.family_id,group.members]));
+      if(backfill && !backfill.covered_polity_ids.every(id=>politiesAll.has(id)))
+        throw Error('unknown backfill polity');
+      if(backfill && [...restoredMembers.keys()].some(id=>
+        !houses.families.some(f=>f.id===id)))throw Error('unknown backfill family');
       const mergedFamilies=[
         ...houses.families.map(f=>({
-          ...f,members:[...f.members,...(membersByFamily.get(f.id)||[])]
+          ...f,members:[...f.members,...(restoredMembers.get(f.id)||[])]
         })),
-        ...backfill.family_additions
+        ...(backfill?.family_additions||[])
       ];
       if(new Set(mergedFamilies.map(f=>f.id)).size!==mergedFamilies.length)
-        throw Error('duplicate dynastic families');
+        throw Error('duplicate families');
       for(const family of mergedFamilies){
-        if(!family.members.length ||
-           !(family.source_ids||[]).every(id=>sourceKeys.has(id)))
-          throw Error('unsourced dynastic family');
+        if(!family.members?.length || !family.source_ids?.length ||
+           !family.source_ids.every(x=>sourceKeys.has(x)))throw Error('family source');
         const seen=new Set();
-        for(const m of family.members){
-          if(!ids.has(m.person_id) || seen.has(m.person_id) ||
-             !['house','branch_lineage','dynastic_union'].includes(m.membership) ||
-             !(m.source_ids||[]).length ||
-             !m.source_ids.every(id=>sourceKeys.has(id)))
-            throw Error('invalid dynastic membership');
-          seen.add(m.person_id);
+        for(const member of family.members){
+          if(!ids.has(member.person_id) || seen.has(member.person_id) ||
+             !['house','branch_lineage','dynastic_union'].includes(member.membership) ||
+             !member.source_ids?.length ||
+             !member.source_ids.every(x=>sourceKeys.has(x)))
+            throw Error('invalid family member');
+          seen.add(member.person_id);
         }
       }
-      if(!backfill.covered_polity_ids.every(id=>politiesAll.has(id)))
-        throw Error('unknown restored polity');
+      let coverageChecked=null;
+      try{
+        if(cov && backfill){
+          if(cov.schema_version!=='coverage-matrix-v1' ||
+             cov.period.start!==1762 || cov.period.end!==1800 ||
+             !Array.isArray(cov.polities) ||
+             cov.polities.length!==politiesAll.size ||
+             !Array.isArray(cov.known_research_tasks))
+            throw Error('coverage schema');
+          const knownSources=new Set([
+            ...b.sources,...d.sources,...e.sources,...a.sources,
+            ...(backfill?.source_records||[]),...cov.sources
+          ].map(s=>s.id));
+          const ids=new Set();
+          for(const policy of cov.polities){
+            if(!politiesAll.has(policy.polity_id) ||
+               ids.has(policy.polity_id) ||
+               policy.researched_from<1762 ||
+               policy.researched_through>1800 ||
+               policy.researched_from>policy.researched_through ||
+               !(policy.source_ids||[]).length ||
+               !policy.source_ids.every(id=>knownSources.has(id)))
+              throw Error('coverage policy invalid');
+            ids.add(policy.polity_id);
+          }
+          for(const task of cov.known_research_tasks){
+            if(!ids.has(task.polity_id) ||
+               task.start_year<1762||task.end_year>1800||
+               task.start_year>task.end_year ||
+               !(task.source_ids||[]).every(id=>knownSources.has(id)))
+              throw Error('coverage task invalid');
+          }
+          coverageChecked=cov;
+        }
+      }catch(_){coverageChecked=null;}
       data=d;base=b;atlas=a;extension=e;repair=backfill;
       footprints={...houses,families:mergedFamilies};
+      coverage=coverageChecked;
+      // Optional: an unavailable map must not break the original network.
+      if(geo && geo.schema_version==='europe-geographic-reference-v1' &&
+         geo.period.start===1762 && geo.period.end===1800 &&
+         geo.historical_borders_verified===false &&
+         Array.isArray(geo.physical_outline?.paths) &&
+         Array.isArray(geo.anchors) && geo.anchors.length===politiesAll.size &&
+         new Set(geo.anchors.map(x=>x.polity_id)).size===politiesAll.size &&
+         geo.anchors.every(x=>politiesAll.has(x.polity_id) &&
+           ((x.lon===null && x.lat===null) ||
+            (Number.isFinite(x.lon)&&Number.isFinite(x.lat)&&
+             x.lon>=geo.extent.west&&x.lon<=geo.extent.east&&
+             x.lat>=geo.extent.south&&x.lat<=geo.extent.north))))
+        geography=geo;
+      else geography=null;
       slider.max=String(e.full_period.end);
       const rangeEnd=rangeLabel.querySelector('span:last-child');
       if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
-      milestones.replaceChildren(...[...new Set([...d.period.presets,...e.additional_presets,1771,1777])].sort((a,b)=>a-b).map(y=>{
+      milestones.replaceChildren(...[...new Set([...d.period.presets,...e.additional_presets,
+        ...(backfill?[1771,1777]:[])])].sort((a,b)=>a-b).map(y=>{
         const button=create('button','dynasty-milestone',String(y));
         button.type='button';button.dataset.year=String(y);
         button.addEventListener('click',()=>chooseYear(y,true));
         return button;
       }));
-      caveatList.replaceChildren(...[
-        ...d.caveats,...e.caveats,
-        'Испания, Португалия, Швеция и Тоскана теперь документированы с 1762 года; это не полный международный реестр всех правительств и династий.',
-        'Тосканский великий герцог Фердинанд III был изгнан в 1799 году. Не изображаем непрерывную реальную власть после утраты территориального контроля.'
-      ].map(text=>create('li',null,text)));
+      caveatList.replaceChildren(...[...d.caveats,...e.caveats,
+        ...(backfill?[
+          'Испания, Португалия, Швеция и Тоскана имеют документированные записи с 1762 года; это не полный международный реестр.',
+          'Фердинанд III изгнан из Тосканы в 1799 году. Конец полосы не доказывает утрату титула и не устанавливает власть в 1800 году.'
+        ]:[])].map(text=>create('li',null,text)));
+      if(!coverage)coverageOverview.textContent='Матрица покрытия не загружена; другие режимы сохранены.';
       selectedView=modeFromUrl();
       updateView();
       render();
+      alignMainYear();
     }).catch(()=>{
       notice.textContent='Сеть не загружена: проверенная историческая модель недоступна. Не подменяем данные догадками.';
     }).finally(()=>{pending=null;});
@@ -1016,6 +1664,7 @@
     if(fromUser)previousFocus=document.activeElement;
     layer.hidden=false;
     document.documentElement.classList.add('dynasty-open');
+    window.dispatchEvent(new Event('atlas:world-open'));
     const u=new URL(location.href);
     const number=Number(u.searchParams.get('dynYear'));
     year=Number.isInteger(number)&&number>=1762&&number<=1800?number:1762;
@@ -1043,7 +1692,7 @@
       year=Number.isInteger(value)&&value>=1762&&value<=1800?value:1762;
       selectedView=modeFromUrl();
       if(layer.hidden)openSheet(false);
-      else {updateView();render();}
+      else {updateView();render();alignMainYear();}
     } else if(!layer.hidden)closeSheet(false);
   }
   close.addEventListener('click',()=>closeSheet(true));
@@ -1057,6 +1706,12 @@
     const first=elements[0],last=elements[elements.length-1];
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  });
+  window.addEventListener('atlas:year-cards-ready',event=>{
+    if(layer.hidden||!isNetworkURL()||!data)return;
+    const chosen=Number(event.detail?.year);
+    if(Number.isInteger(chosen)&&chosen>=1762&&chosen<=1800&&chosen!==year)
+      chooseYear(chosen,false);
   });
   window.addEventListener('popstate',sync);
   window.addEventListener('hashchange',sync);

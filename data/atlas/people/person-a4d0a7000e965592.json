@@ -2,6 +2,8 @@
   "id": "person-a4d0a7000e965592",
   "name": "Екатерина II Алексеевна",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q36450"
+  },
   "biography_status": "incomplete"
 }

@@ -132,6 +132,68 @@ def run(dist:Path,output:Path):
                     'years':[1788,1792,1796,1799,1800],
                     'status':'passed','errors':errors})
                 page.close()
+
+                # Geography is a fourth, independently deep-linked view.
+                # Real Chromium checks map paths, sourced roles, links and the
+                # synchronization with the domestic year selector.
+                geo=browser.new_page(viewport={'width':w,'height':h},
+                    has_touch=w<=900,is_mobile=w<=900,device_scale_factor=1)
+                geo_errors=[]
+                geo.on('pageerror',lambda e:geo_errors.append(str(e)))
+                geo.goto(origin+'?world=dynasty18&dynYear=1788&dynView=map#/timeline/1762')
+                expect(geo.locator('.dynasty-geo-panel')).to_be_visible()
+                expect(geo.locator('.dynasty-geo-coast')).not_to_have_count(0)
+                expect(geo.locator('.dynasty-geo-marker[data-place="madrid"]')).to_have_count(1)
+                expect(geo.locator('.dynasty-geo-marker[data-place="lisbon"]')).to_have_count(1)
+                expect(geo.locator('.dynasty-geo-marker[data-place="saint-petersburg"]')).to_have_count(1)
+                expect(geo.locator('.dynasty-geo-edge[data-relation-id="ex-es-carlos-carlota"]')).to_have_count(1)
+                expect(geo.locator('#dynasty-year')).to_have_text('1788')
+                expect(geo.locator('#atlas-year-value')).to_have_text('1788')
+                expect(geo).to_have_url(re.compile(r'dynView=map'))
+                assert geo.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
+                assert geo.locator('.dynasty-geo-jump-button').first.bounding_box()['height']>=43.5
+                geo.locator('.dynasty-geo-jump-button[data-place="madrid"]').click()
+                expect(geo.locator('.dynasty-geo-polity[data-polity="es"]')).to_contain_text('Карл III')
+                expect(geo.locator('.dynasty-geo-polity[data-polity="es"]')).to_contain_text('Карл IV')
+                expect(geo.locator('.dynasty-geo-polity[data-polity="es"] .dynasty-source')).not_to_have_count(0)
+                geo.screenshot(path=str(output/f'geo-1788-{w}.png'),full_page=True)
+
+                geo.locator('.dynasty-milestone[data-year="1792"]').click()
+                expect(geo.locator('#atlas-year-value')).to_have_text('1792')
+                expect(geo.locator('#dynasty-year')).to_have_text('1792')
+                expect(geo.locator('.dynasty-geo-marker[data-place="paris"]')).to_have_count(1)
+                geo.locator('.dynasty-geo-jump-button[data-place="paris"]').click()
+                expect(geo.locator('.dynasty-geo-polity[data-polity="fr"]')).to_contain_text('Людовик XVI')
+                expect(geo.locator('.dynasty-geo-polity[data-polity="frrep"]')).to_contain_text('Национальный конвент')
+                geo.screenshot(path=str(output/f'geo-1792-{w}.png'),full_page=True)
+
+                geo.locator('.dynasty-milestone[data-year="1800"]').click()
+                expect(geo.locator('#dynasty-year')).to_have_text('1800')
+                expect(geo.locator('#atlas-year-value')).to_have_text('1800')
+                expect(geo.locator('.dynasty-geo-edge[data-relation-id="ex-es-carlos-carlota"]')).to_have_count(1)
+                geo.locator('.dynasty-geo-jump-button[data-place="paris"]').click()
+                expect(geo.locator('.dynasty-geo-polity[data-polity="fr"]')).to_have_count(0)
+                expect(geo.locator('.dynasty-geo-polity[data-polity="frrep"]')).to_contain_text('Бонапарт')
+                expect(geo.locator('.dynasty-geo-polity[data-polity="frrep"]')).to_contain_text('Первый консул')
+                geo.locator('.dynasty-geo-jump-button[data-place="unplaced-hre"]').click()
+                expect(geo.locator('.dynasty-geo-details')).to_contain_text('Император')
+                expect(geo.locator('.dynasty-geo-details')).to_contain_text('Единой географической точки')
+                geo.screenshot(path=str(output/f'geo-1800-{w}.png'),full_page=True)
+
+                # Main atlas -> map synchronization is bidirectional in range.
+                geo.evaluate("""() => {
+                    const s=document.getElementById('atlas-year-range');
+                    s.value='1793';s.dispatchEvent(new Event('input',{bubbles:true}));
+                }""")
+                expect(geo.locator('#dynasty-year')).to_have_text('1793')
+                expect(geo.locator('.dynasty-geo-status')).to_contain_text('1793')
+                geo.locator('.dynasty-view-button[data-dynasty-view="network"]').click()
+                expect(geo.locator('.dynasty-graph-scroll')).to_be_visible()
+                geo.locator('.dynasty-view-button[data-dynasty-view="map"]').click()
+                expect(geo.locator('.dynasty-geo-viewport')).to_be_visible()
+                assert geo.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
+                assert not geo_errors,geo_errors
+                geo.close()
             browser.close()
     finally:
         server.shutdown()

@@ -4,6 +4,8 @@
   "aliases": [
     "Борис Годунов"
   ],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q170172"
+  },
   "biography_status": "incomplete"
 }

@@ -2,6 +2,8 @@
   "id": "person-6011807ec88455bf",
   "name": "Алексей Косыгин",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q202770"
+  },
   "biography_status": "incomplete"
 }

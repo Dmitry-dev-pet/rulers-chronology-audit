@@ -1,0 +1,39 @@
+name: Historical Atlas Mac preparation
+description: Inspect fixed read-only benchmark code before Mac execution; no OAuth, network or model call.
+outputs:
+  ready:
+    description: Syntax and immutable package structure verified.
+    value: ${{ steps.check.outputs.ready }}
+runs:
+  using: composite
+  steps:
+    - name: Check pinned source and scripts without execution
+      id: check
+      shell: bash
+      env:
+        PACKAGE_DIR: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        python3 - <<'PY'
+        import ast
+        import os
+        from pathlib import Path
+        root = Path(os.environ["PACKAGE_DIR"]).resolve().parents[1]
+        for rel in (
+            "benchmarks/run_agy_mac_ab.py",
+            "scripts/archigos_returnees.py",
+            "scripts/atlas_mcp_returnees.py",
+            "tests/test_atlas_mcp_mac.py",
+        ):
+            path = root / rel
+            if not path.is_file():
+                raise SystemExit("Pinned Atlas Action missing required file")
+            ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        spec = root / "benchmarks" / "archigos_return_v1.json"
+        import json
+        benchmark = json.loads(spec.read_text(encoding="utf-8"))
+        assert benchmark["id"] == "archigos_return_to_power_v1"
+        assert benchmark["expected"]["return_events"] == 597
+        print("Historical Atlas fixed package syntax and benchmark contract verified")
+        PY
+        echo "ready=true" >> "$GITHUB_OUTPUT"

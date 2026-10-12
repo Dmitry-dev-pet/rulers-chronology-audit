@@ -1,0 +1,54 @@
+{
+  "schema_version": "p3-explicit-aliases-v1",
+  "status": "draft_not_canonical",
+  "historical_truth_verified_by_ci": false,
+  "aliases": [
+    {
+      "dataset": "1762.json",
+      "native_id": "wp-marriage-1745",
+      "canonical_dataset": "dynasty-1762-1780.json",
+      "canonical_id": "dn-ru-marriage",
+      "kind": "marriage",
+      "reason": "Both documented source entries name Peter III and Catherine II and cite WP01/WP02; one normalized relation, two preserved records."
+    },
+    {
+      "dataset": "1762.json",
+      "native_id": "wp-petersburg-peace",
+      "canonical_dataset": "dynasty-1762-1780.json",
+      "canonical_id": "dn-ru-pr-peace",
+      "kind": "treaty",
+      "reason": "Both source entries name the 1762 Petersburg peace between Russia and Prussia and cite WP03; one normalized relation, two preserved records."
+    }
+  ],
+  "relation_kinds": {
+    "dn-france-change-1774": "succession",
+    "dn-hab-coregency": "co_regency",
+    "dn-hre-change-1765": "imperial_succession",
+    "dn-marriage-france": "marriage",
+    "dn-marriage-gb": "marriage",
+    "dn-marriage-hab": "marriage",
+    "dn-mother-antoinette": "parent",
+    "dn-mother-joseph": "parent",
+    "dn-ru-marriage": "marriage",
+    "dn-ru-pr-peace": "treaty",
+    "dn-union-gb-han": "personal_union",
+    "ex-es-carlos-carlota": "parent",
+    "ex-es-succ-1788": "succession",
+    "ex-fr-1799": "institutional_change",
+    "ex-fr-revolution": "regime_change",
+    "ex-hab-carlos-luisa": "parent",
+    "ex-hab-leopold-francis": "parent",
+    "ex-hab-leopold-luisa": "marriage",
+    "ex-hab-succ-1790": "imperial_succession",
+    "ex-hab-succ-1792": "imperial_succession",
+    "ex-pr-succ-1786": "succession",
+    "ex-pr-succ-1797": "succession",
+    "ex-pt-joao-carlota": "marriage",
+    "ex-pt-maria-pedro": "marriage",
+    "ex-ru-catherine-paul": "parent",
+    "ex-sw-regency": "regency",
+    "ex-sw-succ-1792": "succession",
+    "wp-marriage-1745": "marriage",
+    "wp-petersburg-peace": "treaty"
+  }
+}

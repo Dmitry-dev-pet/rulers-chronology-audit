@@ -1,0 +1,189 @@
+{
+  "schema_version": "wikidata-jurisdiction-crosswalk-v1",
+  "review_date": "2026-10-11",
+  "pilot_window": {
+    "start_year": 1762,
+    "end_year": 1800
+  },
+  "notes": "Explicit source-scoped office P39 → jurisdiction classification only. Neither GIS, geographic borders, sovereignty for all years, political influence, ethnicity nor legal succession is inferred. New contexts are independent overlays, never SQL canonical states.",
+  "contexts": [
+    {
+      "id": "ctx-hre-electoral-college",
+      "kind": "elective_institution",
+      "label": "Electoral college of Holy Roman Empire",
+      "related_world_contexts": [
+        "world:hre"
+      ],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "Electoral dignity is neither a sovereign territory nor the imperial office itself."
+    },
+    {
+      "id": "ctx-hab-crown-bohemia",
+      "kind": "historic_crown",
+      "label": "Kingdom of Bohemia crown",
+      "related_world_contexts": [
+        "world:hab",
+        "world:hre"
+      ],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "Bohemian crown is separately held; composite Habsburg association is not state identity."
+    },
+    {
+      "id": "ctx-hab-crown-hungary",
+      "kind": "historic_crown",
+      "label": "Kingdom of Hungary crown",
+      "related_world_contexts": [
+        "world:hab"
+      ],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "Hungarian crown not identical to Habsburg composite or Austrian modern citizenship."
+    },
+    {
+      "id": "ctx-andorra-co-principality",
+      "kind": "joint_sovereignty",
+      "label": "Andorran co-principality",
+      "related_world_contexts": [
+        "world:fr",
+        "world:frrep"
+      ],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "French co-prince is joint Andorran office, not a claim that Andorra is part of France."
+    },
+    {
+      "id": "ctx-cpsu-politburo",
+      "kind": "political_party_institution",
+      "label": "Politburo of CPSU Central Committee",
+      "related_world_contexts": [],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "Politburo membership is institutional and does not establish personal sovereign authority."
+    },
+    {
+      "id": "world:sw",
+      "kind": "existing_pilot_polity",
+      "label": "Swedish monarchy",
+      "related_world_contexts": [],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "World-pilot Swedish polity is a reference context, not a modern boundary."
+    },
+    {
+      "id": "world:es",
+      "kind": "existing_pilot_polity",
+      "label": "Spanish monarchy",
+      "related_world_contexts": [],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "World-pilot Spain context; office type not guaranteed unchanged in every period."
+    },
+    {
+      "id": "ctx-crown-france-navarre",
+      "kind": "composite_crown",
+      "label": "King of France and Navarre office scope",
+      "related_world_contexts": [
+        "world:fr"
+      ],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "A compound royal style; do not automatically infer a geographic union or collapse Navarre into France."
+    },
+    {
+      "id": "ctx-first-french-empire",
+      "kind": "post_pilot_polity",
+      "label": "First French Empire after 1804",
+      "related_world_contexts": [
+        "world:frrep"
+      ],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "Empire after 1804 is not the French Republic in the 1762–1800 pilot, even if ruled by same person."
+    }
+  ],
+  "offices": [
+    {
+      "wikidata_qid": "Q22722",
+      "context_id": "ctx-hre-electoral-college",
+      "position_kind": "electoral_dignity",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q22722",
+      "caveat": "Elector dignity has a vote, not necessarily one-person sovereignty over Holy Roman Empire."
+    },
+    {
+      "wikidata_qid": "Q45341328",
+      "context_id": "ctx-hab-crown-bohemia",
+      "position_kind": "legal_crown",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q45341328",
+      "caveat": "Separate Bohemian royal title; not an interchangeable Habsburg/Austrian office."
+    },
+    {
+      "wikidata_qid": "Q6412254",
+      "context_id": "ctx-hab-crown-hungary",
+      "position_kind": "legal_crown",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q6412254",
+      "caveat": "Separate Hungarian royal title; no inference of ethnic origin or all-territory control."
+    },
+    {
+      "wikidata_qid": "Q19808845",
+      "context_id": "ctx-andorra-co-principality",
+      "position_kind": "co_head_of_state",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q19808845",
+      "caveat": "Andorran joint head office; never make Andorra French territory by P39 alone."
+    },
+    {
+      "wikidata_qid": "Q108495011",
+      "context_id": "ctx-cpsu-politburo",
+      "position_kind": "institutional_membership",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q108495011",
+      "caveat": "Party committee membership, neither president nor sole effective head."
+    },
+    {
+      "wikidata_qid": "Q1268572",
+      "context_id": "world:sw",
+      "position_kind": "legal_monarchical_office",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q1268572",
+      "caveat": "Legal monarch of Sweden; distinct from dukedom held before accession."
+    },
+    {
+      "wikidata_qid": "Q3847454",
+      "context_id": "world:es",
+      "position_kind": "legal_monarchical_office",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q3847454",
+      "caveat": "Spanish royal title; distinguish 18th-century kingdom from modern state context."
+    },
+    {
+      "wikidata_qid": "Q3439798",
+      "context_id": "ctx-crown-france-navarre",
+      "position_kind": "compound_royal_office",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q3439798",
+      "caveat": "French and Navarre compound office title; source-specific juridical context."
+    },
+    {
+      "wikidata_qid": "Q5373953",
+      "context_id": "ctx-first-french-empire",
+      "position_kind": "post_pilot_imperial_title",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q5373953",
+      "caveat": "Napoleonic emperor office begins after 1800; not first-consul office in the 1799–1800 pilot."
+    }
+  ]
+}

@@ -1,0 +1,309 @@
+{
+  "schema_version": "authority-epoch-sample-v1",
+  "status": "research_pilot",
+  "focus_year": 1888,
+  "historical_truth_verified_by_ci": false,
+  "geographic_boundaries_verified": false,
+  "sample_covers_all_world": false,
+  "calendar_policy": "The year is a research filter, not proof of same-day co-rule. Meiji constitution only promulgated 1889. Exact Japanese cabinet transition 1888-04-30 is explicitly sourced Gregorian.",
+  "methodology": "Distinct emperor, cabinet head and regional king; formal overlordship is not automatic direct administration.",
+  "regions": [
+    {
+      "id": "jp",
+      "label": "Япония · 1888",
+      "subtitle": "Император Мэйдзи и смена главы кабинета",
+      "explanation": "Император Мэйдзи и премьер-министр — разные должности. Ито и Курода последовательно занимали кабинетную должность с переходом 30 апреля 1888 года. Имперская конституция была обнародована только в 1889-м.",
+      "warning": "Смена двух премьер-министров в одном году не является их совместным правлением весь год."
+    },
+    {
+      "id": "et",
+      "label": "Эфиопия · 1888",
+      "subtitle": "Император Йоханныс IV и региональное царство Шоа",
+      "explanation": "Йоханныс IV являлся императором Эфиопии, Менелик — королём Шоа, признавшим верховенство Йоханныса в 1878 году. Это не означает, что император непосредственно отдавал каждое распоряжение в Шоа.",
+      "warning": "Менелик стал императором только в 1889 году. Нельзя автоматически приписывать ему этот титул в 1888-м."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "e1888-meiji",
+      "region": "jp",
+      "kind": "person",
+      "label": "Император Мэйдзи",
+      "note": "Император Японии (1867–1912). Конституция Мэйдзи обнародована лишь в 1889 году.",
+      "source_ids": [
+        "J02",
+        "J03"
+      ]
+    },
+    {
+      "id": "e1888-japan-throne",
+      "region": "jp",
+      "kind": "imperial_title_context",
+      "label": "Императорский престол",
+      "note": "Императорская должность; не смешивать с персоной главы кабинета.",
+      "source_ids": [
+        "J02",
+        "J03"
+      ]
+    },
+    {
+      "id": "e1888-ito",
+      "region": "jp",
+      "kind": "person",
+      "label": "Ито Хиробуми",
+      "note": "Первый премьер-министр Японии, срок с 22 декабря 1885 до 30 апреля 1888 года.",
+      "source_ids": [
+        "J01"
+      ]
+    },
+    {
+      "id": "e1888-kuroda",
+      "region": "jp",
+      "kind": "person",
+      "label": "Курода Киётака",
+      "note": "Второй премьер-министр Японии, вступил в должность 30 апреля 1888 года.",
+      "source_ids": [
+        "J01"
+      ]
+    },
+    {
+      "id": "e1888-japan-cabinet",
+      "region": "jp",
+      "kind": "collective_institution",
+      "label": "Кабинет министров",
+      "note": "Институт исполнительного управления, отдельный от императорского престола.",
+      "source_ids": [
+        "J01"
+      ]
+    },
+    {
+      "id": "e1888-yohannes",
+      "region": "et",
+      "kind": "person",
+      "label": "Йоханныс IV",
+      "note": "Император Эфиопии в 1872–1889 годах; умер в марте 1889 года.",
+      "source_ids": [
+        "E01"
+      ]
+    },
+    {
+      "id": "e1888-ethiopia",
+      "region": "et",
+      "kind": "polity",
+      "label": "Эфиопская империя",
+      "note": "Историческое государство с императорским титулом и региональными политическими центрами.",
+      "source_ids": [
+        "E01"
+      ]
+    },
+    {
+      "id": "e1888-menelik",
+      "region": "et",
+      "kind": "person",
+      "label": "Менелик · король Шоа",
+      "note": "В 1888 году король Шоа; императором стал в 1889 году.",
+      "source_ids": [
+        "E01",
+        "E02"
+      ]
+    },
+    {
+      "id": "e1888-shewa",
+      "region": "et",
+      "kind": "polity",
+      "label": "Королевство Шоа",
+      "note": "Региональное царство с собственным правителем и ограниченной автономией внутри политических отношений эфиопской монархии.",
+      "source_ids": [
+        "E01"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1888-meiji-title",
+      "region": "jp",
+      "from": "e1888-meiji",
+      "to": "e1888-japan-throne",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Император Мэйдзи",
+      "source_ids": [
+        "J02"
+      ],
+      "period": {
+        "start_year": 1888,
+        "end_year": 1888,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Мэйдзи занимал императорский престол в 1888 году.",
+      "caveat": "Конституция 1889 года ещё не вступила в историю 1888 года."
+    },
+    {
+      "id": "e1888-ito-cabinet",
+      "region": "jp",
+      "from": "e1888-ito",
+      "to": "e1888-japan-cabinet",
+      "kind": "cabinet_office",
+      "dimension": "institutional",
+      "label": "Ито Хиробуми — премьер-министр",
+      "source_ids": [
+        "J01"
+      ],
+      "period": {
+        "start_year": 1888,
+        "end_year": 1888,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Ито оставался премьер-министром в начале 1888 года до 30 апреля.",
+      "caveat": "Не считать полным годом работы кабинета Ито."
+    },
+    {
+      "id": "e1888-kuroda-cabinet",
+      "region": "jp",
+      "from": "e1888-kuroda",
+      "to": "e1888-japan-cabinet",
+      "kind": "cabinet_office",
+      "dimension": "institutional",
+      "label": "Курода Киётака — премьер-министр",
+      "source_ids": [
+        "J01"
+      ],
+      "period": {
+        "start_year": 1888,
+        "end_year": 1888,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Курода занял должность 30 апреля 1888 года.",
+      "caveat": "Годовое пересечение с Ито не доказывает совместный кабинет."
+    },
+    {
+      "id": "e1888-cabinet-transition",
+      "region": "jp",
+      "from": "e1888-ito",
+      "to": "e1888-kuroda",
+      "kind": "cabinet_transition",
+      "dimension": "institutional",
+      "label": "Смена главы кабинета 30 апреля",
+      "source_ids": [
+        "J01"
+      ],
+      "period": {
+        "start_year": 1888,
+        "end_year": 1888,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "event_in_year",
+        "documented_day": {
+          "value": "1888-04-30",
+          "calendar": "gregorian",
+          "precision": "day",
+          "qualifier": "as_recorded"
+        }
+      },
+      "explanation": "30 апреля 1888 года Курода сменил Ито на посту премьер-министра.",
+      "caveat": "Разовое вступление в должность, не совместное исполнение одной должности."
+    },
+    {
+      "id": "e1888-yohannes-title",
+      "region": "et",
+      "from": "e1888-yohannes",
+      "to": "e1888-ethiopia",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Император Йоханныс IV",
+      "source_ids": [
+        "E01"
+      ],
+      "period": {
+        "start_year": 1888,
+        "end_year": 1888,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Йоханныс IV был императором Эфиопии в 1872–1889 годах.",
+      "caveat": "Титул не доказывает прямое оперативное управление каждым регионом."
+    },
+    {
+      "id": "e1888-menelik-shewa",
+      "region": "et",
+      "from": "e1888-menelik",
+      "to": "e1888-shewa",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Менелик — король Шоа",
+      "source_ids": [
+        "E01",
+        "E02"
+      ],
+      "period": {
+        "start_year": 1888,
+        "end_year": 1888,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Менелик правил королевством Шоа и не был императором в 1888 году.",
+      "caveat": "Императором стал в 1889 году после смерти Йоханныса IV."
+    },
+    {
+      "id": "e1888-menelik-yohannes",
+      "region": "et",
+      "from": "e1888-menelik",
+      "to": "e1888-yohannes",
+      "kind": "formal_overlordship",
+      "dimension": "institutional",
+      "label": "Признание императорского верховенства",
+      "source_ids": [
+        "E01"
+      ],
+      "period": {
+        "start_year": 1888,
+        "end_year": 1888,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Менелик признал верховенство Йоханныса IV в 1878 году; королевство Шоа имело собственную сферу управления.",
+      "caveat": "Формальная иерархия не означает полного прямого управления императора всей повседневной политикой Шоа."
+    }
+  ],
+  "sources": [
+    {
+      "id": "J01",
+      "title": "Japan Prime Minister's Office — 1st and 2nd cabinets, 30 April 1888 transition",
+      "url": "https://japan.kantei.go.jp/past_cabinet/index.html",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "J02",
+      "title": "Bowdoin College Museum — Emperor Meiji, reign 1867–1912",
+      "url": "https://www.bowdoin.edu/art-museum/news/2023/empress-consort-haruko-photograph.html",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "J03",
+      "title": "Imperial Household Agency — Meiji Constitution and Imperial House Law promulgated in 1889",
+      "url": "https://www.kunaicho.go.jp/en/kunaicho/enkaku.html",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "E01",
+      "title": "Encyclopaedia Africana — Yohannes IV emperor and Menelik as king of Shewa; 1878 acknowledgement",
+      "url": "https://encyclopaediaafricana.com/yohannes-iv/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "E02",
+      "title": "Library of Congress — coronation of Menelik II as emperor 3 November 1889",
+      "url": "https://blogs.loc.gov/international-collections/2020/03/emperor-menelik-ii-of-ethiopia-and-the-battle-of-adwa-a-pictorial-history/",
+      "verification": "reference_checked"
+    }
+  ]
+}

@@ -1,0 +1,284 @@
+{
+  "schema_version": "authority-epoch-sample-v1",
+  "status": "research_pilot",
+  "focus_year": 1688,
+  "historical_truth_verified_by_ci": false,
+  "geographic_boundaries_verified": false,
+  "sample_covers_all_world": false,
+  "calendar_policy": "The sampled year is a filter, never a precise day of simultaneous office; 1688 English revolution has 1689 accession and historical style ambiguity.",
+  "methodology": "Source-qualified legal title, institutional office and localized military event; no global sovereignty tree or unsourced boundaries.",
+  "regions": [
+    {
+      "id": "eng",
+      "label": "Англия · 1688",
+      "subtitle": "Корона Якова II и военная интервенция принца Оранского",
+      "explanation": "Вильгельм Оранский прибыл с войском в 1688 году, но совместное царствование Вильгельма III и Марии II началось в 1689 году. Военное прибытие нельзя ретроспективно превратить в юридическое царствование 1688-го.",
+      "warning": "Это срез кризиса в Англии; события Шотландии, Ирландии и многочисленные колониальные конфликты пока не исследованы."
+    },
+    {
+      "id": "jp",
+      "label": "Япония · 1688",
+      "subtitle": "Императорский двор и военное правительство сёгуна",
+      "explanation": "Хигасияма занимал императорский престол в Киото, а Токугава Цунаёси — должность сёгуна, осуществлявшего политическое управление через бакуфу. Два института нельзя объединить в одного «короля Японии».",
+      "warning": "Не описаны все даймё, хан и административные решения 1688 года; ни один контекст не имеет восстановленных границ."
+    },
+    {
+      "id": "mughal",
+      "label": "Могольская империя · 1688",
+      "subtitle": "Императорский титул Аурангзеба и пределы территориальных выводов",
+      "explanation": "В 1688 году Аурангзеб занимал могольский престол (1658–1707). Само наличие титула ничего не доказывает о контроле каждой провинции и местного княжества.",
+      "warning": "В пилоте отражён лишь титул; нет достаточного источникового покрытия административных регионов, войск и соперников."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "e1688-james",
+      "region": "eng",
+      "kind": "person",
+      "label": "Яков II",
+      "note": "Король Англии в 1685–1688; политический кризис и бегство в конце 1688 года.",
+      "source_ids": [
+        "E01",
+        "E03"
+      ]
+    },
+    {
+      "id": "e1688-english-crown",
+      "region": "eng",
+      "kind": "polity",
+      "label": "Английская корона",
+      "note": "Юридический престол Англии до урегулирования 1689 года.",
+      "source_ids": [
+        "E03"
+      ]
+    },
+    {
+      "id": "e1688-william",
+      "region": "eng",
+      "kind": "person",
+      "label": "Вильгельм Оранский",
+      "note": "Нидерландский штатгальтер и лидер вооружённой экспедиции 1688 года; ещё не король Англии по решению 1689 года.",
+      "source_ids": [
+        "E02",
+        "E03"
+      ]
+    },
+    {
+      "id": "e1688-brixham",
+      "region": "eng",
+      "kind": "locality",
+      "label": "Бриксхем · высадка",
+      "note": "Место высадки войск Вильгельма в Девоне, конкретный эпизод 1688 года.",
+      "source_ids": [
+        "E02"
+      ]
+    },
+    {
+      "id": "e1688-higashiyama",
+      "region": "jp",
+      "kind": "person",
+      "label": "Император Хигасияма",
+      "note": "Император Японии с 1687 до 1709 года; нельзя автоматически приписывать ему непосредственное управление через бакуфу.",
+      "source_ids": [
+        "J02"
+      ]
+    },
+    {
+      "id": "e1688-imperial-court",
+      "region": "jp",
+      "kind": "imperial_title_context",
+      "label": "Императорский двор",
+      "note": "Существовавшая отдельно от сёгуната императорская институция в Киото.",
+      "source_ids": [
+        "J02"
+      ]
+    },
+    {
+      "id": "e1688-tsunayoshi",
+      "region": "jp",
+      "kind": "person",
+      "label": "Токугава Цунаёси",
+      "note": "Пятый сёгун Токугава, вступил в должность в 1680 году; политическая администрация бакуфу.",
+      "source_ids": [
+        "J01"
+      ]
+    },
+    {
+      "id": "e1688-bakufu",
+      "region": "jp",
+      "kind": "collective_institution",
+      "label": "Бакуфу Токугава",
+      "note": "Военное правительство сёгуната — не юридический императорский престол.",
+      "source_ids": [
+        "J01"
+      ]
+    },
+    {
+      "id": "e1688-aurangzeb",
+      "region": "mughal",
+      "kind": "person",
+      "label": "Аурангзеб",
+      "note": "Могольский император 1658–1707 годов; годовой срез не подтверждает полноту непосредственного контроля по регионам.",
+      "source_ids": [
+        "M01"
+      ]
+    },
+    {
+      "id": "e1688-mughal-throne",
+      "region": "mughal",
+      "kind": "imperial_title_context",
+      "label": "Престол Великих Моголов",
+      "note": "Императорский юридический титул, отдельный от локальных военных и фискальных свидетельств.",
+      "source_ids": [
+        "M01"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1688-legal-james",
+      "region": "eng",
+      "from": "e1688-james",
+      "to": "e1688-english-crown",
+      "kind": "sovereign_office",
+      "dimension": "legal",
+      "label": "Яков II — королевская должность",
+      "source_ids": [
+        "E01",
+        "E03"
+      ],
+      "period": {
+        "start_year": 1688,
+        "end_year": 1688,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Яков II вступил на престол в 1685 году; кризис 1688 года привёл к потере власти и бегству во Францию.",
+      "caveat": "Не переносить совместное царствование Вильгельма и Марии 1689 года в 1688 год."
+    },
+    {
+      "id": "e1688-william-arrival",
+      "region": "eng",
+      "from": "e1688-william",
+      "to": "e1688-brixham",
+      "kind": "military_intervention",
+      "dimension": "military",
+      "label": "Высадка экспедиции Вильгельма",
+      "source_ids": [
+        "E02",
+        "E03"
+      ],
+      "period": {
+        "start_year": 1688,
+        "end_year": 1688,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "event_in_year"
+      },
+      "explanation": "Вильгельм Оранский высадился с военной экспедицией в Бриксхеме в ноябре 1688 года.",
+      "caveat": "Военная интервенция не является юридическим коронованием; престол предложен ему только в 1689 году."
+    },
+    {
+      "id": "e1688-emperor-higashiyama",
+      "region": "jp",
+      "from": "e1688-higashiyama",
+      "to": "e1688-imperial-court",
+      "kind": "imperial_title",
+      "dimension": "legal",
+      "label": "Император Хигасияма",
+      "source_ids": [
+        "J02"
+      ],
+      "period": {
+        "start_year": 1688,
+        "end_year": 1688,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Император Хигасияма правил в 1687–1709 годах.",
+      "caveat": "Императорский титул не доказывает повседневное руководство бакуфу."
+    },
+    {
+      "id": "e1688-shogun-tsunayoshi",
+      "region": "jp",
+      "from": "e1688-tsunayoshi",
+      "to": "e1688-bakufu",
+      "kind": "shogunate_office",
+      "dimension": "institutional",
+      "label": "Сёгун Токугава Цунаёси",
+      "source_ids": [
+        "J01"
+      ],
+      "period": {
+        "start_year": 1688,
+        "end_year": 1688,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Цунаёси был пятым сёгуном династии Токугава с 1680 года.",
+      "caveat": "Не считать сёгуна единственным носителем всех японских политических должностей."
+    },
+    {
+      "id": "e1688-aurangzeb-title",
+      "region": "mughal",
+      "from": "e1688-aurangzeb",
+      "to": "e1688-mughal-throne",
+      "kind": "imperial_title",
+      "dimension": "legal",
+      "label": "Аурангзеб — могольский император",
+      "source_ids": [
+        "M01"
+      ],
+      "period": {
+        "start_year": 1688,
+        "end_year": 1688,
+        "calendar": "unspecified",
+        "precision": "year",
+        "meaning": "sampled_year"
+      },
+      "explanation": "Аурангзеб был императором Великих Моголов с 1658 по 1707 год.",
+      "caveat": "Формальный титул не удостоверяет весь местный фискальный и военный контроль."
+    }
+  ],
+  "sources": [
+    {
+      "id": "E01",
+      "title": "UK Parliament — reign of James II and constitutional crisis",
+      "url": "https://www.parliament.uk/about/living-heritage/evolutionofparliament/parliamentaryauthority/revolution/overview/reignofjames/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "E02",
+      "title": "UK Parliament — invasion and desertion in 1688",
+      "url": "https://www.parliament.uk/about/living-heritage/evolutionofparliament/parliamentaryauthority/revolution/overview/invasiondesertion/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "E03",
+      "title": "The National Archives — Glorious Revolution 1688/1689 and succession",
+      "url": "https://www.nationalarchives.gov.uk/education/resources/glorious-revolution/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "J01",
+      "title": "Edo-Tokyo Museum — Tokugawa Tsunayoshi became shogun in 1680",
+      "url": "https://edo-tokyo-museum.or.jp/s-exhibition/tsunayoshi/",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "J02",
+      "title": "Kotobank / Shogakukan — Emperor Higashiyama, reign 1687–1709",
+      "url": "https://kotobank.jp/word/%E6%9D%B1%E5%B1%B1%E5%A4%A9%E7%9A%87-14862",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "M01",
+      "title": "1911 Encyclopaedia Britannica / Wikisource — Aurangzeb, Mughal Emperor",
+      "url": "https://en.wikisource.org/wiki/1911_Encyclop%C3%A6dia_Britannica/Aurangzeb",
+      "verification": "reference_checked"
+    }
+  ]
+}

@@ -2,6 +2,8 @@
   "id": "person-f096d9b69cb3563a",
   "name": "Алексей Михайлович",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q7731"
+  },
   "biography_status": "incomplete"
 }

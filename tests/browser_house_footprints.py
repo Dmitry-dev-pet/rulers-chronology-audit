@@ -144,7 +144,7 @@ def run(dist:Path, output:Path):
                 assert not errors, errors
                 report.append({
                     'viewport':[width,height],
-                    'dynasties':4,
+                    'dynasties':6,
                     'years':[1788,1798],
                     'features':['separate powers','personal union','branch lineage','optional consorts',
                                 'source citations','deep link','mobile pan'],

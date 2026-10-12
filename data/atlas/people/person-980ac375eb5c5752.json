@@ -2,6 +2,8 @@
   "id": "person-980ac375eb5c5752",
   "name": "Владимир Ленин",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q1394"
+  },
   "biography_status": "incomplete"
 }

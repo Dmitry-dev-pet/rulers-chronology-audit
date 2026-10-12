@@ -1,0 +1,176 @@
+name: Wikidata reconciliation (read-only historical audit)
+
+on:
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      open_report_pr:
+        description: 'Create review-only PR with generated external-data report'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wikidata-reconciliation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  read-only-audit:
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source without write credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify offline identity and calendar rules
+        run: python3 -m unittest tests.test_wikidata_sync tests.test_wikidata_office_review tests.test_wikidata_jurisdiction_review tests.test_schema_v2_wikidata_roles -v
+      - name: Fetch Wikidata claims and discover unverified names
+        run: |
+          set -euo pipefail
+          python3 -m scripts.wikidata_sync \
+            --discover --max-searches 107 --request-delay 0.4 \
+            --json-output reports/wikidata/latest.json \
+            --markdown-output reports/wikidata/latest.md
+      - name: Reconcile legal positions using explicit P39 office QIDs
+        run: |
+          set -euo pipefail
+          python3 -m scripts.wikidata_office_review \
+            --input reports/wikidata/latest.json \
+            --json-output reports/wikidata/offices.json \
+            --markdown-output reports/wikidata/offices.md
+      - name: Classify office jurisdictions without interpreting power or borders
+        run: |
+          set -euo pipefail
+          python3 -m scripts.wikidata_jurisdiction_review \
+            --input reports/wikidata/latest.json \
+            --json-output reports/wikidata/jurisdictions.json \
+            --markdown-output reports/wikidata/jurisdictions.md
+      - name: Build disposable v2 Wikidata-curated crown timeline
+        run: |
+          set -euo pipefail
+          python3 -m scripts.atlas_v2_wikidata_roles \
+            --wikidata-report reports/wikidata/latest.json \
+            --year 1790 \
+            --json-output reports/wikidata/curated-crowns.json \
+            --markdown-output reports/wikidata/curated-crowns.md \
+            --sqlite-output reports/wikidata/atlas-v2-curated-crowns.sqlite
+      - name: Verify read-only canonical data
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! git diff --quiet -- data/atlas schemas site dist research; then
+            echo 'Canonical or published inputs were changed' >&2
+            exit 1
+          fi
+          test -s reports/wikidata/latest.json
+          test -s reports/wikidata/latest.md
+          test -s reports/wikidata/offices.json
+          test -s reports/wikidata/offices.md
+          test -s reports/wikidata/jurisdictions.json
+          test -s reports/wikidata/jurisdictions.md
+          test -s reports/wikidata/curated-crowns.json
+          test -s reports/wikidata/curated-crowns.md
+          test -s reports/wikidata/atlas-v2-curated-crowns.sqlite
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          report = json.loads(Path('reports/wikidata/latest.json').read_text())
+          assert report['historical_truth_verified'] is False
+          assert report['mutated_canonical_data'] is False
+          offices = json.loads(Path('reports/wikidata/offices.json').read_text())
+          assert offices['schema_version'] == 'wikidata-office-review-v1'
+          assert offices['mutated_canonical_data'] is False
+          assert offices['asserted_real_power'] is False
+          assert len(offices['subjects']) == report['summary']['confirmed_qids']
+          jurisdictions = json.loads(Path('reports/wikidata/jurisdictions.json').read_text())
+          assert jurisdictions['schema_version'] == 'wikidata-jurisdiction-review-v1'
+          assert jurisdictions['mutated_canonical_data'] is False
+          assert jurisdictions['actual_power_inferred'] is False
+          assert jurisdictions['historical_borders_verified'] is False
+          crowns = json.loads(Path('reports/wikidata/curated-crowns.json').read_text())
+          assert crowns['schema_version'] == 'wikidata-curated-v2-world-role-pilot-v1'
+          assert crowns['historical_truth_verified_by_ci'] is False
+          assert crowns['claim_of_actual_power'] is False
+          assert crowns['counts']['source_role_count'] == 8
+          assert crowns['counts']['typed_crown_contexts'] == 2
+          assert len(crowns['year_candidates']) == 4
+          import sqlite3
+          conn = sqlite3.connect('file:reports/wikidata/atlas-v2-curated-crowns.sqlite?mode=ro', uri=True)
+          try:
+              assert conn.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+              assert conn.execute('PRAGMA foreign_key_check').fetchall() == []
+              assert conn.execute('PRAGMA user_version').fetchone()[0] == 1
+              assert conn.execute('SELECT count(*) FROM v2_wikidata_crown_claims').fetchone()[0] == 8
+              assert conn.execute('SELECT count(*) FROM people').fetchone()[0] == 83
+              assert conn.execute('SELECT count(*) FROM provenance').fetchone()[0] == 150
+          finally:
+              conn.close()
+          s = report['summary']
+          assert len(report['records']) == s['canonical_people'] + s['unlinked_world_people']
+          assert sum(s['statuses'].values()) == len(report['records'])
+          assert s['confirmed_qids'] == s['confirmed_canonical_qids'] + s['reviewed_world_qids']
+          assert s['confirmed_qids'] <= len(report['records'])
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('## Wikidata external reconciliation\n\n')
+              f.write(f"Canonical people: {s['canonical_people']}; "
+                      f"world-only: {s['unlinked_world_people']}; "
+                      f"confirmed QIDs: {s['confirmed_qids']}; "
+                      f"unverified searches: {s['candidate_searches']}.\n\n")
+              f.write('Review-only report. No identity merges or Pages changes.\n')
+          PY
+      - name: Upload external research report
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wikidata-reconciliation-report
+          path: reports/wikidata/
+          if-no-files-found: error
+          retention-days: 30
+
+  propose-report-pr:
+    needs: read-only-audit
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.open_report_pr == true && github.ref == 'refs/heads/main' && github.event.repository.private == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout reviewed main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Download report from this workflow run
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: wikidata-reconciliation-report
+          path: reports/wikidata/
+      - name: Open PR only when report changed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test -s reports/wikidata/latest.json
+          test -s reports/wikidata/latest.md
+          git add -- reports/wikidata/latest.json reports/wikidata/latest.md reports/wikidata/offices.json reports/wikidata/offices.md reports/wikidata/jurisdictions.json reports/wikidata/jurisdictions.md reports/wikidata/curated-crowns.json reports/wikidata/curated-crowns.md
+          if git diff --cached --quiet; then
+            echo 'No external-data changes since the last reviewed main report.'
+            exit 0
+          fi
+          branch="bot/wikidata-report-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'data(wikidata): propose external review report'
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title 'Wikidata: dated historic crowns, reviewed identities and P39 scope' \
+            --body 'Review-only Wikidata report (JSON and Markdown). No canonical people, historical facts, real-power assessments, SQLite, or GitHub Pages changed. Name matches are unverified. Created by explicit manual workflow dispatch; do not auto-merge. GITHUB_TOKEN-created PRs may not trigger PR workflows; inspect the completed audit and run independent checks as needed.'

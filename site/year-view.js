@@ -50,6 +50,66 @@
   const from = elem('span', null, slider.min);
   const to = elem('span', null, slider.max);
   range.append(from, slider, to);
+  // Histography-inspired playback reuses the canonical year slider. Every frame
+  // is a source-backed year query, NOT an inferred transfer of actual power.
+  const playback = elem('div', 'atlas-year-playback');
+  playback.setAttribute('role', 'group');
+  playback.setAttribute('aria-label', 'Воспроизведение хронологии');
+  const play = elem('button', 'atlas-year-play', '▶ Воспроизвести');
+  play.type = 'button';
+  play.setAttribute('aria-pressed', 'false');
+  const speedLabel = elem('label', 'atlas-year-playback-speed', 'Шаг: ');
+  const speed = elem('select', 'atlas-year-playback-step');
+  speed.setAttribute('aria-label', 'Шаг между историческими срезами');
+  for (const [value, label] of [[1, '1 год'], [5, '5 лет'], [10, '10 лет']]) {
+    const option = elem('option', null, label);
+    option.value = String(value);
+    speed.appendChild(option);
+  }
+  speed.value = '5';
+  speedLabel.appendChild(speed);
+  const playbackNote = elem('span', 'atlas-year-playback-note',
+    'Срезы по годам — не анимация фактической передачи власти.');
+  playback.append(play, speedLabel, playbackNote);
+  let playbackTimer = null;
+  let playbackFrame = false;
+  function stopPlayback() {
+    if (playbackTimer !== null) window.clearInterval(playbackTimer);
+    playbackTimer = null;
+    play.textContent = '▶ Воспроизвести';
+    play.setAttribute('aria-pressed', 'false');
+  }
+  function advancePlayback() {
+    if (document.hidden || panel.hidden || Number(slider.value) >= Number(slider.max)) {
+      stopPlayback();
+      return;
+    }
+    playbackFrame = true;
+    try { stepYear(Number(speed.value)); }
+    finally { playbackFrame = false; }
+    if (Number(slider.value) >= Number(slider.max)) stopPlayback();
+  }
+  play.addEventListener('click', () => {
+    if (playbackTimer !== null) { stopPlayback(); return; }
+    // At the end of a selected era, explicitly restart from that era's start.
+    if (Number(slider.value) >= Number(slider.max)) {
+      slider.value = slider.min;
+      slider.dispatchEvent(new Event('input', {bubbles: true}));
+    }
+    play.textContent = 'Ⅱ Пауза';
+    play.setAttribute('aria-pressed', 'true');
+    playbackTimer = window.setInterval(advancePlayback, 850);
+  });
+  // Any direct navigation or a backgrounded tab cancels playback.
+  slider.addEventListener('input', () => { if (!playbackFrame) stopPlayback(); });
+  window.addEventListener('hashchange', stopPlayback);
+  window.addEventListener('atlas:world-open', stopPlayback);
+  window.addEventListener('atlas:route', event => {
+    if (event.detail?.view !== 'timeline') stopPlayback();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopPlayback();
+  });
   const caveat = elem('p', 'atlas-year-dashboard-caveat',
     'Показаны записи, пересекающие год, а не обязательно действовавшие одновременно. ' +
     'Должность не доказывает фактическую власть; историческая проверка продолжается.');
@@ -65,7 +125,10 @@
   const worldLink = elem('a', 'atlas-year-world-link', '◈ Мир · 1762: происхождение и династии ↗');
   worldLink.href = '?world=1762#/timeline/1762';
   worldLink.dataset.worldOpen = '1762';
-  dashboard.append(originalHead, range, worldLink, caveat, status, highlights, cards);
+  const geoLink = elem('a', 'atlas-year-geolink', '◈ Карта Европы · 1762–1800 ↗');
+  geoLink.href = '?world=dynasty18&dynYear=1762&dynView=map#/timeline/1762';
+  geoLink.setAttribute('aria-label', 'Открыть географические ориентиры, правителей и связи Европы');
+  dashboard.append(originalHead, range, playback, worldLink, geoLink, caveat, status, highlights, cards);
   panel.insertBefore(dashboard, toolbar);
 
   // The historical statements remain in the canonical atlas database,
@@ -243,6 +306,11 @@
 
   function render() {
     const year = Number(slider.value);
+    const pilotYear = year >= 1762 && year <= 1800 ? year : 1762;
+    geoLink.href = '?world=dynasty18&dynYear=' + pilotYear +
+      '&dynView=map#/timeline/' + pilotYear;
+    geoLink.textContent = '◈ Карта Европы · ' +
+      (year >= 1762 && year <= 1800 ? String(year) : '1762–1800') + ' ↗';
     prev.disabled = year <= Number(slider.min);
     next.disabled = year >= Number(slider.max);
     from.textContent = slider.min;

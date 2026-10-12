@@ -1,0 +1,259 @@
+{
+  "schema_version": "wikidata-reviewed-world-links-v1",
+  "review_date": "2026-10-11",
+  "identity_policy": "QID is an external identity reference after name+period+role+polity review, not a canonical identity merger. World-pilot persons remain separate from v1 people. Historical truth and territorial control are not established. P3 completes reviewed QIDs for all 24 world-only people while preserving them as independent IDs, not 24 historically verified rulers.",
+  "links": [
+    {
+      "world_id": "gb-george3",
+      "wikidata_qid": "Q127318",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q127318"
+      ],
+      "note": "British king from 1760 and separate Hanover office; not a polity merge."
+    },
+    {
+      "world_id": "fr-louis15",
+      "wikidata_qid": "Q7738",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q7738"
+      ],
+      "note": "King of France, reign covering 1762."
+    },
+    {
+      "world_id": "fr-louis16",
+      "wikidata_qid": "Q7732",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q7732"
+      ],
+      "note": "King of France and later of the French; title changes require separate roles."
+    },
+    {
+      "world_id": "hre-joseph",
+      "wikidata_qid": "Q76555",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q76555"
+      ],
+      "note": "Holy Roman emperor Joseph II, elective dignity distinct from Habsburg lands."
+    },
+    {
+      "world_id": "hab-maria",
+      "wikidata_qid": "Q131706",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q131706"
+      ],
+      "note": "Maria Theresa of Habsburg territories, not the elected emperor."
+    },
+    {
+      "world_id": "hab-leopold",
+      "wikidata_qid": "Q151321",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q151321"
+      ],
+      "note": "Leopold II Holy Roman emperor, not Belgian king Leopold II."
+    },
+    {
+      "world_id": "hab-francis2",
+      "wikidata_qid": "Q130834",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q130834"
+      ],
+      "note": "Francis II of HRE, also Francis I of Austria, multi-office context."
+    },
+    {
+      "world_id": "pr-frederick2",
+      "wikidata_qid": "Q33550",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q33550"
+      ],
+      "note": "Frederick II king of Prussia, not medieval Holy Roman emperor Frederick II."
+    },
+    {
+      "world_id": "pr-fw2",
+      "wikidata_qid": "Q152229",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q152229"
+      ],
+      "note": "Frederick William II of Prussia, not the Duke of Sonderburg-Beck."
+    },
+    {
+      "world_id": "pr-fw3",
+      "wikidata_qid": "Q37134",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q37134"
+      ],
+      "note": "Frederick William III of Prussia."
+    },
+    {
+      "world_id": "fr-napoleon",
+      "wikidata_qid": "Q517",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q517"
+      ],
+      "note": "Napoleon Bonaparte, first consul in the pilot period; later emperorship separate."
+    },
+    {
+      "world_id": "sw-gustav3",
+      "wikidata_qid": "Q52930",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q52930"
+      ],
+      "note": "King Gustav III of Sweden."
+    },
+    {
+      "world_id": "sw-gustav4",
+      "wikidata_qid": "Q52929",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q52929"
+      ],
+      "note": "King Gustav IV Adolf of Sweden."
+    },
+    {
+      "world_id": "es-carlos4",
+      "wikidata_qid": "Q183226",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q183226"
+      ],
+      "note": "Charles IV of Spain (king)."
+    },
+    {
+      "world_id": "pt-carlota",
+      "wikidata_qid": "Q233603",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q233603"
+      ],
+      "note": "Carlota Joaquina of Spain, not sovereign merely because a consort."
+    },
+    {
+      "world_id": "fr-antoinette",
+      "wikidata_qid": "Q47365",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q47365"
+      ],
+      "note": "Marie Antoinette, consort; do not infer ruling sovereignty."
+    },
+    {
+      "world_id": "gb-charlotte",
+      "wikidata_qid": "Q161159",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q161159"
+      ],
+      "note": "Charlotte of Mecklenburg-Strelitz, consort of George III."
+    },
+    {
+      "world_id": "sw-charles",
+      "wikidata_qid": "Q52928",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q52928"
+      ],
+      "note": "Duke Charles of Södermanland in 1781–1800, later Charles XIII of Sweden; later monarchy is not retroactive to the pilot window."
+    },
+    {
+      "world_id": "pt-joao",
+      "wikidata_qid": "Q676301",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q676301"
+      ],
+      "note": "Prince João, later João VI of Portugal; regency and subsequent reign are distinct roles."
+    },
+    {
+      "world_id": "es-carlos3",
+      "wikidata_qid": "Q36234",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q36234"
+      ],
+      "note": "Charles III of Spain (1759–1788); not King Charles III of the UK or Naples regnal number."
+    },
+    {
+      "world_id": "pt-maria1",
+      "wikidata_qid": "Q773874",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q773874"
+      ],
+      "note": "Maria I of Portugal, sovereign from 1777; consort and regency remain separate."
+    },
+    {
+      "world_id": "hab-maria-luisa",
+      "wikidata_qid": "Q229826",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q229826"
+      ],
+      "note": "Maria Luisa of Spain (1745–1792), spouse of Leopold II, Holy Roman Emperor; does not make consort a sovereign."
+    },
+    {
+      "world_id": "pt-pedro3",
+      "wikidata_qid": "Q964094",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/extension-1781-1800.json",
+        "https://www.wikidata.org/wiki/Q964094"
+      ],
+      "note": "Pedro III of Portugal, royal consort and co-monarch; record both legal concepts distinctly."
+    },
+    {
+      "world_id": "hre-francis",
+      "wikidata_qid": "Q151075",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/dynasty-1762-1780.json",
+        "https://www.wikidata.org/wiki/Q151075"
+      ],
+      "note": "Francis Stephen of Lorraine, Holy Roman Emperor Francis I (1745–1765), not Francis II (later)."
+    }
+  ],
+  "rejected_candidates": [
+    {
+      "world_id": "pr-frederick2",
+      "wikidata_qid": "Q130221",
+      "reason": "Frederick II Holy Roman Emperor (13th century), not king of Prussia (18th century)"
+    },
+    {
+      "world_id": "hab-leopold",
+      "wikidata_qid": "Q12967",
+      "reason": "King of Belgium (19th century), not Holy Roman Emperor Leopold II (1790–1792)"
+    }
+  ]
+}

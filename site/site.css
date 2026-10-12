@@ -2285,3 +2285,227 @@ button[disabled] {
   z-index:12;box-shadow:4px 0 7px -4px rgba(30,51,37,.26)
 }
 .dynasty-house-axis .dynasty-house-sticky-label{z-index:13}
+
+
+/* Audited, source-aware country × year coverage heatmap; no completeness claims. */
+.dynasty-coverage-panel[hidden]{display:none!important}
+.dynasty-coverage-panel{min-width:0;max-width:100%}
+.dynasty-coverage-intro,.dynasty-coverage-method{
+  margin:13px 0 5px;color:#5e7164;
+  font:400 13px/1.5 system-ui,sans-serif
+}
+.dynasty-coverage-overview{font:730 13px/1.55 system-ui,sans-serif;
+  color:#3d604c;margin:8px 0 11px}
+.dynasty-coverage-scroll{
+  max-width:100%;width:100%;overflow-x:auto;overflow-y:hidden;
+  touch-action:pan-x pan-y;overscroll-behavior-inline:contain;
+  scrollbar-width:thin;border:1px solid #cbd9cf;border-radius:10px;
+  background:#f7f9f4
+}
+.dynasty-coverage-matrix{width:max-content;min-width:100%;padding:0 0 8px}
+.dynasty-coverage-row{
+  display:grid;grid-template-columns:180px max-content;
+  min-width:max-content;isolation:isolate;
+  border-bottom:1px solid #e2e9e1;align-items:stretch
+}
+.dynasty-coverage-sticky{
+  position:sticky;left:0;z-index:5;display:flex;min-width:0;
+  width:180px;box-sizing:border-box;
+  align-items:flex-start;flex-direction:column;justify-content:center;gap:3px;
+  border-right:1px solid #cedacf;
+  background:#fcfdf8;color:#355441;
+  padding:5px 8px;
+  box-shadow:3px 0 7px -4px #607f69
+}
+.dynasty-coverage-sticky strong{
+  font:760 12px/1.3 system-ui,sans-serif;overflow-wrap:anywhere
+}
+.dynasty-coverage-row-count{font:500 10px/1.3 system-ui,sans-serif;color:#647a6b}
+.dynasty-coverage-header{position:relative;background:#e8eee7}
+.dynasty-coverage-column-title{
+  font:800 12px/1.35 system-ui,sans-serif;background:#e8eee7
+}
+.dynasty-coverage-cells{
+  display:grid;grid-template-columns:repeat(39,37px);
+  column-gap:1px;align-items:center;
+  padding:2px 5px;background:#f6f8f5
+}
+.dynasty-coverage-years{min-height:45px;background:#e8eee7}
+.dynasty-coverage-year-label{display:flex;min-width:0;justify-content:center;
+  align-items:center;font:700 10px/1.3 system-ui,sans-serif;color:#73887a;
+  font-variant-numeric:tabular-nums}
+.dynasty-coverage-year-label.is-current{
+  color:#9a5b27;font-weight:850;border-bottom:3px solid #bc8546
+}
+.dynasty-coverage-cell{
+  display:block;min-width:37px;width:37px;height:43px;
+  font-size:0;color:transparent;
+  border:1px solid transparent;border-radius:5px;
+  cursor:pointer;appearance:none
+}
+.dynasty-coverage-cell[data-coverage-status="office"],
+.dynasty-coverage-legend-item[data-coverage-status="office"]:before{background:#3f8062}
+.dynasty-coverage-cell[data-coverage-status="institution"],
+.dynasty-coverage-legend-item[data-coverage-status="institution"]:before{background:#587ab6}
+.dynasty-coverage-cell[data-coverage-status="supplementary"],
+.dynasty-coverage-legend-item[data-coverage-status="supplementary"]:before{background:#9b83a9}
+.dynasty-coverage-cell[data-coverage-status="research_gap"],
+.dynasty-coverage-legend-item[data-coverage-status="research_gap"]:before{background:#e5b75e}
+.dynasty-coverage-cell[data-coverage-status="outside_sample"],
+.dynasty-coverage-legend-item[data-coverage-status="outside_sample"]:before{
+  background:repeating-linear-gradient(135deg,#d8ded9 0,#d8ded9 5px,
+    #edf0ed 5px,#edf0ed 10px)
+}
+.dynasty-coverage-cell[data-coverage-status="historically_not_in_force"],
+.dynasty-coverage-legend-item[data-coverage-status="historically_not_in_force"]:before{
+  background:#384b55
+}
+.dynasty-coverage-cell[data-coverage-status="birthplace_context"],
+.dynasty-coverage-legend-item[data-coverage-status="birthplace_context"]:before{
+  background:#f1ebf2;border:1px dashed #917d99
+}
+.dynasty-coverage-cell.is-current{border:2px solid #d6a456}
+.dynasty-coverage-cell[aria-pressed="true"]{
+  outline:3px solid #1d5756;outline-offset:-2px;position:relative;z-index:2
+}
+.dynasty-coverage-cell:hover{filter:brightness(.87)}
+.dynasty-coverage-cell:focus-visible,.dynasty-coverage-task-action:focus-visible{
+  outline:3px solid #245f7d;outline-offset:1px;z-index:3;position:relative
+}
+.dynasty-coverage-legend{display:flex;flex-wrap:wrap;gap:7px 12px;
+  margin:9px 0;color:#4b6253}
+.dynasty-coverage-legend-item{
+  display:inline-flex;align-items:center;gap:6px;
+  font:620 11px/1.35 system-ui,sans-serif
+}
+.dynasty-coverage-legend-item:before{
+  content:"";display:inline-block;flex:0 0 auto;
+  width:13px;height:13px;border-radius:3px
+}
+.dynasty-coverage-detail{
+  background:#f4f7f1;border:1px solid #d4dfd3;border-left:4px solid #528770;
+  border-radius:9px;padding:12px 13px;margin:11px 0;min-width:0
+}
+.dynasty-coverage-detail h3{font:800 16px/1.4 system-ui,sans-serif;
+  margin:0 0 7px;color:#305340}
+.dynasty-coverage-detail-status{display:inline-block;margin:3px 0 8px;
+  padding:4px 7px;font:750 12px/1.35 system-ui,sans-serif;
+  color:#365b46;border:1px solid #a1bca4;border-radius:6px}
+.dynasty-coverage-detail-status[data-coverage-status="research_gap"]{
+  color:#855514;border-color:#d2ae6a}
+.dynasty-coverage-detail-status[data-coverage-status="historically_not_in_force"]{
+  color:#344a57;border-color:#9daab3}
+.dynasty-coverage-detail-explain,.dynasty-coverage-polity-note,
+.dynasty-coverage-source-caption{font:460 12px/1.55 system-ui,sans-serif;
+  color:#596e60;margin:8px 0}
+.dynasty-coverage-evidence{list-style:none;padding:0;margin:8px 0}
+.dynasty-coverage-evidence li{
+  border-top:1px solid #d6e1d5;padding:9px 0;
+  font:530 13px/1.5 system-ui,sans-serif;color:#345642
+}
+.dynasty-coverage-evidence-years{color:#5b7162;font-size:12px}
+.dynasty-coverage-open-task{padding:9px;background:#fff2d6;
+  color:#6e5227;font:650 12px/1.45 system-ui,sans-serif;
+  border-radius:7px}
+.dynasty-coverage-tasks h3{font:780 16px/1.4 system-ui,sans-serif;
+  margin:16px 0 5px;color:#385740}
+.dynasty-coverage-task-list>p{font:450 12px/1.5 system-ui,sans-serif;
+  color:#687869;margin:0 0 10px}
+.dynasty-coverage-task-card{border:1px solid #d9e0d5;border-radius:8px;
+  background:#fbfcf8;margin:7px 0;padding:10px}
+.dynasty-coverage-task-card p{font:450 12px/1.5 system-ui,sans-serif;
+  color:#5e705d;margin:5px 0}
+.dynasty-coverage-task-action{cursor:pointer;border:0;padding:4px;
+  background:transparent;font:760 13px/1.45 system-ui,sans-serif;
+  color:#2d6f65;text-align:left}
+.dynasty-coverage-task-action:hover{text-decoration:underline}
+@media(max-width:900px){
+  .dynasty-view-switch{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .dynasty-view-button{font-size:11.5px;min-height:51px;padding:5px 3px}
+  .dynasty-coverage-row{grid-template-columns:140px max-content}
+  .dynasty-coverage-sticky{width:140px;padding:5px}
+  .dynasty-coverage-sticky strong{font-size:11px}
+  .dynasty-coverage-row-count{font-size:9px}
+  .dynasty-coverage-cells{grid-template-columns:repeat(39,40px)}
+  .dynasty-coverage-cell{min-width:40px;width:40px;height:44px}
+  .dynasty-coverage-overview{font-size:12px;margin:6px 0}
+  .dynasty-coverage-legend{gap:5px 10px}
+  .dynasty-coverage-legend-item{font-size:10.5px}
+}
+
+/* Histography benchmark: readable, explicitly opted-in playback of canonical years. */
+.atlas-app .atlas-year-playback{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:2px 0}
+.atlas-app .atlas-year-play{min-height:36px;min-width:136px;padding:7px 12px;border:1px solid var(--green);border-radius:8px;background:var(--green);color:#fff;font:750 13px/1.3 system-ui,sans-serif;cursor:pointer}
+.atlas-app .atlas-year-play[aria-pressed="true"]{background:var(--red);border-color:var(--red)}
+.atlas-app .atlas-year-play:focus-visible,.atlas-app .atlas-year-playback-step:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.atlas-app .atlas-year-playback-speed{display:inline-flex;align-items:center;gap:6px;font:650 12px/1.4 system-ui,sans-serif;color:var(--muted)}
+.atlas-app .atlas-year-playback-step{min-height:36px;padding:5px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:650 13px system-ui,sans-serif}
+.atlas-app .atlas-year-playback-note{font:500 11px/1.4 system-ui,sans-serif;color:var(--muted)}
+@media(max-width:900px){
+  .atlas-app.atlas-mobile .atlas-year-playback{flex:0 0 auto;gap:9px;padding:1px 0}
+  .atlas-app.atlas-mobile .atlas-year-play,.atlas-app.atlas-mobile .atlas-year-playback-step{min-height:44px}
+  .atlas-app.atlas-mobile .atlas-year-playback-note{flex-basis:100%;font-size:12px}
+  .atlas-app.atlas-mobile #panel-timeline:not(.smuta-map-active)[data-mobile-mode="timeline"] .atlas-year-playback{display:none!important}
+}
+
+/* Europe reference-map view: coastlines and city points, NOT historic borders. */
+.atlas-app .atlas-year-geolink{align-self:flex-start;display:inline-flex;align-items:center;
+  min-height:36px;padding:7px 11px;border:1px solid #9cbbae;border-radius:8px;
+  background:#eaf4ed;color:#245848;font:750 12px/1.4 system-ui,sans-serif;text-decoration:none}
+.atlas-app .atlas-year-geolink:hover{background:#dcefe2}
+.dynasty-geo-panel[hidden]{display:none!important}
+.dynasty-geo-panel{min-width:0;max-width:100%;margin-bottom:15px}
+.dynasty-geo-lead{font:550 14px/1.5 system-ui,sans-serif;color:#405e53;
+  border-left:4px solid #b48650;padding:7px 12px;margin:8px 0 10px;background:#f5f0e6}
+.dynasty-geo-status{font:680 12px/1.5 system-ui,sans-serif;color:#466b59;
+  margin:5px 0 10px}
+.dynasty-geo-jump{display:flex;gap:7px;overflow-x:auto;padding:3px 1px 10px;
+  overscroll-behavior-inline:contain;scrollbar-width:thin}
+.dynasty-geo-jump-button{flex:0 0 auto;min-height:44px;padding:8px 12px;border-radius:23px;
+  border:1px solid #c6d6c9;background:#fbfcf8;color:#355849;
+  font:730 12px/1.4 system-ui,sans-serif;cursor:pointer}
+.dynasty-geo-jump-button[aria-pressed="true"]{background:#315e4a;color:#fff;border-color:#315e4a}
+.dynasty-geo-jump-button:focus-visible,.dynasty-geo-viewport:focus-visible,
+.dynasty-geo-reference:focus-visible{outline:3px solid #bc8d45;outline-offset:2px}
+.dynasty-geo-viewport{width:100%;max-width:100%;overflow:auto;
+  overscroll-behavior:contain;border:1px solid #c8dbd4;border-radius:13px;
+  background:linear-gradient(#ecf5f3,#f5f9f8);scrollbar-width:thin}
+.dynasty-geo-svg{display:block;width:100%;min-width:980px;height:auto}
+.dynasty-geo-marker{cursor:pointer;outline:none}
+.dynasty-geo-marker[aria-pressed="true"] circle:nth-child(2){filter:drop-shadow(0 0 5px #b67e3e)}
+.dynasty-geo-marker:focus-visible circle:nth-child(2){stroke:#ca8543;stroke-width:5}
+.dynasty-geo-marker:hover text{fill:#1c6b51}
+.dynasty-geo-details{margin:12px 0;padding:13px;border:1px solid #d0dfd3;border-radius:11px;background:#fdfdfa}
+.dynasty-geo-details h3{font:800 18px/1.35 system-ui,sans-serif;margin:0 0 12px;color:#244b3d}
+.dynasty-geo-polity{padding:11px 0;border-top:1px solid #e0e8de}
+.dynasty-geo-polity h4{margin:0 0 5px;font:800 15px/1.4 system-ui,sans-serif;color:#334a3b}
+.dynasty-geo-coverage{display:inline-block;margin:2px 0 7px;padding:3px 7px;
+  border:1px solid #c8d6cc;border-radius:6px;font:700 12px/1.45 system-ui,sans-serif;color:#52665b}
+.dynasty-geo-role{display:flex;gap:5px;align-items:baseline;flex-wrap:wrap;
+  padding:6px 0;border-bottom:1px solid #edf0eb;font:480 13px/1.5 system-ui,sans-serif}
+.dynasty-geo-role strong{font-weight:790;color:#2d4e40}
+.dynasty-geo-role .dynasty-sources{display:inline-flex;gap:6px;flex-wrap:wrap}
+.dynasty-geo-institution{font:600 13px/1.45 system-ui,sans-serif;color:#426878}
+.dynasty-geo-polity-note{font:450 12px/1.45 system-ui,sans-serif;color:#60726a;margin:6px 0}
+.dynasty-geo-reference{font:700 12px/1.5 system-ui,sans-serif;color:#4e7262}
+.dynasty-geo-connections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;min-width:0;margin-top:10px}
+.dynasty-geo-connections h3{grid-column:1/-1;margin:6px 0 1px;
+  font:800 17px/1.35 system-ui,sans-serif;color:#2e5141}
+.dynasty-geo-connection{padding:10px;border:1px solid #d9e2d8;background:#fffefa;
+  border-radius:9px;font:480 12px/1.5 system-ui,sans-serif}
+.dynasty-geo-connection strong{color:#355845}
+.dynasty-geo-connection .dynasty-sources{margin-top:4px}
+@media(max-width:900px){
+  .atlas-app .atlas-year-geolink{min-height:44px;font-size:13px}
+  .atlas-app.atlas-mobile #panel-timeline[data-mobile-mode="timeline"] .atlas-year-geolink,
+  .atlas-app.atlas-mobile #panel-timeline.smuta-map-active .atlas-year-geolink{display:none!important}
+  .dynasty-view-switch{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dynasty-view-button{font-size:12px}
+  .dynasty-geo-svg{min-width:980px}
+  .dynasty-geo-status{font-size:13px}
+  .dynasty-geo-details{padding:12px}
+  .dynasty-geo-role{font-size:14px}
+  .dynasty-geo-connections{grid-template-columns:1fr}
+  .dynasty-geo-lead{font-size:13px}
+}

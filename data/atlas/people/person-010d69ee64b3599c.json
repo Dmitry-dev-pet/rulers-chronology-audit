@@ -2,6 +2,8 @@
   "id": "person-010d69ee64b3599c",
   "name": "Софья Алексеевна",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q233987"
+  },
   "biography_status": "incomplete"
 }

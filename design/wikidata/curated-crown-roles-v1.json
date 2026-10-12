@@ -1,0 +1,277 @@
+{
+  "schema_version": "wikidata-curated-crown-roles-v1",
+  "reviewed_as_of": "2026-10-11",
+  "pilot_window": {
+    "from_year": 1762,
+    "to_year": 1800
+  },
+  "status": "reviewed_reference_based_experimental",
+  "historical_truth_verified_by_ci": false,
+  "role_separation_policy": "Separate legal Bohemian/Hungarian crowns from Habsburg composite monarchy and HRE elective dignity. World identities require explicit QIDs. No powers, geographical control or ethnic origins inferred. 1800 is a clipping horizon, not a date of abdication.",
+  "roles": [
+    {
+      "id": "hab-maria-bohemia",
+      "world_person_id": "hab-maria",
+      "person_qid": "Q131706",
+      "name": "Maria Theresa",
+      "position_qid": "Q45341328",
+      "context_id": "ctx-hab-crown-bohemia",
+      "title": "Король / королева Богемии — Maria Theresa",
+      "role_kind": "sovereign",
+      "source_dataset": "dynasty-1762-1780.json",
+      "source_id": "DN04",
+      "independent_reference_url": "https://www.habsburger.net/en/persons/habsburg-emperor/maria-theresa",
+      "wikidata": {
+        "entity_revision": 2549809524,
+        "statement_id": "Q131706$6f3f52b7-4646-38a8-7be0-2534ed0069ea",
+        "rank": "normal",
+        "start": {
+          "time": "+1740-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1780-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1740,
+      "recorded_end_year": 1780,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Sovereign of distinct Bohemian and Hungarian crowns; the War of Austrian Succession and different coronations complicate exact jurisdiction and start days. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    },
+    {
+      "id": "hab-maria-hungary",
+      "world_person_id": "hab-maria",
+      "person_qid": "Q131706",
+      "name": "Maria Theresa",
+      "position_qid": "Q6412254",
+      "context_id": "ctx-hab-crown-hungary",
+      "title": "Король / королева Венгрии — Maria Theresa",
+      "role_kind": "sovereign",
+      "source_dataset": "dynasty-1762-1780.json",
+      "source_id": "DN04",
+      "independent_reference_url": "https://www.habsburger.net/en/persons/habsburg-emperor/maria-theresa",
+      "wikidata": {
+        "entity_revision": 2549809524,
+        "statement_id": "Q131706$05FD17F0-F6E2-462C-A737-B8BCA03D283E",
+        "rank": "normal",
+        "start": {
+          "time": "+1740-10-22T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1780-11-24T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1740,
+      "recorded_end_year": 1780,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Sovereign of distinct Bohemian and Hungarian crowns; the War of Austrian Succession and different coronations complicate exact jurisdiction and start days. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    },
+    {
+      "id": "hre-joseph-bohemia",
+      "world_person_id": "hre-joseph",
+      "person_qid": "Q76555",
+      "name": "Joseph II",
+      "position_qid": "Q45341328",
+      "context_id": "ctx-hab-crown-bohemia",
+      "title": "Король / королева Богемии — Joseph II",
+      "role_kind": "sovereign",
+      "source_dataset": "dynasty-1762-1780.json",
+      "source_id": "DN06",
+      "independent_reference_url": "https://www.habsburger.net/en/persons/habsburg-emperor/joseph-ii",
+      "wikidata": {
+        "entity_revision": 2550689865,
+        "statement_id": "Q76555$7b677244-4afc-ea40-341c-0c8a402be1d7",
+        "rank": "normal",
+        "start": {
+          "time": "+1780-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1790-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1780,
+      "recorded_end_year": 1790,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Sole Habsburg ruler after 1780; Hungarian kingship without Hungarian coronation (the 'hatted king'), not a claim of universal effective territorial control. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    },
+    {
+      "id": "hre-joseph-hungary",
+      "world_person_id": "hre-joseph",
+      "person_qid": "Q76555",
+      "name": "Joseph II",
+      "position_qid": "Q6412254",
+      "context_id": "ctx-hab-crown-hungary",
+      "title": "Король / королева Венгрии — Joseph II",
+      "role_kind": "sovereign",
+      "source_dataset": "dynasty-1762-1780.json",
+      "source_id": "DN06",
+      "independent_reference_url": "https://www.habsburger.net/en/persons/habsburg-emperor/joseph-ii",
+      "wikidata": {
+        "entity_revision": 2550689865,
+        "statement_id": "Q76555$c6b410fd-4c05-23e4-83af-542bcd2694e2",
+        "rank": "normal",
+        "start": {
+          "time": "+1780-11-29T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1790-02-20T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1780,
+      "recorded_end_year": 1790,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Sole Habsburg ruler after 1780; Hungarian kingship without Hungarian coronation (the 'hatted king'), not a claim of universal effective territorial control. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    },
+    {
+      "id": "hab-leopold-bohemia",
+      "world_person_id": "hab-leopold",
+      "person_qid": "Q151321",
+      "name": "Leopold II",
+      "position_qid": "Q45341328",
+      "context_id": "ctx-hab-crown-bohemia",
+      "title": "Король / королева Богемии — Leopold II",
+      "role_kind": "sovereign",
+      "source_dataset": "extension-1781-1800.json",
+      "source_id": "EX04",
+      "independent_reference_url": "https://www.habsburger.net/en/chapter/short-term-emperor-leopold-ii-imperial-throne",
+      "wikidata": {
+        "entity_revision": 2555381233,
+        "statement_id": "Q151321$e34e7e9c-403e-720e-f4bb-7a54e31065cd",
+        "rank": "normal",
+        "start": {
+          "time": "+1790-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1792-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1790,
+      "recorded_end_year": 1792,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Succession and coronations are not the same date; Hungarian coronation occurred in 1790, Bohemian in 1791 according to museum history. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    },
+    {
+      "id": "hab-leopold-hungary",
+      "world_person_id": "hab-leopold",
+      "person_qid": "Q151321",
+      "name": "Leopold II",
+      "position_qid": "Q6412254",
+      "context_id": "ctx-hab-crown-hungary",
+      "title": "Король / королева Венгрии — Leopold II",
+      "role_kind": "sovereign",
+      "source_dataset": "extension-1781-1800.json",
+      "source_id": "EX04",
+      "independent_reference_url": "https://www.habsburger.net/en/chapter/short-term-emperor-leopold-ii-imperial-throne",
+      "wikidata": {
+        "entity_revision": 2555381233,
+        "statement_id": "Q151321$a994f85e-4565-400b-6ef4-efa55c6dcc0b",
+        "rank": "normal",
+        "start": {
+          "time": "+1790-11-15T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1792-03-01T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1790,
+      "recorded_end_year": 1792,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Succession and coronations are not the same date; Hungarian coronation occurred in 1790, Bohemian in 1791 according to museum history. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    },
+    {
+      "id": "hab-francis2-bohemia",
+      "world_person_id": "hab-francis2",
+      "person_qid": "Q130834",
+      "name": "Francis II",
+      "position_qid": "Q45341328",
+      "context_id": "ctx-hab-crown-bohemia",
+      "title": "Король / королева Богемии — Francis II",
+      "role_kind": "sovereign",
+      "source_dataset": "extension-1781-1800.json",
+      "source_id": "EX06",
+      "independent_reference_url": "https://www.habsburger.net/en/persons/habsburg-emperor/franz-ii-i",
+      "wikidata": {
+        "entity_revision": 2533014490,
+        "statement_id": "Q130834$8d400977-4a9d-185a-3ece-605aa74dde1a",
+        "rank": "normal",
+        "start": {
+          "time": "+1792-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1835-00-00T00:00:00Z",
+          "precision": 9,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1792,
+      "recorded_end_year": 1835,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Habsburg succession in 1792; recorded later endpoint is outside 1762–1800 study horizon; 1800 is NOT an abdication/end date. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    },
+    {
+      "id": "hab-francis2-hungary",
+      "world_person_id": "hab-francis2",
+      "person_qid": "Q130834",
+      "name": "Francis II",
+      "position_qid": "Q6412254",
+      "context_id": "ctx-hab-crown-hungary",
+      "title": "Король / королева Венгрии — Francis II",
+      "role_kind": "sovereign",
+      "source_dataset": "extension-1781-1800.json",
+      "source_id": "EX06",
+      "independent_reference_url": "https://www.habsburger.net/en/persons/habsburg-emperor/franz-ii-i",
+      "wikidata": {
+        "entity_revision": 2533014490,
+        "statement_id": "Q130834$f156aad1-4b35-f76d-76b4-f6786eec17de",
+        "rank": "normal",
+        "start": {
+          "time": "+1792-03-01T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        },
+        "end": {
+          "time": "+1835-03-02T00:00:00Z",
+          "precision": 11,
+          "calendar": "gregorian"
+        }
+      },
+      "recorded_start_year": 1792,
+      "recorded_end_year": 1835,
+      "verification": "reference_checked",
+      "confidence": "not_assessed",
+      "caveat": "Habsburg succession in 1792; recorded later endpoint is outside 1762–1800 study horizon; 1800 is NOT an abdication/end date. Date granularity in Wikidata is not elevated into an independently established accession day. Legal office does not establish day-level continuous practical power."
+    }
+  ]
+}
