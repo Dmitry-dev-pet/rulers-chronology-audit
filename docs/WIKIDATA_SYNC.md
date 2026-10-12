@@ -98,3 +98,7 @@ The weekly audit now produces four review files (identity/date JSON + Markdown, 
 ## P3 extension: independent crowns and 24 reviewed world identities
 
 [Detailed P3 method](WIKIDATA_P3.md). P3 completes explicit Wikidata QIDs for all 24 world-only people (without identity merges), reviews 13 further canonical QIDs, and classifies nine office types into independent state, crown, electoral, co-prince and party-organ contexts. The six weekly read-only outputs now include jurisdictions.json and jurisdictions.md. A future role or union is never inferred from year-only overlaps. Counts in the original P1/P2 sections are historical snapshots, not current coverage.
+
+## Wikidata P4 — dated office roles in experimental Atlas v2 (12 Oct 2026)
+
+[Detailed P4 crown-role contract](WIKIDATA_P4_CROWNS.md). Four already reviewed world identities receive eight **new separately typed legal Bohemian/Hungarian crown-office roles** in a disposable v2 SQLite. Exact P39 statement IDs, dates and two sources per record are retained; clipped 1762/1800 endpoints are not mistaken for accession or abdication. Weekly research artifacts also include `curated-crowns.{json,md}` and a one-time SQLite preview. These records do not modify the canonical v1 SQLite, source photo, power assessments or Pages. Earlier P1–P3 source counts remain dated historical snapshots.
