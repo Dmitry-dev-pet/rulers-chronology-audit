@@ -50,6 +50,8 @@ def wd_date(value: dict) -> int:
     if precision == 9:
         require(month == 0 and day == 0, "year-precision time has invented day")
     elif precision == 11:
+        require(month > 0 and day > 0,
+                "day-precision source time has unknown month/day")
         date(year, month, day)
     else:
         require(False, "unsupported Wikidata source time precision")
