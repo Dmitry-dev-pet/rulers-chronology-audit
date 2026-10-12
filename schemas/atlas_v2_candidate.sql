@@ -282,7 +282,9 @@ JOIN entry_states es ON es.entry_id=e.id
 JOIN v2_context_refs cr ON cr.origin='atlas-state-v1' AND cr.native_id=es.state_id
 WHERE e.kind='tenures'
 UNION ALL
-SELECT 'world-pilot' AS origin_layer, r.id AS item_id,
+SELECT CASE WHEN r.origin='wikidata-curated-crowns'
+            THEN 'wikidata-curated'
+            ELSE 'world-pilot' END AS origin_layer, r.id AS item_id,
        CASE WHEN r.role_kind='institutional' THEN 'world_institution'
             ELSE 'world_person_role' END AS item_kind,
        r.context_id, r.person_id,
