@@ -138,6 +138,23 @@ class CrownRolePreview(unittest.TestCase):
             self.assertEqual(item["wikidata"]["statement_id"],statement)
             self.assertIn("independent_reference_url",item)
 
+    def test_regencies_and_collective_bodies_remain_distinct_after_crown_import(self):
+        kinds=dict(self.conn.execute(
+            "SELECT native_id,role_kind FROM v2_roles WHERE native_id IN "
+            "('ex-pt-joao-regent','ex-sw-charles','ex-fr-convention',"
+            "'ex-fr-directory')").fetchall())
+        self.assertEqual(kinds["ex-pt-joao-regent"],"regent")
+        self.assertEqual(kinds["ex-sw-charles"],"regent")
+        self.assertEqual(kinds["ex-fr-convention"],"institutional")
+        self.assertEqual(kinds["ex-fr-directory"],"institutional")
+        self.assertEqual(self.scalar(
+            "SELECT count(*) FROM v2_assertions WHERE id LIKE 'v2-assert-wd-%' "
+            "AND category='legal'"),8)
+        self.assertEqual(self.scalar(
+            "SELECT count(*) FROM v2_context_relations"),0)
+        self.assertEqual(self.scalar(
+            "SELECT count(*) FROM v2_person_relations"),0)
+
     def test_structural_report_disclaims_practical_power(self):
         result=p4.report(self.conn,self.info,year=1790)
         self.assertEqual(result["sqlite_integrity"],"ok")
