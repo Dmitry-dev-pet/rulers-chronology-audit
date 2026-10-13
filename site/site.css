@@ -2512,7 +2512,7 @@ button[disabled] {
 
 
 /* Canonical entry route: the four existing atlas tabs remain unchanged. */
-.atlas-home-open .modes-wrap{display:none}
+.atlas-home-open .modes-wrap{display:none!important}
 .atlas-app #panel-home{display:block;overflow-y:auto;overscroll-behavior:contain;padding:25px 22px 36px}
 .atlas-home-content{width:100%;max-width:1050px;margin:0 auto}
 .atlas-home-intro{max-width:850px}
@@ -2558,3 +2558,20 @@ button[disabled] {
   .atlas-home-explore-links{display:grid;gap:9px}
 }
 @media(prefers-reduced-motion:reduce){.atlas-home-card{transition:none}.atlas-home-card:hover{transform:none}}
+
+/* In short landscape the original mobile layout hides the header.
+   Keep its compact body, but give visitors a way back to the homepage. */
+.atlas-home-shortcut{display:none}
+@media(max-width:900px) and (max-height:560px){
+  .atlas-app.atlas-mobile .modes-wrap{display:flex;align-items:stretch;padding-left:5px}
+  .atlas-app.atlas-mobile .modes{flex:1;min-width:0;width:auto}
+  .atlas-app.atlas-mobile .atlas-home-shortcut{
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;min-height:44px;padding:6px 10px;
+    font-size:12px;font-weight:800;color:var(--green);
+    text-decoration:none;border-right:1px solid var(--line)
+  }
+  .atlas-app.atlas-mobile .atlas-home-shortcut:focus-visible{
+    outline:3px solid var(--green);outline-offset:-3px
+  }
+}

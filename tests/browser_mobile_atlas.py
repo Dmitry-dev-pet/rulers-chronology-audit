@@ -49,7 +49,11 @@ def run(dist: Path, output: Path) -> None:
                 page.locator('#atlas-home-year-form button').click()
                 expect(page).to_have_url(re.compile(r'#/timeline/1762$'))
                 expect(page.locator('#panel-timeline')).to_be_visible()
-                page.locator('.brand').click()
+                if height <= 560:
+                    expect(page.locator('.atlas-home-shortcut')).to_be_visible()
+                    page.locator('.atlas-home-shortcut').click()
+                else:
+                    page.locator('.brand').click()
                 expect(page.locator('#panel-home')).to_be_visible()
                 page.goto(origin+'#/timeline/1685')
                 expect(page.locator('html')).to_have_class(re.compile(r'\batlas-mobile\b'))

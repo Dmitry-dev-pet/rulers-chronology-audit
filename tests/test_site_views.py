@@ -95,6 +95,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("id='panel-home'", markup)
         self.assertIn("id='atlas-home-year-form'", markup)
         self.assertIn("href='#/home'", markup)
+        self.assertIn("class='atlas-home-shortcut'", markup)
         self.assertIn("href='#/research'", markup)
         self.assertIn("href='./coverage.html'", markup)
         self.assertIn("Пилот · Европа 1762–1800", markup)

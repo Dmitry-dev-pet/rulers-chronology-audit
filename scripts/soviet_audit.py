@@ -227,7 +227,7 @@ def render(data: dict, sources: dict, result: dict, revision: str,
         "</div><div class='hero-aside' aria-label='Период исследования'>",
         "<strong>1917—1991</strong><p>Советская Россия с 1917 года. СССР образован в 1922 году. "
         "Даты разных должностей могут пересекаться.</p></div></div></header>",
-        "<div class='modes-wrap'><div class='container modes' role='tablist' aria-label='Режим представления'>",
+        "<div class='modes-wrap'><a class='atlas-home-shortcut' href='#/home' aria-label='Вернуться на главную страницу атласа'>Главная</a><div class='container modes' role='tablist' aria-label='Режим представления'>",
         "<button id='tab-timeline' type='button' role='tab' class='mode-tab' data-view='timeline' aria-selected='false' aria-controls='panel-timeline' tabindex='0'><span class='num'>01</span> Год и власть</button>",
         "<button id='tab-poster' type='button' role='tab' class='mode-tab' data-view='poster' aria-selected='false' aria-controls='panel-poster' tabindex='-1'><span class='num'>03</span> Плакат</button>",
         "<button id='tab-research' type='button' role='tab' class='mode-tab' data-view='research' aria-selected='false' aria-controls='panel-research' tabindex='-1'><span class='num'>04</span> Исследование</button>",
