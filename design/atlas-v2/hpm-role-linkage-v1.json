@@ -1,0 +1,36 @@
+{
+  "schema_version": "hpm-role-linkage-v1",
+  "status": "research_crosswalk_only",
+  "historical_truth_verified_by_ci": false,
+  "auto_classify_mechanism": false,
+  "population": "All explicitly dated P3 succession, imperial_succession, regime_change and institutional_change relationship records in the existing 1762–1800 world pilot; not a representative sample of Europe",
+  "reviewed_links": [
+    {
+      "relationship_id": "v2-p3-rel-dn-france-change-1774",
+      "relation_kind": "succession",
+      "context_id": "ctx-world-fr",
+      "outgoing_role_id": "v2-role-dn-fr-louis15",
+      "incoming_role_id": "v2-role-dn-fr-louis16",
+      "review_dimension": "source_record_role_identity_only",
+      "caveat": "The P3 source-backed France 1774 succession record names two persons and their separate source-dated roles. Neither day-level simultaneity nor an accession mechanism is inferred."
+    },
+    {
+      "relationship_id": "v2-p3-rel-dn-hre-change-1765",
+      "relation_kind": "imperial_succession",
+      "context_id": "ctx-world-hre",
+      "outgoing_role_id": "v2-role-dn-hre-francis",
+      "incoming_role_id": "v2-role-dn-hre-joseph",
+      "review_dimension": "source_record_role_identity_only",
+      "caveat": "The source describes succession in the elective imperial office, not inheritance or control of every HRE polity. The source records preserve original year precision."
+    },
+    {
+      "relationship_id": "v2-p3-rel-ex-fr-1799",
+      "relation_kind": "institutional_change",
+      "context_id": "ctx-world-frrep",
+      "outgoing_role_id": "v2-role-ex-fr-directory",
+      "incoming_role_id": "v2-role-ex-fr-consulate",
+      "review_dimension": "source_record_role_identity_only",
+      "caveat": "The P3 transition and P2 institution role sources are separate: this links an exiting collegial executive to the new institutional system without inventing a single personal ruler."
+    }
+  ]
+}
