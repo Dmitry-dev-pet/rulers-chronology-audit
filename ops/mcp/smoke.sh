@@ -22,6 +22,8 @@ docker run --detach --rm --name "$container" \
 
 python3 - <<'PY'
 import asyncio
+import http.client
+import json
 import socket
 import time
 
@@ -37,6 +39,26 @@ for attempt in range(80):
         time.sleep(0.25)
 else:
     raise SystemExit("Historical Atlas MCP HTTP did not bind")
+
+# The direct HTTP/1.1 probe helps separate server/port issues from
+# MCP SDK client behavior on a hosted Actions runner.
+probe = http.client.HTTPConnection("127.0.0.1", 18765, timeout=5)
+initialize = json.dumps({
+    "jsonrpc": "2.0", "id": 1, "method": "initialize",
+    "params": {
+        "protocolVersion": "2026-07-28",
+        "capabilities": {},
+        "clientInfo": {"name": "atlas-ci-probe", "version": "1"},
+    },
+}).encode("utf-8")
+probe.request("POST", "/mcp", body=initialize, headers={
+    "Content-Type": "application/json",
+    "Accept": "application/json, text/event-stream",
+})
+raw = probe.getresponse()
+print("Direct JSON-RPC initialize:", raw.status, raw.read(300))
+assert raw.status == 200
+probe.close()
 
 async def main():
     async with Client(url, raise_exceptions=True) as client:
