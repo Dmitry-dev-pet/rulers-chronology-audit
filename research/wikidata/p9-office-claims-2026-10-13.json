@@ -1,0 +1,177 @@
+{
+  "schema_version": "wikidata-p9-claim-case-review-v1",
+  "frozen_source_run": "https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38381243622",
+  "snapshot_date": "2026-10-13",
+  "p39_historical_truth_verified": false,
+  "canonical_data_mutated": false,
+  "source_methods": "Fixed P7 raw normalized position-held statements; office QIDs and claim IDs reviewed separately against independent historical references. These are source statements, not certified appointment dates.",
+  "cases": [
+    {
+      "canonical_person_id": "person-0fca688b1e05539a",
+      "person_name": "Анна Леопольдовна",
+      "wikidata_person_qid": "Q159651",
+      "p39_office_qid": "Q477406",
+      "statement_id": "Q159651$8f13176f-e55c-4198-989f-cc26c77dc60d",
+      "rank": "normal",
+      "p39_start": "+1740-11-20T00:00:00Z",
+      "p39_end": "+1741-12-06T00:00:00Z",
+      "calendar": "gregorian",
+      "precision": 11,
+      "p39_reference_count": 1,
+      "expected_existing_tenure_ids": [
+        "tenure-r24"
+      ],
+      "interpretation_caveat": "regent_different_from_emperor",
+      "independent_source_url": "https://www.prlib.ru/history/619818",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-064d44a263475033",
+      "person_name": "Елена Глинская",
+      "wikidata_person_qid": "Q240150",
+      "p39_office_qid": "Q477406",
+      "statement_id": "Q240150$c2bc97db-de62-453f-bca6-51117a24f47d",
+      "rank": "normal",
+      "p39_start": null,
+      "p39_end": null,
+      "calendar": null,
+      "precision": null,
+      "p39_reference_count": 1,
+      "expected_existing_tenure_ids": [
+        "tenure-m21"
+      ],
+      "interpretation_caveat": "regent_no_wikidata_time_boundaries",
+      "independent_source_url": "https://history.ru/teacher/istoriya-rossii-v-1533-konce-xvii-v/rossiya-v-1533-1547-gg/book/knyaginya-elena-glinskaya",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-010d69ee64b3599c",
+      "person_name": "Софья Алексеевна",
+      "wikidata_person_qid": "Q233987",
+      "p39_office_qid": "Q477406",
+      "statement_id": "Q233987$d8c15933-4bed-3588-d335-c2c2451149ee",
+      "rank": "normal",
+      "p39_start": "+1682-06-08T00:00:00Z",
+      "p39_end": "+1689-09-22T00:00:00Z",
+      "calendar": "gregorian",
+      "precision": 11,
+      "p39_reference_count": 2,
+      "expected_existing_tenure_ids": [
+        "tenure-r22"
+      ],
+      "interpretation_caveat": "regent_under_two_tsars",
+      "independent_source_url": "https://old.bigenc.ru/text/3042245",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-f096d9b69cb3563a",
+      "person_name": "Алексей Михайлович",
+      "wikidata_person_qid": "Q7731",
+      "p39_office_qid": "Q12370487",
+      "statement_id": "Q7731$507ee885-4e1c-bb0e-e7c6-d39fbf6d11dd",
+      "rank": "normal",
+      "p39_start": "+1645-07-14T00:00:00Z",
+      "p39_end": "+1676-01-29T00:00:00Z",
+      "calendar": "gregorian",
+      "precision": 11,
+      "p39_reference_count": 0,
+      "expected_existing_tenure_ids": [],
+      "interpretation_caveat": "tsar_context_not_medieval_moscow_grand_prince",
+      "independent_source_url": "https://old.bigenc.ru/text/3042245",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-518c301e51f1510b",
+      "person_name": "Василий I Дмитриевич",
+      "wikidata_person_qid": "Q272156",
+      "p39_office_qid": "Q12370487",
+      "statement_id": "Q272156$F90FBC68-B21A-4914-85E6-3E824C5DD1C2",
+      "rank": "normal",
+      "p39_start": "+1389-00-00T00:00:00Z",
+      "p39_end": "+1425-00-00T00:00:00Z",
+      "calendar": "julian",
+      "precision": 9,
+      "p39_reference_count": 0,
+      "expected_existing_tenure_ids": [
+        "tenure-m01"
+      ],
+      "interpretation_caveat": "moscow_prince_family_not_day_certified",
+      "independent_source_url": "https://bigenc.ru/c/moskovskoe-velikoe-kniazhestvo-fef996",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-17f5e2c4755255cf",
+      "person_name": "Дмитрий Юрьевич Шемяка",
+      "wikidata_person_qid": "Q1282778",
+      "p39_office_qid": "Q12370487",
+      "statement_id": "Q1282778$95C9E773-BE31-4694-A176-B062E42AEBF0",
+      "rank": "normal",
+      "p39_start": "+1445-07-07T00:00:00Z",
+      "p39_end": "+1445-10-26T00:00:00Z",
+      "calendar": "julian",
+      "precision": 11,
+      "p39_reference_count": 0,
+      "expected_existing_tenure_ids": [
+        "tenure-m07"
+      ],
+      "interpretation_caveat": "source_year_conflict_1445_vs_1446_1447",
+      "independent_source_url": "https://bigenc.ru/c/dmitrii-iur-evich-velikii-kniaz-moskovskii-624f7f",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-70e920e83c13510c",
+      "person_name": "Борис Фёдорович Годунов",
+      "wikidata_person_qid": "Q170172",
+      "p39_office_qid": "Q12370489",
+      "statement_id": "Q170172$5879a945-4a66-cfb4-a8af-486e3a27c868",
+      "rank": "normal",
+      "p39_start": "+1598-02-17T00:00:00Z",
+      "p39_end": "+1605-04-13T00:00:00Z",
+      "calendar": "gregorian",
+      "precision": 11,
+      "p39_reference_count": 0,
+      "expected_existing_tenure_ids": [
+        "tenure-m14"
+      ],
+      "interpretation_caveat": "tsar_type_election_1598_date_style_review",
+      "independent_source_url": "https://www.prlib.ru/history/619062",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-d2dfcacb3d245849",
+      "person_name": "Пётр I Алексеевич",
+      "wikidata_person_qid": "Q8479",
+      "p39_office_qid": "Q12370489",
+      "statement_id": "Q8479$376e3f3d-451c-cfa9-6a4d-32ddf30e1d72",
+      "rank": "normal",
+      "p39_start": "+1682-05-07T00:00:00Z",
+      "p39_end": "+1721-11-02T00:00:00Z",
+      "calendar": "gregorian",
+      "precision": 11,
+      "p39_reference_count": 0,
+      "expected_existing_tenure_ids": [
+        "tenure-r05-joint",
+        "tenure-r05-sole"
+      ],
+      "interpretation_caveat": "tsar_to_emperor_1721_censor_and_legal_context",
+      "independent_source_url": "https://www.prlib.ru/node/619684",
+      "independent_primary_act_verified": false,
+      "historical_dates_verified": false,
+      "power_inferred": false
+    }
+  ]
+}
