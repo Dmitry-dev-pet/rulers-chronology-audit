@@ -20,9 +20,10 @@ class CoverageMatrixContract(unittest.TestCase):
         cls.base=load('1762.json')
         cls.old=load('dynasty-1762-1780.json')
         cls.ext=load('extension-1781-1800.json')
+        cls.patch=load('coverage-backfill-1762-1800.json')
         cls.people=atlas_db.load(ROOT)
         cls.policies={p['polity_id']:p for p in cls.policy['polities']}
-        cls.roles=cls.old['roles']+cls.ext['additional_roles']
+        cls.roles=cls.old['roles']+cls.ext['additional_roles']+cls.patch['role_additions']
         cls.institutions=cls.ext['institutions']
 
     @classmethod
@@ -37,7 +38,7 @@ class CoverageMatrixContract(unittest.TestCase):
         if (p.get('historical_start') and year<p['historical_start']) or (
                 p.get('historical_end') and year>p['historical_end']):
             return 'historically_not_in_force'
-        if year<p['researched_from'] or year>p['researched_through']:
+        if (year<p['researched_from'] or year>p['researched_through']) and not roles and not inst:
             return 'outside_sample'
         if any(r['role_kind'] in {'sovereign','elector','emperor'} for r in roles):
             return 'office'
@@ -61,7 +62,7 @@ class CoverageMatrixContract(unittest.TestCase):
         self.assertEqual(len(self.people['provenance']),150)
         sources={x['id'] for x in self.base['sources']+
             self.old['sources']+self.ext['sources']+
-            p['sources']+self.people['sources']}
+            p['sources']+self.patch['source_records']+self.people['sources']}
         for row in p['polities']:
             self.assertTrue(1762<=row['researched_from']<=row['researched_through']<=1800)
             self.assertTrue(row['source_ids'])
@@ -94,7 +95,7 @@ class CoverageMatrixContract(unittest.TestCase):
         for key in ('es','pt','sw','tusc'):
             self.assertEqual(self.policies[key]['researched_from'],1781)
             for y in (1762,1774,1780):
-                self.assertEqual(self.classify(key,y),'outside_sample')
+                self.assertEqual(self.classify(key,y),'office')
         self.assertEqual(self.classify('es',1781),'office')
         self.assertEqual(self.classify('es',1788),'office')
         self.assertEqual(self.classify('pt',1799),'office')
@@ -106,19 +107,21 @@ class CoverageMatrixContract(unittest.TestCase):
 
     def test_tuscany_gap_cannot_be_misrepresented_as_no_ruler(self):
         self.assertEqual(self.classify('tusc',1790),'office')
-        for year in range(1791,1801):
-            self.assertEqual(self.classify('tusc',year),'research_gap')
+        for year in range(1791,1800):
+            self.assertEqual(self.classify('tusc',year),'office')
+        self.assertEqual(self.classify('tusc',1800),'research_gap')
         self.assertIn('Фердинанд',self.policies['tusc']['note'])
         gap=next(x for x in self.policy['known_research_tasks']
-                 if x['id']=='coverage-tuscany-1791-1800')
+                 if x['id']=='coverage-tuscany-1800')
         self.assertEqual(gap['priority'],'high')
         self.assertIn('CV02',gap['source_ids'])
-        self.assertEqual((gap['start_year'],gap['end_year']),(1791,1800))
+        self.assertEqual((gap['start_year'],gap['end_year']),(1800,1800))
         self.assertIn('ferdinand-iii-tuscany',
                       next(s['url'] for s in self.policy['sources'] if s['id']=='CV02'))
-        # The 1790–1799 reign reported by a source is NOT silently imported as
-        # a normalized tenure in this coverage-only review.
-        self.assertFalse(any(x['person_id']=='tusc-ferdinand3' for x in self.roles))
+        # Separate sourced early roles do not assert continuous rule in 1800.
+        self.assertTrue(any(x['person_id']=='tusc-ferdinand3' for x in self.roles))
+        self.assertFalse(any(x['person_id']=='tusc-ferdinand3' and
+                             x['end_year']>=1800 for x in self.roles))
 
     def test_exact_status_totals_and_no_false_completeness_metric(self):
         counts={}
@@ -131,11 +134,10 @@ class CoverageMatrixContract(unittest.TestCase):
                     gaps.append((key,year))
         self.assertEqual(sum(counts.values()),13*39)
         self.assertEqual(counts,{
-            'office':335,'historically_not_in_force':38,
-            'institution':9,'outside_sample':76,
-            'research_gap':10,'birthplace_context':39
+            'office':420,'historically_not_in_force':38,
+            'institution':9,'research_gap':1,'birthplace_context':39
         })
-        self.assertEqual(gaps,[('tusc',year) for year in range(1791,1801)])
+        self.assertEqual(gaps,[('tusc',1800)])
         self.assertIn('не измеряют полноту',
            (ROOT/'site/dynasty-atlas.js').read_text(encoding='utf-8'))
 
@@ -146,8 +148,8 @@ class CoverageMatrixContract(unittest.TestCase):
         self.assertFalse(projection['historical_truth_verified_by_ci'])
         self.assertEqual(len(projection['states']),13)
         self.assertEqual(projection['status_counts'],{
-            'office':335,'institution':9,'research_gap':10,
-            'outside_sample':76,'historically_not_in_force':38,
+            'office':420,'institution':9,'research_gap':1,
+            'historically_not_in_force':38,
             'birthplace_context':39
         })
         for state in projection['states']:
@@ -159,7 +161,7 @@ class CoverageMatrixContract(unittest.TestCase):
         tusc=next(s for s in projection['states'] if s['polity_id']=='tusc')
         self.assertEqual([x['year'] for x in tusc['years']
                           if x['status']=='research_gap'],
-                         list(range(1791,1801)))
+                         [1800])
         # Unit test does not write the derived projection back to sources.
 
     def test_spa_deep_link_mobile_privacy_and_existing_modes(self):

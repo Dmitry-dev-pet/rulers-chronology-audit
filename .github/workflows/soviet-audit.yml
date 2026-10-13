@@ -66,6 +66,7 @@ jobs:
           /tmp/atlas-browser/bin/python tests/browser_dynasty_1800.py --dist dist --output browser-evidence
           /tmp/atlas-browser/bin/python tests/browser_house_footprints.py --dist dist --output browser-evidence
           /tmp/atlas-browser/bin/python tests/browser_coverage_matrix.py --dist dist --output browser-evidence
+          /tmp/atlas-browser/bin/python tests/browser_coverage_backfill.py --dist dist --output browser-evidence
 
       - name: Test experimental P4 graph at desktop and mobile sizes
         if: ${{ github.event_name == 'pull_request' }}

@@ -42,13 +42,15 @@ def run(dist:Path,output:Path):
                 expect(page.locator('.dynasty-coverage-cell')).to_have_count(13*39)
                 expect(page.locator('.dynasty-coverage-legend-item')).to_have_count(7)
                 expect(page.locator('.dynasty-coverage-overview')).to_contain_text(
-                    '10 ячеек-пробелов')
+                    '1 ячейка-пробел')
                 expect(page.locator('.dynasty-coverage-overview')).to_contain_text(
-                    '76 ячеек вне нашей выборки')
+                    '0 ячеек вне нашей выборки')
                 expect(page.locator('.dynasty-coverage-cell[data-polity="tusc"][data-year="1795"]')
-                       ).to_have_attribute('data-coverage-status','research_gap')
+                       ).to_have_attribute('data-coverage-status','office')
                 expect(page.locator('.dynasty-coverage-cell[data-polity="tusc"][data-year="1790"]')
                        ).to_have_attribute('data-coverage-status','office')
+                expect(page.locator('.dynasty-coverage-cell[data-polity="tusc"][data-year="1800"]')
+                       ).to_have_attribute('data-coverage-status','research_gap')
                 expect(page.locator('.dynasty-coverage-cell[data-polity="fr"][data-year="1793"]')
                        ).to_have_attribute('data-coverage-status','historically_not_in_force')
                 expect(page.locator('.dynasty-coverage-cell[data-polity="frrep"][data-year="1791"]')
@@ -56,13 +58,12 @@ def run(dist:Path,output:Path):
                 expect(page.locator('.dynasty-coverage-cell[data-polity="frrep"][data-year="1795"]')
                        ).to_have_attribute('data-coverage-status','institution')
                 expect(page.locator('.dynasty-coverage-cell[data-polity="es"][data-year="1770"]')
-                       ).to_have_attribute('data-coverage-status','outside_sample')
+                       ).to_have_attribute('data-coverage-status','office')
                 expect(page.locator('.dynasty-coverage-cell[data-polity="meck"][data-year="1800"]')
                        ).to_have_attribute('data-coverage-status','birthplace_context')
                 expect(page.locator('.dynasty-coverage-task-card')).to_have_count(4)
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Фердинанд')
-                expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Пробел')
-                expect(page.locator('.dynasty-coverage-detail a.dynasty-source')).to_have_count(4)
+                expect(page.locator('.dynasty-coverage-detail a.dynasty-source')).not_to_have_count(0)
                 expect(page.locator('.dynasty-coverage-detail a').last).to_have_attribute(
                     'href',re.compile('^https://'))
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
@@ -76,15 +77,16 @@ def run(dist:Path,output:Path):
                 # the SPA year; selected cell navigation is not an inert legend.
                 page.locator('.dynasty-coverage-cell[data-polity="tusc"][data-year="1795"]').click()
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text('1795')
-                expect(page.locator('#dynasty-year')).to_have_text('1795')
+                page.locator('.dynasty-coverage-cell[data-polity="tusc"][data-year="1800"]').click()
+                expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Пробел реестра')
+                expect(page.locator('#dynasty-year')).to_have_text('1800')
 
                 # Keyboard reaches cells outside the currently visible scroll
                 # segment and the row labels remain non-interactive captions.
                 page.locator('.dynasty-coverage-cell[data-polity="es"][data-year="1770"]').focus()
                 page.keyboard.press('Enter')
                 expect(page.locator('#dynasty-year')).to_have_text('1770')
-                expect(page.locator('.dynasty-coverage-detail')).to_contain_text(
-                    'За пределами исследовательской партии')
+                expect(page.locator('.dynasty-coverage-detail')).to_contain_text('Карл III')
                 expect(page.locator('.dynasty-coverage-detail')).to_contain_text(
                     'Королевство Испания')
                 assert 'dynView=coverage' in page.url
@@ -146,7 +148,7 @@ def run(dist:Path,output:Path):
                 assert not errors,errors
                 result.append({'viewport':[w,h],
                     'matrix':[13,39],'year_cells':507,
-                    'research_gap_cells':10,'out_of_sample_cells':76,
+                    'research_gap_cells':1,'out_of_sample_cells':0,
                     'views':['network','houses','coverage'],
                     'status':'passed','javascript_errors':errors})
                 page.close()

@@ -47,15 +47,17 @@ def coverage() -> dict:
     original = read("1762.json")
     dyn = read("dynasty-1762-1780.json")
     ext = read("extension-1781-1800.json")
+    patch = read("coverage-backfill-1762-1800.json")
     editorial = read("coverage-1762-1800.json")
+    assert patch["schema_version"] == "dynasty-coverage-backfill-v1"
     assert editorial["schema_version"] == "coverage-matrix-v1"
     assert editorial["period"] == {"start": START, "end": END}
     polities = (original["countries"] + dyn["additional_polities"] +
                 ext["additional_polities"])
-    roles = dyn["roles"] + ext["additional_roles"]
+    roles = dyn["roles"] + ext["additional_roles"] + patch["role_additions"]
     institutions = ext["institutions"]
     source_ids = {x["id"] for x in (original["sources"] + dyn["sources"] +
-                                    ext["sources"] + editorial["sources"])}
+                                    ext["sources"] + patch["source_records"] + editorial["sources"])}
     policies = {x["polity_id"]: x for x in editorial["polities"]}
     ids = [s["id"] for s in polities]
     if len(ids) != len(set(ids)) or set(ids) != set(policies):

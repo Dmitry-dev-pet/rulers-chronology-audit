@@ -1,0 +1,595 @@
+{
+  "schema_version": "dynasty-coverage-backfill-v1",
+  "based_on": [
+    "world-1762.json",
+    "world-dynasty-18c.json",
+    "world-extension-1800.json",
+    "world-house-footprints.json"
+  ],
+  "historical_truth_verified_by_ci": false,
+  "historical_borders_verified": false,
+  "covered_polity_ids": [
+    "es",
+    "pt",
+    "sw",
+    "tusc"
+  ],
+  "coverage_window": {
+    "start": 1762,
+    "end": 1800
+  },
+  "person_additions": [
+    {
+      "id": "pt-jose1",
+      "name": "Жозе I Португальский",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "braganza",
+          "name": "Браганса",
+          "qualifier": "Правящий дом / род по источнику, не этнокультурное происхождение",
+          "source_ids": [
+            "BG02",
+            "BG12"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Лиссабон",
+        "polity_id": null,
+        "source_ids": [
+          "BG02"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "BG02"
+      ]
+    },
+    {
+      "id": "sw-adolf-fredrik",
+      "name": "Адольф Фредрик",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "holstein-gottorp",
+          "name": "Гольштейн-Готторпский дом (шведская линия)",
+          "qualifier": "Правящий дом / род по источнику, не этнокультурное происхождение",
+          "source_ids": [
+            "BG05"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Готторп, Шлезвиг",
+        "polity_id": null,
+        "source_ids": [
+          "BG05"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "BG05"
+      ]
+    },
+    {
+      "id": "tusc-ferdinand3",
+      "name": "Фердинанд III Тосканский",
+      "canonical_person_id": null,
+      "canonical_tenure_id": null,
+      "houses": [
+        {
+          "id": "habsburg-lorraine",
+          "name": "Габсбург-Лотарингская тосканская линия",
+          "qualifier": "Правящий дом / род по источнику, не этнокультурное происхождение",
+          "source_ids": [
+            "BG09"
+          ]
+        }
+      ],
+      "birthplace": {
+        "name": "Флоренция, Великое герцогство Тосканское",
+        "polity_id": null,
+        "source_ids": [
+          "BG09"
+        ]
+      },
+      "ethnic_origin_fact_id": null,
+      "source_ids": [
+        "BG09"
+      ]
+    }
+  ],
+  "role_additions": [
+    {
+      "id": "bg-es-carlos3-early",
+      "person_id": "es-carlos3",
+      "polity_id": "es",
+      "title": "Король Испании Карл III",
+      "role_kind": "sovereign",
+      "start_year": 1762,
+      "end_year": 1780,
+      "source_ids": [
+        "BG01"
+      ],
+      "verification": "reference_checked",
+      "note": "Реальное царствование с 1759 года; эта партия заполняет только 1762–1780 и соединяется с прежним сроком 1781–1788. Границы по году не означают нового вступления в 1762."
+    },
+    {
+      "id": "bg-pt-jose1",
+      "person_id": "pt-jose1",
+      "polity_id": "pt",
+      "title": "Король Португалии Жозе I",
+      "role_kind": "sovereign",
+      "start_year": 1762,
+      "end_year": 1777,
+      "source_ids": [
+        "BG02",
+        "BG03"
+      ],
+      "verification": "reference_checked",
+      "note": "Занимал престол с 1750 года; умер 24 февраля 1777. Формальная королевская должность не равна самостоятельному осуществлению всех решений маркиза Помбала."
+    },
+    {
+      "id": "bg-pt-maria-early",
+      "person_id": "pt-maria1",
+      "polity_id": "pt",
+      "title": "Мария I, правящая королева Португалии",
+      "role_kind": "sovereign",
+      "start_year": 1777,
+      "end_year": 1780,
+      "source_ids": [
+        "BG04",
+        "BG11"
+      ],
+      "verification": "reference_checked",
+      "note": "Вступила на престол после смерти отца 24 февраля 1777. Старый набор продолжает этот срок с 1781 года; не отдельное царствование."
+    },
+    {
+      "id": "bg-pt-pedro-early",
+      "person_id": "pt-pedro3",
+      "polity_id": "pt",
+      "title": "Педру III, король-супруг Марии I",
+      "role_kind": "consort",
+      "start_year": 1777,
+      "end_year": 1780,
+      "source_ids": [
+        "BG11"
+      ],
+      "verification": "reference_checked",
+      "note": "Король по браку с Марией I, а не самостоятельный наследственный монарх. Срок 1781–1786 уже находится в прежнем источниковом наборе."
+    },
+    {
+      "id": "bg-sw-adolf",
+      "person_id": "sw-adolf-fredrik",
+      "polity_id": "sw",
+      "title": "Король Швеции Адольф Фредрик",
+      "role_kind": "sovereign",
+      "start_year": 1762,
+      "end_year": 1771,
+      "source_ids": [
+        "BG05"
+      ],
+      "verification": "reference_checked",
+      "note": "Царствование с 1751 года, смерть 12 февраля 1771. Шведский королевский двор подчёркивает его слабое реальное политическое влияние."
+    },
+    {
+      "id": "bg-sw-gustav3-early",
+      "person_id": "sw-gustav3",
+      "polity_id": "sw",
+      "title": "Король Швеции Густав III",
+      "role_kind": "sovereign",
+      "start_year": 1771,
+      "end_year": 1780,
+      "source_ids": [
+        "BG06"
+      ],
+      "verification": "reference_checked",
+      "note": "Унаследовал престол после смерти Адольфа Фредрика 12 февраля 1771; прежняя партия продолжает роль с 1781. Переворот 1772 изменил фактическое распределение полномочий."
+    },
+    {
+      "id": "bg-tusc-francis",
+      "person_id": "hre-francis",
+      "polity_id": "tusc",
+      "title": "Великий герцог Тосканский Франц Стефан",
+      "role_kind": "sovereign",
+      "start_year": 1762,
+      "end_year": 1765,
+      "source_ids": [
+        "BG07",
+        "BG08"
+      ],
+      "verification": "reference_checked",
+      "note": "Великий герцог с 1737 до смерти в 1765, но находился в Вене: Тосканой управлял через Регентский совет во Флоренции. Формальный титул не является доказательством непосредственного управления."
+    },
+    {
+      "id": "bg-tusc-leopold-early",
+      "person_id": "hab-leopold",
+      "polity_id": "tusc",
+      "title": "Великий герцог Тосканский Пьетро Леопольдо",
+      "role_kind": "sovereign",
+      "start_year": 1765,
+      "end_year": 1780,
+      "source_ids": [
+        "BG07",
+        "BG08"
+      ],
+      "verification": "reference_checked",
+      "note": "Сменил Франца Стефана в 1765 и лично управлял герцогством. Срок с 1781 по 1790 уже присутствует в прежнем наборе."
+    },
+    {
+      "id": "bg-tusc-ferdinand",
+      "person_id": "tusc-ferdinand3",
+      "polity_id": "tusc",
+      "title": "Великий герцог Тосканский Фердинанд III",
+      "role_kind": "sovereign",
+      "start_year": 1790,
+      "end_year": 1799,
+      "source_ids": [
+        "BG09",
+        "BG10"
+      ],
+      "verification": "reference_checked",
+      "note": "Сменил отца Леопольда в 1790. В 1799 французские войска изгнали его из Тосканы. Династическая претензия продолжалась, но фактический территориальный контроль после изгнания не подтверждается этим сроком."
+    }
+  ],
+  "relation_additions": [
+    {
+      "id": "bg-sw-1771",
+      "kind": "succession",
+      "subjects": [
+        "sw-adolf-fredrik",
+        "sw-gustav3"
+      ],
+      "event_year": 1771,
+      "start_year": 1771,
+      "end_year": 1771,
+      "title": "1771 · Густав III наследовал Адольфу Фредрику",
+      "source_ids": [
+        "BG05",
+        "BG06"
+      ],
+      "note": "Отцовско-сыновняя смена шведского престола; один год не доказывает совместного правления."
+    },
+    {
+      "id": "bg-pt-1777",
+      "kind": "succession",
+      "subjects": [
+        "pt-jose1",
+        "pt-maria1"
+      ],
+      "event_year": 1777,
+      "start_year": 1777,
+      "end_year": 1777,
+      "title": "1777 · Жозе I сменился Марией I",
+      "source_ids": [
+        "BG03",
+        "BG04"
+      ],
+      "note": "Мария I стала правящей королевой после смерти отца, не королевой-консортом."
+    },
+    {
+      "id": "bg-tusc-1765",
+      "kind": "succession",
+      "subjects": [
+        "hre-francis",
+        "hab-leopold"
+      ],
+      "event_year": 1765,
+      "start_year": 1765,
+      "end_year": 1765,
+      "title": "1765 · Франц Стефан — Пьетро Леопольдо в Тоскане",
+      "source_ids": [
+        "BG07",
+        "BG08"
+      ],
+      "note": "Смена тосканского правителя, отличная от передачи выборной императорской должности."
+    },
+    {
+      "id": "bg-tusc-1790",
+      "kind": "succession",
+      "subjects": [
+        "hab-leopold",
+        "tusc-ferdinand3"
+      ],
+      "event_year": 1790,
+      "start_year": 1790,
+      "end_year": 1790,
+      "title": "1790 · Пьетро Леопольдо — Фердинанд III в Тоскане",
+      "source_ids": [
+        "BG09",
+        "BG10"
+      ],
+      "note": "Отец перешёл к управлению наследственными владениями Габсбургов и императорскому титулу; сын управлял Тосканой."
+    },
+    {
+      "id": "bg-tusc-1799",
+      "kind": "territorial_displacement",
+      "subjects": [
+        "tusc-ferdinand3"
+      ],
+      "event_year": 1799,
+      "start_year": 1799,
+      "end_year": 1799,
+      "title": "1799 · Фердинанд III был изгнан из Тосканы",
+      "source_ids": [
+        "BG09",
+        "BG10"
+      ],
+      "note": "Нельзя продолжать непрерывную полосу фактического территориального правления до 1800 года."
+    }
+  ],
+  "milestones": [
+    {
+      "year": 1765,
+      "title": "1765 · Тоскана: Франц Стефан — Пьетро Леопольдо",
+      "description": "Передача великогерцогского титула. При Франце Стефане существовал отдельный регентский совет, не выдуманный король.",
+      "source_ids": [
+        "BG07",
+        "BG08"
+      ]
+    },
+    {
+      "year": 1771,
+      "title": "1771 · Швеция: Густав III после Адольфа Фредрика",
+      "description": "Официальная смена монарха, без автоматического вывода о фактической власти до и после переворота 1772.",
+      "source_ids": [
+        "BG05",
+        "BG06"
+      ]
+    },
+    {
+      "year": 1777,
+      "title": "1777 · Португалия: Мария I после Жозе I",
+      "description": "Правящая королева вместо отца; Педру III получил положение короля-супруга, не отдельную наследственную корону.",
+      "source_ids": [
+        "BG03",
+        "BG04",
+        "BG11"
+      ]
+    },
+    {
+      "year": 1790,
+      "title": "1790 · Тоскана: Фердинанд III после Пьетро Леопольдо",
+      "description": "Герцогство осталось отдельным от выборной императорской должности; сын наследовал тосканскую власть от отца.",
+      "source_ids": [
+        "BG09",
+        "BG10"
+      ]
+    },
+    {
+      "year": 1799,
+      "title": "1799 · Фердинанд III изгнан из Тосканы",
+      "description": "В 1799 году французское вторжение прервало осуществление власти Фердинанда в Тоскане; претензии на титул и фактический контроль разделены.",
+      "source_ids": [
+        "BG09",
+        "BG10"
+      ]
+    }
+  ],
+  "family_additions": [
+    {
+      "id": "braganza",
+      "name": "Браганса",
+      "color": "#357d6b",
+      "description": "Португальский правящий дом. Жозе I и Мария I занимали престол последовательно; Педру III — король-супруг, Жуан — наследник и затем регент. Не четыре независимых царствования.",
+      "source_ids": [
+        "BG02",
+        "BG04",
+        "BG11",
+        "BG12"
+      ],
+      "members": [
+        {
+          "person_id": "pt-jose1",
+          "membership": "house",
+          "branch": "Португальская правящая линия",
+          "source_ids": [
+            "BG02",
+            "BG12"
+          ]
+        },
+        {
+          "person_id": "pt-maria1",
+          "membership": "house",
+          "branch": "Правящая линия Марии I",
+          "source_ids": [
+            "BG04",
+            "BG12"
+          ]
+        },
+        {
+          "person_id": "pt-pedro3",
+          "membership": "house",
+          "branch": "Браганса, но юридическая роль — консорт",
+          "source_ids": [
+            "BG11",
+            "BG12"
+          ]
+        },
+        {
+          "person_id": "pt-joao",
+          "membership": "house",
+          "branch": "Португальский наследник, в 1792–1800 регент",
+          "source_ids": [
+            "BG11",
+            "EX11",
+            "BG12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hohenzollern",
+      "name": "Гогенцоллерны",
+      "color": "#607da7",
+      "description": "Последовательные правители одного государства — Пруссии. Это династическая непрерывность, но не присутствие семьи в нескольких независимых монархиях по нашим данным.",
+      "source_ids": [
+        "WP09",
+        "EX02",
+        "EX03"
+      ],
+      "members": [
+        {
+          "person_id": "pr-frederick2",
+          "membership": "house",
+          "branch": "Прусская правящая линия",
+          "source_ids": [
+            "WP09"
+          ]
+        },
+        {
+          "person_id": "pr-fw2",
+          "membership": "house",
+          "branch": "Прусская правящая линия",
+          "source_ids": [
+            "EX02"
+          ]
+        },
+        {
+          "person_id": "pr-fw3",
+          "membership": "house",
+          "branch": "Прусская правящая линия",
+          "source_ids": [
+            "EX03"
+          ]
+        }
+      ]
+    }
+  ],
+  "family_member_additions": [
+    {
+      "family_id": "holstein-gottorp",
+      "members": [
+        {
+          "person_id": "sw-adolf-fredrik",
+          "membership": "house",
+          "branch": "Шведская Гольштейн-Готторпская линия: отец Густава III",
+          "source_ids": [
+            "BG05"
+          ]
+        }
+      ]
+    },
+    {
+      "family_id": "habsburg-lorraine",
+      "members": [
+        {
+          "person_id": "tusc-ferdinand3",
+          "membership": "house",
+          "branch": "Тосканская линия Габсбург-Лотарингских; сын Леопольда II",
+          "source_ids": [
+            "BG09",
+            "BG10"
+          ]
+        }
+      ]
+    }
+  ],
+  "source_records": [
+    {
+      "id": "BG01",
+      "title": "Министерство культуры Испании: Карл III, король Испании в 1759–1788 годах",
+      "url": "https://tesauros.cultura.gob.es/tesauros/tesauros/alfabetico/c?termino=https%3A%2F%2Ftesauros.cultura.gob.es%2Ftesauros%2Fcontextosculturales%2F1007992&tesauro=https%3A%2F%2Ftesauros.cultura.gob.es%2Ftesauros%2Fcontextosculturales",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG02",
+      "title": "Парламент Португалии: Жозе I с 1750 года, Жозе I и Мария I",
+      "url": "https://www.parlamento.pt/VisitaParlamento/Paginas/BiogDJose.aspx",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG03",
+      "title": "Португальский национальный архив Торре-ду-Томбу: смерть Жозе I 24 февраля 1777",
+      "url": "https://antt.dglab.gov.pt/exposicoes-virtuais-2/nascimento-d-jose/",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG04",
+      "title": "Государственный музей Португалии: Мария I — первая правящая королева, восшествие 1777",
+      "url": "https://pacodosduques.gov.pt/monumentos/paco-dos-duques/colecao/pintura/rainha-maria-bordalo-pinheiro-14-a/",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG05",
+      "title": "Шведский королевский двор: Адольф Фредрик, 1751–1771, отец Густава III, слабое личное влияние",
+      "url": "https://www.kungligaslotten.se/english/list-of-swedish-monarchs/adolf-fredrik.html",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG06",
+      "title": "Шведский королевский двор: Густав III, правление 1771–1792",
+      "url": "https://www.kungligaslotten.se/english/list-of-swedish-monarchs/gustav-iii.html",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG07",
+      "title": "Государственный архив Флоренции: Тоскана, регентство 1737–1765 и Леопольд 1765–1790",
+      "url": "https://archiviodistatofirenze.cultura.gov.it/asfi/index.php?id=225",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG08",
+      "title": "Museo Galileo (Флоренция): Франц Стефан, Пьетро Леопольдо и переход герцогства",
+      "url": "https://catalogue.museogalileo.it/biography/LorraineFamily.html",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG09",
+      "title": "Музей Габсбургов: Фердинанд III Тосканский, владение 1790–1799 до изгнания",
+      "url": "https://www.habsburger.net/en/persons/habsburg/ferdinand-iii-tuscany",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG10",
+      "title": "Музей Габсбургов: уход Фердинанда III из Тосканы после французского вторжения 1799",
+      "url": "https://www.habsburger.net/en/chapter/grand-duke-ferdinand-iii-tuscany-regent-times-change",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG11",
+      "title": "Palácio de Queluz / Parques de Sintra: Мария I и Педру III, король-супруг",
+      "url": "https://www.parquesdesintra.pt/en/parks-monuments/national-palace-and-gardens-of-queluz/history/",
+      "note": "",
+      "verification": "reference_checked"
+    },
+    {
+      "id": "BG12",
+      "title": "Парламент Португалии: династия Браганса и наследование португальского престола",
+      "url": "https://www.parlamento.pt/Parlamento/Paginas/bases-da-constituicao-1821.aspx",
+      "note": "Источник из 1821 года подтверждает правящий дом, но не используется для вывода правовой системы 1762 года из конституции 1821-го.",
+      "verification": "reference_checked"
+    }
+  ],
+  "polity_coverage_notes": [
+    {
+      "id": "es",
+      "note": "Полоса испанского престола теперь документирована на 1762–1800 годы. Карл III правил с 1759, но начало исследования — 1762."
+    },
+    {
+      "id": "pt",
+      "note": "Двор Португалии документирован на 1762–1800 годы. Должность Марии I и роль её супруга разделены; Мария правила формально и после начала регентства Жуана."
+    },
+    {
+      "id": "sw",
+      "note": "Шведский престол документирован от Адольфа Фредрика (срез с 1762) до Густава IV Адольфа. Формальный титул Адольфа не доказательство личной политической власти."
+    },
+    {
+      "id": "tusc",
+      "note": "Тоскана: формальный титул Франца Стефана до 1765, Леопольд до 1790, Фердинанд III до изгнания в 1799. После 1799 не утверждаем, что он продолжал реально управлять территорией."
+    }
+  ]
+}

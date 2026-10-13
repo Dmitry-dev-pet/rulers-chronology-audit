@@ -278,7 +278,7 @@
   layer.append(dialog);
   document.body.append(layer);
 
-  let data=null,base=null,atlas=null,extension=null,footprints=null,coverage=null,geography=null,pending=null,previousFocus=null;
+  let data=null,base=null,atlas=null,extension=null,footprints=null,repair=null,coverage=null,geography=null,pending=null,previousFocus=null;
   let year=1762;
   const abbr={
     ru:'Россия',fr:'Франция',pr:'Пруссия',gb:'Великобритания',
@@ -315,13 +315,14 @@
   const isActive=(r,y)=>r.start_year<=y && y<=r.end_year;
   const allPeople=()=>[
     ...(base?.persons||[]),...(data?.additional_persons||[]),
-    ...(extension?.additional_persons||[])
+    ...(extension?.additional_persons||[]),...(repair?.person_additions||[])
   ];
   const allPolities=()=>[
     ...(base?.countries||[]),...(data?.additional_polities||[]),
     ...(extension?.additional_polities||[])
   ].map(p=>({...p,name:p.name||p.label})).filter(p=>
-    (!p.introduced_from||year>=p.introduced_from) &&
+    (!p.introduced_from||year>=p.introduced_from ||
+      (year>=1762&&(repair?.covered_polity_ids||[]).includes(p.id))) &&
     !(p.id==='fr' && year>1792)
   );
   const getPerson=id=>allPeople().find(p=>p.id===id);
@@ -337,7 +338,8 @@
     const wrap=create('div','dynasty-sources');
     const index=new Map([...(base?.sources||[]),...(data?.sources||[]),
       ...(extension?.sources||[]),...(footprints?.sources||[]),
-      ...(coverage?.sources||[]),...(atlas?.sources||[])].map(s=>[s.id,s]));
+      ...(coverage?.sources||[]),...(repair?.source_records||[]),
+      ...(atlas?.sources||[])].map(s=>[s.id,s]));
     [...new Set(ids||[])].forEach(id=>{
       const source=index.get(id);
       if(!source||!validLink(source.url))return;
@@ -370,8 +372,8 @@
     return match||null;
   }
   function activeRoles(){
-    return [...(data?.roles||[]),...(extension?.additional_roles||[])]
-      .filter(r=>isActive(r,year));
+    return [...(data?.roles||[]),...(extension?.additional_roles||[]),
+      ...(repair?.role_additions||[])].filter(r=>isActive(r,year));
   }
   function activeInstitutions(){
     return (extension?.institutions||[]).filter(r=>isActive(r,year));
@@ -379,8 +381,9 @@
   function activeIds(){return new Set(activeRoles().map(r=>r.person_id));}
   function activeRelations() {
     const people=activeIds();
-    return [...(data?.relations||[]),...(extension?.additional_relations||[])]
-      .filter(r=>isActive(r,year) && (r.subjects||[]).every(id=>people.has(id)));
+    return [...(data?.relations||[]),...(extension?.additional_relations||[]),
+      ...(repair?.relation_additions||[])].filter(r=>isActive(r,year) &&
+        (r.subjects||[]).every(id=>people.has(id)));
   }
   function mainHouse(actor){
     const h=actorHouses(actor);
@@ -410,7 +413,8 @@
   // The original year graph keeps its reviewed positions. Later years use
   // a data-driven layout that places one PERSON once, regardless of offices.
   function layoutForYear(){
-    if(year<=1780)return {positions, width:1540,height:590,groups:[],institutions:[]};
+    if(year<=1780 && !(repair?.role_additions||[]).some(r=>isActive(r,year)))
+      return {positions, width:1540,height:590,groups:[],institutions:[]};
     const groups=[
       ['ru','Россия'],['fr','Франция'],['pr','Пруссия'],['gb','Великобритания / Ганновер'],
       ['hab','Габсбургские владения / Империя'],
@@ -527,7 +531,9 @@
         'hab-francis2':'Франц II', 'ru-paul1':'Павел I',
         'pt-joao':'Жуан', 'pt-maria1':'Мария I', 'pt-pedro3':'Педру III',
         'es-carlos3':'Карл III', 'es-carlos4':'Карл IV',
-        'fr-napoleon':'Бонапарт'
+        'fr-napoleon':'Бонапарт',
+        'pt-jose1':'Жозе I','sw-adolf-fredrik':'Адольф Фредрик',
+        'tusc-ferdinand3':'Фердинанд III'
       }[actor.id]) || actorName(actor)
         .replace('Алексеевна','').replace('Петровна','');
       group.append(svgNode('text',{x,y:y-8,'text-anchor':'middle',
@@ -586,8 +592,8 @@
     return canvas;
   }
   function renderEvents(){
-    const records=[...(data?.milestones||[]),...(extension?.milestones||[])]
-      .filter(e=>e.year===year);
+    const records=[...(data?.milestones||[]),...(extension?.milestones||[]),
+      ...(repair?.milestones||[])].filter(e=>e.year===year);
     events.replaceChildren();
     if(!records.length)events.append(create('p','dynasty-empty','Для этого года в пилоте нет отдельного исследованного перехода. Это не означает отсутствия событий.'));
     for(const record of records){
@@ -638,7 +644,9 @@
         p.kind==='birthplace_context_only'?
           'Представлено как историческое место рождения, не как ещё один британский престол.':
           'Политических должностей в этом году в пилоте нет; это пробел, не историческое отрицание.'));
-      article.append(create('p','dynasty-polity-note',p.note||'Даты и полномочия сохраняют исходную точность.'));
+      const coverageNote=(repair?.polity_coverage_notes||[]).find(n=>n.id===p.id);
+      article.append(create('p','dynasty-polity-note',
+        coverageNote?.note||p.note||'Даты и полномочия сохраняют исходную точность.'));
       polities.append(article);
     }
   }
@@ -716,7 +724,8 @@
     'emperor','co_regent','consort','regent','heir','dynastic_person'
   ]);
   const excludesFromStateCount=new Set(['hre','frrep','meck']);
-  const fullRoles=()=>[...(data?.roles||[]),...(extension?.additional_roles||[])];
+  const fullRoles=()=>[...(data?.roles||[]),...(extension?.additional_roles||[]),
+    ...(repair?.role_additions||[])];
   const allJurisdictions=()=>[...(base?.countries||[]),
     ...(data?.additional_polities||[]),...(extension?.additional_polities||[])]
     .map(p=>({...p,name:p.name||p.label}));
@@ -1106,10 +1115,14 @@
       row.append(label,cells);table.append(row);
     }
     coverageTable.replaceChildren(table);
+    const gaps=counts.research_gap||0,outside=counts.outside_sample||0;
+    const form=(n,one,few,many)=>n===1?one:(n%10>=2&&n%10<=4&&
+      (n%100<12||n%100>14))?few:many;
     coverageOverview.textContent='1762–1800 · '+coverage.polities.length+
-      ' исторических контекстов · '+(counts.research_gap||0)+
-      ' ячеек-пробелов внутри исследуемых интервалов; '+
-      (counts.outside_sample||0)+' ячеек вне нашей выборки. '+
+      ' исторических контекстов · '+gaps+' '+
+      form(gaps,'ячейка-пробел','ячейки-пробела','ячеек-пробелов')+
+      ' внутри исследуемых интервалов; '+outside+' '+
+      form(outside,'ячейка','ячейки','ячеек')+' вне нашей выборки. '+
       'Эти числа не измеряют полноту исторической науки.';
     const polity=coverage.polities.find(p=>
       p.polity_id===(selectedCoverage?.polity_id||'tusc'));
@@ -1383,7 +1396,7 @@
   function renderCountryJump(){
     // Each tab scrolls only the independent SVG viewport, not the entire page.
     countryJump.replaceChildren();
-    countryJump.hidden=year<=1780;
+    countryJump.hidden=layoutForYear().groups.length===0;
     if(countryJump.hidden)return;
     const groups=[
       ['ru','Россия'],['fr','Франция'],['pr','Пруссия'],
@@ -1467,6 +1480,9 @@
       fetch('./atlas.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('atlas');return r.json();}),
       fetch('./world-extension-1800.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('extension');return r.json();}),
       fetch('./world-house-footprints.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('footprints');return r.json();}),
+      fetch('./world-coverage-backfill.json',{cache:'no-cache'})
+        .then(r=>{if(!r.ok)throw Error('backfill');return r.json();})
+        .catch(()=>null),
       // If the new optional public asset is missing during CDN propagation,
       // preserve the already-published people/dynasty views.
       fetch('./world-coverage-1800.json',{cache:'no-cache'})
@@ -1475,7 +1491,7 @@
       fetch('./world-geographic-1800.json',{cache:'no-cache'})
         .then(r=>{if(!r.ok)throw Error('geography');return r.json();})
         .catch(()=>null)
-    ]).then(([d,b,a,e,houses,cov,geo])=>{
+    ]).then(([d,b,a,e,houses,backfill,cov,geo])=>{
       if(d.schema_version!=='dynasty-network-v1' ||
          b.schema_version!=='world-pilot-v1' ||
          e.schema_version!=='dynasty-extension-v1' ||
@@ -1485,21 +1501,37 @@
          e.full_period.start!==1762 || e.full_period.end!==1800 ||
          !Array.isArray(a.tenures) || !Array.isArray(a.people))
         throw Error('schema');
-      const everyone=[...b.persons,...d.additional_persons,...e.additional_persons];
+      if(backfill && (backfill.schema_version!=='dynasty-coverage-backfill-v1' ||
+          backfill.coverage_window?.start!==1762 ||
+          backfill.coverage_window?.end!==1800 ||
+          !Array.isArray(backfill.role_additions) ||
+          !Array.isArray(backfill.person_additions) ||
+          !Array.isArray(backfill.family_additions) ||
+          !Array.isArray(backfill.family_member_additions) ||
+          !Array.isArray(backfill.relation_additions) ||
+          !Array.isArray(backfill.source_records) ||
+          !Array.isArray(backfill.covered_polity_ids)))
+        throw Error('backfill schema');
+      const everyone=[...b.persons,...d.additional_persons,...e.additional_persons,
+        ...(backfill?.person_additions||[])];
       const ids=new Set(everyone.map(x=>x.id));
       if(ids.size!==everyone.length)throw Error('duplicate persons');
       const politiesAll=new Set([...b.countries,...d.additional_polities,...e.additional_polities].map(x=>x.id));
-      for(const r of [...d.roles,...e.additional_roles]){
+      for(const r of [...d.roles,...e.additional_roles,...(backfill?.role_additions||[])]){
         if(!ids.has(r.person_id)||!politiesAll.has(r.polity_id)||r.start_year>r.end_year||
            !(r.source_ids||[]).length)throw Error('invalid roles');
       }
       const pids=new Set(a.people.map(x=>x.id));
       const tenures=new Map(a.tenures.map(x=>[x.id,x]));
-      const allSources=new Set([...b.sources,...d.sources,...e.sources,...a.sources].map(x=>x.id));
-      for(const row of [...e.additional_roles,...e.institutions,...e.additional_relations,...e.milestones]){
+      const allSources=new Set([...b.sources,...d.sources,...e.sources,
+        ...(backfill?.source_records||[]),...a.sources].map(x=>x.id));
+      for(const row of [...e.additional_roles,...e.institutions,...e.additional_relations,...e.milestones,
+        ...(backfill?.role_additions||[]),...(backfill?.relation_additions||[]),
+        ...(backfill?.milestones||[])]){
         if(!(row.source_ids||[]).length || !row.source_ids.every(s=>allSources.has(s))) throw Error('missing source');
       }
-      for(const rel of [...d.relations,...e.additional_relations]) {
+      for(const rel of [...d.relations,...e.additional_relations,
+        ...(backfill?.relation_additions||[])]) {
         if(!(rel.subjects||[]).every(id=>ids.has(id)))throw Error('missing relation person');
       }
       for(const actor of everyone){
@@ -1509,7 +1541,8 @@
           throw Error('canonical identity mismatch');
       }
       const sourceKeys=new Set([
-        ...b.sources,...d.sources,...e.sources,...houses.sources,...a.sources
+        ...b.sources,...d.sources,...e.sources,...houses.sources,
+        ...(backfill?.source_records||[]),...a.sources
       ].map(x=>x.id));
       for(const family of houses.families){
         if(!family.members.length || !(family.source_ids||[]).every(x=>sourceKeys.has(x)))
@@ -1522,9 +1555,36 @@
             throw Error('unsourced family membership');
         }
       }
+      const restoredMembers=new Map((backfill?.family_member_additions||[])
+        .map(group=>[group.family_id,group.members]));
+      if(backfill && !backfill.covered_polity_ids.every(id=>politiesAll.has(id)))
+        throw Error('unknown backfill polity');
+      if(backfill && [...restoredMembers.keys()].some(id=>
+        !houses.families.some(f=>f.id===id)))throw Error('unknown backfill family');
+      const mergedFamilies=[
+        ...houses.families.map(f=>({
+          ...f,members:[...f.members,...(restoredMembers.get(f.id)||[])]
+        })),
+        ...(backfill?.family_additions||[])
+      ];
+      if(new Set(mergedFamilies.map(f=>f.id)).size!==mergedFamilies.length)
+        throw Error('duplicate families');
+      for(const family of mergedFamilies){
+        if(!family.members?.length || !family.source_ids?.length ||
+           !family.source_ids.every(x=>sourceKeys.has(x)))throw Error('family source');
+        const seen=new Set();
+        for(const member of family.members){
+          if(!ids.has(member.person_id) || seen.has(member.person_id) ||
+             !['house','branch_lineage','dynastic_union'].includes(member.membership) ||
+             !member.source_ids?.length ||
+             !member.source_ids.every(x=>sourceKeys.has(x)))
+            throw Error('invalid family member');
+          seen.add(member.person_id);
+        }
+      }
       let coverageChecked=null;
       try{
-        if(cov){
+        if(cov && backfill){
           if(cov.schema_version!=='coverage-matrix-v1' ||
              cov.period.start!==1762 || cov.period.end!==1800 ||
              !Array.isArray(cov.polities) ||
@@ -1532,7 +1592,8 @@
              !Array.isArray(cov.known_research_tasks))
             throw Error('coverage schema');
           const knownSources=new Set([
-            ...b.sources,...d.sources,...e.sources,...a.sources,...cov.sources
+            ...b.sources,...d.sources,...e.sources,...a.sources,
+            ...(backfill?.source_records||[]),...cov.sources
           ].map(s=>s.id));
           const ids=new Set();
           for(const policy of cov.polities){
@@ -1556,7 +1617,8 @@
           coverageChecked=cov;
         }
       }catch(_){coverageChecked=null;}
-      data=d;base=b;atlas=a;extension=e;footprints=houses;
+      data=d;base=b;atlas=a;extension=e;repair=backfill;
+      footprints={...houses,families:mergedFamilies};
       coverage=coverageChecked;
       // Optional: an unavailable map must not break the original network.
       if(geo && geo.schema_version==='europe-geographic-reference-v1' &&
@@ -1575,13 +1637,18 @@
       slider.max=String(e.full_period.end);
       const rangeEnd=rangeLabel.querySelector('span:last-child');
       if(rangeEnd)rangeEnd.textContent=String(e.full_period.end);
-      milestones.replaceChildren(...[...d.period.presets,...e.additional_presets].map(y=>{
+      milestones.replaceChildren(...[...new Set([...d.period.presets,...e.additional_presets,
+        ...(backfill?[1771,1777]:[])])].sort((a,b)=>a-b).map(y=>{
         const button=create('button','dynasty-milestone',String(y));
         button.type='button';button.dataset.year=String(y);
         button.addEventListener('click',()=>chooseYear(y,true));
         return button;
       }));
-      caveatList.replaceChildren(...[...d.caveats,...e.caveats].map(text=>create('li',null,text)));
+      caveatList.replaceChildren(...[...d.caveats,...e.caveats,
+        ...(backfill?[
+          'Испания, Португалия, Швеция и Тоскана имеют документированные записи с 1762 года; это не полный международный реестр.',
+          'Фердинанд III изгнан из Тосканы в 1799 году. Конец полосы не доказывает утрату титула и не устанавливает власть в 1800 году.'
+        ]:[])].map(text=>create('li',null,text)));
       if(!coverage)coverageOverview.textContent='Матрица покрытия не загружена; другие режимы сохранены.';
       selectedView=modeFromUrl();
       updateView();

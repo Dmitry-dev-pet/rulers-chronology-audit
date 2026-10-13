@@ -31,6 +31,8 @@ class SiteViewsTests(unittest.TestCase):
                         self.root / "data/atlas/world-pilots/dynasty-footprints-1762-1800.json")
         shutil.copyfile(source.parent / "data/atlas/world-pilots/coverage-1762-1800.json",
                         self.root / "data/atlas/world-pilots/coverage-1762-1800.json")
+        shutil.copyfile(source.parent / "data/atlas/world-pilots/coverage-backfill-1762-1800.json",
+                        self.root / "data/atlas/world-pilots/coverage-backfill-1762-1800.json")
         shutil.copyfile(source.parent / "data/atlas/world-pilots/geographic-context-1762-1800.json",
                         self.root / "data/atlas/world-pilots/geographic-context-1762-1800.json")
         self.transcript = self.root / "data/poster-transcription.tsv"
@@ -121,7 +123,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertFalse(result["historical_truth_verified_by_ci"])
         self.assertEqual(result["records"], 4)
         files = {p.name for p in (self.root / "dist").iterdir()}
-        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js", "world-1762.json", "dynasty-atlas.js", "world-dynasty-18c.json", "world-extension-1800.json", "world-house-footprints.json", "world-coverage-1800.json", "world-geographic-1800.json", "README.md", "SHA256SUMS",
+        self.assertEqual(files, {"index.html", "site.css", "site.js", "year-view.js", "transition-view.js", "universal-atlas.js", "mobile-atlas.js", "world-atlas.js", "world-1762.json", "dynasty-atlas.js", "world-dynasty-18c.json", "world-extension-1800.json", "world-house-footprints.json", "world-coverage-backfill.json", "world-coverage-1800.json", "world-geographic-1800.json", "README.md", "SHA256SUMS",
                                  "chronology.json", "sources.json", "validation.json", "party.csv",
                                  "government.csv", "state_institutions.csv", "separate_records.csv"})
         for p in (self.root / "dist").iterdir():
@@ -141,6 +143,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("world-extension-1800.json", sums)
         self.assertIn("world-house-footprints.json", sums)
         self.assertIn("world-coverage-1800.json", sums)
+        self.assertIn("world-coverage-backfill.json", sums)
         self.assertEqual(len(sums.strip().splitlines()), len(files) - 1)
 
 

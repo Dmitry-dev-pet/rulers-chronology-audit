@@ -76,8 +76,10 @@ def run(dist:Path, output:Path):
                 if width<=390 and height>=640:
                     chart=page.locator('.dynasty-footprint-scroll').bounding_box()
                     assert chart and chart['y']<height*.75, (width,height,chart)
-                expect(page.locator('.dynasty-house-group')).to_have_count(4)
+                expect(page.locator('.dynasty-house-group')).to_have_count(6)
                 expect(page.locator('.dynasty-house-year')).to_have_count(5)
+                expect(page.locator('.dynasty-house-group[data-family-id="braganza"]')).to_have_count(1)
+                expect(page.locator('.dynasty-house-group[data-family-id="hohenzollern"]')).to_have_count(1)
                 expect(page.locator('.dynasty-house-group[data-family-id="bourbon"] .dynasty-house-row[data-country="fr"]')).to_have_count(1)
                 expect(page.locator('.dynasty-house-group[data-family-id="bourbon"] .dynasty-house-row[data-country="es"]')).to_have_count(1)
                 expect(page.locator('.dynasty-house-bar[data-role-id="ex-es-carlos3"]')).to_have_count(1)
@@ -142,7 +144,7 @@ def run(dist:Path, output:Path):
                 assert not errors, errors
                 report.append({
                     'viewport':[width,height],
-                    'dynasties':4,
+                    'dynasties':6,
                     'years':[1788,1798],
                     'features':['separate powers','personal union','branch lineage','optional consorts',
                                 'source citations','deep link','mobile pan'],
