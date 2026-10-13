@@ -20,6 +20,8 @@ on:
       - scripts/atlas_v2_authority.py
       - scripts/atlas_v2_epochs.py
       - scripts/atlas_v2_coverage.py
+      - scripts/historical_power_sqlite.py
+      - scripts/historical_power_pages.py
       - design/atlas-v2/**
       - schemas/**
       - data/atlas/**
