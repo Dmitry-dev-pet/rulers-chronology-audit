@@ -46,7 +46,12 @@ def run(dist: Path, output: Path):
                 lab=page.locator("#hpm-lab")
                 expect(lab).to_be_visible()
                 expect(lab.locator("h2")).to_have_text("Как менялась власть?")
-                expect(lab.locator(".hpm-event")).to_have_count(10)
+                try:
+                    expect(lab.locator(".hpm-event")).to_have_count(10)
+                except AssertionError as exc:
+                    raise AssertionError(
+                        f"HPM pilot not rendered, URL={page.url}, "
+                        f"lab={lab.inner_text()[:1800]!r}, js_errors={errors!r}") from exc
                 expect(lab.locator(".hpm-fact").nth(2)).to_contain_text("10 / 10")
                 assert lab.locator(".hpm-close").bounding_box()["height"] >= 43.5
                 assert lab.locator(".hpm-filter").first.bounding_box()["height"] >= 43.5
