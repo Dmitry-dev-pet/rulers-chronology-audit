@@ -116,6 +116,25 @@ class P9HistoricalOffices(unittest.TestCase):
         self.assertEqual(p["candidate_canonical_tenures"][0]
                          ["start_comparison"],"calendar_review")
 
+    def test_boris_election_date_source_calendar_conflict_is_not_auto_corrected(self):
+        x=next(c for c in self.cases if c["wikidata_person_qid"]=="Q170172")
+        self.assertEqual(x["p39_start"],"+1598-02-17T00:00:00Z")
+        self.assertEqual(x["calendar"],"gregorian")
+        self.assertEqual(x["independent_source_old_style_election_date"],"1598-02-17")
+        self.assertEqual(x["independent_source_new_style_election_date"],"1598-02-27")
+        self.assertEqual(x["interpretation_caveat"],"calendar_disagreement_source_review")
+        self.assertEqual(x["event_kind"],
+                         "election_distinct_from_coronation_and_effective_rule")
+        self.assertFalse(x["historical_dates_verified"])
+        self.assertFalse(x["independent_primary_act_verified"])
+        self.assertEqual(x["p39_reference_count"],0)
+        p=o.office_review(ROOT,sample_report([x]))["subjects"][0]["positions"][0]
+        self.assertEqual(p["decision"],"exact_office")
+        self.assertEqual([c["canonical_tenure_id"]
+                          for c in p["candidate_canonical_tenures"]],["tenure-m14"])
+        self.assertEqual(p["candidate_canonical_tenures"][0]
+                         ["start_comparison"],"calendar_review")
+
     def test_peter_two_tsar_terms_remain_distinct_from_emperor(self):
         x=next(c for c in self.cases if "Пётр I" in c["person_name"])
         p=o.office_review(ROOT,sample_report([x]))["subjects"][0]["positions"][0]
