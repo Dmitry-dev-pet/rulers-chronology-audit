@@ -173,7 +173,9 @@ class HistoricalPowerP2(unittest.TestCase):
     def test_source_urls_cannot_be_private_or_credentials(self):
         for u in ("https://drive.google.com/file/d/private",
                   "https://token:secret@example.com/", "http://example.org/",
-                  "https://example.org/?token=hidden", "https://localhost/secret"):
+                  "https://example.org/?token=hidden", "https://localhost/secret",
+                  "https://127.0.0.1/source", "https://169.254.169.254/latest",
+                  "https://foo.localhost/path", "https://10.0.0.1/"):
             self.assertFalse(hpm.public_url(u))
         self.assertTrue(hpm.public_url("https://www.wikidata.org/wiki/Q1"))
 
