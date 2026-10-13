@@ -86,3 +86,23 @@ are historical snapshots, not guaranteed API invariants.
   dates, biographies, public Pages assets or SQL schema updates.
 - CI passing verifies structure only; source history requires independent
   scholarly review.
+
+## Live validation — 13 October 2026
+
+A one-off GitHub Actions read-only [P7 research run #38381243622](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38381243622)
+**passed**: **59** offline contract tests; Wikidata P39 and P3 jurisdiction
+reports generated without mutating canonical data; P4's eight curated
+Bohemian/Hungarian legal claims still match their reviewed snapshots.
+The one-off temporary workflow was **removed from this PR** once the
+source-check result was recorded. Production workflows and Pages were not
+changed.
+
+The [full dated research receipt](../research/wikidata/p7-live-2026-10-13.md)
+records the live, no-change upstream source counts: **214** P39 statements,
+**22** exact canonical-office-type claims, **7** P2 external-only, **4**
+P2 office-family-only, **58** separate P3 typed jurisdictions, **1** deprecated,
+and **122** without either type of classification.
+Each new P7 QID occurred in **7** active P39 source claims. These are
+reviewed *classifications* rather than new historically verified appointment
+or effective power assertions. Earlier P6 source counts remain a dated
+independent snapshot.
