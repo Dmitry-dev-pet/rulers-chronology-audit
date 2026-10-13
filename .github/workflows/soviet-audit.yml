@@ -90,6 +90,14 @@ jobs:
           /tmp/atlas-browser/bin/python tests/browser_schema_v2_graph.py \
             --dist dist --entry v2.html --output browser-evidence/pages-v2
 
+      - name: Browser-test HPM P3 opt-in lab on desktop and narrow phones
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/atlas-browser/bin/python tests/browser_historical_power_p3.py \
+            --dist dist --output browser-evidence/hpm-p3
+
       - name: Browser-test 1788 world authority and source classifications
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash

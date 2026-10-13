@@ -20,6 +20,8 @@ on:
       - scripts/atlas_v2_authority.py
       - scripts/atlas_v2_epochs.py
       - scripts/atlas_v2_coverage.py
+      - scripts/historical_power_sqlite.py
+      - scripts/historical_power_pages.py
       - design/atlas-v2/**
       - schemas/**
       - data/atlas/**
@@ -100,6 +102,7 @@ jobs:
               'authority.html', 'world-authority.js', 'world-authority.css', 'world-authority-1788.json',
               'world-authority-1688.json', 'world-authority-1888.json',
               'coverage.html', 'world-coverage.js', 'world-coverage.css', 'world-authority-coverage.json',
+              'hpm-pilot.json', 'historical-power-lab.js', 'historical-power-lab.css',
           }
           actual = {p.name for p in dist.iterdir() if p.is_file()}
           assert actual == expected, f'Unexpected site files: {actual ^ expected}'
@@ -108,6 +111,16 @@ jobs:
           assert b'atlas-v2-graph.js' in (dist/'v2.html').read_bytes(), 'Missing standalone v2 SPA'
           assert b'world-authority.js' in (dist/'authority.html').read_bytes(), 'Missing world authority mode'
           assert b'world-authority.js' not in (dist/'index.html').read_bytes(), 'Canonical homepage changed'
+          assert b'historical-power-lab.js' not in (dist/'index.html').read_bytes()
+          assert b'hpm-p3-launch' in (dist/'v2.html').read_bytes()
+          assert b'historical-power-lab.js' in (dist/'v2.html').read_bytes()
+          hpm = json.loads((dist/'hpm-pilot.json').read_text())
+          assert hpm['schema_version'] == 'hpm-pages-p3-v1'
+          assert hpm['historical_truth_verified_by_ci'] is False
+          assert hpm['historical_region_wide_inference_supported'] is False
+          assert hpm['counts']['candidate_events'] == 10
+          assert hpm['counts']['accession_mechanism_unknown'] == 10
+          assert hpm['counts']['classified_mechanisms'] == 0
           authority=json.loads((dist/'world-authority-1788.json').read_text())
           assert authority['focus_year']==1788
           assert not authority['historical_truth_verified_by_ci']
