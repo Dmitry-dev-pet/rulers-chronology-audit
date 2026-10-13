@@ -1,0 +1,97 @@
+{
+  "schema_version": "historical-facsimile-evidence-v1",
+  "review_date": "2026-10-13",
+  "related_case_id": "HC-0005",
+  "person_id": "person-654bc370814d5452",
+  "canonical_fact_id": "fact-research-20261010-chernenko-birth-archive",
+  "canonical_source_id": "TP308",
+  "review_scope": "published_photographic_crop_and_archival_catalog_not_full_manuscript",
+  "official_catalog": {
+    "url": "https://culture19.ru/contents/587-7-metricheskaya-zapis.html",
+    "archive": "ГКУ РХ Национальный архив",
+    "source_collection": "Батенёвская Богородицкая церковь Енисейской духовной консистории",
+    "year_stated_by_catalog": 1912,
+    "record_number": "32",
+    "shelfmark": "Ф. И-29, оп. 1, д. 142, л. 25 об.–26",
+    "catalog_approval_date": "2026-05-29",
+    "source_role": "archival_attribution_not_photographic_verification"
+  },
+  "images": [
+    {
+      "id": "HC5-PHOTO-AUTHOR",
+      "url": "https://ostkraft.ru/insimgs/2300/img2254.jpg",
+      "kind": "published_cropped_photo",
+      "viewed_as_pixels": true,
+      "origin_group": "alexey-nilogov-published-fragment",
+      "attribution": "Author Alexey Nilogov, OSTKRAFT 23 Sep 2026"
+    },
+    {
+      "id": "HC5-PHOTO-REPRINT",
+      "url": "https://newdaynews.ru/pict/text/26/09/23/r23_596159761.jpg",
+      "kind": "press_reprint_same_fragment",
+      "viewed_as_pixels": true,
+      "origin_group": "alexey-nilogov-published-fragment",
+      "attribution": "Newday press publication; photographer credited to Alexey Nilogov"
+    },
+    {
+      "id": "HC5-PAGE-LINK-1",
+      "url": "https://culture19.ru/uploads/files/00000001.JPG",
+      "kind": "archival_page_link_uninspected",
+      "viewed_as_pixels": false,
+      "origin_group": "official-catalog-linked-document",
+      "attribution": "Ministry of Culture Khakasia, archival catalog no.7"
+    },
+    {
+      "id": "HC5-PAGE-LINK-26",
+      "url": "https://culture19.ru/uploads/files/00000026.JPG",
+      "kind": "archival_page_link_uninspected",
+      "viewed_as_pixels": false,
+      "origin_group": "official-catalog-linked-document",
+      "attribution": "Ministry of Culture Khakasia, archival catalog no.7"
+    }
+  ],
+  "visible_markers_from_cropped_photo": [
+    {
+      "field": "entry_number",
+      "transcription": "32",
+      "confidence": "high"
+    },
+    {
+      "field": "birth_day",
+      "transcription": "18",
+      "confidence": "high"
+    },
+    {
+      "field": "baptism_day",
+      "transcription": "23",
+      "confidence": "high"
+    },
+    {
+      "field": "given_name",
+      "transcription": "Константин",
+      "confidence": "high"
+    },
+    {
+      "field": "family_name_parent_column",
+      "transcription": "Черненко",
+      "confidence": "medium"
+    }
+  ],
+  "visual_limitations": [
+    "The crop omits the book heading and the year 1912.",
+    "The month name is not visible in the crop; September is attested in the official catalog transcription.",
+    "The printed photograph cannot independently authenticate the original manuscript, complete page ordering or archival provenance.",
+    "Two reproductions of the same author-supplied photograph are not two independent primary witnesses.",
+    "Both official JPG pages were linked in the archive catalog but could not be visually opened during this review due to site/browser timeout."
+  ],
+  "catalog_birth_date_julian": "1912-09-18",
+  "catalog_baptism_date_julian": "1912-09-23",
+  "birth_year_visually_verified_from_crop": false,
+  "official_full_pages_visually_inspected": false,
+  "original_manuscript_independently_authenticated": false,
+  "independent_primary_checked": false,
+  "source_images_copied_to_repository": false,
+  "dispute_resolution_proposed": false,
+  "case_remains_open": true,
+  "followup": "View the two official full-page images or a high-resolution archival scan including book year/heading, folio number and surrounding entries; only then evaluate whether independent primary verification is warranted. Do not remove the 1911 competing fact automatically."
+}
