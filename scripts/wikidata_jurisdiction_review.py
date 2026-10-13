@@ -138,6 +138,25 @@ def window_review(claim: dict, window: tuple[int, int]) -> str:
     return "year_overlap_candidate_not_day_verified"
 
 
+def executive_title_year_review(claim: dict, context: dict) -> str | None:
+    """Advisory office-title period check, never a personal appointment verdict."""
+    if context["kind"] != "executive_institution":
+        return None
+    years = context["title_year_window"]
+    q = claim.get("qualifiers", {})
+    start, end = boundary_year(q, "P580"), boundary_year(q, "P582")
+    if start is not None and end is not None and start > end:
+        return "inconsistent_external_boundaries_review"
+    if ((start is not None and start > years["end"]) or
+        (end is not None and end < years["start"])):
+        return "outside_historical_government_title_era_review"
+    if start is None or end is None:
+        return "incomplete_external_years_not_an_absence"
+    if start <= 1946 <= end:
+        return "1946_transition_requires_day_level_legal_review"
+    return "year_scoped_office_type_only_not_person_term_verified"
+
+
 def review(root: Path, source: dict) -> dict:
     if (
         source.get("schema_version") != "wikidata-reconciliation-v1" or
@@ -188,6 +207,7 @@ def review(root: Path, source: dict) -> dict:
                 "legal_role_classification": classification,
                 "office_rank": definition.get("office_rank"),
                 "government_title_era": contexts[cid].get("office_era"),
+                "executive_title_year_review": executive_title_year_review(claim, contexts[cid]),
                 "pilot_window_relation": disposition,
                 "qualifiers": claim.get("qualifiers", {}),
                 "references": claim.get("references", []),
