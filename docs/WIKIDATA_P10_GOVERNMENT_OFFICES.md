@@ -40,3 +40,8 @@
 Два P3-контекста имеют `government_tier=union` и `same_as_canonical_state=false`, `geographic_boundaries_verified=false`. Ранги не смешиваются. Вспомогательный индикатор `executive_title_year_review` отмечает годовые анахронизмы, неполные интервалы и необходимость подневной проверки при переходе 1946 года — но сам **не сертифицирует** дату занятия должности.
 
 **Неизменно:** 83 канонические персоны, 27 международных отдельно, 97 канонических `tenures`, 150 `provenance`, плакат, политическая власть, оригинальное фото, SQL-схема и опубликованный сайт Pages. CI проверяет программные контракты и не заменяет экспертизу каждого первичного акта. [Issue #46](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/issues/46) остаётся открыт.
+
+
+## Live audit and source receipt — 13 October 2026
+
+[Wikidata P10 source run #38392333576](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38392333576) **PASS**: 65 targeted offline tests, all 12 P39 statement IDs / ranks / original time/calendar precision / reference counts unchanged, P4 curated crown claims 8/8 unchanged. P2 exact-office-type=26, P2 family=10, P2 external=7, P3 typed=68, deprecated=1, residual unclassified **102/214**. The full [dated source receipt](../research/wikidata/p10-live-2026-10-13.md) retains the distinction between typing a role and historically confirming an appointment. The temporary source audit workflow was removed before merging; no canonical history or Pages assets were altered.
