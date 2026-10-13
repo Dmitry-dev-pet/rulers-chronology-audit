@@ -128,7 +128,7 @@ class ChernenkoBiographyDispute(unittest.TestCase):
                     "date.*does not match canon")
         self.reject(lambda d: d["cases"][0]["observations"][0]
                     ["value"]["new_style"].update(precision="month"),
-                    "Source birth date")
+                    "precision does not match")
         self.reject(lambda d: d["cases"][0]["observations"][0]
                     ["value"]["new_style"].update(calendar="unspecified"),
                     "Source birth date")
@@ -177,17 +177,11 @@ class ChernenkoBiographyDispute(unittest.TestCase):
                 bio.registry(root)
 
     def test_global_case_id_cannot_collide_with_p9_id(self):
-        doc = copy.deepcopy(self.original)
-        doc["cases"][0]["id"] = "HC-0001"
-        for obs in doc["cases"][0]["observations"]:
-            obs["id"] = "HC-0001" + obs["id"][7:]
-        with tempfile.TemporaryDirectory() as folder:
-            root = self.sandbox(folder, doc)
-            # Only the full combined report can detect an ID collision;
-            # the adapter itself checks the source structure independently.
-            # This fixture omits the old P9 files, so check via legacy+bio IDs.
-            self.assertEqual(bio.registry(root)["cases"][0]["id"], "HC-0001")
-        self.assertIn("HC-0001", {x["id"] for x in h.registry()["cases"]})
+        from unittest.mock import patch
+        with patch.object(h, "registry", return_value={"cases": [{"id": "HC-0001"}]}), \
+             patch.object(bio, "registry", return_value={"cases": [{"id": "HC-0001"}]}):
+            with self.assertRaisesRegex(ValueError, "Duplicate stable historical dispute case ID"):
+                h.registry_all()
 
 
 if __name__ == "__main__":
