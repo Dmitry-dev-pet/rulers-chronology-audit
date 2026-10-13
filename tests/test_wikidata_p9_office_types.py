@@ -122,6 +122,9 @@ class P9HistoricalOffices(unittest.TestCase):
         self.assertEqual(x["calendar"],"gregorian")
         self.assertEqual(x["independent_source_old_style_election_date"],"1598-02-17")
         self.assertEqual(x["independent_source_new_style_election_date"],"1598-02-27")
+        self.assertEqual(x["p39_end"],"+1605-04-13T00:00:00Z")
+        self.assertEqual(x["independent_source_old_style_death_date"],"1605-04-13")
+        self.assertEqual(x["independent_source_new_style_death_date"],"1605-04-23")
         self.assertEqual(x["interpretation_caveat"],"calendar_disagreement_source_review")
         self.assertEqual(x["event_kind"],
                          "election_distinct_from_coronation_and_effective_rule")

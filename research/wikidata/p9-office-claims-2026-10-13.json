@@ -152,7 +152,9 @@
       "power_inferred": false,
       "independent_source_old_style_election_date": "1598-02-17",
       "independent_source_new_style_election_date": "1598-02-27",
-      "event_kind": "election_distinct_from_coronation_and_effective_rule"
+      "event_kind": "election_distinct_from_coronation_and_effective_rule",
+      "independent_source_old_style_death_date": "1605-04-13",
+      "independent_source_new_style_death_date": "1605-04-23"
     },
     {
       "canonical_person_id": "person-d2dfcacb3d245849",
