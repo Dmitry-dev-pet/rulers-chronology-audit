@@ -21,13 +21,13 @@ REGISTRY = "design/wikidata/jurisdiction-crosswalk-v1.json"
 CONTEXT_KINDS = {
     "elective_institution", "historic_crown", "joint_sovereignty",
     "political_party_institution", "legislative_institution",
-    "existing_pilot_polity", "composite_crown", "post_pilot_polity",
+    "executive_institution", "existing_pilot_polity", "composite_crown", "post_pilot_polity",
 }
 POSITION_KINDS = {
     "electoral_dignity", "legal_crown", "co_head_of_state",
     "institutional_membership", "party_candidate_membership",
-    "legislative_membership", "legal_monarchical_office",
-    "compound_royal_office", "post_pilot_imperial_title",
+    "legislative_membership", "government_deputy", "government_first_deputy",
+    "legal_monarchical_office", "compound_royal_office", "post_pilot_imperial_title",
 }
 TIME = re.compile(r"^\+([0-9]{4})-[0-9]{2}-[0-9]{2}T")
 
@@ -60,6 +60,19 @@ def registry(root: Path) -> tuple[dict[str, dict], dict[str, dict], tuple[int, i
             (not k.startswith("world:") and row["kind"] == "existing_pilot_polity")
         ):
             raise ValueError("Invalid/merging historical jurisdiction: " + str(k))
+        if row["kind"] == "executive_institution":
+            years = row.get("title_year_window")
+            if (row.get("government_tier") != "union" or
+                row.get("office_era") not in {"pre_1946_snk", "post_1946_sovmin"} or
+                not isinstance(years, dict) or
+                not all(isinstance(years.get(n), int) for n in ("start", "end")) or
+                (years["start"], years["end"]) not in {(1923, 1946), (1946, 1991)} or
+                row["office_era"] != ("pre_1946_snk" if years["start"] == 1923
+                                       else "post_1946_sovmin") or
+                row.get("legal_title_transition_date") != "1946-03-15" or
+                not isinstance(row.get("transition_source_url"), str) or
+                not row["transition_source_url"].startswith("https://docs.historyrussia.org/")):
+                raise ValueError("Unreviewed government office era or transition law")
         contexts[k] = row
     old_offices = offices.reviewed_offices(root)
     by_qid = {}
@@ -79,6 +92,12 @@ def registry(root: Path) -> tuple[dict[str, dict], dict[str, dict], tuple[int, i
             raise ValueError("Party membership must have a political-party institutional context")
         if row["position_kind"] == "legislative_membership" and contexts[cid]["kind"] != "legislative_institution":
             raise ValueError("Legislative membership must have a legislative institutional context")
+        if row["position_kind"] in {"government_deputy", "government_first_deputy"}:
+            needed = "first_deputy" if row["position_kind"] == "government_first_deputy" else "deputy"
+            if (contexts[cid]["kind"] != "executive_institution" or
+                row.get("office_era") != contexts[cid].get("office_era") or
+                row.get("office_rank") != needed):
+                raise ValueError("Wrong Soviet executive title era, office rank or jurisdiction")
         if row["position_kind"] == "electoral_dignity" and contexts[cid]["kind"] != "elective_institution":
             raise ValueError("Electoral dignity must have an elective context")
         if row["position_kind"] == "co_head_of_state" and contexts[cid]["kind"] != "joint_sovereignty":
@@ -117,6 +136,25 @@ def window_review(claim: dict, window: tuple[int, int]) -> str:
     if start is None or end is None:
         return "incomplete_year_bounds_not_an_absence"
     return "year_overlap_candidate_not_day_verified"
+
+
+def executive_title_year_review(claim: dict, context: dict) -> str | None:
+    """Advisory office-title period check, never a personal appointment verdict."""
+    if context["kind"] != "executive_institution":
+        return None
+    years = context["title_year_window"]
+    q = claim.get("qualifiers", {})
+    start, end = boundary_year(q, "P580"), boundary_year(q, "P582")
+    if start is not None and end is not None and start > end:
+        return "inconsistent_external_boundaries_review"
+    if ((start is not None and start > years["end"]) or
+        (end is not None and end < years["start"])):
+        return "outside_historical_government_title_era_review"
+    if start is None or end is None:
+        return "incomplete_external_years_not_an_absence"
+    if start <= 1946 <= end:
+        return "1946_transition_requires_day_level_legal_review"
+    return "year_scoped_office_type_only_not_person_term_verified"
 
 
 def review(root: Path, source: dict) -> dict:
@@ -167,6 +205,9 @@ def review(root: Path, source: dict) -> dict:
                 "wikidata_office_qid": qid, "jurisdiction_context_id": cid,
                 "jurisdiction_context_kind": contexts[cid]["kind"],
                 "legal_role_classification": classification,
+                "office_rank": definition.get("office_rank"),
+                "government_title_era": contexts[cid].get("office_era"),
+                "executive_title_year_review": executive_title_year_review(claim, contexts[cid]),
                 "pilot_window_relation": disposition,
                 "qualifiers": claim.get("qualifiers", {}),
                 "references": claim.get("references", []),

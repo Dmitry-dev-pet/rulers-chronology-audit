@@ -128,6 +128,16 @@
       "relation": "exact_office",
       "evidence_url": "https://www.wikidata.org/wiki/Q12370489",
       "note": "Historically scoped Tsar of All Russia office type; not the pre-1547 Moscow grand prince, post-1721 Emperor of Russia, or proof of sovereign power over all claimed territory. Boris Godunov was elected in 1598; Peter I inherited the Tsar title 1682 and was granted the Emperor title on 22 October Julian/2 November Gregorian 1721. Time qualifier and continuity require independent review."
+    },
+    {
+      "wikidata_qid": "Q56919889",
+      "office_id": "snk-rsfsr",
+      "context_ids": [
+        "rsfsr"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q56919889",
+      "note": "Chairman of Sovnarkom of RSFSR, a REPUBLIC government office; NOT USSR Sovnarkom Chair (Q4376682) or USSR Council of Ministers Chair (Q4376674). Historical research on Kosygin confirms simultaneous RSFSR government chair (1943–46) and Union Sovnarkom deputy; no additional personal tenure is inferred. Lenin's 1917 Julian-start external P39 and month-precision Gregorian canon require calendar review."
     }
   ]
 }

@@ -82,8 +82,8 @@ class TypedJurisdictions(unittest.TestCase):
     def test_registry_has_unique_qids_and_explicit_nonidentical_contexts(self):
         contexts, roles, window = jurisdictions.registry(wd.ROOT)
         self.assertEqual(window, (1762, 1800))
-        self.assertEqual(len(contexts), 10)
-        self.assertEqual(len(roles), 11)
+        self.assertEqual(len(contexts), 12)
+        self.assertEqual(len(roles), 14)
         self.assertEqual(roles["Q45341328"]["context_id"],
                          "ctx-hab-crown-bohemia")
         self.assertEqual(roles["Q6412254"]["context_id"],
