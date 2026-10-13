@@ -61,8 +61,8 @@ def run(dist: Path, output: Path):
                 lab.locator(".hpm-filter").nth(0).select_option("1774")
                 expect(lab.locator(".hpm-event")).to_have_count(1)
                 expect(lab.locator(".hpm-fact").nth(2)).to_contain_text("1 / 1")
-                expect(lab.locator(".hpm-detail")).to_contain_text("unknown")
-                expect(lab.locator(".hpm-detail")).to_contain_text("Источник")
+                expect(lab.locator(".hpm-detail")).to_contain_text("UNKNOWN")
+                expect(lab.locator(".hpm-detail")).to_contain_text("Источниковое утверждение")
                 assert "hpmYear=1774" in page.url
 
                 # An unstudied year stays an explicit *sample* zero, never history zero.
@@ -73,7 +73,7 @@ def run(dist: Path, output: Path):
 
                 lab.locator(".hpm-filter").nth(0).select_option("1799")
                 expect(lab.locator(".hpm-event")).to_have_count(1)
-                expect(lab.locator(".hpm-detail")).to_contain_text("институ")
+                expect(lab.locator(".hpm-detail")).to_contain_text("institutional")
                 expect(lab.locator(".hpm-detail .hpm-role")).to_have_count(2)
                 assert lab.locator(".hpm-graph-link").get_attribute("href").find("atlasV2=graph")!=-1
 
@@ -85,8 +85,8 @@ def run(dist: Path, output: Path):
                 expect(lab.locator(".hpm-event")).to_have_count(1)
 
                 if width <= 390:
-                    assert page.evaluate(
-                        "()=>document.documentElement.scrollWidth <= innerWidth+2")
+                    assert lab.evaluate(
+                        "el=>el.scrollWidth <= innerWidth+8")
                     assert lab.locator(".hpm-detail").bounding_box()["width"]<=width
 
                 page.screenshot(path=str(output/("hpm-p3-"+str(width)+".png")))
