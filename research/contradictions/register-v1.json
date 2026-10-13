@@ -1,0 +1,289 @@
+{
+  "schema_version": "historical-dispute-registry-v1",
+  "as_of": "2026-10-13",
+  "historical_truth_verified_by_ci": false,
+  "changes_to_canonical_data": false,
+  "auto_resolution_allowed": false,
+  "source_snapshot": {
+    "commit": "3f5fe550ca7f789c3894bcbb86f873b9dd512d4a",
+    "path": "research/wikidata/p9-office-claims-2026-10-13.json",
+    "audit_run": "https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38381243622"
+  },
+  "method": "Research-only comparison of source observations; dates and office contexts are not automatically comparable or adjudicated. No facts, roles, or power are imported to the canonical atlas.",
+  "cases": [
+    {
+      "id": "HC-0001",
+      "kind": "office_period_disagreement",
+      "review_status": "open",
+      "person_id": "person-17f5e2c4755255cf",
+      "person_qid": "Q1282778",
+      "office_id": "moscow-grand-prince",
+      "context_id": "moscow",
+      "canonical_tenure_ids": [
+        "tenure-m07"
+      ],
+      "external_statement_id": "Q1282778$95C9E773-BE31-4694-A176-B062E42AEBF0",
+      "comparison_relation": "possibly_different_legal_events",
+      "question": "Was the 1445 period an interim exercise of authority while formal grand-princely tenure began in February 1446? Examine primary acts and rival claims before resolving.",
+      "resolution": null,
+      "reviewed_primary_acts": false,
+      "actual_power_inferred": false,
+      "historical_truth_verified_by_ci": false,
+      "observations": [
+        {
+          "id": "HC-0001-WD",
+          "source_kind": "wikidata_p39",
+          "source_url": "https://www.wikidata.org/wiki/Q1282778",
+          "source_locator": "Q1282778$95C9E773-BE31-4694-A176-B062E42AEBF0",
+          "claim_type": "office_period",
+          "verification": "raw_external_statement",
+          "independent_primary_checked": false,
+          "source_references_count": 0,
+          "value": {
+            "start": {
+              "value": "+1445-07-07T00:00:00Z",
+              "precision": "day",
+              "calendar": "julian",
+              "format": "wikidata_time"
+            },
+            "end": {
+              "value": "+1445-10-26T00:00:00Z",
+              "precision": "day",
+              "calendar": "julian",
+              "format": "wikidata_time"
+            }
+          },
+          "note": "Position-held dates are unreferenced in this P39 snapshot; time precision is recorded by source, not scholarly certified."
+        },
+        {
+          "id": "HC-0001-ENC",
+          "source_kind": "institutional_reference",
+          "source_url": "https://bigenc.ru/c/dmitrii-iur-evich-velikii-kniaz-moskovskii-624f7f",
+          "source_locator": "Introductory biographical definition of the grand-princely tenure",
+          "claim_type": "formal_office_period",
+          "verification": "reference_text_checked",
+          "independent_primary_checked": false,
+          "source_references_count": null,
+          "value": {
+            "start": {
+              "value": "1446-02",
+              "precision": "month",
+              "calendar": "unspecified",
+              "format": "literal_iso"
+            },
+            "end": {
+              "value": "1447-02",
+              "precision": "month",
+              "calendar": "unspecified",
+              "format": "literal_iso"
+            }
+          },
+          "note": "The encyclopaedia dates the legal reign February 1446–February 1447, without treating prior armed/political influence as the same legal office."
+        }
+      ]
+    },
+    {
+      "id": "HC-0002",
+      "kind": "date_calendar_mismatch_candidate",
+      "review_status": "open",
+      "person_id": "person-70e920e83c13510c",
+      "person_qid": "Q170172",
+      "office_id": "tsar",
+      "context_id": "tsardom",
+      "canonical_tenure_ids": [
+        "tenure-m14"
+      ],
+      "external_statement_id": "Q170172$5879a945-4a66-cfb4-a8af-486e3a27c868",
+      "comparison_relation": "different_event_not_equated",
+      "question": "Wikidata P39 says start of office, while the institutional reference dates election. Investigate whether these events coincide, and why the Julian day number is tagged Gregorian in P39.",
+      "resolution": null,
+      "reviewed_primary_acts": false,
+      "actual_power_inferred": false,
+      "historical_truth_verified_by_ci": false,
+      "observations": [
+        {
+          "id": "HC-0002-WD",
+          "source_kind": "wikidata_p39",
+          "source_url": "https://www.wikidata.org/wiki/Q170172",
+          "source_locator": "Q170172$5879a945-4a66-cfb4-a8af-486e3a27c868",
+          "claim_type": "office_start",
+          "verification": "raw_external_statement",
+          "independent_primary_checked": false,
+          "source_references_count": 0,
+          "value": {
+            "date": {
+              "value": "+1598-02-17T00:00:00Z",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "wikidata_time"
+            }
+          },
+          "note": "The external P39 Gregorian calendar tag is retained unmodified; its accuracy is under review."
+        },
+        {
+          "id": "HC-0002-PRLIB",
+          "source_kind": "institutional_reference",
+          "source_url": "https://www.prlib.ru/history/619062",
+          "source_locator": "Paragraph beginning «17 (27) февраля 1598 г.»",
+          "claim_type": "election_event",
+          "verification": "reference_text_checked",
+          "independent_primary_checked": false,
+          "source_references_count": null,
+          "value": {
+            "old_style": {
+              "value": "1598-02-17",
+              "precision": "day",
+              "calendar": "julian",
+              "format": "literal_iso"
+            },
+            "new_style": {
+              "value": "1598-02-27",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "literal_iso"
+            }
+          },
+          "note": "The election is documented using a calendar pair; a crown/office accession is not assumed to be exactly this event."
+        }
+      ]
+    },
+    {
+      "id": "HC-0003",
+      "kind": "date_calendar_mismatch_candidate",
+      "review_status": "open",
+      "person_id": "person-70e920e83c13510c",
+      "person_qid": "Q170172",
+      "office_id": "tsar",
+      "context_id": "tsardom",
+      "canonical_tenure_ids": [
+        "tenure-m14"
+      ],
+      "external_statement_id": "Q170172$5879a945-4a66-cfb4-a8af-486e3a27c868",
+      "comparison_relation": "different_event_not_equated",
+      "question": "Does the P39 term-end day correspond exactly to death? Review 13 April Julian / 23 April Gregorian reference versus 13 April annotated Gregorian in the external statement.",
+      "resolution": null,
+      "reviewed_primary_acts": false,
+      "actual_power_inferred": false,
+      "historical_truth_verified_by_ci": false,
+      "observations": [
+        {
+          "id": "HC-0003-WD",
+          "source_kind": "wikidata_p39",
+          "source_url": "https://www.wikidata.org/wiki/Q170172",
+          "source_locator": "Q170172$5879a945-4a66-cfb4-a8af-486e3a27c868",
+          "claim_type": "office_end",
+          "verification": "raw_external_statement",
+          "independent_primary_checked": false,
+          "source_references_count": 0,
+          "value": {
+            "date": {
+              "value": "+1605-04-13T00:00:00Z",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "wikidata_time"
+            }
+          },
+          "note": "Raw P39 claims term end as 13 April Gregorian; no date replacement has been made."
+        },
+        {
+          "id": "HC-0003-PRLIB",
+          "source_kind": "institutional_reference",
+          "source_url": "https://www.prlib.ru/history/619062",
+          "source_locator": "Paragraph beginning «13 (23) апреля 1605 г.»",
+          "claim_type": "death_event",
+          "verification": "reference_text_checked",
+          "independent_primary_checked": false,
+          "source_references_count": null,
+          "value": {
+            "old_style": {
+              "value": "1605-04-13",
+              "precision": "day",
+              "calendar": "julian",
+              "format": "literal_iso"
+            },
+            "new_style": {
+              "value": "1605-04-23",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "literal_iso"
+            }
+          },
+          "note": "Death event and formal cessation of office are not silently assumed legally identical."
+        }
+      ]
+    },
+    {
+      "id": "HC-0004",
+      "kind": "office_scope_anomaly",
+      "review_status": "open",
+      "person_id": "person-f096d9b69cb3563a",
+      "person_qid": "Q7731",
+      "office_id": "tsar",
+      "context_id": "tsardom",
+      "canonical_tenure_ids": [
+        "tenure-r02"
+      ],
+      "external_statement_id": "Q7731$507ee885-4e1c-bb0e-e7c6-d39fbf6d11dd",
+      "comparison_relation": "non_equivalent_legal_contexts",
+      "question": "Does the generic Prince of Moscow item represent an additional style/title for a Tsardom tsar, or a historically anachronistic modern office type mapping? Do not create a second princely tenure.",
+      "resolution": null,
+      "reviewed_primary_acts": false,
+      "actual_power_inferred": false,
+      "historical_truth_verified_by_ci": false,
+      "observations": [
+        {
+          "id": "HC-0004-WD",
+          "source_kind": "wikidata_p39",
+          "source_url": "https://www.wikidata.org/wiki/Q7731",
+          "source_locator": "Q7731$507ee885-4e1c-bb0e-e7c6-d39fbf6d11dd",
+          "claim_type": "office_type",
+          "verification": "raw_external_statement",
+          "independent_primary_checked": false,
+          "source_references_count": 0,
+          "value": {
+            "office_qid": "Q12370487",
+            "start": {
+              "value": "+1645-07-14T00:00:00Z",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "wikidata_time"
+            },
+            "end": {
+              "value": "+1676-01-29T00:00:00Z",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "wikidata_time"
+            }
+          },
+          "note": "External label Prince of Moscow is broader than a distinct medieval Grand Prince of Moscow canonical tenure."
+        },
+        {
+          "id": "HC-0004-HISTORY",
+          "source_kind": "institutional_reference",
+          "source_url": "https://history.ru/encyclopedia/aleksey-mihaylovich-tishayshiy",
+          "source_locator": "Entry heading and reign years 1645–1676",
+          "claim_type": "legal_office_type",
+          "verification": "reference_text_checked",
+          "independent_primary_checked": false,
+          "source_references_count": null,
+          "value": {
+            "office_id": "tsar",
+            "start": {
+              "value": "1645",
+              "precision": "year",
+              "calendar": "unspecified",
+              "format": "literal_iso"
+            },
+            "end": {
+              "value": "1676",
+              "precision": "year",
+              "calendar": "unspecified",
+              "format": "literal_iso"
+            }
+          },
+          "note": "Historical encyclopaedia calls Aleksei Mikhailovich the Romanov tsar; this does not disprove a possible composite archaic titulature."
+        }
+      ]
+    }
+  ]
+}
