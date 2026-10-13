@@ -207,6 +207,31 @@ class HistoricalDisputeContract(unittest.TestCase):
         # Schema allows a documented human decision, not an automatic decision.
         # Such a decision is not evidence that the historian actually reviewed it.
 
+    def test_pinned_source_bytes_cannot_drift_even_if_ledger_is_modified(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            self.temporary_root(root)
+            ledger = root / h.SOURCE_LEDGER
+            original = ledger.read_text(encoding="utf-8")
+            ledger.write_text(original.replace('"p39_historical_truth_verified": false',
+                                               '"p39_historical_truth_verified": true'),
+                              encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Pinned P9 historical-source bytes changed"):
+                h.registry(root)
+
+    def test_resolution_needs_two_distinct_public_urls(self):
+        doc = copy.deepcopy(self.sample)
+        doc["cases"][0]["review_status"] = "resolved"
+        doc["cases"][0]["resolution"] = {
+            "reviewer": "Named curator", "reason": "Evidence reviewed",
+            "evidence_urls": ["https://bigenc.ru/archive", "https://bigenc.ru/archive"],
+        }
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            self.temporary_root(root, doc)
+            with self.assertRaisesRegex(ValueError, "Manual historical resolution"):
+                h.registry(root)
+
 
 if __name__ == "__main__":
     unittest.main()

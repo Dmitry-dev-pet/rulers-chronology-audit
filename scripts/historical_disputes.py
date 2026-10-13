@@ -7,6 +7,7 @@ decides which historical statement is true. Python 3.11+ standard library.
 from __future__ import annotations
 
 import argparse
+import hashlib
 from collections import Counter
 import json
 from pathlib import Path
@@ -173,9 +174,14 @@ def registry(root: Path = ROOT) -> dict:
     if (not isinstance(snapshot, dict) or
         snapshot.get("path") != SOURCE_LEDGER.as_posix() or
         not re.fullmatch(r"[0-9a-f]{40}", snapshot.get("commit", "")) or
-        not safe_url(snapshot.get("audit_run"))):
+        not safe_url(snapshot.get("audit_run")) or
+        not re.fullmatch(r"[0-9a-f]{40}", snapshot.get("git_blob_sha1", ""))):
         raise ValueError("Missing immutable P9 source snapshot identity")
-    ledger = load_json(root / SOURCE_LEDGER)
+    raw_ledger = (root / SOURCE_LEDGER).read_bytes()
+    git_object = b"blob " + str(len(raw_ledger)).encode("ascii") + b"\0" + raw_ledger
+    if hashlib.sha1(git_object).hexdigest() != snapshot["git_blob_sha1"]:
+        raise ValueError("Pinned P9 historical-source bytes changed: explicit new review needed")
+    ledger = json.loads(raw_ledger.decode("utf-8"))
     if (ledger.get("schema_version") != "wikidata-p9-claim-case-review-v1"
         or snapshot["audit_run"] != ledger.get("frozen_source_run")):
         raise ValueError("P9 frozen-source audit identity mismatch")
@@ -211,6 +217,7 @@ def registry(root: Path = ROOT) -> dict:
                 not resolution.get("reviewer") or not resolution.get("reason") or
                 not isinstance(resolution.get("evidence_urls"), list) or
                 len(resolution["evidence_urls"]) < 2 or
+                len(set(resolution["evidence_urls"])) != len(resolution["evidence_urls"]) or
                 not all(safe_url(u) for u in resolution["evidence_urls"])):
                 raise ValueError("Manual historical resolution requires a reviewer and independent evidence")
         elif case["resolution"] is not None:

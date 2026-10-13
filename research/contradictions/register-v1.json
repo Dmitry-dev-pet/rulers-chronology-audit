@@ -7,7 +7,8 @@
   "source_snapshot": {
     "commit": "3f5fe550ca7f789c3894bcbb86f873b9dd512d4a",
     "path": "research/wikidata/p9-office-claims-2026-10-13.json",
-    "audit_run": "https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38381243622"
+    "audit_run": "https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38381243622",
+    "git_blob_sha1": "c5b67ad85d4519d1e7d2d280fd7a87b0b29af437"
   },
   "method": "Research-only comparison of source observations; dates and office contexts are not automatically comparable or adjudicated. No facts, roles, or power are imported to the canonical atlas.",
   "cases": [
