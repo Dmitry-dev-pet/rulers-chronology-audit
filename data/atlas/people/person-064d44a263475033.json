@@ -2,6 +2,8 @@
   "id": "person-064d44a263475033",
   "name": "Елена Глинская",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q240150"
+  },
   "biography_status": "incomplete"
 }

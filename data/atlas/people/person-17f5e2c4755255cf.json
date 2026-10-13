@@ -2,6 +2,8 @@
   "id": "person-17f5e2c4755255cf",
   "name": "Дмитрий Юрьевич Шемяка",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q1282778"
+  },
   "biography_status": "incomplete"
 }
