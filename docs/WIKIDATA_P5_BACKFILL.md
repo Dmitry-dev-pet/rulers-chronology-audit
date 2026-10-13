@@ -42,3 +42,24 @@ Validation: `python3 -m unittest tests.test_wikidata_sync
 tests.test_wikidata_office_review tests.test_wikidata_jurisdiction_review -v`.
 Then run the usual full CI and a manual or scheduled read-only Wikidata audit.
 No automatic historical import or merge of this research PR.
+
+## Live research gate passed — 13 October 2026
+
+A branch-isolated no-write Wikidata reconciliation completed successfully in
+[workflow run #38377773382](https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38377773382).
+The complete dated methodology and measured counts are preserved in
+[the P5 receipt](../research/wikidata/p5-live-2026-10-13.md).
+
+The live run confirmed **110** distinct roster entries, **52** reviewed identity
+QIDs, **58** candidate-only name searches, and **195** P39 position statements.
+Of these, 171 lack a mapping in the *P2 legal-office registry alone*; 43 of
+those are classified in the disjoint P3 jurisdiction registry. Therefore
+**128 P39 statements remain without either kind of reviewed classification**
+(after accounting separately for 1 deprecated, 14 exact canonical, 7 external,
+2 office-family and 43 P3-typed statements). All **eight** P4 vetted crown
+claims matched their known source statements without drift.
+
+All **55** targeted offline tests passed; the run did not edit canonical
+history, inferred power, source provenance or Pages inputs. The one-time
+branch-only live-audit workflow was removed after running; weekly/manual
+read-only reconciliation policy remains unchanged.
