@@ -96,6 +96,38 @@
       "relation": "exact_office",
       "evidence_url": "https://www.wikidata.org/wiki/Q4376682",
       "note": "USSR Council of People's Commissars chairman 1923–1946. Not the RSFSR SNK, nor the Council of Ministers after 1946; composite legacy-g06 remains unmapped and source-reviewed."
+    },
+    {
+      "wikidata_qid": "Q477406",
+      "office_id": "regent",
+      "context_ids": [
+        "moscow",
+        "tsardom",
+        "empire"
+      ],
+      "relation": "office_family_only",
+      "evidence_url": "https://www.wikidata.org/wiki/Q477406",
+      "note": "Generic transhistorical regent title is only a family-level comparison with existing Russian regent roles. Sophia (1682–1689), Elena Glinskaya (1533–1538) and Anna Leopoldovna (1740–1741) governed under different legal and institutional circumstances; not independent sovereign monarchs. Do not infer actual authority or accept P39 day precision from the office QID."
+    },
+    {
+      "wikidata_qid": "Q12370487",
+      "office_id": "moscow-grand-prince",
+      "context_ids": [
+        "moscow"
+      ],
+      "relation": "office_family_only",
+      "evidence_url": "https://www.wikidata.org/wiki/Q12370487",
+      "note": "The broad Prince/Grand Duke of Moscow item is an office FAMILY, not automatically the same as distinct grand prince of all Rus or Tsar of Russia. Cross-reference Vasily I and Dmitry Shemyaka, but P39 Shemyaka 1445 conflicts with historical scholarship placing formal reign February 1446–February 1447. P39 also associates Aleksei Mikhailovich (1645–1676), a Tsardom sovereign: preserve an explicit unmatched context warning instead of fabricating a Moscow grand-princely tenure."
+    },
+    {
+      "wikidata_qid": "Q12370489",
+      "office_id": "tsar",
+      "context_ids": [
+        "tsardom"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q12370489",
+      "note": "Historically scoped Tsar of All Russia office type; not the pre-1547 Moscow grand prince, post-1721 Emperor of Russia, or proof of sovereign power over all claimed territory. Boris Godunov was elected in 1598; Peter I inherited the Tsar title 1682 and was granted the Emperor title on 22 October Julian/2 November Gregorian 1721. Time qualifier and continuity require independent review."
     }
   ]
 }
