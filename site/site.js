@@ -16,8 +16,8 @@
     tab.id='tab-people';tab.type='button';tab.role='tab';tab.className='mode-tab';
     tab.dataset.view='people';tab.setAttribute('aria-selected','false');
     tab.setAttribute('aria-controls','panel-people');tab.tabIndex=-1;
-    const index=document.createElement('span');index.className='num';index.textContent='04';
-    tab.append(index,document.createTextNode(' Биографии'));navHost.appendChild(tab);
+    const index=document.createElement('span');index.className='num';index.textContent='02';
+    tab.append(index,document.createTextNode(' Биографии'));navHost.insertBefore(tab,navHost.querySelector('#tab-poster'));
     const pane=document.createElement('section');
     pane.id='panel-people';pane.className='mode-panel';pane.dataset.mode='people';
     pane.setAttribute('role','tabpanel');pane.setAttribute('aria-labelledby','tab-people');pane.hidden=true;
@@ -53,17 +53,19 @@
     navHost.appendChild(node);
   }
   const tabNames = new Set(['poster', 'timeline', 'research', 'people']);
+  const routeNames = new Set([...tabNames, 'home']);
   const tabs = Array.from(document.querySelectorAll('.mode-tab'));
   const panels = new Map(Array.from(document.querySelectorAll('.mode-panel')).map(panel => [panel.dataset.mode, panel]));
-  let currentMode = 'timeline';
+  let currentMode = 'home';
   const originalTitle=document.title;
   function navigate(name, updateHash) {
-    if (!tabNames.has(name)) return;
+    if (!routeNames.has(name)) return;
     currentMode = name;
+    document.documentElement.classList.toggle('atlas-home-open', name === 'home');
     tabs.forEach(tab => {
       const selected = tab.dataset.view === name;
       tab.setAttribute('aria-selected', String(selected));
-      tab.tabIndex = selected ? 0 : -1;
+      tab.tabIndex = selected || (name === 'home' && tab.dataset.view === 'timeline') ? 0 : -1;
     });
     panels.forEach((panel, id) => { panel.hidden = id !== name; });
     if (name === 'timeline' && !rendered) renderTimeline();
@@ -270,7 +272,7 @@
   });
   function fromHash() {
     const hash = decodeURIComponent(location.hash.slice(1));
-    const route=/^\/(poster|timeline|research|people)(?:\/([A-Za-z0-9-]+))?$/.exec(hash);
+    const route=/^\/(home|poster|timeline|research|people)(?:\/([A-Za-z0-9-]+))?$/.exec(hash);
     if(route)return navigate(route[1],false);
     if (tabNames.has(hash)) return navigate(hash, false);
     if (hash.startsWith('source-') || /^[MRIPGSX]\d{2,}$/.test(hash)) {
@@ -284,11 +286,26 @@
     }
     if (hash.startsWith('poster-')) return navigate('poster', false);
     if (!hash) {
-      history.replaceState(null, '', '#/timeline/1685');
-      return navigate('timeline', false);
+      const params = new URLSearchParams(location.search);
+      if (['world', 'map', 'atlasView'].some(key => params.has(key))) {
+        history.replaceState(null, '', location.pathname + location.search + '#/timeline/1685');
+        return navigate('timeline', false);
+      }
+      return navigate('home', false);
     }
   }
   window.addEventListener('hashchange', fromHash);
+  const homeYearForm = document.getElementById('atlas-home-year-form');
+  if (homeYearForm) homeYearForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const yearInput = homeYearForm.querySelector('#atlas-home-year');
+    const year = Number(yearInput.value);
+    if (!Number.isInteger(year) || year < 1417 || year > 1991) {
+      yearInput.reportValidity();
+      return;
+    }
+    location.hash = '#/timeline/' + year;
+  });
   fromHash();
 })();
 
@@ -663,7 +680,7 @@
   document.documentElement.classList.add('atlas-app');
   const brand = document.querySelector('.brand');
   if (brand) {
-    brand.textContent = 'АТЛАС ПРАВИТЕЛЕЙ';
+    brand.textContent = 'АТЛАС ВЛАСТИ';
     const years = document.createElement('span');
     years.className = 'atlas-brand-years';
     years.textContent = '1417–1991';

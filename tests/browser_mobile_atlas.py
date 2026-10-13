@@ -39,6 +39,22 @@ def run(dist: Path, output: Path) -> None:
                                       has_touch=True,is_mobile=True)
                 errors=[]
                 page.on('pageerror',lambda exc:errors.append(str(exc)))
+                # The canonical root is an entry page, not a hidden year redirect.
+                page.goto(origin)
+                expect(page.locator('#panel-home')).to_be_visible()
+                expect(page.locator('#atlas-home-title')).to_contain_text('Где и когда')
+                expect(page.locator('.atlas-home-card')).to_have_count(4)
+                expect(page.locator('.modes-wrap')).to_be_hidden()
+                page.locator('#atlas-home-year').fill('1762')
+                page.locator('#atlas-home-year-form button').click()
+                expect(page).to_have_url(re.compile(r'#/timeline/1762$'))
+                expect(page.locator('#panel-timeline')).to_be_visible()
+                if height <= 560:
+                    expect(page.locator('.atlas-home-shortcut')).to_be_visible()
+                    page.locator('.atlas-home-shortcut').click()
+                else:
+                    page.locator('.brand').click()
+                expect(page.locator('#panel-home')).to_be_visible()
                 page.goto(origin+'#/timeline/1685')
                 expect(page.locator('html')).to_have_class(re.compile(r'\batlas-mobile\b'))
                 expect(page.locator('#panel-timeline')).to_have_attribute('data-mobile-mode','summary')
@@ -227,6 +243,11 @@ def run(dist: Path, output: Path) -> None:
                 page.close()
 
             desktop=browser.new_page(viewport={'width':1440,'height':1000})
+            desktop.goto(origin)
+            expect(desktop.locator('#panel-home')).to_be_visible()
+            expect(desktop.locator('.atlas-home-card')).to_have_count(4)
+            desktop.locator('.atlas-home-card[href="#/people"]').click()
+            expect(desktop.locator('#panel-people')).to_be_visible()
             desktop.goto(origin+'#/timeline/1685')
             expect(desktop.locator('html')).not_to_have_class(re.compile(r'\batlas-mobile\b'))
             expect(desktop.locator('.atlas-mobile-actions')).to_be_hidden()

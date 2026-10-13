@@ -2509,3 +2509,69 @@ button[disabled] {
   .dynasty-geo-connections{grid-template-columns:1fr}
   .dynasty-geo-lead{font-size:13px}
 }
+
+
+/* Canonical entry route: the four existing atlas tabs remain unchanged. */
+.atlas-home-open .modes-wrap{display:none!important}
+.atlas-app #panel-home{display:block;overflow-y:auto;overscroll-behavior:contain;padding:25px 22px 36px}
+.atlas-home-content{width:100%;max-width:1050px;margin:0 auto}
+.atlas-home-intro{max-width:850px}
+.atlas-home-kicker{margin:0 0 9px;color:var(--red);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.atlas-home-intro h1{font:700 clamp(34px,5.5vw,66px)/1.05 Georgia,serif;letter-spacing:-.045em;margin:0 0 13px}
+.atlas-home-intro h1 em{font-style:normal;color:var(--red)}
+.atlas-home-intro>p:last-child{font-size:clamp(14px,1.5vw,17px);line-height:1.5;color:var(--muted);margin:0 0 18px;max-width:820px}
+.atlas-home-year-form{display:grid;gap:8px;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:15px 18px;background:var(--surface)}
+.atlas-home-year-form>label{font-weight:800;font-size:14px}
+.atlas-home-year-actions{display:flex;align-items:stretch;gap:10px}
+.atlas-home-year-actions input{width:min(220px,48%);min-width:0;min-height:46px;border:1px solid var(--line);border-radius:7px;padding:8px 12px;background:white;color:var(--ink);font:600 17px system-ui,sans-serif}
+.atlas-home-year-actions button{min-height:46px;border:0;border-radius:7px;padding:9px 18px;background:var(--green);color:#fff;font-size:14px;font-weight:800}
+.atlas-home-year-actions button:hover{background:var(--ink)}
+.atlas-home-year-form>p{color:var(--muted);font-size:12px;margin:0}
+.atlas-home-section-title{font:700 clamp(19px,2.5vw,24px)/1.3 Georgia,serif;margin:23px 0 12px}
+.atlas-home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.atlas-home-card{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px;min-width:0;min-height:170px;color:var(--ink);text-decoration:none;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+.atlas-home-card:hover{border-color:var(--green);color:var(--ink);transform:translateY(-2px)}
+.atlas-home-card-index{font-size:11px;color:var(--green);font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.atlas-home-card strong{font:700 clamp(18px,2.4vw,24px)/1.25 Georgia,serif;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.atlas-home-card strong span{font:700 18px system-ui,sans-serif;color:var(--green)}
+.atlas-home-card-description{font-size:13px;line-height:1.4;color:var(--muted);flex:1}
+.atlas-home-card-meta{font-size:11px;color:var(--gold);font-weight:750}
+.atlas-home-explore{padding:17px 0 12px;margin-top:20px;border-top:1px solid var(--line)}
+.atlas-home-explore h2{font:700 19px Georgia,serif;margin:0 0 12px}
+.atlas-home-explore-links{display:flex;flex-wrap:wrap;gap:8px 15px}
+.atlas-home-explore-links a{font-size:12px;font-weight:700}
+.atlas-home-note{border-left:3px solid var(--gold);padding:10px 14px;background:var(--faint);font-size:12px;line-height:1.5;color:var(--muted);margin-top:10px}
+.atlas-home-note strong{color:var(--ink)}
+.atlas-app .brand{text-decoration:none}
+@media(max-width:700px){
+  .atlas-app #panel-home{padding:17px 15px 30px}
+  .atlas-home-intro h1{font-size:clamp(33px,8vw,44px)}
+  .atlas-home-intro>p:last-child{font-size:14px}
+  .atlas-home-year-form{padding:12px}
+  .atlas-home-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+  .atlas-home-card{min-height:130px;padding:14px 16px;gap:6px}
+  .atlas-home-card-description{font-size:13px}
+  .atlas-home-section-title{margin-top:20px}
+  .atlas-home-year-actions{gap:8px}
+  .atlas-home-year-actions input{flex:1;max-width:45%;font-size:16px}
+  .atlas-home-year-actions button{flex:1;padding:8px 10px;font-size:13px}
+  .atlas-home-explore-links{display:grid;gap:9px}
+}
+@media(prefers-reduced-motion:reduce){.atlas-home-card{transition:none}.atlas-home-card:hover{transform:none}}
+
+/* In short landscape the original mobile layout hides the header.
+   Keep its compact body, but give visitors a way back to the homepage. */
+.atlas-home-shortcut{display:none}
+@media(max-width:900px) and (max-height:560px){
+  .atlas-app.atlas-mobile .modes-wrap{display:flex;align-items:stretch;padding-left:5px}
+  .atlas-app.atlas-mobile .modes{flex:1;min-width:0;width:auto}
+  .atlas-app.atlas-mobile .atlas-home-shortcut{
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;min-height:44px;padding:6px 10px;
+    font-size:12px;font-weight:800;color:var(--green);
+    text-decoration:none;border-right:1px solid var(--line)
+  }
+  .atlas-app.atlas-mobile .atlas-home-shortcut:focus-visible{
+    outline:3px solid var(--green);outline-offset:-3px
+  }
+}

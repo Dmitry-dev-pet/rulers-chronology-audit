@@ -79,7 +79,7 @@ class MuscovyExtensionTests(unittest.TestCase):
         self.assertEqual(report["original_poster_rows"], 48)
         self.assertEqual(report["range"], "1417–1991")
         html = (ROOT / "dist/index.html").read_text(encoding="utf-8")
-        for term in ("Правители государства · 1417–1991", "poster-059", "poster-077",
+        for term in ("Атлас власти · историческая хронология", "poster-059", "poster-077",
                      "poster-078", "poster-106", "data-era='muscovy'",
                      "data-era='tsardom'", "source-MS01"):
             self.assertIn(term, html)
