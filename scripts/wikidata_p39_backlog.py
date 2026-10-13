@@ -12,7 +12,7 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "research/wikidata/p8-unmapped-qid-groups-2026-10-13.csv"
 QUEUE = ROOT / "design/wikidata/p8-manual-review-queue-v1.json"
-QID = re.compile(r"Q[1-9][0-9]*\\Z")
+QID = re.compile(r"Q[1-9][0-9]*\Z")
 COLUMNS = ("qid", "claims", "people", "with_references", "with_both_boundaries")
 
 
