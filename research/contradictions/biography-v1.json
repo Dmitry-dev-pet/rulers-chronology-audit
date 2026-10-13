@@ -1,0 +1,153 @@
+{
+  "schema_version": "historical-biographical-dispute-registry-v1",
+  "as_of": "2026-10-13",
+  "historical_truth_verified_by_ci": false,
+  "changes_to_canonical_data": false,
+  "auto_resolution_allowed": false,
+  "source_scope": {
+    "canonical_person_facts_path": "data/atlas/person_facts.jsonl",
+    "source_registry_path": "data/atlas/sources.jsonl",
+    "fact_ids": [
+      "fact-research-20261010-chernenko-birth-archive",
+      "fact-research-20261010-chernenko-birth-legacy"
+    ],
+    "source_ids": [
+      "TP308",
+      "TP309"
+    ],
+    "method": "Two exact canonical fact records and their attributed source-registry rows are pinned independently. Other canonical facts can be added without invalidating this case."
+  },
+  "cases": [
+    {
+      "id": "HC-0005",
+      "kind": "birth_date_disagreement",
+      "review_status": "open",
+      "person_id": "person-654bc370814d5452",
+      "person_name": "Константин Черненко",
+      "field": "birth",
+      "canonical_fact_ids": [
+        "fact-research-20261010-chernenko-birth-archive",
+        "fact-research-20261010-chernenko-birth-legacy"
+      ],
+      "comparison_relation": "competing_published_birth_datings",
+      "question": "The archival metric description dates Chernenko's birth 18 September Julian/1 October Gregorian 1912; Soviet biographical tradition uses 11/24 September 1911. Compare the original metric manuscript and other contemporaneous evidence before treating either date as independently verified; preserve both previously saved canonical facts.",
+      "resolution": null,
+      "reviewed_primary_acts": false,
+      "actual_power_inferred": false,
+      "historical_truth_verified_by_ci": false,
+      "observations": [
+        {
+          "id": "HC-0005-ARCHIVE",
+          "canonical_fact_id": "fact-research-20261010-chernenko-birth-archive",
+          "source_id": "TP308",
+          "source_kind": "archival_register_description",
+          "source_url": "https://culture19.ru/contents/587-7-metricheskaya-zapis.html",
+          "corroborating_url": "https://nbdrx.ru/arh3470.aspx",
+          "source_locator": "Реестр №7; метрическая запись №32; Ф. И-29, оп.1, д.142, л.25 об.–26; протокол ЭПК 29.05.2026 №2",
+          "claim_type": "birth_date",
+          "verification": "reference_checked",
+          "independent_primary_checked": false,
+          "value": {
+            "old_style": {
+              "value": "1912-09-18",
+              "precision": "day",
+              "calendar": "julian",
+              "format": "literal_iso"
+            },
+            "new_style": {
+              "value": "1912-10-01",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "literal_iso"
+            }
+          },
+          "pinned_canonical_fact": {
+            "id": "fact-research-20261010-chernenko-birth-archive",
+            "person_id": "person-654bc370814d5452",
+            "kind": "birth",
+            "value": {
+              "value": "1912-09-18",
+              "calendar": "julian",
+              "precision": "day",
+              "qualifier": "as_recorded"
+            },
+            "sources": [
+              "TP308"
+            ],
+            "verification": "reference_checked",
+            "confidence": "high",
+            "evidence": {
+              "path": "research/biographies-third-pass-2026-10-10.md",
+              "note": "Официальный реестр архива Хакасии: метрическая запись №32, Ф.И-29, оп.1, д.142, л.25об–26; по новому стилю 01.10.1912. Скан лично не анализировался."
+            }
+          },
+          "pinned_source_record": {
+            "id": "TP308",
+            "title": "Минкультуры Хакасии: метрическая запись №32 о рождении Черненко",
+            "url": "https://culture19.ru/contents/587-7-metricheskaya-zapis.html",
+            "note": "Официальный реестр уникальных документов. 18 сентября/1 октября 1912; ф. И-29, оп. 1, д. 142, л. 25 об.–26, протокол 29.05.2026 №2. Также смерть 10.03.1985.",
+            "imported_from": "research/biographies-third-pass-2026-10-10.md",
+            "verification": "reference_checked"
+          },
+          "note": "1912 is backed by the published National Archive of Khakasia record description. The original manuscript image was not independently examined or paleographically transcribed in this project."
+        },
+        {
+          "id": "HC-0005-LEGACY",
+          "canonical_fact_id": "fact-research-20261010-chernenko-birth-legacy",
+          "source_id": "TP309",
+          "source_kind": "historical_biography",
+          "source_url": "https://www.booksite.ru/fulltext/1/001/008/121/939.htm",
+          "corroborating_url": "https://nbdrx.ru/arh3470.aspx",
+          "source_locator": "БСЭ: Черненко Константин Устинович; traditional 11(24) September 1911, corroborated as prior official date by Khakasia National Library",
+          "claim_type": "birth_date",
+          "verification": "disputed",
+          "independent_primary_checked": false,
+          "value": {
+            "old_style": {
+              "value": "1911-09-11",
+              "precision": "day",
+              "calendar": "julian",
+              "format": "literal_iso"
+            },
+            "new_style": {
+              "value": "1911-09-24",
+              "precision": "day",
+              "calendar": "gregorian",
+              "format": "literal_iso"
+            }
+          },
+          "pinned_canonical_fact": {
+            "id": "fact-research-20261010-chernenko-birth-legacy",
+            "person_id": "person-654bc370814d5452",
+            "kind": "birth",
+            "value": {
+              "value": "1911-09-11",
+              "calendar": "julian",
+              "precision": "day",
+              "qualifier": "uncertain"
+            },
+            "sources": [
+              "TP309",
+              "TP308"
+            ],
+            "verification": "disputed",
+            "confidence": "low",
+            "evidence": {
+              "path": "research/biographies-third-pass-2026-10-10.md",
+              "note": "Официальная биографическая версия 11(24).09.1911 противоречит зарегистрированной метрической записи 1912 года; не стирать."
+            }
+          },
+          "pinned_source_record": {
+            "id": "TP309",
+            "title": "Большая советская энциклопедия: традиционная дата рождения Черненко",
+            "url": "https://www.booksite.ru/fulltext/1/001/008/121/939.htm",
+            "note": "Традиционная опубликованная дата 11 (24) сентября 1911; конкурирует с метрической записью 1912, поэтому не заявлять как бесспорную.",
+            "imported_from": "research/biographies-third-pass-2026-10-10.md",
+            "verification": "reference_checked"
+          },
+          "note": "Traditional published biographical date (1911) is disputed by the newly identified archive record. The legacy BSE webpage could not be independently opened during this pass; its attribution is from the already versioned canonical source entry and the National Library's confirmation of the earlier convention."
+        }
+      ]
+    }
+  ]
+}
