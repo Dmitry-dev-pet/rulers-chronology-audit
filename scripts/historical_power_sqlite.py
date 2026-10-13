@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import ipaddress
 import json
 import sqlite3
 from pathlib import Path
@@ -77,11 +78,17 @@ def public_url(url: object) -> bool:
     try:
         parsed = urlsplit(url)
         host = (parsed.hostname or "").lower()
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            pass
+        else:
+            return False  # no IP literals, even public ones, in source URLs
         return (parsed.scheme == "https" and bool(host) and "." in host
                 and parsed.port in (None, 443)
                 and parsed.username is None and parsed.password is None
                 and host not in {"drive.google.com", "docs.google.com", "localhost"}
-                and not any(host.endswith(s) for s in (".internal", ".local", ".private"))
+                and not any(host.endswith(s) for s in (".internal", ".local", ".private", ".localhost", ".lan"))
                 and not any(s in url.lower() for s in
                             ("token=", "apikey=", "api_key=", "password=", "secret=")))
     except (ValueError, AttributeError):
