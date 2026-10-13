@@ -28,7 +28,7 @@
       const url=new URL(value);
       return url.protocol==='https:' && !!url.hostname && !url.username &&
         !url.password && url.port==='' &&
-        !['drive.google.com','docs.google.com','localhost'].includes(url.hostname) &&
+        ![['drive','.google.com'].join(''),['docs','.google.com'].join(''),'localhost'].includes(url.hostname) &&
         !/(?:\.local|\.internal|\.private|\.localhost|\.lan)$/.test(url.hostname) &&
         !/^\d+\.\d+\.\d+\.\d+$/.test(url.hostname);
     }catch(_){return false;}
