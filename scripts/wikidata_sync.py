@@ -38,6 +38,8 @@ WORLD_FILES = (
     ("1762.json", "persons"),
     ("dynasty-1762-1780.json", "additional_persons"),
     ("extension-1781-1800.json", "additional_persons"),
+    # PR #34 introduced three separately sourced world-only people.
+    ("coverage-backfill-1762-1800.json", "person_additions"),
 )
 
 

@@ -46,7 +46,7 @@ def report(*subjects):
 class ReviewedIdentities(unittest.TestCase):
     def test_all_world_only_people_have_reviewed_noncanonical_qids(self):
         roster = wd.roster(wd.ROOT)
-        self.assertEqual(sum(x["kind"] == "world_unlinked" for x in roster), 24)
+        self.assertEqual(sum(x["kind"] == "world_unlinked" for x in roster), 27)
         self.assertTrue(all(x["wikidata_id"] for x in roster
                             if x["kind"] == "world_unlinked"))
         self.assertEqual(len({x["wikidata_id"] for x in roster if x["wikidata_id"]}),
@@ -57,6 +57,13 @@ class ReviewedIdentities(unittest.TestCase):
                               if x["subject_id"] == "world:hre-francis"), "Q151075")
         self.assertEqual(next(x["wikidata_id"] for x in roster
                               if x["subject_id"] == "world:sw-charles"), "Q52928")
+        # All three persons introduced in the 1762–1800 backfill must be linked.
+        backfill = {"world:pt-jose1": "Q1058391",
+                    "world:sw-adolf-fredrik": "Q52931",
+                    "world:tusc-ferdinand3": "Q309605"}
+        self.assertTrue(all(any(x["subject_id"] == sid and
+                                x["wikidata_id"] == qid for x in roster)
+                            for sid, qid in backfill.items()))
 
     def test_conservative_rejected_regnal_homonyms_remain_excluded(self):
         r = wd.read_json(wd.ROOT / "design/wikidata/reviewed-world-links-v1.json")
@@ -64,7 +71,9 @@ class ReviewedIdentities(unittest.TestCase):
                    for x in r["rejected_candidates"]}
         self.assertIn(("pr-frederick2", "Q130221"), rejects)
         self.assertIn(("hab-leopold", "Q12967"), rejects)
-        self.assertEqual(len(r["links"]), 24)
+        self.assertIn(("sw-adolf-fredrik", "Q106378947"), rejects)
+        self.assertIn(("tusc-ferdinand3", "Q117829867"), rejects)
+        self.assertEqual(len(r["links"]), 27)
         self.assertTrue(all((x["world_id"], x["wikidata_qid"]) not in rejects
                             for x in r["links"]))
 

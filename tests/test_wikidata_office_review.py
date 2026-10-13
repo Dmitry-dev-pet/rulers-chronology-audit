@@ -60,11 +60,18 @@ class ReviewedWorldIdentities(unittest.TestCase):
         self.assertEqual(by_id["world:hab-leopold"]["wikidata_id"], "Q151321")
         self.assertEqual(by_id["world:gb-george3"]["wikidata_id"], "Q127318")
         self.assertEqual(by_id["world:pt-joao"]["wikidata_id"], "Q676301")
+        self.assertEqual(by_id["world:pt-jose1"]["wikidata_id"], "Q1058391")
+        self.assertEqual(by_id["world:sw-adolf-fredrik"]["wikidata_id"], "Q52931")
+        self.assertEqual(by_id["world:tusc-ferdinand3"]["wikidata_id"], "Q309605")
+        self.assertEqual(by_id["person-0157c71b66e75976"]["wikidata_id"], "Q295781")
+        self.assertEqual(by_id["person-036c05d6218659ca"]["wikidata_id"], "Q1956360")
+        self.assertEqual(by_id["person-0ee596fb65215c40"]["wikidata_id"], "Q2620906")
+        self.assertNotEqual(by_id["person-0157c71b66e75976"]["wikidata_id"], "Q4367385")
         self.assertEqual(by_id["person-e88112738c1054f5"]["wikidata_id"], "Q855")
         self.assertEqual(by_id["person-7720af2ff3445d9d"]["wikidata_id"], "Q229828")
         self.assertEqual(by_id["person-fccacd3aa737598e"]["wikidata_id"], "Q297032")
         registry = wd.read_json(wd.ROOT / "design/wikidata/reviewed-world-links-v1.json")
-        self.assertEqual(len(registry["links"]), 24)
+        self.assertEqual(len(registry["links"]), 27)
         banned = {(r["world_id"], r["wikidata_qid"])
                   for r in registry["rejected_candidates"]}
         self.assertIn(("pr-frederick2", "Q130221"), banned)
@@ -77,8 +84,8 @@ class ReviewedWorldIdentities(unittest.TestCase):
         c = [r for r in records if r["kind"] == "canonical"]
         w = [r for r in records if r["kind"] == "world_unlinked"]
         self.assertEqual(len(c), len(list((wd.ROOT / "data/atlas/people").glob("*.json"))))
-        self.assertEqual(len(w), 24)
-        self.assertEqual(sum(bool(x["wikidata_id"]) for x in w), 24)
+        self.assertEqual(len(w), 27)
+        self.assertEqual(sum(bool(x["wikidata_id"]) for x in w), 27)
         qids = [r["wikidata_id"] for r in records if r["wikidata_id"]]
         self.assertEqual(len(qids), len(set(qids)))
 

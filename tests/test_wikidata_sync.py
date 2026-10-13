@@ -51,6 +51,8 @@ class FakeAtlas(unittest.TestCase):
                 {"id": "world-new", "name": "Павел I"}]}), encoding="utf8")
         (w / "extension-1781-1800.json").write_text(
             json.dumps({"additional_persons": []}), encoding="utf8")
+        (w / "coverage-backfill-1762-1800.json").write_text(
+            json.dumps({"person_additions": []}), encoding="utf8")
 
     def api(self, params):
         if params["action"] == "wbsearchentities":
