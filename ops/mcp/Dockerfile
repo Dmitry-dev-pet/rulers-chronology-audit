@@ -13,7 +13,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     ATLAS_SQLITE_PATH=/app/atlas.sqlite \
     ATLAS_MCP_BIND=0.0.0.0 \
     ATLAS_MCP_PORT=8765
-RUN python -m pip install --no-cache-dir 'mcp>=2,<3' \
+RUN python -m pip install --no-cache-dir 'mcp==2.0.0' \
  && groupadd --system --gid 10001 atlas \
  && useradd --system --uid 10001 --gid 10001 --home-dir /nonexistent --no-create-home atlas
 WORKDIR /app
