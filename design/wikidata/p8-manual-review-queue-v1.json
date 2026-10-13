@@ -1,0 +1,119 @@
+{
+  "schema_version": "wikidata-p39-manual-triage-v1",
+  "as_of": "2026-10-13",
+  "policy": "Exact QIDs and human research questions only. Priority does not approve legal office equivalence, dates, ethnicity, geography, leadership or personal sovereignty.",
+  "items": [
+    {
+      "qid": "Q477406",
+      "label": "регент",
+      "status": "first",
+      "question": "Три утверждения с ссылками, но надо отличать регентство от титула суверена и опеки.",
+      "source_url": "https://www.wikidata.org/wiki/Q477406"
+    },
+    {
+      "qid": "Q12370487",
+      "label": "князь/великий князь Московский",
+      "status": "first",
+      "question": "Сверить московскую должность с великим князем всея Руси; три утверждения без явных ссылок в P39.",
+      "source_url": "https://www.wikidata.org/wiki/Q12370487"
+    },
+    {
+      "qid": "Q12370489",
+      "label": "царь всея Руси",
+      "status": "first",
+      "question": "Историческая титулатура, 1547 и 1721 границы не выводить из слова «царь».",
+      "source_url": "https://www.wikidata.org/wiki/Q12370489"
+    },
+    {
+      "qid": "Q58800860",
+      "label": "монарх Португалии",
+      "status": "first",
+      "question": "Различать суверенную королеву, короля-супруга и регента.",
+      "source_url": "https://www.wikidata.org/wiki/Q58800860"
+    },
+    {
+      "qid": "Q56919889",
+      "label": "председатель СНК РСФСР",
+      "status": "first",
+      "question": "Сверить с snk-rsfsr, отделив СНК СССР и послевоенный Совет министров.",
+      "source_url": "https://www.wikidata.org/wiki/Q56919889"
+    },
+    {
+      "qid": "Q134407102",
+      "label": "заместитель председателя СНК СССР",
+      "status": "first",
+      "question": "До 1946 г., не отождествлять с заместителем председателя Совета министров.",
+      "source_url": "https://www.wikidata.org/wiki/Q134407102"
+    },
+    {
+      "qid": "Q134373912",
+      "label": "заместитель председателя Совета министров СССР",
+      "status": "first",
+      "question": "После 1946 г.; заместитель, не председатель и не фактический единоличный глава государства.",
+      "source_url": "https://www.wikidata.org/wiki/Q134373912"
+    },
+    {
+      "qid": "Q5452917",
+      "label": "первый заместитель председателя правительства СССР",
+      "status": "first",
+      "question": "Особый ранг первого заместителя, сохраняя изменения правительства и точность дат.",
+      "source_url": "https://www.wikidata.org/wiki/Q5452917"
+    },
+    {
+      "qid": "Q842386",
+      "label": "премьер-министр России (современная карточка)",
+      "status": "quarantine",
+      "question": "Употреблён для Керенского, Львова и Трепова. Нельзя объединять эти дореволюционные/временные должности с премьером РФ.",
+      "source_url": "https://www.wikidata.org/wiki/Q842386"
+    },
+    {
+      "qid": "Q27491113",
+      "label": "член Всероссийского учредительного собрания",
+      "status": "later",
+      "question": "Наиболее частый QID (5), но ноль источников и квалификаторов времени в данном P39; членство не верховная власть.",
+      "source_url": "https://www.wikidata.org/wiki/Q27491113"
+    },
+    {
+      "qid": "Q42530449",
+      "label": "депутат Верховного Совета РСФСР",
+      "status": "later",
+      "question": "Не тождественно депутату Верховного Совета СССР.",
+      "source_url": "https://www.wikidata.org/wiki/Q42530449"
+    },
+    {
+      "qid": "Q115147301",
+      "label": "секретарь КПСС",
+      "status": "later",
+      "question": "Не превращать секретаря автоматически в первого/генерального секретаря и фактического правителя.",
+      "source_url": "https://www.wikidata.org/wiki/Q115147301"
+    },
+    {
+      "qid": "Q12155588",
+      "label": "первый секретарь Компартии Украины",
+      "status": "later",
+      "question": "Республиканская партийная роль не тождественна союзной.",
+      "source_url": "https://www.wikidata.org/wiki/Q12155588"
+    },
+    {
+      "qid": "Q108458877",
+      "label": "член Государственного совета Российской империи",
+      "status": "later",
+      "question": "Представительство в учреждении, не высший руководитель, ноль ссылок и дат в P39.",
+      "source_url": "https://www.wikidata.org/wiki/Q108458877"
+    },
+    {
+      "qid": "Q27481020",
+      "label": "член Государственной думы Российской империи",
+      "status": "later",
+      "question": "Депутатство отличается от правительства, требует источникового состава и дат.",
+      "source_url": "https://www.wikidata.org/wiki/Q27481020"
+    },
+    {
+      "qid": "Q61899333",
+      "label": "председатель Совета труда и обороны СССР",
+      "status": "later",
+      "question": "Отдельное коллегиальное учреждение, не заместитель и не председатель СНК.",
+      "source_url": "https://www.wikidata.org/wiki/Q61899333"
+    }
+  ]
+}
