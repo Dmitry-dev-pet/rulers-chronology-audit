@@ -120,6 +120,42 @@
       "same_as_canonical_state": false,
       "geographic_boundaries_verified": false,
       "caveat": "Empire after 1804 is not the French Republic in the 1762–1800 pilot, even if ruled by same person."
+    },
+    {
+      "id": "ctx-ussr-snk-1923-1946",
+      "kind": "executive_institution",
+      "label": "Council of People's Commissars of USSR (Union government)",
+      "related_world_contexts": [],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "government_tier": "union",
+      "office_era": "pre_1946_snk",
+      "title_year_window": {
+        "start": 1923,
+        "end": 1946
+      },
+      "legal_title_transition_date": "1946-03-15",
+      "transition_source_url": "https://docs.historyrussia.org/ru/nodes/521384-o-preobrazovanii-soveta-narodnyh-komissarov-sssr-v-sovet-ministrov-sssr-i-sovetov-narodnyh-komissarov-soyuznyh-i-avtonomnyh-respublik-locale-nil-v-sovety-ministrov-soyuznyh-i-avtonomnyh-respublik-zakon-prinyatyy-verhovnym-sovetom-sssr-2-go-sozyva-na-pervoy",
+      "caveat": "Union Sovnarkom until 15 March 1946: not the RSFSR Sovnarkom, a modern state or a personal ruler. Government chair and deputy are different offices. Title window is not an independently proved personal appointment."
+    },
+    {
+      "id": "ctx-ussr-sovmin-1946-1991",
+      "kind": "executive_institution",
+      "label": "Council of Ministers of USSR (Union government)",
+      "related_world_contexts": [],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "government_tier": "union",
+      "office_era": "post_1946_sovmin",
+      "title_year_window": {
+        "start": 1946,
+        "end": 1991
+      },
+      "legal_title_transition_date": "1946-03-15",
+      "transition_source_url": "https://docs.historyrussia.org/ru/nodes/521384-o-preobrazovanii-soveta-narodnyh-komissarov-sssr-v-sovet-ministrov-sssr-i-sovetov-narodnyh-komissarov-soyuznyh-i-avtonomnyh-respublik-locale-nil-v-sovety-ministrov-soyuznyh-i-avtonomnyh-respublik-zakon-prinyatyy-verhovnym-sovetom-sssr-2-go-sozyva-na-pervoy",
+      "caveat": "Post-1946 Union Council of Ministers: separate successor title but institutional continuity under the law. Ordinary deputy and FIRST deputy are separate rank types, neither is Chairman. The 15 March naming law is not a blanket 15 March appointment for each person."
     }
   ],
   "offices": [
@@ -210,6 +246,36 @@
       "review_status": "scope_reviewed_not_tenure",
       "evidence_url": "https://www.wikidata.org/wiki/Q5373953",
       "caveat": "Napoleonic emperor office begins after 1800; not first-consul office in the 1799–1800 pilot."
+    },
+    {
+      "wikidata_qid": "Q134407102",
+      "context_id": "ctx-ussr-snk-1923-1946",
+      "position_kind": "government_deputy",
+      "office_rank": "deputy",
+      "office_era": "pre_1946_snk",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q134407102",
+      "caveat": "Ordinary deputy chairman of Union Council of People's Commissars before 1946; NOT chairman of USSR/RSFSR governments, NOT successor Council of Ministers deputy, NOT first deputy."
+    },
+    {
+      "wikidata_qid": "Q134373912",
+      "context_id": "ctx-ussr-sovmin-1946-1991",
+      "position_kind": "government_deputy",
+      "office_rank": "deputy",
+      "office_era": "post_1946_sovmin",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q134373912",
+      "caveat": "Ordinary deputy chairman of USSR Council of Ministers after the 1946 law; not Chairman or First Deputy. Source dates and continuity require independent verification."
+    },
+    {
+      "wikidata_qid": "Q5452917",
+      "context_id": "ctx-ussr-sovmin-1946-1991",
+      "position_kind": "government_first_deputy",
+      "office_rank": "first_deputy",
+      "office_era": "post_1946_sovmin",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q5452917",
+      "caveat": "FIRST deputy Chairman of Union Council of Ministers after 1946, higher formal rank than ordinary deputy Q134373912 but not head of government Q4376674. May be held by several people; does not prove real political dominance."
     }
   ]
 }
