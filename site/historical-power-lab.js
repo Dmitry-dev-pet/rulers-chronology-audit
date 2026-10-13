@@ -217,7 +217,7 @@
     dialog.append(warning);
     const relation=el('div','hpm-kinds');
     relation.append(el('h3',null,'Типы исходных связей · не способы прихода к власти'));
-    for(const [kind,label] of Object.entries(SOURCE_KIN)){
+    for(const [kind,label] of Object.entries(SOURCE_KINDS)){
       const count=events.filter(x=>x.kind===kind).length;
       const item=el('div','hpm-kind');
       item.append(el('span',null,label),el('strong',null,count+' / '+N));
