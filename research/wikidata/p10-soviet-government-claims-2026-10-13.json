@@ -1,0 +1,275 @@
+{
+  "schema_version": "wikidata-p10-government-claim-sample-v1",
+  "source_run_url": "https://github.com/Dmitry-dev-pet/rulers-chronology-audit/actions/runs/38387681744",
+  "snapshot_date": "2026-10-13",
+  "source_report_sha256_latest": "6402b5ff018c343c420b5d149f07e7fe6f43c59e861396f45ca563ffe87daa59",
+  "historical_truth_verified_by_ci": false,
+  "canonical_database_mutated": false,
+  "scope": "Selected source statement IDs and normalized P580/P582 values, rank and reference counts only; original full qualifiers and references remain in the P9 Actions research artifact. Wikidata assertions are NOT independently verified appointments or actual power.",
+  "cases": [
+    {
+      "canonical_person_id": "person-6011807ec88455bf",
+      "person_qid": "Q202770",
+      "person_name": "Алексей Косыгин",
+      "office_qid": "Q5452917",
+      "statement_id": "Q202770$6E0AA107-EBE0-49E0-BDB1-C3E29F08C1DF",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1960-05-04T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1964-10-15T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 1,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-6011807ec88455bf",
+      "person_qid": "Q202770",
+      "person_name": "Алексей Косыгин",
+      "office_qid": "Q134373912",
+      "statement_id": "Q202770$c94efe50-4561-770c-2fc6-b7eb900a0177",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1957-07-05T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1960-05-04T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-6011807ec88455bf",
+      "person_qid": "Q202770",
+      "person_name": "Алексей Косыгин",
+      "office_qid": "Q134373912",
+      "statement_id": "Q202770$f382a3df-4c0b-f5b9-73c2-8882e7f97662",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1953-12-07T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1956-12-25T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-6011807ec88455bf",
+      "person_qid": "Q202770",
+      "person_name": "Алексей Косыгин",
+      "office_qid": "Q134373912",
+      "statement_id": "Q202770$6270ca0b-4e00-ebf5-b582-7bb40e024390",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1946-03-19T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1953-03-15T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-6011807ec88455bf",
+      "person_qid": "Q202770",
+      "person_name": "Алексей Косыгин",
+      "office_qid": "Q134407102",
+      "statement_id": "Q202770$f9ef273e-478c-654b-214d-4aa6d77e169c",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1940-04-17T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1946-03-15T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-6011807ec88455bf",
+      "person_qid": "Q202770",
+      "person_name": "Алексей Косыгин",
+      "office_qid": "Q56919889",
+      "statement_id": "Q202770$2ecbc63f-4690-72b7-aaec-6cbd893c57af",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1943-06-23T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1946-03-15T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 1,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-e271c748e0ce5752",
+      "person_qid": "Q294339",
+      "person_name": "Алексей Рыков",
+      "office_qid": "Q134407102",
+      "statement_id": "Q294339$7a63945e-46c8-70e6-394f-2a3a3c82bb1e",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1923-07-06T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1924-02-02T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-dddb596a95495d62",
+      "person_qid": "Q152738",
+      "person_name": "Анастас Микоян",
+      "office_qid": "Q5452917",
+      "statement_id": "Q152738$AB2C583D-5FF0-44C6-A7D1-2ADF790BE3DD",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1955-02-28T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1964-07-15T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 1,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-dddb596a95495d62",
+      "person_qid": "Q152738",
+      "person_name": "Анастас Микоян",
+      "office_qid": "Q134407102",
+      "statement_id": "Q152738$85c2553d-455b-4921-02a1-5ab1e8dd13d4",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1937-07-22T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1946-03-15T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-dddb596a95495d62",
+      "person_qid": "Q152738",
+      "person_name": "Анастас Микоян",
+      "office_qid": "Q134373912",
+      "statement_id": "Q152738$5b432d15-49af-ffc0-b2e1-c98d140fa76f",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1946-03-15T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1955-02-28T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-d47693fb6f7d5e2a",
+      "person_qid": "Q184267",
+      "person_name": "Андрей Громыко",
+      "office_qid": "Q5452917",
+      "statement_id": "Q184267$98625C7A-BADF-4F81-A4BE-9FE481D4881D",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1983-03-24T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1985-07-02T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 2,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    },
+    {
+      "canonical_person_id": "person-980ac375eb5c5752",
+      "person_qid": "Q1394",
+      "person_name": "Владимир Ленин",
+      "office_qid": "Q56919889",
+      "statement_id": "q1394$b778fdd7-4d65-a5ae-cf8a-9e51959c8218",
+      "rank": "normal",
+      "start_time": {
+        "time": "+1917-10-27T00:00:00Z",
+        "calendar": "julian",
+        "precision": 11
+      },
+      "end_time": {
+        "time": "+1924-01-21T00:00:00Z",
+        "calendar": "gregorian",
+        "precision": 11
+      },
+      "wikidata_reference_count": 0,
+      "historical_dates_verified": false,
+      "individual_legal_appointment_verified": false,
+      "effective_personal_power_inferred": false
+    }
+  ]
+}
