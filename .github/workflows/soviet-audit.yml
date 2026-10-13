@@ -143,14 +143,24 @@ jobs:
               f.write('Mobile-first UX: ' + str(len(mobile)) + ' viewport scenarios passed (summary, timeline, bottom sheet, comparison, biography).\n')
           PY
 
-      - name: Upload browser acceptance evidence
-        if: always()
+      - name: Upload browser evidence if validation fails
+        if: ${{ failure() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: smuta-browser-evidence
           path: browser-evidence/
           if-no-files-found: warn
           retention-days: 14
+          include-hidden-files: false
+
+      - name: Upload short-lived browser evidence for accepted main
+        if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: smuta-browser-evidence
+          path: browser-evidence/
+          if-no-files-found: warn
+          retention-days: 1
           include-hidden-files: false
 
       - name: Upload P4 historical graph preview (PR only)

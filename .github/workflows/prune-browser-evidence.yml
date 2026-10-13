@@ -1,0 +1,55 @@
+name: Prune duplicate atlas browser evidence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/prune-browser-evidence.yml
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Deletion requires explicit apply; default is report-only
+        type: choice
+        options: [dry-run, apply]
+        default: dry-run
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: one-at-a-time-atlas-artifact-maintenance
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    if: ${{ github.repository == 'Dmitry-dev-pet/rulers-chronology-audit' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout reviewed main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test conservative deletion policy
+        run: python3 -m unittest tests.test_prune_browser_evidence -v
+      - name: Audit artifacts and selectively prune old successful evidence
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          APPLY_AFTER_MERGE: ${{ github.event_name == 'push' || inputs.mode == 'apply' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$APPLY_AFTER_MERGE" == "true" ]]; then
+            python3 -m scripts.maintenance.prune_browser_evidence --apply
+          else
+            python3 -m scripts.maintenance.prune_browser_evidence
+          fi
+      - name: Upload tiny audit manifest
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: atlas-browser-artifact-cleanup-report
+          path: artifact-cleanup-report.json
+          if-no-files-found: warn
+          retention-days: 14
