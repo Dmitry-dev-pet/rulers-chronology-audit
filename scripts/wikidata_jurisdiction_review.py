@@ -20,12 +20,13 @@ REGISTRY = "design/wikidata/jurisdiction-crosswalk-v1.json"
 
 CONTEXT_KINDS = {
     "elective_institution", "historic_crown", "joint_sovereignty",
-    "political_party_institution", "existing_pilot_polity",
-    "composite_crown", "post_pilot_polity",
+    "political_party_institution", "legislative_institution",
+    "existing_pilot_polity", "composite_crown", "post_pilot_polity",
 }
 POSITION_KINDS = {
     "electoral_dignity", "legal_crown", "co_head_of_state",
-    "institutional_membership", "legal_monarchical_office",
+    "institutional_membership", "party_candidate_membership",
+    "legislative_membership", "legal_monarchical_office",
     "compound_royal_office", "post_pilot_imperial_title",
 }
 TIME = re.compile(r"^\+([0-9]{4})-[0-9]{2}-[0-9]{2}T")
@@ -74,8 +75,10 @@ def registry(root: Path) -> tuple[dict[str, dict], dict[str, dict], tuple[int, i
             not isinstance(row.get("caveat"), str) or not row["caveat"]
         ):
             raise ValueError("Invalid/overlapping jurisdiction office: " + str(qid))
-        if row["position_kind"] == "institutional_membership" and contexts[cid]["kind"] != "political_party_institution":
-            raise ValueError("Party membership must have an institutional context")
+        if row["position_kind"] in {"institutional_membership", "party_candidate_membership"} and contexts[cid]["kind"] != "political_party_institution":
+            raise ValueError("Party membership must have a political-party institutional context")
+        if row["position_kind"] == "legislative_membership" and contexts[cid]["kind"] != "legislative_institution":
+            raise ValueError("Legislative membership must have a legislative institutional context")
         if row["position_kind"] == "electoral_dignity" and contexts[cid]["kind"] != "elective_institution":
             raise ValueError("Electoral dignity must have an elective context")
         if row["position_kind"] == "co_head_of_state" and contexts[cid]["kind"] != "joint_sovereignty":

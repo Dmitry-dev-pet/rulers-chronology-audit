@@ -1,6 +1,6 @@
 {
   "schema_version": "wikidata-jurisdiction-crosswalk-v1",
-  "review_date": "2026-10-11",
+  "review_date": "2026-10-13",
   "pilot_window": {
     "start_year": 1762,
     "end_year": 1800
@@ -66,6 +66,16 @@
       "same_as_canonical_state": false,
       "geographic_boundaries_verified": false,
       "caveat": "Politburo membership is institutional and does not establish personal sovereign authority."
+    },
+    {
+      "id": "ctx-ussr-supreme-soviet",
+      "kind": "legislative_institution",
+      "label": "Supreme Soviet of the Soviet Union (all-Union legislature)",
+      "related_world_contexts": [],
+      "relationship": "related_not_equivalent",
+      "same_as_canonical_state": false,
+      "geographic_boundaries_verified": false,
+      "caveat": "Deputy membership of the USSR legislature is not the chair of its Presidium, a republican Supreme Soviet, a head-of-state office or a claim of actual political dominance."
     },
     {
       "id": "world:sw",
@@ -152,6 +162,22 @@
       "review_status": "scope_reviewed_not_tenure",
       "evidence_url": "https://www.wikidata.org/wiki/Q108495011",
       "caveat": "Party committee membership, neither president nor sole effective head."
+    },
+    {
+      "wikidata_qid": "Q115135185",
+      "context_id": "ctx-cpsu-politburo",
+      "position_kind": "party_candidate_membership",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q115135185",
+      "caveat": "Candidate Politburo member is a nonvoting party-body status, NOT full Politburo membership Q108495011, head of state or proof of factual sole control. Historical title changes and year boundaries require source review."
+    },
+    {
+      "wikidata_qid": "Q15628644",
+      "context_id": "ctx-ussr-supreme-soviet",
+      "position_kind": "legislative_membership",
+      "review_status": "scope_reviewed_not_tenure",
+      "evidence_url": "https://www.wikidata.org/wiki/Q15628644",
+      "caveat": "Deputy/member of the all-Union Supreme Soviet, a legislative representative; not chairman of the body, chairman of its Presidium, or independent state ruler. No terms inferred from this office type."
     },
     {
       "wikidata_qid": "Q1268572",
