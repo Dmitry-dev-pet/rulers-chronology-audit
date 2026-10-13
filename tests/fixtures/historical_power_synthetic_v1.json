@@ -1,0 +1,476 @@
+{
+  "schema_version": "hpm-synthetic-v1",
+  "synthetic_only": true,
+  "historical_truth_verified_by_ci": false,
+  "scope": {
+    "id": "fixture:scope",
+    "unit": "transition",
+    "coverage": "synthetic_only"
+  },
+  "actors": [
+    {
+      "id": "fixture:actor-a",
+      "kind": "person"
+    },
+    {
+      "id": "fixture:actor-b",
+      "kind": "person"
+    },
+    {
+      "id": "fixture:actor-c",
+      "kind": "person"
+    },
+    {
+      "id": "fixture:actor-d",
+      "kind": "person"
+    },
+    {
+      "id": "fixture:assembly",
+      "kind": "institution"
+    }
+  ],
+  "contexts": [
+    {
+      "id": "fixture:alpha",
+      "kind": "polity"
+    },
+    {
+      "id": "fixture:beta",
+      "kind": "polity"
+    },
+    {
+      "id": "fixture:alpha-republic",
+      "kind": "polity_regime"
+    }
+  ],
+  "roles": [
+    {
+      "id": "fixture:alpha-a",
+      "actor_id": "fixture:actor-a",
+      "context_id": "fixture:alpha",
+      "kind": "sovereign"
+    },
+    {
+      "id": "fixture:alpha-b",
+      "actor_id": "fixture:actor-b",
+      "context_id": "fixture:alpha",
+      "kind": "sovereign"
+    },
+    {
+      "id": "fixture:alpha-c",
+      "actor_id": "fixture:actor-c",
+      "context_id": "fixture:alpha",
+      "kind": "sovereign"
+    },
+    {
+      "id": "fixture:alpha-d",
+      "actor_id": "fixture:actor-d",
+      "context_id": "fixture:alpha",
+      "kind": "co_regent"
+    },
+    {
+      "id": "fixture:beta-c",
+      "actor_id": "fixture:actor-c",
+      "context_id": "fixture:beta",
+      "kind": "sovereign"
+    },
+    {
+      "id": "fixture:alpha-assembly",
+      "actor_id": "fixture:assembly",
+      "context_id": "fixture:alpha-republic",
+      "kind": "institutional"
+    },
+    {
+      "id": "fixture:alpha-regent",
+      "actor_id": "fixture:actor-b",
+      "context_id": "fixture:alpha",
+      "kind": "regent"
+    }
+  ],
+  "events": [
+    {
+      "id": "fixture:event-exit",
+      "kind": "death",
+      "date": {
+        "value": "1762-01-02",
+        "calendar": "julian",
+        "precision": "day",
+        "qualifier": "as_recorded"
+      }
+    },
+    {
+      "id": "fixture:event-entry",
+      "kind": "election",
+      "date": {
+        "value": "1762-03-01",
+        "calendar": "gregorian",
+        "precision": "day",
+        "qualifier": "as_recorded"
+      }
+    },
+    {
+      "id": "fixture:event-co",
+      "kind": "accession",
+      "date": {
+        "value": "1685",
+        "calendar": "unspecified",
+        "precision": "year",
+        "qualifier": "as_recorded"
+      }
+    },
+    {
+      "id": "fixture:event-union",
+      "kind": "accession",
+      "date": {
+        "value": "1788",
+        "calendar": "unspecified",
+        "precision": "year",
+        "qualifier": "as_recorded"
+      }
+    },
+    {
+      "id": "fixture:event-reform",
+      "kind": "regime_change",
+      "date": {
+        "value": "1795",
+        "calendar": "gregorian",
+        "precision": "year",
+        "qualifier": "as_recorded"
+      }
+    },
+    {
+      "id": "fixture:event-disputed",
+      "kind": "seizure",
+      "date": {
+        "value": "1917-02",
+        "calendar": "julian",
+        "precision": "month",
+        "qualifier": "as_recorded"
+      }
+    },
+    {
+      "id": "fixture:event-unknown",
+      "kind": "appointment",
+      "date": {
+        "value": "1991",
+        "calendar": "unspecified",
+        "precision": "year",
+        "qualifier": "as_recorded"
+      }
+    },
+    {
+      "id": "fixture:event-no-roles",
+      "kind": "institutional_change",
+      "date": {
+        "value": "1900",
+        "calendar": "unspecified",
+        "precision": "year",
+        "qualifier": "as_recorded"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "fixture:fixture-spec",
+      "kind": "synthetic_fixture",
+      "locator": "tests/fixtures/historical_power_synthetic_v1.json (artificial data)"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "fixture:sequence",
+      "scope_ref": "fixture:scope",
+      "context_refs": [
+        "fixture:alpha"
+      ],
+      "outgoing_role_refs": [
+        "fixture:alpha-a"
+      ],
+      "incoming_role_refs": [
+        "fixture:alpha-b"
+      ],
+      "absence": {
+        "outgoing": null,
+        "incoming": null
+      },
+      "event_refs": [
+        "fixture:event-exit",
+        "fixture:event-entry"
+      ],
+      "participants": [
+        {
+          "actor_id": "fixture:actor-a",
+          "role": "outgoing"
+        },
+        {
+          "actor_id": "fixture:actor-b",
+          "role": "incoming"
+        }
+      ],
+      "classification_claims": [
+        {
+          "id": "fixture:cl-sequence-election",
+          "dimension": "accession_mechanism",
+          "value": "election",
+          "source_refs": [
+            {
+              "source_id": "fixture:fixture-spec",
+              "pinpoint": "cl-sequence-election"
+            }
+          ],
+          "verification": "synthetic_only",
+          "caveat": "Synthetic example only; no historical assertion"
+        },
+        {
+          "id": "fixture:cl-sequence-violence",
+          "dimension": "violence",
+          "value": "unknown",
+          "source_refs": [
+            {
+              "source_id": "fixture:fixture-spec",
+              "pinpoint": "cl-sequence-violence"
+            }
+          ],
+          "verification": "synthetic_only",
+          "caveat": "Synthetic example only; no historical assertion"
+        }
+      ]
+    },
+    {
+      "id": "fixture:co-regents",
+      "scope_ref": "fixture:scope",
+      "context_refs": [
+        "fixture:alpha"
+      ],
+      "outgoing_role_refs": [],
+      "incoming_role_refs": [
+        "fixture:alpha-c",
+        "fixture:alpha-d"
+      ],
+      "absence": {
+        "outgoing": "unknown",
+        "incoming": null
+      },
+      "event_refs": [
+        "fixture:event-co"
+      ],
+      "participants": [
+        {
+          "actor_id": "fixture:actor-c",
+          "role": "incoming"
+        },
+        {
+          "actor_id": "fixture:actor-d",
+          "role": "incoming"
+        }
+      ],
+      "classification_claims": []
+    },
+    {
+      "id": "fixture:personal-union",
+      "scope_ref": "fixture:scope",
+      "context_refs": [
+        "fixture:alpha",
+        "fixture:beta"
+      ],
+      "outgoing_role_refs": [],
+      "incoming_role_refs": [
+        "fixture:alpha-c",
+        "fixture:beta-c"
+      ],
+      "absence": {
+        "outgoing": "unknown",
+        "incoming": null
+      },
+      "event_refs": [
+        "fixture:event-union"
+      ],
+      "participants": [
+        {
+          "actor_id": "fixture:actor-c",
+          "role": "incoming"
+        }
+      ],
+      "classification_claims": []
+    },
+    {
+      "id": "fixture:institutional",
+      "scope_ref": "fixture:scope",
+      "context_refs": [
+        "fixture:alpha",
+        "fixture:alpha-republic"
+      ],
+      "outgoing_role_refs": [
+        "fixture:alpha-b"
+      ],
+      "incoming_role_refs": [
+        "fixture:alpha-assembly"
+      ],
+      "absence": {
+        "outgoing": null,
+        "incoming": null
+      },
+      "event_refs": [
+        "fixture:event-reform"
+      ],
+      "participants": [
+        {
+          "actor_id": "fixture:actor-b",
+          "role": "outgoing"
+        },
+        {
+          "actor_id": "fixture:assembly",
+          "role": "incoming"
+        }
+      ],
+      "classification_claims": [
+        {
+          "id": "fixture:cl-reform",
+          "dimension": "accession_mechanism",
+          "value": "institutional_reform",
+          "source_refs": [
+            {
+              "source_id": "fixture:fixture-spec",
+              "pinpoint": "cl-reform"
+            }
+          ],
+          "verification": "synthetic_only",
+          "caveat": "Synthetic example only; no historical assertion"
+        }
+      ]
+    },
+    {
+      "id": "fixture:contested",
+      "scope_ref": "fixture:scope",
+      "context_refs": [
+        "fixture:alpha"
+      ],
+      "outgoing_role_refs": [
+        "fixture:alpha-c"
+      ],
+      "incoming_role_refs": [
+        "fixture:alpha-b"
+      ],
+      "absence": {
+        "outgoing": null,
+        "incoming": null
+      },
+      "event_refs": [
+        "fixture:event-disputed"
+      ],
+      "participants": [
+        {
+          "actor_id": "fixture:actor-c",
+          "role": "outgoing"
+        },
+        {
+          "actor_id": "fixture:actor-b",
+          "role": "incoming"
+        }
+      ],
+      "classification_claims": [
+        {
+          "id": "fixture:cl-contest-election",
+          "dimension": "accession_mechanism",
+          "value": "election",
+          "source_refs": [
+            {
+              "source_id": "fixture:fixture-spec",
+              "pinpoint": "cl-contest-election"
+            }
+          ],
+          "verification": "synthetic_only",
+          "caveat": "Synthetic example only; no historical assertion"
+        },
+        {
+          "id": "fixture:cl-contest-coup",
+          "dimension": "accession_mechanism",
+          "value": "coup",
+          "source_refs": [
+            {
+              "source_id": "fixture:fixture-spec",
+              "pinpoint": "cl-contest-coup"
+            }
+          ],
+          "verification": "synthetic_only",
+          "caveat": "Synthetic example only; no historical assertion"
+        },
+        {
+          "id": "fixture:cl-contest-violent",
+          "dimension": "violence",
+          "value": "violent",
+          "source_refs": [
+            {
+              "source_id": "fixture:fixture-spec",
+              "pinpoint": "cl-contest-violent"
+            }
+          ],
+          "verification": "synthetic_only",
+          "caveat": "Synthetic example only; no historical assertion"
+        }
+      ]
+    },
+    {
+      "id": "fixture:unknown",
+      "scope_ref": "fixture:scope",
+      "context_refs": [
+        "fixture:alpha"
+      ],
+      "outgoing_role_refs": [],
+      "incoming_role_refs": [
+        "fixture:alpha-regent"
+      ],
+      "absence": {
+        "outgoing": "unknown",
+        "incoming": null
+      },
+      "event_refs": [
+        "fixture:event-unknown"
+      ],
+      "participants": [
+        {
+          "actor_id": "fixture:actor-b",
+          "role": "incoming"
+        }
+      ],
+      "classification_claims": [
+        {
+          "id": "fixture:cl-unknown-mechanism",
+          "dimension": "accession_mechanism",
+          "value": "unknown",
+          "source_refs": [
+            {
+              "source_id": "fixture:fixture-spec",
+              "pinpoint": "cl-unknown-mechanism"
+            }
+          ],
+          "verification": "synthetic_only",
+          "caveat": "Synthetic example only; no historical assertion"
+        }
+      ]
+    },
+    {
+      "id": "fixture:no-roles",
+      "scope_ref": "fixture:scope",
+      "context_refs": [
+        "fixture:alpha"
+      ],
+      "outgoing_role_refs": [],
+      "incoming_role_refs": [],
+      "absence": {
+        "outgoing": "institutional_change",
+        "incoming": "institutional_change"
+      },
+      "event_refs": [
+        "fixture:event-no-roles"
+      ],
+      "participants": [
+        {
+          "actor_id": "fixture:assembly",
+          "role": "actor"
+        }
+      ],
+      "classification_claims": []
+    }
+  ]
+}
