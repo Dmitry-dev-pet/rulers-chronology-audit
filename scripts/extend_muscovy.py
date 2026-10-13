@@ -258,6 +258,21 @@ def build() -> dict:
     ]
     for old, new in labels:
         page = replace_once(page, old, new, old[:50])
+    # The first three layers rely on historical placeholders above.
+    # Apply the product-level homepage metadata only after the last period layer.
+    page = replace_once(page, "Правители государства · 1417–1991",
+                        "Атлас власти · историческая хронология",
+                        "final atlas title")
+    page = replace_once(page,
+                        "1417–1991: Московское княжество, Русское царство, Российская империя и СССР",
+                        "Исторический атлас власти 1417–1991: правители России и СССР, источники и международные исторические пилоты.",
+                        "final atlas description")
+    page = replace_once(page, "Исторический атлас / выпуск 01 / 1417–1991",
+                        "Исторический атлас / 1417–1991",
+                        "final atlas heading")
+    page = replace_once(page, "Правители<br><em>России и СССР</em>",
+                        "Исторический<br><em>атлас власти</em>",
+                        "final atlas hero")
     output.write_text(page, encoding="utf-8")
 
     chronology_path = DIST / "chronology.json"

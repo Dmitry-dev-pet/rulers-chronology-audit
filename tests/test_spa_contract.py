@@ -84,12 +84,15 @@ class SPAContract(unittest.TestCase):
         self.assertIn("citations(links,entry.sources)", self.js)
 
 
-    def test_year_view_is_primary_and_year_hash_stable(self):
+    def test_canonical_home_and_deep_linked_year_view(self):
         self.assertIn("['timeline', 'Год и власть']", self.js)
         self.assertIn("['people', 'Биографии']", self.js)
-        self.assertIn("history.replaceState(null, '', '#/timeline/1685')", self.js)
-        self.assertIn("return navigate('timeline', false)", self.js)
+        self.assertIn("return navigate('home', false)", self.js)
+        self.assertIn("location.hash = '#/timeline/' + year", self.js)
+        self.assertIn("return navigate('timeline', false)", self.js)  # legacy query links
         self.assertIn("atlas:show-year-details", self.js)
+        self.assertIn("atlas-home-open", self.css)
+        self.assertIn("atlas:route", self.js)
 
     def test_year_overview_separates_formal_effective_and_collective(self):
         for literal in ('Формальные должности', 'Политическое влияние',

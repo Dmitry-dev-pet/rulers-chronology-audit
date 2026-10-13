@@ -88,10 +88,17 @@ class SiteViewsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "does not match"):
             audit.poster_data(self.transcript, self.review)
 
-    def test_three_modes_and_xss_safe_markup(self):
+    def test_home_entry_and_existing_views_preserve_xss_safety(self):
         sources = audit.source_index((self.root / audit.SOURCE_PATH).read_text(encoding="utf-8"))
         result = audit.validate(self.data, sources)
         markup = audit.render(self.data, sources, result, "revision-test", audit.poster_data(self.transcript, self.review))
+        self.assertIn("id='panel-home'", markup)
+        self.assertIn("id='atlas-home-year-form'", markup)
+        self.assertIn("href='#/home'", markup)
+        self.assertIn("href='#/research'", markup)
+        self.assertIn("href='./coverage.html'", markup)
+        self.assertIn("Пилот · Европа 1762–1800", markup)
+        self.assertIn("Отсутствие записи не означает отсутствия правителя", markup)
         self.assertIn("id='panel-poster'", markup)
         self.assertIn("id='panel-timeline'", markup)
         self.assertIn("id='panel-research'", markup)
@@ -106,7 +113,7 @@ class SiteViewsTests(unittest.TestCase):
         self.assertIn("world-atlas.js?v=revision-tes", markup)
         self.assertIn("dynasty-atlas.js?v=revision-tes", markup)
         self.assertIn("site.css?v=revision-tes", markup)
-        self.assertIn("aria-selected='true'", markup)
+        self.assertIn("aria-selected='false'", markup)
         self.assertIn("&lt;script&gt;", markup)
         self.assertNotIn("<script>alert(1)</script>", markup)
         self.assertIn("\\u003cscript\\u003e", markup)
