@@ -264,6 +264,33 @@ def registry(root: Path = ROOT) -> dict:
     return doc
 
 
+def registry_all(root: Path = ROOT) -> dict:
+    """Union of separately verified P9 and canonical-biography source adapters.
+
+    Preserve the old P9 registry and its pinned blob/source compatibility.
+    The new biographical case is aggregated *without* pretending to be P39.
+    """
+    from scripts import historical_biographical_disputes as biography
+
+    old = registry(root)
+    bio = biography.registry(root)
+    all_cases = old["cases"] + bio["cases"]
+    identifiers = [case["id"] for case in all_cases]
+    if len(set(identifiers)) != len(identifiers):
+        raise ValueError("Duplicate stable historical dispute case ID across adapters")
+    return {
+        "schema_version": "historical-dispute-overview-v2",
+        "historical_truth_verified_by_ci": False,
+        "changes_to_canonical_data": False,
+        "auto_resolution_allowed": False,
+        "sources": [
+            {"kind": "wikidata_p9", "path": str(REGISTRY)},
+            {"kind": "canonical_biography", "path": str(biography.REGISTRY)},
+        ],
+        "cases": sorted(all_cases, key=lambda case: case["id"]),
+    }
+
+
 def render_markdown(document: dict) -> str:
     from collections import Counter
     kinds = Counter(x["kind"] for x in document["cases"])
@@ -276,7 +303,8 @@ def render_markdown(document: dict) -> str:
               "| --- | --- | --- | --- | --- |"]
     for x in document["cases"]:
         urls = " / ".join(f"[{o['source_kind']}]({o['source_url']})" for o in x["observations"])
-        lines.append(f"| {x['id']} | {x['person_qid']} | {x['kind']} | {x['review_status']} | {urls} |")
+        display_person = x.get("person_name") or x.get("person_qid") or x["person_id"]
+        lines.append(f"| {x['id']} | {display_person} | {x['kind']} | {x['review_status']} | {urls} |")
         lines.extend(["", f"**{x['id']}:** {x['question']}", ""])
     lines.extend(["Нет автоматического исправления календарей, титулов, правления, границ и реальной власти.", ""])
     return "\n".join(lines)
@@ -299,8 +327,10 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", type=Path, default=ROOT)
     p.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    p.add_argument("--legacy-only", action="store_true",
+                   help="Validate and display only the original pinned P9 source registry")
     args = p.parse_args(argv)
-    doc = registry(args.root)
+    doc = registry(args.root) if args.legacy_only else registry_all(args.root)
     if args.format == "json":
         print(json.dumps(summary(doc), ensure_ascii=False, sort_keys=True, indent=2))
     else:
