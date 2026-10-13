@@ -82,8 +82,8 @@ class TypedJurisdictions(unittest.TestCase):
     def test_registry_has_unique_qids_and_explicit_nonidentical_contexts(self):
         contexts, roles, window = jurisdictions.registry(wd.ROOT)
         self.assertEqual(window, (1762, 1800))
-        self.assertEqual(len(contexts), 9)
-        self.assertEqual(len(roles), 9)
+        self.assertEqual(len(contexts), 10)
+        self.assertEqual(len(roles), 11)
         self.assertEqual(roles["Q45341328"]["context_id"],
                          "ctx-hab-crown-bohemia")
         self.assertEqual(roles["Q6412254"]["context_id"],
@@ -125,6 +125,75 @@ class TypedJurisdictions(unittest.TestCase):
         self.assertEqual(next(p for p in result["subjects"][0]["positions"]
                               if p["wikidata_office_qid"] == "Q19808845")
                          ["legal_role_classification"], "co_head_of_state")
+
+    def test_p7_soviet_legislature_and_party_candidate_are_distinct(self):
+        contexts, reviewed, _ = jurisdictions.registry(wd.ROOT)
+        self.assertEqual(contexts["ctx-ussr-supreme-soviet"]["kind"],
+                         "legislative_institution")
+        self.assertEqual(reviewed["Q15628644"]["position_kind"],
+                         "legislative_membership")
+        self.assertEqual(reviewed["Q115135185"]["position_kind"],
+                         "party_candidate_membership")
+        self.assertEqual(reviewed["Q108495011"]["position_kind"],
+                         "institutional_membership")
+        self.assertEqual(reviewed["Q115135185"]["context_id"],
+                         reviewed["Q108495011"]["context_id"])
+        self.assertNotEqual(reviewed["Q115135185"]["position_kind"],
+                            reviewed["Q108495011"]["position_kind"])
+        self.assertNotIn("Q135215773", reviewed)  # Reserved for P2 canonical-office crosswalk.
+        # The three source office types are tested on one synthetic claims fixture;
+        # dates below do not assert actual tenures for this historical person.
+        result = jurisdictions.review(wd.ROOT, report(subject(
+            "person-498f36e1a791592b",
+            office("Q15628644", 1960, 1964),
+            office("Q115135185", 1952, 1956),
+            office("Q108495011", 1966, 1980),
+        )))
+        found = {x["wikidata_office_qid"]: x
+                 for x in result["subjects"][0]["positions"]}
+        self.assertEqual({qid: x["legal_role_classification"]
+                          for qid, x in found.items()}, {
+            "Q15628644": "legislative_membership",
+            "Q115135185": "party_candidate_membership",
+            "Q108495011": "institutional_membership",
+        })
+        self.assertEqual(result["summary"]["typed_claims"], 3)
+        self.assertEqual(result["summary"]["multi_context_subjects_to_review"], 1)
+        self.assertTrue(all(x["pilot_window_relation"] == "after_world_pilot_window"
+                            for x in found.values()))
+        self.assertTrue(all(x["actual_power_verified"] is False
+                            and x["historical_borders_verified"] is False
+                            for x in found.values()))
+        self.assertFalse(result["actual_power_inferred"])
+        self.assertFalse(result["mutated_canonical_data"])
+
+    def test_p7_legislative_and_party_candidate_context_misclassification_rejected(self):
+        # New types cannot be silently assigned to an unrelated institution.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for rel in [
+                "data/atlas/offices.jsonl", "data/atlas/states.jsonl",
+                "data/atlas/world-pilots/1762.json",
+                "data/atlas/world-pilots/dynasty-1762-1780.json",
+                "data/atlas/world-pilots/extension-1781-1800.json",
+                "design/wikidata/office-crosswalk-v1.json",
+            ]:
+                path = root / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((wd.ROOT / rel).read_bytes())
+            target = root / jurisdictions.REGISTRY
+            target.parent.mkdir(parents=True, exist_ok=True)
+            original = wd.read_json(wd.ROOT / jurisdictions.REGISTRY)
+            for qid, wrong_context, error in [
+                ("Q115135185", "ctx-ussr-supreme-soviet", "Party membership"),
+                ("Q15628644", "ctx-cpsu-politburo", "Legislative membership"),
+            ]:
+                bad = copy.deepcopy(original)
+                row = next(x for x in bad["offices"] if x["wikidata_qid"] == qid)
+                row["context_id"] = wrong_context
+                target.write_text(json.dumps(bad), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, error):
+                    jurisdictions.registry(root)
 
     def test_politburo_membership_is_institutional_not_sovreign(self):
         result = jurisdictions.review(wd.ROOT, report(subject(

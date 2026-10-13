@@ -99,6 +99,36 @@ class P39OfficeMapping(unittest.TestCase):
         self.assertIn("first-secretary", rows["Q1048744"]["related_office_ids"])
         self.assertIsNone(rows["Q3240735"]["office_id"])
 
+    def test_p7_presidium_chair_qid_is_distinct_from_supreme_soviet_chair(self):
+        reviewed = offices.reviewed_offices(wd.ROOT)
+        self.assertEqual(reviewed["Q135215773"]["relation"], "exact_office")
+        self.assertEqual(reviewed["Q135215773"]["office_id"], "presidium-vs")
+        self.assertEqual(reviewed["Q135215773"]["context_ids"], ["ussr"])
+        self.assertEqual(reviewed["Q4376657"]["office_id"], "vs-ussr")
+        self.assertNotEqual(reviewed["Q135215773"]["office_id"],
+                            reviewed["Q4376657"]["office_id"])
+        # Synthetic comparison uses an existing canonical person and office.
+        # The matching tenure is only a source-review candidate, not a new fact.
+        snap = snapshot(record(
+            "person-0157c71b66e75976", "canonical", "Q295781",
+            [statement("Q135215773", date("+1965-12-09T00:00:00Z"),
+                       date("+1977-06-16T00:00:00Z")),
+             statement("Q4376657", date("+1965-12-09T00:00:00Z"))],
+        ))
+        result = offices.office_review(wd.ROOT, snap)
+        presidium, supreme_soviet = result["subjects"][0]["positions"]
+        self.assertEqual(presidium["decision"], "exact_office")
+        self.assertEqual([x["canonical_tenure_id"] for x in
+                          presidium["candidate_canonical_tenures"]], ["tenure-s11"])
+        self.assertEqual(presidium["candidate_canonical_tenures"][0]
+                         ["start_comparison"], "same_recorded_date")
+        self.assertEqual(presidium["candidate_canonical_tenures"][0]
+                         ["end_comparison"], "same_recorded_date")
+        self.assertEqual(supreme_soviet["decision"], "exact_office")
+        self.assertEqual(supreme_soviet["candidate_canonical_tenures"], [])
+        self.assertFalse(result["asserted_real_power"])
+        self.assertFalse(result["mutated_canonical_data"])
+
     def test_presidency_dates_are_candidates_not_power_assertions(self):
         snap = snapshot(record(
             "person-8ace0ae735b35ada", "canonical", "Q30487",

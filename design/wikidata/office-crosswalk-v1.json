@@ -1,6 +1,6 @@
 {
   "schema_version": "wikidata-office-crosswalk-v1",
-  "review_date": "2026-10-11",
+  "review_date": "2026-10-13",
   "office_policy": "Map P39 QIDs only, never office labels or similar strings. Only exact_office rows can propose an office equivalence; family_only and external_only require separate historical research. No claim of actual power or continuity of legal jurisdiction.",
   "mappings": [
     {
@@ -32,6 +32,16 @@
       "relation": "exact_office",
       "evidence_url": "https://www.wikidata.org/wiki/Q4376657",
       "note": "Chairman of the Supreme Soviet of USSR; do not conflate with Presidium chair."
+    },
+    {
+      "wikidata_qid": "Q135215773",
+      "office_id": "presidium-vs",
+      "context_ids": [
+        "ussr"
+      ],
+      "relation": "exact_office",
+      "evidence_url": "https://www.wikidata.org/wiki/Q135215773",
+      "note": "Chairman of the Presidium of the USSR Supreme Soviet, a juridical collective-body chair (1938–May 1989). Different office from Chairman of the Supreme Soviet (Q4376657, canonical vs-ussr); neither title proves actual personal dominance or certifies an individual's tenure dates."
     },
     {
       "wikidata_qid": "Q4376674",
