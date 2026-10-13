@@ -2,6 +2,8 @@
   "id": "person-498f36e1a791592b",
   "name": "Леонид Брежнев",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q765165"
+  },
   "biography_status": "incomplete"
 }

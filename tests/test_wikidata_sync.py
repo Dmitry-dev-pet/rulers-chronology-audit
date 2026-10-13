@@ -194,5 +194,29 @@ class RepositoryRosterContract(unittest.TestCase):
         self.assertTrue({"Q15189", "Q233987", "Q36450"} <= links)
 
 
+class ReviewedCanonicalP6(unittest.TestCase):
+    """Guard identity-only source reconciliation for #46 without implicit joins."""
+
+    def test_five_verified_person_qids_and_homonym_rejections(self):
+        rows = wd.roster(wd.ROOT)
+        canonical = {p["subject_id"]: p for p in rows if p["kind"] == "canonical"}
+        cases = {
+            "person-518c301e51f1510b": "Q272156",  # Vasily I, not Vasily II
+            "person-17f5e2c4755255cf": "Q1282778", # Dmitry Shemyaka
+            "person-064d44a263475033": "Q240150", # Elena Glinskaya (regent)
+            "person-498f36e1a791592b": "Q765165", # Brezhnev, not a ship
+            "person-8183e0ee65675a44": "Q35314",  # Khrushchev, not journalist
+        }
+        self.assertEqual(len(canonical), 83)
+        for identity, qid in cases.items():
+            self.assertEqual(canonical[identity]["wikidata_id"], qid)
+        self.assertEqual(sum(bool(p["wikidata_id"]) for p in canonical.values()), 30)
+        world = [p for p in rows if p["kind"] == "world_unlinked"]
+        self.assertEqual((len(world), sum(bool(p["wikidata_id"]) for p in world)), (27, 27))
+        all_qids = [p["wikidata_id"] for p in rows if p["wikidata_id"]]
+        self.assertEqual((len(rows), len(all_qids), len(set(all_qids))), (110, 57, 57))
+        self.assertFalse({"Q210359", "Q274924", "Q4501920"} & set(cases.values()))
+        self.assertFalse({"Q274924", "Q4501920"} & set(all_qids))
+
 if __name__ == "__main__":
     unittest.main()

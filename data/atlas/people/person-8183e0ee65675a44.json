@@ -2,6 +2,8 @@
   "id": "person-8183e0ee65675a44",
   "name": "Никита Хрущёв",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q35314"
+  },
   "biography_status": "incomplete"
 }

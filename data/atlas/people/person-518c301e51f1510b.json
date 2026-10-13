@@ -2,6 +2,8 @@
   "id": "person-518c301e51f1510b",
   "name": "Василий I Дмитриевич",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q272156"
+  },
   "biography_status": "incomplete"
 }
