@@ -22,6 +22,7 @@ from scripts import atlas_v2_graph_preview as preview
 from scripts import atlas_v2_authority as authority
 from scripts import atlas_v2_epochs as epochs
 from scripts import atlas_v2_coverage as coverage
+from scripts import historical_power_pages as historical_power
 
 ROOT = preview.ROOT
 PUBLIC_FILES = (
@@ -39,6 +40,9 @@ PUBLIC_FILES = (
     "world-coverage.js",
     "world-coverage.css",
     "world-authority-coverage.json",
+    "hpm-pilot.json",
+    "historical-power-lab.js",
+    "historical-power-lab.css",
 )
 
 
@@ -156,6 +160,20 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
 </body></html>
 """
         (dist / "coverage.html").write_text(coverage_page,encoding="utf-8")
+        # P3 uses the same P2 source/role sample, never a new canonical DB.
+        # Publish only a static, checked, read-only JSON projection.
+        hpm = historical_power.projection(root)
+        require(hpm["historical_truth_verified_by_ci"] is False
+                and hpm["historical_region_wide_inference_supported"] is False
+                and hpm["counts"]["candidate_events"] == 10
+                and hpm["counts"]["accession_mechanism_unknown"] == 10,
+                "HPM P3 pilot contract changed")
+        (dist / "hpm-pilot.json").write_text(
+            json.dumps(hpm, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8")
+        for filename in ("historical-power-lab.js", "historical-power-lab.css"):
+            shutil.copyfile(root / "site" / filename, dist / filename)
+
         # The v2.html launch is a convenience; ordinary index.html remains intact.
         original_v2=(dist / "v2.html").read_text(encoding="utf-8")
         require("id='atlas-v2-launch'" in original_v2, "v2 launch missing")
@@ -165,7 +183,18 @@ def build(root: Path = ROOT, dist: Path | None = None) -> dict:
             "aria-label='Мировая сеть политической власти, исследование 1788 года'>"
             "Мировая власть · 1788 ↗</a>\n<a id='atlas-v2-launch'")
         require(updated_v2 != original_v2,"world authority entrance missing")
-        (dist / "v2.html").write_text(updated_v2,encoding="utf-8")
+        require("</body>" in updated_v2, "HPM P3 needs the existing SPA body")
+        updated_v2 = updated_v2.replace(
+            "<a id='atlas-v2-launch'",
+            "<a id='hpm-p3-launch' href='./v2.html?hpm=pilot#/timeline/1762' "
+            "aria-label='Открыть лабораторию источниковых переходов власти'>"
+            "Переходы власти · исследовать ↗</a>\n<a id='atlas-v2-launch'", 1)
+        require("id='hpm-p3-launch'" in updated_v2, "HPM P3 launch missing")
+        updated_v2 = updated_v2.replace(
+            "</body>",
+            "<link rel='stylesheet' href='./historical-power-lab.css'>\n"
+            "<script defer src='./historical-power-lab.js'></script>\n</body>", 1)
+        (dist / "v2.html").write_text(updated_v2, encoding="utf-8")
 
     # Preserve exactly the same SHA256SUMS contract already used by v1.
     (dist / "SHA256SUMS").write_text("".join(
