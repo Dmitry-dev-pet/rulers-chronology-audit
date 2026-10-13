@@ -2,6 +2,8 @@
   "id": "person-0ee596fb65215c40",
   "name": "Григорий Петровский",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q2620906"
+  },
   "biography_status": "incomplete"
 }

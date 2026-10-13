@@ -2,6 +2,8 @@
   "id": "person-0157c71b66e75976",
   "name": "Николай Подгорный",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q295781"
+  },
   "biography_status": "incomplete"
 }

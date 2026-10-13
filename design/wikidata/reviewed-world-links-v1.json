@@ -242,6 +242,39 @@
         "https://www.wikidata.org/wiki/Q151075"
       ],
       "note": "Francis Stephen of Lorraine, Holy Roman Emperor Francis I (1745–1765), not Francis II (later)."
+    },
+    {
+      "world_id": "pt-jose1",
+      "wikidata_qid": "Q1058391",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/coverage-backfill-1762-1800.json",
+        "https://www.wikidata.org/wiki/Q1058391",
+        "https://www.parlamento.pt/VisitaParlamento/Paginas/BiogDJose.aspx"
+      ],
+      "note": "King José I of Portugal, 1750–1777, father of Maria I; separate from Joseph I Holy Roman Emperor and from Pombal's practical power."
+    },
+    {
+      "world_id": "sw-adolf-fredrik",
+      "wikidata_qid": "Q52931",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/coverage-backfill-1762-1800.json",
+        "https://www.wikidata.org/wiki/Q52931",
+        "https://www.kungligaslotten.se/english/list-of-swedish-monarchs/adolf-fredrik.html"
+      ],
+      "note": "Adolf Fredrik of Sweden (1710–1771), reigning king before Gustav III; official court notes his limited practical authority."
+    },
+    {
+      "world_id": "tusc-ferdinand3",
+      "wikidata_qid": "Q309605",
+      "verification": "identity_reviewed",
+      "evidence": [
+        "data/atlas/world-pilots/coverage-backfill-1762-1800.json",
+        "https://www.wikidata.org/wiki/Q309605",
+        "https://www.habsburger.net/en/chapter/grand-duke-ferdinand-iii-tuscany-regent-times-change"
+      ],
+      "note": "Grand Duke Ferdinand III of Tuscany (1769–1824), succeeding Pietro Leopoldo in 1790; 1799 displacement requires separate territorial-control evidence."
     }
   ],
   "rejected_candidates": [
@@ -254,6 +287,16 @@
       "world_id": "hab-leopold",
       "wikidata_qid": "Q12967",
       "reason": "King of Belgium (19th century), not Holy Roman Emperor Leopold II (1790–1792)"
+    },
+    {
+      "world_id": "sw-adolf-fredrik",
+      "wikidata_qid": "Q106378947",
+      "reason": "A portrait/painting of Adolf Fredrik in a museum collection, not the historical person Q52931."
+    },
+    {
+      "world_id": "tusc-ferdinand3",
+      "wikidata_qid": "Q117829867",
+      "reason": "A painting depicting Ferdinand III, not the Grand Duke Q309605."
     }
   ]
 }

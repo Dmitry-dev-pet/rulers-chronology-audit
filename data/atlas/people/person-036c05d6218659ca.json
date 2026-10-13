@@ -2,6 +2,8 @@
   "id": "person-036c05d6218659ca",
   "name": "Нариман Нариманов",
   "aliases": [],
-  "external_ids": {},
+  "external_ids": {
+    "wikidata": "Q1956360"
+  },
   "biography_status": "incomplete"
 }
