@@ -24,25 +24,14 @@ python3 - <<'PY'
 import asyncio
 import http.client
 import json
-import socket
 import time
 
 from mcp import Client
 
 url = "http://127.0.0.1:18765/mcp"
 
-for attempt in range(80):
-    try:
-        with socket.create_connection(("127.0.0.1", 18765), timeout=0.5):
-            break
-    except OSError:
-        time.sleep(0.25)
-else:
-    raise SystemExit("Historical Atlas MCP HTTP did not bind")
-
-# The direct HTTP/1.1 probe helps separate server/port issues from
-# MCP SDK client behavior on a hosted Actions runner.
-probe = http.client.HTTPConnection("127.0.0.1", 18765, timeout=5)
+# A Docker-published host TCP port can accept connections BEFORE the
+# container's MCP/uvicorn process is ready; probe the actual JSON-RPC exchange.
 initialize = json.dumps({
     "jsonrpc": "2.0", "id": 1, "method": "initialize",
     "params": {
@@ -51,14 +40,28 @@ initialize = json.dumps({
         "clientInfo": {"name": "atlas-ci-probe", "version": "1"},
     },
 }).encode("utf-8")
-probe.request("POST", "/mcp", body=initialize, headers={
-    "Content-Type": "application/json",
-    "Accept": "application/json, text/event-stream",
-})
-raw = probe.getresponse()
-print("Direct JSON-RPC initialize:", raw.status, raw.read(300))
-assert raw.status == 200
-probe.close()
+
+for attempt in range(100):
+    probe = http.client.HTTPConnection("127.0.0.1", 18765, timeout=2)
+    try:
+        probe.request("POST", "/mcp", body=initialize, headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json, text/event-stream",
+        })
+        response = probe.getresponse()
+        sample = response.read(300)
+        if response.status != 200:
+            raise AssertionError(
+                f"MCP initialize returned {response.status}: {sample!r}"
+            )
+        print("Direct JSON-RPC initialize:", response.status, sample)
+        break
+    except (ConnectionError, TimeoutError, OSError):
+        if attempt == 99:
+            raise SystemExit("MCP process never accepted initialize within 25 seconds")
+        time.sleep(0.25)
+    finally:
+        probe.close()
 
 async def main():
     async with Client(url, raise_exceptions=True) as client:
