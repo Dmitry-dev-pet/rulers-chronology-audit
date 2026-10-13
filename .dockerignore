@@ -1,0 +1,20 @@
+# Exclude credentials and generated state from the build context.
+.git/
+.github/
+dist/
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.dta
+*.pdf
+*.p12
+*.pem
+*.key
+.env
+.env.*
+.agents/
+.gemini/
+.mcp.json
+*/secrets/
+*/private/

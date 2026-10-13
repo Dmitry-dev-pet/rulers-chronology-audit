@@ -1,0 +1,89 @@
+name: Historical Atlas MCP image
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - data/atlas/**
+      - schemas/atlas.sql
+      - scripts/atlas_db.py
+      - scripts/atlas_mcp.py
+      - scripts/atlas_mcp_http.py
+      - scripts/atlas_mcp_query.py
+      - scripts/archigos_returnees.py
+      - tests/test_atlas_mcp_http.py
+      - ops/mcp/**
+      - .dockerignore
+      - .github/workflows/historical-mcp-image.yml
+  push:
+    branches: [main]
+    paths:
+      - data/atlas/**
+      - schemas/atlas.sql
+      - scripts/atlas_db.py
+      - scripts/atlas_mcp.py
+      - scripts/atlas_mcp_http.py
+      - scripts/atlas_mcp_query.py
+      - scripts/archigos_returnees.py
+      - tests/test_atlas_mcp_http.py
+      - ops/mcp/**
+      - .dockerignore
+      - .github/workflows/historical-mcp-image.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned SDK for contract tests and host-side smoke
+        run: python3 -m pip install --disable-pip-version-check 'mcp==2.0.0'
+      - name: Verify public metadata-only tool and original domain protocol
+        run: |
+          python3 -m unittest discover -s tests -p 'test_atlas_mcp*.py' -v
+      - name: Build exact source image, no credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          image="ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA}"
+          echo "IMAGE_REF=$image" >> "$GITHUB_ENV"
+          docker build --pull --file ops/mcp/Dockerfile --tag "$image" .
+      - name: Smoke actual image over local MCP HTTP
+        run: bash ops/mcp/smoke.sh "$IMAGE_REF"
+
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned SDK for smoke
+        run: python3 -m pip install --disable-pip-version-check 'mcp==2.0.0'
+      - name: Rebuild and smoke the exact main commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          image="ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA}"
+          echo "IMAGE_REF=$image" >> "$GITHUB_ENV"
+          docker build --pull --file ops/mcp/Dockerfile --tag "$image" .
+          bash ops/mcp/smoke.sh "$image"
+      - name: Authenticate to GHCR AFTER smoke
+        shell: bash
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Publish by full immutable git SHA
+        run: docker push "$IMAGE_REF"
