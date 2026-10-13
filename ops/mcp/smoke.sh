@@ -4,7 +4,16 @@ set -euo pipefail
 # Smoke the exact image from the calling CI job; never pull another image.
 image="${1:?Pass the built immutable image ref}"
 container="atlas-probe-smoke-${GITHUB_RUN_ID:-local}-$$"
-trap 'docker rm -f "$container" >/dev/null 2>&1 || true' EXIT
+cleanup() {
+  rc=$?
+  if (( rc != 0 )); then
+    echo "MCP probe container diagnostics (no credentials configured):" >&2
+    docker logs "$container" >&2 || true
+    docker inspect --format '{{.State.Status}} {{.State.ExitCode}}' "$container" >&2 || true
+  fi
+  docker rm -f "$container" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
 
 docker run --detach --rm --name "$container" \
   --read-only --cap-drop=ALL --security-opt=no-new-privileges \
