@@ -4,7 +4,7 @@ name: Wikidata P6 ephemeral read-only verification
 on:
   push:
     branches:
-      - research/wikidata-p6-backfill-identities-46
+      - research/wikidata-p6-identity-batch-46
 permissions:
   contents: read
 concurrency:
