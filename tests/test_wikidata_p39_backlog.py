@@ -115,8 +115,6 @@ class ReviewSourcesMustBeDisjoint(unittest.TestCase):
             if mutation=="date":
                 args[1]["subjects"][0]["positions"][0]["qualifiers"]["P580"][0]["time"]["time"]="+1901-01-01"
             elif mutation=="overlap":
-                args[1]["subjects"][0]["positions"][1]["decision"]="unmapped_wikidata_office"
-                args[1]["summary"]["unmapped"]=3
                 args[2]["subjects"][0]["positions"][0]["wikidata_statement_id"]="Q123$s2"
                 args[2]["subjects"][0]["positions"][0]["wikidata_office_qid"]="Q102"
                 args[2]["subjects"][0]["positions"][0]["qualifiers"]=copy.deepcopy(
