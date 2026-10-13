@@ -23,7 +23,12 @@ from scripts.archigos_returnees import calculate_returnees, read_archigos
 from scripts.atlas_mcp_query import AtlasQuery
 
 
-def create_server(sqlite_path: str | Path | None = None, archigos_path: str | Path | None = None):
+def create_server(
+    sqlite_path: str | Path | None = None,
+    archigos_path: str | Path | None = None,
+    *,
+    probe_only: bool = False,
+):
     from mcp.server import MCPServer
 
     path = sqlite_path or os.environ.get("ATLAS_SQLITE_PATH")
@@ -43,6 +48,12 @@ def create_server(sqlite_path: str | Path | None = None, archigos_path: str | Pa
         result["archigos_file_configured"] = bool(external)
         result["archigos_data_loaded"] = cache["rows"] is not None
         return result
+
+    # The unauthenticated deployment probe deliberately offers **only** public
+    # dataset metadata.  All other historical tools remain available via the
+    # existing private stdio server and require a separately reviewed ingress.
+    if probe_only:
+        return server
 
     @server.tool()
     def search_rulers(text: str = "", year: int | None = None, limit: int = 20) -> dict:
