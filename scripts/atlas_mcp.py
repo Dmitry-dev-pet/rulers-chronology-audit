@@ -38,8 +38,12 @@ def create_server(
     if probe_only and http_read_only:
         raise ValueError("probe_only and http_read_only are mutually exclusive")
     atlas = AtlasQuery(path)
-    external = archigos_path if archigos_path is not None else os.environ.get("ATLAS_ARCHIGOS_PATH")
-    external = Path(external) if external else None
+    # A network service must not even inspect or advertise private Archigos
+    # configuration. Stdio alone may opt into a separately held file.
+    external = None
+    if not (probe_only or http_read_only):
+        external = archigos_path if archigos_path is not None else os.environ.get("ATLAS_ARCHIGOS_PATH")
+        external = Path(external) if external else None
     cache = {"rows": None, "sha": None}
     lock = threading.Lock()
     server = MCPServer("Historical Atlas Read-Only")
