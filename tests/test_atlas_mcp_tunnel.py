@@ -51,31 +51,31 @@ class SecureTunnelReferenceTests(unittest.TestCase):
 
     def test_file_secret_access_for_fixed_nonroot_uid(self):
         d = self.runbook
-        # File-sourced Compose secrets are bind mounts; 0600 root:root
-        # would make the key unreadable to user 65532:65532.
+        # The reference overlay predates activation. The LIVE gateway uses
+        # the non-root deploy numeric UID/GID to read the 0600 file source.
         for requirement in (
-            'root:65532',
-            'mode `0640`',
-            'directory mode `0700`',
-            'user: "65532:65532"',
-            'test -r /run/secrets/atlas_openai_tunnel_runtime_key',
-            'file-sourced `secrets:`',
-            'bind mount',
-            'reject symlinked targets',
-            'setfacl -m u:65532:r--',
-            'deploy-owned `0600` file',
+            "active runtime",
+            "bind mount",
+            "setfacl",
+            "id -u/id -g",
+            "0600",
+            "0700",
+            "same unprivileged numeric UID/GID",
+            "test -r /run/secrets/atlas_openai_tunnel_runtime_key",
+            "symlink",
         ):
             self.assertIn(requirement, d)
-        self.assertIn("user: \"65532:65532\"", self.overlay)
+        self.assertIn('user: "65532:65532"', self.overlay)
         self.assertIn("secrets:", self.overlay)
         self.assertNotIn("CONTROL_PLANE_API_KEY:", self.overlay)
 
-    def test_scope_stays_metadata_only_and_transport_not_live(self):
+    def test_transport_active_but_chat_not_connected(self):
         d = self.runbook
-        self.assertIn("design / review only", d)
+        self.assertIn("VPS transport active", d)
+        self.assertIn("ChatGPT MCP app not yet", d)
         self.assertIn("dataset_info", d)
         self.assertIn("defined_not_connected", d)
-        self.assertIn("No external MCP connection has been activated", d)
+        self.assertIn("native ChatGPT", d)
         self.assertIn("No inbound firewall port", d)
         self.assertIn("create a **single dedicated** Historical Atlas tunnel", d)
         self.assertIn("Tunnels Read + Use", d)
