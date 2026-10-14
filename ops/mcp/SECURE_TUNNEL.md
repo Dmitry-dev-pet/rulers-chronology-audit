@@ -90,7 +90,7 @@ it must:
   MCP or tunnel ports; the optional health endpoint binds only to
   VPS `127.0.0.1:8021`;
 - require `/readyz` to report ready, verify the actual MCP protocol
-  and log a sanitized structured receipt without any secrets;
+  and log a sanitized structured receipt on the existing\n  \`infra-access\` **\`operations-history\`** branch without any secrets;
 - roll back only the tunnel sidecar if connectivity fails, leaving the
   running Atlas app untouched.
 
