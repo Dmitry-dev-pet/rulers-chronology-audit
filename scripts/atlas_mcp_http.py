@@ -1,11 +1,12 @@
-"""Metadata-only HTTP front door for the existing Historical Atlas MCP.
+"""Read-only HTTP front door for the private Historical Atlas MCP.
 
-The private stdio server remains unchanged by default. This entrypoint is
-deliberately restricted to *dataset_info*: it contains no historical record,
-arbitrary SQL, raw file, state-changing, or optional private Archigos tool.
+Exactly five source-bounded canonical tools are eligible over the owner's
+already authenticated OpenAI Secure MCP Tunnel: dataset_info, search_rulers,
+get_timeline, compare_rulers, get_evidence. The separate stdio MCP retains its
+optional private Archigos tool, which is NEVER exposed by this entrypoint.
 
-Docker publishes its port to the VPS LOOPBACK interface only. A public HTTPS
-route and authentication, if any, are a separate reviewed deployment gate.
+The container port is published to VPS loopback only; there is no public
+network listener, write tool, arbitrary SQL, or private source-file access.
 """
 from __future__ import annotations
 
@@ -22,7 +23,8 @@ def main() -> None:
     if not 1024 <= port <= 65535:
         raise ValueError("ATLAS_MCP_PORT out of range")
 
-    create_server(archigos_path="", probe_only=True).run(
+    # Explicit allowlist: absent Archigos even if a host env var is set.
+    create_server(archigos_path="", http_read_only=True).run(
         transport="streamable-http",
         host=host,
         port=port,
