@@ -77,7 +77,12 @@ it must:
   `docker compose config` **before** activation;
 - verify the official `tunnel-client` version/OCI digest independently;
 - materialize the Platform runtime key only in a VPS private file
-  (`ATLAS_TUNNEL_RUNTIME_KEY_FILE`) with owner-only host permissions;
+  (`ATLAS_TUNNEL_RUNTIME_KEY_FILE`), held under a private **directory mode
+  `0700`**; the bind-mounted file must be readable by the exact non-root
+  sidecar (`65532:65532`) but no other users. A root-controlled installer
+  may use `root:65532` with mode `0640`; the reviewed deploy-user-only
+  gateway instead uses a deploy-owned `0600` file with `setfacl -m
+  u:65532:r--`. Never fall back to a world-readable secret;
   mount it via a Compose secret read-only in the client container,
   and use `--control-plane.api-key=file:/run/secrets/... ` so the
   key value does **not** appear in command line arguments or env;
@@ -93,6 +98,33 @@ it must:
   and log a sanitized structured receipt on the existing\n  \`infra-access\` **\`operations-history\`** branch without any secrets;
 - roll back only the tunnel sidecar if connectivity fails, leaving the
   running Atlas app untouched.
+
+### Docker Compose file-secret permissions (activation gate)
+
+Docker Compose delivers a file-sourced `secrets:` entry as a **bind mount**;
+`uid`, `gid` and `mode` settings in the Compose long syntax **do not
+remap file ownership** for a file source. See the
+[Docker Compose specification](https://docs.docker.com/reference/compose-file/services/#secrets).
+Our sidecar runs as `user: "65532:65532"`. A default root-owned
+`root:root` secret with `0600` is therefore **not readable** by the client.
+
+The later, separately authorized VPS helper must write the secret
+atomically under a **private directory mode `0700`**. For a helper that
+has root provisioning authority, the file may be `root:65532` with
+**mode `0640`**. For the `infra-access` forced gateway, which runs as
+the unprivileged `deploy` user without arbitrary sudo, require a
+**deploy-owned `0600` file** with the *exact user ACL*
+`setfacl -m u:65532:r--`. This permits sidecar UID 65532 to read the
+Docker bind mount without chgrp/sudo or world-readable host access.
+Fail closed if `setfacl`/`getfacl` or ACL support is missing. Do not
+use `0644`, put the key in container environment variables, or run
+the container as root.
+The reviewed operation must reject symlinked targets and unexpected owners,
+and verify that the container identity can read the **mounted secret** using
+a fixed, output-free `test -r /run/secrets/atlas_openai_tunnel_runtime_key`
+check before claiming readiness. Never `cat`, hash, echo, print or persist
+the key in logs, manifests, receipts or repository files. Keep the secret
+mount read-only and preserve only non-sensitive readiness results.
 
 Upstream image's ENTRYPOINT is already
 `/usr/bin/tunnel-client run`. Compose `command` adds only the

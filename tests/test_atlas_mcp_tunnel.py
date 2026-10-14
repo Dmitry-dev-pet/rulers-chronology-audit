@@ -49,6 +49,27 @@ class SecureTunnelReferenceTests(unittest.TestCase):
         self.assertIn("/tmp:rw,nosuid,nodev", o)
         self.assertNotIn("latest", o)
 
+    def test_file_secret_access_for_fixed_nonroot_uid(self):
+        d = self.runbook
+        # File-sourced Compose secrets are bind mounts; 0600 root:root
+        # would make the key unreadable to user 65532:65532.
+        for requirement in (
+            'root:65532',
+            'mode `0640`',
+            'directory mode `0700`',
+            'user: "65532:65532"',
+            'test -r /run/secrets/atlas_openai_tunnel_runtime_key',
+            'file-sourced `secrets:`',
+            'bind mount',
+            'reject symlinked targets',
+            'setfacl -m u:65532:r--',
+            'deploy-owned `0600` file',
+        ):
+            self.assertIn(requirement, d)
+        self.assertIn("user: \"65532:65532\"", self.overlay)
+        self.assertIn("secrets:", self.overlay)
+        self.assertNotIn("CONTROL_PLANE_API_KEY:", self.overlay)
+
     def test_scope_stays_metadata_only_and_transport_not_live(self):
         d = self.runbook
         self.assertIn("design / review only", d)
