@@ -62,6 +62,8 @@ class SecureTunnelReferenceTests(unittest.TestCase):
             'file-sourced `secrets:`',
             'bind mount',
             'reject symlinked targets',
+            'setfacl -m u:65532:r--',
+            'deploy-owned `0600` file',
         ):
             self.assertIn(requirement, d)
         self.assertIn("user: \"65532:65532\"", self.overlay)
