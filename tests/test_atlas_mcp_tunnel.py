@@ -56,7 +56,7 @@ class SecureTunnelReferenceTests(unittest.TestCase):
         self.assertIn("defined_not_connected", d)
         self.assertIn("No external MCP connection has been activated", d)
         self.assertIn("No inbound firewall port", d)
-        self.assertIn("owner-created OpenAI tunnel", d)
+        self.assertIn("create a **single dedicated** Historical Atlas tunnel", d)
         self.assertIn("Tunnels Read + Use", d)
         self.assertIn("infra-access", d)
         self.assertIn("operations-history", d)
