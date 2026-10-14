@@ -1,4 +1,4 @@
-# Historical Atlas metadata-only MCP image. No model, secrets or private data.
+# Historical Atlas read-only MCP image. Only five canonical tools; no secrets or private Archigos.
 # Build from reviewed source: docker build -f ops/mcp/Dockerfile -t atlas-mcp:test .
 FROM python:3.12-slim-bookworm AS snapshot
 WORKDIR /src

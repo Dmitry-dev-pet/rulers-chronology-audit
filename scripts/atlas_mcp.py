@@ -28,15 +28,22 @@ def create_server(
     archigos_path: str | Path | None = None,
     *,
     probe_only: bool = False,
+    http_read_only: bool = False,
 ):
     from mcp.server import MCPServer
 
     path = sqlite_path or os.environ.get("ATLAS_SQLITE_PATH")
     if not path:
         raise ValueError("ATLAS_SQLITE_PATH must point to a derived atlas.sqlite")
+    if probe_only and http_read_only:
+        raise ValueError("probe_only and http_read_only are mutually exclusive")
     atlas = AtlasQuery(path)
-    external = archigos_path if archigos_path is not None else os.environ.get("ATLAS_ARCHIGOS_PATH")
-    external = Path(external) if external else None
+    # A network service must not even inspect or advertise private Archigos
+    # configuration. Stdio alone may opt into a separately held file.
+    external = None
+    if not (probe_only or http_read_only):
+        external = archigos_path if archigos_path is not None else os.environ.get("ATLAS_ARCHIGOS_PATH")
+        external = Path(external) if external else None
     cache = {"rows": None, "sha": None}
     lock = threading.Lock()
     server = MCPServer("Historical Atlas Read-Only")
@@ -49,9 +56,10 @@ def create_server(
         result["archigos_data_loaded"] = cache["rows"] is not None
         return result
 
-    # The unauthenticated deployment probe deliberately offers **only** public
-    # dataset metadata.  All other historical tools remain available via the
-    # existing private stdio server and require a separately reviewed ingress.
+    # First-stage metadata probe remains unchanged for compatibility.
+    # The separately reviewed, authenticated private HTTP transport can
+    # additionally enable the four bounded canonical query/evidence tools.
+    # Never grant the optional private Archigos tool to the HTTP service.
     if probe_only:
         return server
 
@@ -74,6 +82,11 @@ def create_server(
     def get_evidence(record_id: str) -> dict:
         """Get historical assertion, methodological caveats and its source links."""
         return atlas.get_evidence(record_id)
+
+    # Strict network allowlist boundary: do not register private Archigos,
+    # raw-file access, arbitrary SQL, or any state-changing tool over HTTP.
+    if http_read_only:
+        return server
 
     @server.tool()
     def archigos_returnees(

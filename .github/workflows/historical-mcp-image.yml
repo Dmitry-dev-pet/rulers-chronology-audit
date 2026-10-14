@@ -43,7 +43,7 @@ jobs:
           persist-credentials: false
       - name: Install pinned SDK for contract tests and host-side smoke
         run: python3 -m pip install --disable-pip-version-check 'mcp==2.0.0'
-      - name: Verify public metadata-only tool and original domain protocol
+      - name: Verify private HTTP read-only allowlist and original domain protocol
         run: |
           python3 -m unittest discover -s tests -p 'test_atlas_mcp*.py' -v
       - name: Validate review-only private tunnel overlay without credentials

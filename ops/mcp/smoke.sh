@@ -63,16 +63,90 @@ for attempt in range(100):
     finally:
         probe.close()
 
+def result_dict(tool_result):
+    """Decode SDK structured_content or the first JSON text payload."""
+    candidate = getattr(tool_result, "structured_content", None)
+    if candidate is None:
+        candidate = getattr(tool_result, "structuredContent", None)
+    if isinstance(candidate, dict):
+        if isinstance(candidate.get("result"), dict):
+            return candidate["result"]
+        return candidate
+    for item in getattr(tool_result, "content", []):
+        raw = getattr(item, "text", None)
+        if isinstance(raw, str):
+            try:
+                data = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(data, dict):
+                if isinstance(data.get("result"), dict):
+                    return data["result"]
+                return data
+    raise AssertionError("MCP tool did not return structured dictionary content")
+
+
 async def main():
     async with Client(url, raise_exceptions=True) as client:
         names = [tool.name for tool in (await client.list_tools()).tools]
-        assert names == ["dataset_info"], names
-        result = await client.call_tool("dataset_info", {})
-        assert not result.is_error, result
-        raw = str(result)
-        assert "canonical_persons" in raw, raw
-        assert "historical_truth_verified_by_ci" in raw, raw
+        expected = [
+            "dataset_info", "search_rulers", "get_timeline",
+            "compare_rulers", "get_evidence",
+        ]
+        assert names == expected, (names, expected)
+        assert "archigos_returnees" not in names
+        assert not any("sql" in name or "exec" in name for name in names)
+
+        info = await client.call_tool("dataset_info", {})
+        assert not info.is_error
+        dataset = result_dict(info)
+        assert dataset["dataset"] == "canonical-rulers-atlas-v1"
+        assert dataset["historical_truth_verified_by_ci"] is False
+        assert dataset["archigos_file_configured"] is False
+        assert dataset["archigos_data_loaded"] is False
+
+        found = await client.call_tool(
+            "search_rulers", {"text": "Владимир Ленин", "limit": 2}
+        )
+        assert not found.is_error
+        people = result_dict(found)
+        assert people["results"] and people["count"] >= 1
+        person_id = people["results"][0]["person_id"]
+        assert person_id.startswith("person-")
+
+        timeline = await client.call_tool(
+            "get_timeline", {"year": 1953, "limit": 60}
+        )
+        assert not timeline.is_error
+        period = result_dict(timeline)
+        assert period["entries"] and period["year"] == 1953
+        assert period["historical_truth_verified_by_ci"] is False
+        evidence_entry = next(
+            item["entry_id"] for item in period["entries"] if item["source_ids"]
+        )
+
+        compared = await client.call_tool(
+            "compare_rulers", {"person_ids": [person_id]}
+        )
+        assert not compared.is_error
+        comparison = result_dict(compared)
+        assert comparison["persons"][0]["person_id"] == person_id
+        assert comparison["historical_truth_verified_by_ci"] is False
+
+        sources = await client.call_tool(
+            "get_evidence", {"record_id": evidence_entry}
+        )
+        assert not sources.is_error
+        evidence = result_dict(sources)
+        assert evidence["found"] is True
+        assert evidence["sources"] and evidence["source_ids"]
+        assert evidence["historical_truth_verified_by_ci"] is False
+        assert all(
+            str(source["url"]).startswith("https://")
+            and "drive.google.com" not in source["url"].lower()
+            for source in evidence["sources"]
+        )
 
 asyncio.run(main())
-print("MCP HTTPS-ingress candidate: local HTTP metadata-only tool roundtrip OK")
+print("Private Historical Atlas HTTP MCP: five bounded read-only tool roundtrips OK")
 PY
