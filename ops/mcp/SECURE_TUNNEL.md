@@ -77,10 +77,12 @@ it must:
   `docker compose config` **before** activation;
 - verify the official `tunnel-client` version/OCI digest independently;
 - materialize the Platform runtime key only in a VPS private file
-  (`ATLAS_TUNNEL_RUNTIME_KEY_FILE`), held in a root-owned private directory
-  (mode `0700`); the bind-mounted file must be `root:65532` with mode `0640`
-  so the dedicated non-root sidecar (`65532:65532`) can read it without
-  granting world access;
+  (`ATLAS_TUNNEL_RUNTIME_KEY_FILE`), held under a private **directory mode
+  `0700`**; the bind-mounted file must be readable by the exact non-root
+  sidecar (`65532:65532`) but no other users. A root-controlled installer
+  may use `root:65532` with mode `0640`; the reviewed deploy-user-only
+  gateway instead uses a deploy-owned `0600` file with `setfacl -m
+  u:65532:r--`. Never fall back to a world-readable secret;
   mount it via a Compose secret read-only in the client container,
   and use `--control-plane.api-key=file:/run/secrets/... ` so the
   key value does **not** appear in command line arguments or env;
@@ -107,10 +109,16 @@ Our sidecar runs as `user: "65532:65532"`. A default root-owned
 `root:root` secret with `0600` is therefore **not readable** by the client.
 
 The later, separately authorized VPS helper must write the secret
-atomically under a **root-owned parent directory mode `0700`**, with the
-**file** owned by `root:65532` and **mode `0640`**. The owning group is
-only for the fixed non-root sidecar. Do not use `0644`, put the key in
-container environment variables, or silently run the container as root.
+atomically under a **private directory mode `0700`**. For a helper that
+has root provisioning authority, the file may be `root:65532` with
+**mode `0640`**. For the `infra-access` forced gateway, which runs as
+the unprivileged `deploy` user without arbitrary sudo, require a
+**deploy-owned `0600` file** with the *exact user ACL*
+`setfacl -m u:65532:r--`. This permits sidecar UID 65532 to read the
+Docker bind mount without chgrp/sudo or world-readable host access.
+Fail closed if `setfacl`/`getfacl` or ACL support is missing. Do not
+use `0644`, put the key in container environment variables, or run
+the container as root.
 The reviewed operation must reject symlinked targets and unexpected owners,
 and verify that the container identity can read the **mounted secret** using
 a fixed, output-free `test -r /run/secrets/atlas_openai_tunnel_runtime_key`
