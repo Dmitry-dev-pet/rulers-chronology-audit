@@ -1,0 +1,40 @@
+# REVIEW-ONLY overlay; not part of the installed VPS Compose stack.
+# Never deploy without a reviewed infra-access operation, exact image digest,
+# owner-created OpenAI tunnel ID, and VPS-only runtime key materialization.
+# Combine with the existing Atlas Compose file under the SAME project name.
+services:
+  tunnel-client:
+    image: ${ATLAS_TUNNEL_IMAGE_REF:?Pinned ghcr.io/openai/tunnel-client digest required}
+    depends_on:
+      app:
+        condition: service_started
+    restart: unless-stopped
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    user: "65532:65532"
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=16m,uid=65532,gid=65532
+    environment:
+      HOME: /tmp
+      CONTROL_PLANE_TUNNEL_ID: ${ATLAS_TUNNEL_ID:?OpenAI Platform tunnel ID required}
+      MCP_SERVER_URL: http://app:8765/mcp
+      LOG_LEVEL: info
+      LOG_FORMAT: json
+      HEALTH_LISTEN_ADDR: ":8080"
+    secrets:
+      - atlas_openai_tunnel_runtime_key
+    # Upstream image's ENTRYPOINT is /usr/bin/tunnel-client run;
+    # command appends flags only; adding another "run" would break it.
+    command:
+      - --control-plane.api-key=file:/run/secrets/atlas_openai_tunnel_runtime_key
+    # Optional health/ready introspection on VPS loopback only.
+    # No MCP request listener is opened on the public interface.
+    ports:
+      - "127.0.0.1:8021:8080"
+
+secrets:
+  atlas_openai_tunnel_runtime_key:
+    file: ${ATLAS_TUNNEL_RUNTIME_KEY_FILE:?VPS secret file must be provisioned separately}
