@@ -46,6 +46,45 @@ jobs:
       - name: Verify public metadata-only tool and original domain protocol
         run: |
           python3 -m unittest discover -s tests -p 'test_atlas_mcp*.py' -v
+      - name: Validate review-only private tunnel overlay without credentials
+        shell: bash
+        env:
+          ATLAS_TUNNEL_IMAGE_REF: ghcr.io/openai/tunnel-client@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          ATLAS_TUNNEL_ID: tunnel_0123456789abcdef0123456789abcdef
+          ATLAS_TUNNEL_RUNTIME_KEY_FILE: ${{ runner.temp }}/non-secret-placeholder
+        run: |
+          set -euo pipefail
+          printf 'services:\n  app:\n    image: busybox:1.36\n' > "$RUNNER_TEMP/atlas-base.test.yml"
+          printf 'not-a-real-runtime-key\n' > "$ATLAS_TUNNEL_RUNTIME_KEY_FILE"
+          chmod 0600 "$ATLAS_TUNNEL_RUNTIME_KEY_FILE"
+          docker compose -p atlas-overlay-contract \
+            -f "$RUNNER_TEMP/atlas-base.test.yml" \
+            -f ops/mcp/tunnel.compose.review.yml \
+            config --format json > "$RUNNER_TEMP/atlas-tunnel-config.json"
+          python3 - "$RUNNER_TEMP/atlas-tunnel-config.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          data = json.loads(Path(sys.argv[1]).read_text())
+          client = data["services"]["tunnel-client"]
+          assert set(data["services"]) == {"app", "tunnel-client"}
+          assert client["environment"]["MCP_SERVER_URL"] == "http://app:8765/mcp"
+          assert client["environment"]["CONTROL_PLANE_TUNNEL_ID"].startswith("tunnel_")
+          assert client["read_only"] is True
+          assert client["cap_drop"] == ["ALL"]
+          assert not client.get("privileged")
+          assert not client.get("network_mode")
+          ports = client["ports"]
+          assert len(ports) == 1 and ports[0]["host_ip"] == "127.0.0.1"
+          assert ports[0]["published"] == "8021" and ports[0]["target"] == 8080
+          assert client["secrets"][0]["source"] == "atlas_openai_tunnel_runtime_key"
+          assert client["command"] == [
+              "--control-plane.api-key=file:/run/secrets/atlas_openai_tunnel_runtime_key"
+          ]
+          print("Review-only tunnel overlay: private, no credentials, no deployment")
+          PY
+
       - name: Build exact source image, no credentials
         shell: bash
         run: |
