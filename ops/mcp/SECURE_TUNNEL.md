@@ -1,9 +1,17 @@
 # Secure MCP Tunnel for the private Historical Atlas
 
-Status: **design / review only**. No external MCP connection has been activated
-by this file. The existing VPS runtime remains `127.0.0.1:8020` and
-`historical-atlas-mcp` continues to offer **only** `dataset_info`.
-Do not report that the entire historical research API is available in ChatGPT.
+Status (14 October 2026): **VPS transport active; ChatGPT MCP app not yet
+connected or verified**. The existing historical Atlas application remains
+healthy at `127.0.0.1:8020` and exposes **only** `dataset_info`.
+The official tunnel-client sidecar passed `/readyz` following the approved
+[infra-access activation #286](https://github.com/Dmitry-dev-pet/infra-access/issues/286)
+and sanitized [operations-history receipt](https://github.com/Dmitry-dev-pet/infra-access/actions/runs/38647815948).
+The separate read-only [inspection #287](https://github.com/Dmitry-dev-pet/infra-access/issues/287)
+verified that the pinned Atlas image stayed healthy, and its private key-file
+path and Compose overlay are present. A *native ChatGPT* `dataset_info` call
+and independent local MCP protocol roundtrip are **still unverified**.
+Truthrail must remain `defined_not_connected`; do not report the entire
+historical research API as available in ChatGPT.
 
 ## Decision and trust boundaries
 
@@ -23,11 +31,11 @@ credentials.
 
 Upstream client: `openai/tunnel-client`, official release
 [`v0.0.16`](https://github.com/openai/tunnel-client/releases/tag/v0.0.16)
-(published 6 Oct 2026). Resolve and verify an **exact OCI digest** before
-any VPS deployment; production must set `ATLAS_TUNNEL_IMAGE_REF` to
-`ghcr.io/openai/tunnel-client@sha256:<verified-64-hex>`. Do not use
-`latest` or silently substitute another publisher. The release
-documentation recommends `gh attestation verify oci://... -R openai/tunnel-client`.
+(published 6 Oct 2026). The reviewed production gateway pins exactly
+`ghcr.io/openai/tunnel-client@sha256:4605ea909701668d3bdcbe6152558e068e24006aa96ca5518ca67f786a1bce13`.
+GitHub Actions passed the official `gh attestation verify oci://... -R
+openai/tunnel-client` preflight before transferring credentials.
+Never use `latest` or substitute a different publisher or image.
 
 ## Owner-provisioned Platform identifiers
 
@@ -50,25 +58,30 @@ From the same OpenAI account/workspace intended for ChatGPT:
    `ATLAS_TUNNEL_ID`. The ID has the provider-issued
    `tunnel_<32 lower-case alphanumeric>` or namespaced form; preserve
    it exactly and never invent a replacement.
-4. Confirm that `infra-access` owns a **separately reviewed, allowlisted,
-   source-CI-tested operation** to install this one sidecar. There is
-   **no such live operation as of this document**. The existing
-   `[infra] onboard` and `[infra] deploy` commands do not authorize
-   arbitrary new services or secret-file writes. Do not run an operator
-   SSH workaround, general shell runner job, or direct Docker commands
-   against production to bypass that requirement.
+4. The **operator-only** operation is now implemented by
+   [infra-access PR #277](https://github.com/Dmitry-dev-pet/infra-access/pull/277)
+   (reviewed, source-CI-tested), and its non-root file access was corrected
+   in [PR #284](https://github.com/Dmitry-dev-pet/infra-access/pull/284).
+   The owner activated the sidecar via the *exact* `[infra]
+   atlas-tunnel-activate historical-atlas-mcp` issue; the older
+   `onboard/deploy` operations do not authorize arbitrary new services or
+   secret writes. The owner-only status is **not** transferable to an AI
+   agent, generic SSH bridge, or other project.
 
-## Reviewed Compose overlay (not deployed)
+## Reference overlay vs deployed runtime
 
-`ops/mcp/tunnel.compose.review.yml` is a **reference overlay**, not an
-independent stack. It defines a second container `tunnel-client` whose
+`ops/mcp/tunnel.compose.review.yml` is a **historical reference overlay**
+from the pre-activation review, **not the live Compose stack**. The reviewed
+`infra-access/scripts/infra-gateway.sh` owns the active overlay and fixed
+non-root runtime identity. Do not independently deploy this reference file
+or assume its placeholder UID/GID reflects production.
+It is not an independent stack. It defines a second container `tunnel-client` whose
 service DNS target is `http://app:8765/mcp`. A Docker container cannot
 reach the VPS host's `127.0.0.1:8020` from its own network namespace;
 using the Compose service name avoids host networking and keeps the Atlas
 MCP entirely private.
 
-When a future reviewed `infra-access` operation activates the overlay,
-it must:
+The approved `infra-access` gateway enforces the following invariants:
 
 - target **only** `historical-atlas-mcp`, never arbitrary project names
   or issue-provided paths/images;
@@ -76,16 +89,13 @@ it must:
   and rollback records; stage the overlay atomically and validate
   `docker compose config` **before** activation;
 - verify the official `tunnel-client` version/OCI digest independently;
-- materialize the Platform runtime key only in a VPS private file
-  (`ATLAS_TUNNEL_RUNTIME_KEY_FILE`), held under a private **directory mode
-  `0700`**; the bind-mounted file must be readable by the exact non-root
-  sidecar (`65532:65532`) but no other users. A root-controlled installer
-  may use `root:65532` with mode `0640`; the reviewed deploy-user-only
-  gateway instead uses a deploy-owned `0600` file with `setfacl -m
-  u:65532:r--`. Never fall back to a world-readable secret;
-  mount it via a Compose secret read-only in the client container,
-  and use `--control-plane.api-key=file:/run/secrets/... ` so the
-  key value does **not** appear in command line arguments or env;
+- write the Platform runtime key only into a private `deploy`-owned
+  file (parent directory `0700`, file `0600`) on VPS; run the official
+  sidecar under that **same** deploy numeric UID/GID (not UID 0), using
+  values discovered locally by the forced gateway with `id -u/id -g`.
+  Bind-mount the file as a Compose read-only secret. The key is provided
+  only to `--control-plane.api-key=file:/run/secrets/...`, never embedded
+  in command-line secret values, environment variables or logs;
 - provide the non-secret tunnel ID through a reviewed, fixed configuration,
   not an attacker-controlled MCP URL or arbitrary issue payload;
 - use the **same Compose project** as the existing `app`, keep
@@ -95,36 +105,31 @@ it must:
   MCP or tunnel ports; the optional health endpoint binds only to
   VPS `127.0.0.1:8021`;
 - require `/readyz` to report ready, verify the actual MCP protocol
-  and log a sanitized structured receipt on the existing\n  \`infra-access\` **\`operations-history\`** branch without any secrets;
+  and log a sanitized structured receipt on the existing
+  `infra-access` **`operations-history`** branch without any secrets;
 - roll back only the tunnel sidecar if connectivity fails, leaving the
   running Atlas app untouched.
 
-### Docker Compose file-secret permissions (activation gate)
+### Docker Compose file-secret permissions (active runtime)
 
 Docker Compose delivers a file-sourced `secrets:` entry as a **bind mount**;
-`uid`, `gid` and `mode` settings in the Compose long syntax **do not
-remap file ownership** for a file source. See the
+`uid`, `gid` and `mode` fields in the Compose long syntax do **not**
+remap file ownership for a file source. See the
 [Docker Compose specification](https://docs.docker.com/reference/compose-file/services/#secrets).
-Our sidecar runs as `user: "65532:65532"`. A default root-owned
-`root:root` secret with `0600` is therefore **not readable** by the client.
 
-The later, separately authorized VPS helper must write the secret
-atomically under a **private directory mode `0700`**. For a helper that
-has root provisioning authority, the file may be `root:65532` with
-**mode `0640`**. For the `infra-access` forced gateway, which runs as
-the unprivileged `deploy` user without arbitrary sudo, require a
-**deploy-owned `0600` file** with the *exact user ACL*
-`setfacl -m u:65532:r--`. This permits sidecar UID 65532 to read the
-Docker bind mount without chgrp/sudo or world-readable host access.
-Fail closed if `setfacl`/`getfacl` or ACL support is missing. Do not
-use `0644`, put the key in container environment variables, or run
-the container as root.
-The reviewed operation must reject symlinked targets and unexpected owners,
-and verify that the container identity can read the **mounted secret** using
-a fixed, output-free `test -r /run/secrets/atlas_openai_tunnel_runtime_key`
-check before claiming readiness. Never `cat`, hash, echo, print or persist
-the key in logs, manifests, receipts or repository files. Keep the secret
-mount read-only and preserve only non-sensitive readiness results.
+[Read-only diagnostic #283](https://github.com/Dmitry-dev-pet/infra-access/issues/283)
+confirmed that the VPS lacks `setfacl` and `getfacl`. The first activation
+therefore stopped safely before installing the sidecar. Rather than install
+privileged host packages or relax file access, the corrected forced gateway
+runs the official `tunnel-client` as the **same unprivileged numeric UID/GID**
+as the verified `deploy` account. The secret is owned by `deploy` under
+a private directory `0700` with mode `0600`. The gateway validates the
+non-root identity, exact file owner/mode, symlink boundaries and output-free
+mounted-secret `test -r /run/secrets/atlas_openai_tunnel_runtime_key`
+before claiming readiness. No `0644`, root container, sudo, generic
+file writer or arbitrary issue-supplied numeric user is permitted.
+Never `cat`, hash, echo, print or persist the key in logs, manifests,
+receipts or source files. Keep the mount read-only.
 
 Upstream image's ENTRYPOINT is already
 `/usr/bin/tunnel-client run`. Compose `command` adds only the
