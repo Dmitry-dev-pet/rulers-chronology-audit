@@ -385,7 +385,10 @@ def main() -> None:
     spec_digest = sha256(QUESTIONS)
     output = args.output.absolute()
     output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    os.chmod(output.parent, 0o700)
+    parent_stat = output.parent.stat()
+    require(not output.parent.is_symlink() and parent_stat.st_uid == os.getuid()
+            and stat.S_IMODE(parent_stat.st_mode) & 0o077 == 0,
+            "Output directory must already be private (mode 0700); never chmod an arbitrary path")
     require(not output.is_symlink(), "Output must not be a symlink")
     cli_version = subprocess.run(
         [str(agy), "--version"], capture_output=True, text=True,
