@@ -11,6 +11,10 @@ on:
       - tests/test_atlas_mcp_mac.py
       - scripts/atlas_mcp_returnees.py
       - benchmarks/run_agy_mac_ab.py
+      - benchmarks/run_agy_rulers_ab.py
+      - benchmarks/rulers_questions_v1.json
+      - scripts/atlas_mcp_rulers.py
+      - tests/test_agy_rulers_ab.py
       - ops/mac/**
       - tests/test_atlas_mcp_benchmark.py
       - .github/workflows/mcp-smoke.yml
@@ -34,6 +38,7 @@ jobs:
       - name: Test source-qualified queries and real MCP protocol
         run: |
           python3 -m unittest discover -s tests -p 'test_atlas_mcp*.py' -v
+          python3 -m unittest discover -s tests -p 'test_agy_rulers_ab.py' -v
       - name: Verify no binary research data or auth material was added
         shell: bash
         run: |
