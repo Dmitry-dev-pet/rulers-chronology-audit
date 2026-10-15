@@ -222,10 +222,11 @@ def parse_events(raw: str) -> dict:
         s = event.get("step_update") or {}
         if not isinstance(s, dict) or s.get("step_type") != "tool":
             continue
-        name = str(s.get("tool_name") or (s.get("tool_info") or {}).get("name") or "")
+        info = s.get("tool_info") if isinstance(s.get("tool_info"), dict) else {}
+        name = str(s.get("tool_name") or info.get("name") or "")
         state = str(s.get("state") or "").upper()
         if name and state:
-            steps.append({"name": name, "state": state})
+            steps.append({"name": name, "state": state, "error": bool(info.get("error"))})
     answer = final.get("structured_output")
     if not isinstance(answer, dict):
         try:
@@ -234,6 +235,10 @@ def parse_events(raw: str) -> dict:
             answer = {}
     if not isinstance(answer, dict):
         answer = {}
+    schema_ok = (isinstance(answer.get("answer"), str)
+                 and isinstance(answer.get("uncertainty"), str)
+                 and isinstance(answer.get("source_refs"), list)
+                 and all(isinstance(x, str) for x in answer["source_refs"]))
     usage = final.get("usage") or {}
     if not isinstance(usage, dict):
         usage = {}
@@ -242,6 +247,7 @@ def parse_events(raw: str) -> dict:
         "model_reported": init.get("model"),
         "available_tools": [name_of_tool(x) for x in init.get("tools", [])],
         "tool_events": steps,
+        "structured_output_valid": schema_ok,
         "answer": {
             "answer": str(answer.get("answer") or "")[:10000],
             "uncertainty": str(answer.get("uncertainty") or "")[:3000],
@@ -297,7 +303,8 @@ def execute(agy: Path, model: str, question: str, schema: Path,
 
 
 def evaluate(run: dict, model: str, powered: bool) -> dict:
-    completed = [s["name"] for s in run["tool_events"] if s["state"] == "DONE"]
+    completed = [s["name"] for s in run["tool_events"]
+                 if s["state"] == "DONE" and not s.get("error")]
     attempted = [s["name"] for s in run["tool_events"]]
     other_calls = [name for name in attempted if atlas_tool(name) is None]
     mcp_calls = [atlas_tool(name) for name in completed if atlas_tool(name)]
@@ -311,6 +318,10 @@ def evaluate(run: dict, model: str, powered: bool) -> dict:
         problems.append("reported_model_missing_or_mismatched")
     if not run.get("answer", {}).get("answer"):
         problems.append("missing_structured_answer")
+    if run.get("structured_output_valid") is False:
+        problems.append("invalid_response_schema")
+    if any(s.get("error") for s in run["tool_events"]):
+        problems.append("tool_returned_error")
     if other_calls:
         problems.append("other_tool_called")
     if powered:
