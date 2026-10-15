@@ -104,6 +104,16 @@ def validate_auth(auth: Path) -> None:
             "OAuth file must belong to the dedicated runner and be mode 0600")
 
 
+def list_models(agy: Path) -> set[str]:
+    """Ask the *installed* CLI; never infer model slugs from documentation."""
+    proc = subprocess.run([str(agy), "models"], capture_output=True,
+                          text=True, errors="replace", timeout=25, check=False)
+    require(proc.returncode == 0, "Could not list available models with installed AGY")
+    slugs = set(re.findall(r"\bgemini-[A-Za-z0-9][A-Za-z0-9._-]*\b", proc.stdout))
+    require(bool(slugs), "No Gemini model IDs parsed from `agy models`; inspect runner CLI manually")
+    return slugs
+
+
 def install_lane(root: Path, label: str, auth_file: Path, atlas: Path,
                  sqlite: Path, python: Path) -> tuple[Path, Path]:
     """Isolated empty workspace and HOME; allow exactly five local MCP tools."""
@@ -249,7 +259,7 @@ def execute(agy: Path, model: str, question: str, schema: Path,
             workspace: Path, home: Path, timeout: int) -> dict:
     cmd = [
         str(agy), "-p", INSTRUCTION + question, "--model", model,
-        "--effort", "high", "--output-format", "stream-json",
+        "--output-format", "stream-json",
         "--json-schema", str(schema), "--print-timeout", f"{timeout}s",
     ]
     before = time.monotonic()
@@ -358,6 +368,9 @@ def main() -> None:
     require((atlas / "scripts" / "atlas_mcp_rulers.py").is_file(),
             "Pinned Atlas checkout missing read-only stdio entrypoint")
     validate_auth(auth)
+    models = list_models(agy)
+    require(args.model in models,
+            "Chosen --model is not in the installed `agy models` list; refusing fallback")
     commit = git_commit(atlas)
     if args.expected_atlas_commit:
         require(args.expected_atlas_commit == commit, "Atlas HEAD does not match expected pinned SHA")
@@ -381,6 +394,8 @@ def main() -> None:
     report = {
         "benchmark_id": questions["id"],
         "model_requested": args.model,
+        "model_verified_in_installed_agy_list": True,
+        "available_model_count": len(models),
         "agy_version": (cli_version.stdout or cli_version.stderr).splitlines()[:1],
         "atlas_commit": commit,
         "atlas_sqlite_sha256": db_digest,
