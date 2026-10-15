@@ -95,7 +95,7 @@ def execution(cli: Path, model: str, question: str, schema: Path,
     env["XDG_CACHE_HOME"] = str(home / ".cache")
     env["GEMINI_FORCE_FILE_STORAGE"] = "true"
     cmd = [
-        str(cli), "-p", question, "--model", model, "--effort", "high",
+        str(cli), "-p", question, "--model", model,
         "--output-format", "stream-json", "--json-schema", str(schema),
         "--print-timeout", "7m",
     ]
@@ -205,6 +205,13 @@ def main() -> None:
     import stat
     require(re.fullmatch(r"gemini-[A-Za-z0-9][A-Za-z0-9._-]{0,79}", args.model) is not None,
             "Specify an actual installed Gemini model ID")
+    model_probe = subprocess.run([str(args.agy), "models"], capture_output=True,
+                                 text=True, errors="replace", timeout=25, check=False)
+    available_models = set(re.findall(
+        r"\bgemini-[A-Za-z0-9][A-Za-z0-9._-]*\b", model_probe.stdout
+    ))
+    require(model_probe.returncode == 0 and args.model in available_models,
+            "Requested Gemini model not present in installed `agy models`; no fallback")
     require(args.auth_file.is_file() and not args.auth_file.is_symlink() and args.auth_file.stat().st_size > 0, "dedicated runner OAuth session not initialized")
     st = args.auth_file.stat()
     require(st.st_uid == os.getuid() and stat.S_IMODE(st.st_mode) & 0o077 == 0,
@@ -274,6 +281,7 @@ def main() -> None:
     report = {
         "benchmark": goldfile["id"],
         "model": args.model,
+        "model_verified_in_installed_agy_list": True,
         "source_ref": "immutable_project_action_package",
         "archigos_sha256": digest,
         "same_question": True,
