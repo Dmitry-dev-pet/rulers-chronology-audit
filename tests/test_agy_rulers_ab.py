@@ -64,7 +64,8 @@ class RulersTrialTests(unittest.TestCase):
         return {
             "status": "SUCCESS", "exit_code": 0, "diagnostic": "ok",
             "model_reported": "gemini-test",
-            "answer": {"answer": "Разделим юридическую и фактическую власть."},
+            "answer": {"answer": "Разделим юридическую и фактическую власть.", "uncertainty": "", "source_refs": []},
+            "structured_output_valid": True,
             "available_tools": list(advertised),
             "tool_events": [{"name": name, "state": "DONE"} for name in calls],
         }
@@ -83,6 +84,8 @@ class RulersTrialTests(unittest.TestCase):
         good = self.fixture_run(calls=["mcp__historical-atlas__get_timeline"])
         self.assertTrue(evaluate(good, "gemini-test", True)["trial_valid"])
         good["tool_events"][0]["state"] = "FAILED"
+        self.assertFalse(evaluate(good, "gemini-test", True)["trial_valid"])
+        good["tool_events"][0] = {"name": "mcp__historical-atlas__get_timeline", "state": "DONE", "error": True}
         self.assertFalse(evaluate(good, "gemini-test", True)["trial_valid"])
 
     def test_no_extra_tools_and_no_model_substitution(self):
@@ -125,6 +128,7 @@ class RulersTrialTests(unittest.TestCase):
         self.assertEqual(parsed["answer"]["answer"], "Тест")
         self.assertEqual(parsed["answer"]["source_refs"], ["SOURCE-1"])
         self.assertEqual(parsed["usage"]["total_tokens"], 123)
+        self.assertTrue(parsed["structured_output_valid"])
         self.assertTrue(evaluate(
             {**parsed, "exit_code": 0, "diagnostic": "ok"}, "gemini-test", True,
         )["trial_valid"])
