@@ -11,12 +11,12 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
 import sys
 
-ALLOWED_MODEL = "gemini-3.1-pro-high"
 DENIED = [
     "read_file(*)", "write_file(*)", "list_dir(*)", "find_by_name(*)",
     "grep_search(*)", "run_command(*)", "command(*)", "unsandboxed(*)",
@@ -147,6 +147,7 @@ def execution(cli: Path, model: str, question: str, schema: Path,
         diagnostic = "permission_soft_denial"
     return {
         "status": terminal.get("status") or "MISSING_RESULT",
+        "model_reported": init.get("model"),
         "exit_code": p.returncode,
         "answer": answer,
         "tool_calls": calls,
@@ -191,6 +192,7 @@ def evaluate(run: dict, expected: dict, powered: bool) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--model", required=True, help="Explicit model ID verified on installed AGY; never falls back")
     ap.add_argument("--atlas", type=Path, required=True)
     ap.add_argument("--sqlite", type=Path, required=True)
     ap.add_argument("--archigos", type=Path, required=True)
@@ -201,6 +203,8 @@ def main() -> None:
     ap.add_argument("--output", type=Path, required=True)
     args = ap.parse_args()
     import stat
+    require(re.fullmatch(r"gemini-[A-Za-z0-9][A-Za-z0-9._-]{0,79}", args.model) is not None,
+            "Specify an actual installed Gemini model ID")
     require(args.auth_file.is_file() and not args.auth_file.is_symlink() and args.auth_file.stat().st_size > 0, "dedicated runner OAuth session not initialized")
     st = args.auth_file.stat()
     require(st.st_uid == os.getuid() and stat.S_IMODE(st.st_mode) & 0o077 == 0,
@@ -262,12 +266,14 @@ def main() -> None:
             args.work, label, args.auth_file, args.atlas,
             args.sqlite, args.archigos, args.python,
         )
-        run = execution(args.agy, ALLOWED_MODEL, prompt, schemafile, workspace, home)
+        run = execution(args.agy, args.model, prompt, schemafile, workspace, home)
+        if run.get("model_reported") != args.model:
+            run["diagnostic"] = "model_missing_or_mismatched"
         run["evaluation"] = evaluate(run, expected, powered=(label == "with_mcp"))
         results[label] = run
     report = {
         "benchmark": goldfile["id"],
-        "model": ALLOWED_MODEL,
+        "model": args.model,
         "source_ref": "immutable_project_action_package",
         "archigos_sha256": digest,
         "same_question": True,
