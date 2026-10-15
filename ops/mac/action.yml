@@ -21,6 +21,9 @@ runs:
         root = Path(os.environ["PACKAGE_DIR"]).resolve().parents[1]
         for rel in (
             "benchmarks/run_agy_mac_ab.py",
+            "benchmarks/run_agy_rulers_ab.py",
+            "scripts/atlas_mcp_rulers.py",
+            "tests/test_agy_rulers_ab.py",
             "scripts/archigos_returnees.py",
             "scripts/atlas_mcp_returnees.py",
             "tests/test_atlas_mcp_mac.py",
@@ -34,6 +37,9 @@ runs:
         benchmark = json.loads(spec.read_text(encoding="utf-8"))
         assert benchmark["id"] == "archigos_return_to_power_v1"
         assert benchmark["expected"]["return_events"] == 597
-        print("Historical Atlas fixed package syntax and benchmark contract verified")
+        rulers = json.loads((root / "benchmarks/rulers_questions_v1.json").read_text(encoding="utf-8"))
+        assert rulers["id"] == "russian_rulers_10_v1"
+        assert len(rulers["questions"]) == 10
+        print("Historical Atlas fixed package syntax and both benchmark contracts verified")
         PY
         echo "ready=true" >> "$GITHUB_OUTPUT"

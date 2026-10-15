@@ -1,5 +1,9 @@
 name: Historical Atlas A/B with Gemini on Mac
 description: Fixed read-only Archigos/MCP comparison, using only a dedicated runner-local Antigravity session.
+inputs:
+  model:
+    description: Exact installed Gemini slug from agy models; no default or fallback.
+    required: true
 outputs:
   result:
     description: Bounded sanitized evidence; never contains session data.
@@ -11,8 +15,10 @@ runs:
       shell: bash
       env:
         ATLAS_ACTION_DIR: ${{ github.action_path }}
+        AGY_MODEL: ${{ inputs.model }}
       run: |
         set -euo pipefail
+        test -n "$AGY_MODEL" || { echo "::error::Explicit AGY model required"; exit 2; }
         test "$(uname -s)" = Darwin
         test "$(uname -m)" = arm64
         ATLAS_ROOT="$(cd "$ATLAS_ACTION_DIR/../../.." && pwd)"
@@ -50,7 +56,7 @@ runs:
           exit 4
         }
         mkdir -p "$work/results"
-        "$work/venv/bin/python" "$ATLAS_ROOT/benchmarks/run_agy_mac_ab.py"           --atlas "$ATLAS_ROOT"           --sqlite "$work/build/atlas.sqlite"           --archigos "$source"           --auth-file "$auth"           --python "$work/venv/bin/python"           --agy "$agy"           --work "$work/sessions"           --output "$work/results/report.json"
+        "$work/venv/bin/python" "$ATLAS_ROOT/benchmarks/run_agy_mac_ab.py"           --atlas "$ATLAS_ROOT"           --sqlite "$work/build/atlas.sqlite"           --archigos "$source"           --auth-file "$auth"           --python "$work/venv/bin/python"           --agy "$agy"           --model "$AGY_MODEL"           --work "$work/sessions"           --output "$work/results/report.json"
     - name: Create bounded, sanitized result
       id: receipt
       shell: bash
