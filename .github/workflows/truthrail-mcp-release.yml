@@ -1,0 +1,142 @@
+name: Release reviewed Truthrail MCP candidate into existing Atlas GHCR
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/truthrail-mcp-release.yml
+      - release/truthrail-mcp/**
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/truthrail-mcp-release.yml
+      - release/truthrail-mcp/**
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Exact public Truthrail code revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: Dmitry-dev-pet/truthrail-mcp
+          ref: 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          path: .candidate-src
+          persist-credentials: false
+      - name: Exact unchanged Atlas canonical dataset revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: Dmitry-dev-pet/rulers-chronology-audit
+          ref: cb3c65853628607f2e03f30bc4e1a47063b13cd4
+          path: .candidate-src/.pinned-atlas
+          persist-credentials: false
+      - name: Confirm source pins and fixed build inputs
+        run: |
+          set -euo pipefail
+          test "$(git -C .candidate-src rev-parse HEAD)" = 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          test "$(git -C .candidate-src/.pinned-atlas rev-parse HEAD)" = cb3c65853628607f2e03f30bc4e1a47063b13cd4
+          test -f .candidate-src/experiments/embedded_atlas/Dockerfile
+          test -f .candidate-src/experiments/embedded_atlas/smoke.sh
+          test -f .candidate-src/.dockerignore
+          test -f release/truthrail-mcp/Dockerfile
+      - name: Install pinned MCP client for read-only local HTTP acceptance
+        run: python3 -m pip install -q --disable-pip-version-check 'mcp==2.3.0'
+      - name: Build one source-pinned image with original Atlas data
+        run: |
+          set -euo pipefail
+          image="ghcr.io/$(printf '%s' "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]'):$GITHUB_SHA"
+          docker build --pull -f .candidate-src/experiments/embedded_atlas/Dockerfile \
+            -t "truthrail-embedded-base:$GITHUB_SHA" .candidate-src
+          docker build --build-arg "REVIEWED_BASE_IMAGE=truthrail-embedded-base:$GITHUB_SHA" \
+            -f release/truthrail-mcp/Dockerfile -t "$image" .
+      - name: Check unchanged Compose entrypoint and all five canonical tools
+        run: |
+          set -euo pipefail
+          image="ghcr.io/$(printf '%s' "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]'):$GITHUB_SHA"
+          docker image inspect "$image" --format '{{json .Config}}' | python3 -c '
+          import json,sys
+          c=json.load(sys.stdin)
+          assert {"ALFRED_SHARED_MCP_ENABLED=1","ALFRED_EMBEDDED_ATLAS_REVIEWED=1"} <= set(c["Env"])
+          assert c["Cmd"]==["python","-m","shared_alfred_gateway.atlas_local"]
+          assert c["Labels"]["truthrail.source_revision"]=="93da45d9fe675d00cd02ef59c8b32054375dbba3"
+          assert c["Labels"]["truthrail.atlas_source_revision"]=="cb3c65853628607f2e03f30bc4e1a47063b13cd4"
+          '
+          bash .candidate-src/experiments/embedded_atlas/smoke.sh "$image"
+          echo "verified=one_process_five_source_tools; atlas_tunnel=unchanged; no_VPS_deploy=true" >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: Dmitry-dev-pet/truthrail-mcp
+          ref: 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          path: .candidate-src
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: Dmitry-dev-pet/rulers-chronology-audit
+          ref: cb3c65853628607f2e03f30bc4e1a47063b13cd4
+          path: .candidate-src/.pinned-atlas
+          persist-credentials: false
+      - name: Recheck immutable source pins and install client
+        run: |
+          set -euo pipefail
+          test "$(git -C .candidate-src rev-parse HEAD)" = 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          test "$(git -C .candidate-src/.pinned-atlas rev-parse HEAD)" = cb3c65853628607f2e03f30bc4e1a47063b13cd4
+          python3 -m pip install -q --disable-pip-version-check 'mcp==2.3.0'
+      - name: Rebuild and repeat exact source-only HTTP smoke before credentials
+        run: |
+          set -euo pipefail
+          image="ghcr.io/$(printf '%s' "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]'):$GITHUB_SHA"
+          docker build --pull -f .candidate-src/experiments/embedded_atlas/Dockerfile \
+            -t "truthrail-embedded-base:$GITHUB_SHA" .candidate-src
+          docker build --build-arg "REVIEWED_BASE_IMAGE=truthrail-embedded-base:$GITHUB_SHA" \
+            -f release/truthrail-mcp/Dockerfile -t "$image" .
+          docker image inspect "$image" --format '{{json .Config.Env}}' | python3 -c '
+          import json,sys
+          assert {"ALFRED_SHARED_MCP_ENABLED=1",
+                  "ALFRED_EMBEDDED_ATLAS_REVIEWED=1"} <= set(json.load(sys.stdin))
+          '
+          bash .candidate-src/experiments/embedded_atlas/smoke.sh "$image"
+      - name: Login only after smoke, with scoped short-lived GitHub token
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test -n "$GHCR_TOKEN"
+          echo "::add-mask::$GHCR_TOKEN"
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin >/dev/null
+      - name: Publish to existing Atlas package by SHA and record manifest digest
+        run: |
+          set -euo pipefail
+          image="ghcr.io/$(printf '%s' "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]'):$GITHUB_SHA"
+          docker push "$image" > "$RUNNER_TEMP/truthrail-release-push.log"
+          last_line="$(tail -n 1 "$RUNNER_TEMP/truthrail-release-push.log")"
+          digest="$(printf '%s\n' "$last_line" | grep -oE 'sha256:[a-f0-9]{64}' | head -n 1)"
+          [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+          {
+            echo "release_image=$image"
+            echo "release_digest=$digest"
+            echo "atlas_source=cb3c65853628607f2e03f30bc4e1a47063b13cd4"
+            echo "truthrail_source=93da45d9fe675d00cd02ef59c8b32054375dbba3"
+            echo "VPS_mutated=false; tunnel_unchanged=true; package=existing_atlas"
+          } >> "$GITHUB_STEP_SUMMARY"
