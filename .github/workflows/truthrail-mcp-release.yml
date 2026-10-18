@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: Dmitry-dev-pet/truthrail-mcp
-          ref: 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          ref: 85c84dffaff2807d3af0c76f165fa205369903ad
           path: .candidate-src
           persist-credentials: false
       - name: Exact unchanged Atlas canonical dataset revision
@@ -42,10 +42,11 @@ jobs:
       - name: Confirm source pins and fixed build inputs
         run: |
           set -euo pipefail
-          test "$(git -C .candidate-src rev-parse HEAD)" = 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          test "$(git -C .candidate-src rev-parse HEAD)" = 85c84dffaff2807d3af0c76f165fa205369903ad
           test "$(git -C .candidate-src/.pinned-atlas rev-parse HEAD)" = cb3c65853628607f2e03f30bc4e1a47063b13cd4
           test -f .candidate-src/experiments/embedded_atlas/Dockerfile
           test -f .candidate-src/experiments/embedded_atlas/smoke.sh
+          test -f .candidate-src/experiments/embedded_atlas/smoke_peer.sh
           test -f .candidate-src/.dockerignore
           test -f release/truthrail-mcp/Dockerfile
       - name: Install pinned MCP client for read-only local HTTP acceptance
@@ -58,20 +59,23 @@ jobs:
             -t "truthrail-embedded-base:$GITHUB_SHA" .candidate-src
           docker build --build-arg "REVIEWED_BASE_IMAGE=truthrail-embedded-base:$GITHUB_SHA" \
             -f release/truthrail-mcp/Dockerfile -t "$image" .
-      - name: Check unchanged Compose entrypoint and all five canonical tools
+      - name: Check unchanged Compose entrypoint and five Atlas + four opt-in peer tools
         run: |
           set -euo pipefail
           image="ghcr.io/$(printf '%s' "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]'):$GITHUB_SHA"
           docker image inspect "$image" --format '{{json .Config}}' | python3 -c '
           import json,sys
           c=json.load(sys.stdin)
-          assert {"ALFRED_SHARED_MCP_ENABLED=1","ALFRED_EMBEDDED_ATLAS_REVIEWED=1"} <= set(c["Env"])
+          assert {"ALFRED_SHARED_MCP_ENABLED=1","ALFRED_EMBEDDED_ATLAS_REVIEWED=1",
+                  "ALFRED_PEER_CHAT_MCP_ENABLED=1"} <= set(c["Env"])
           assert c["Cmd"]==["python","-m","shared_alfred_gateway.atlas_local"]
-          assert c["Labels"]["truthrail.source_revision"]=="93da45d9fe675d00cd02ef59c8b32054375dbba3"
+          assert c["Labels"]["truthrail.source_revision"]=="85c84dffaff2807d3af0c76f165fa205369903ad"
           assert c["Labels"]["truthrail.atlas_source_revision"]=="cb3c65853628607f2e03f30bc4e1a47063b13cd4"
+          assert c["Labels"]["truthrail.release_role"]=="same-service-atlas-peer-chat-candidate"
           '
-          bash .candidate-src/experiments/embedded_atlas/smoke.sh "$image"
-          echo "verified=one_process_five_source_tools; atlas_tunnel=unchanged; no_VPS_deploy=true" >> "$GITHUB_STEP_SUMMARY"
+          bash .candidate-src/experiments/embedded_atlas/smoke.sh "truthrail-embedded-base:$GITHUB_SHA"
+          bash .candidate-src/experiments/embedded_atlas/smoke_peer.sh "$image"
+          echo "verified=one_process_atlas5_peer4_http_three_round_trips; atlas_tunnel=unchanged; no_VPS_deploy=true" >> "$GITHUB_STEP_SUMMARY"
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -88,7 +92,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: Dmitry-dev-pet/truthrail-mcp
-          ref: 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          ref: 85c84dffaff2807d3af0c76f165fa205369903ad
           path: .candidate-src
           persist-credentials: false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -100,7 +104,7 @@ jobs:
       - name: Recheck immutable source pins and install client
         run: |
           set -euo pipefail
-          test "$(git -C .candidate-src rev-parse HEAD)" = 93da45d9fe675d00cd02ef59c8b32054375dbba3
+          test "$(git -C .candidate-src rev-parse HEAD)" = 85c84dffaff2807d3af0c76f165fa205369903ad
           test "$(git -C .candidate-src/.pinned-atlas rev-parse HEAD)" = cb3c65853628607f2e03f30bc4e1a47063b13cd4
           python3 -m pip install -q --disable-pip-version-check 'mcp==2.3.0'
       - name: Rebuild and repeat exact source-only HTTP smoke before credentials
@@ -114,9 +118,11 @@ jobs:
           docker image inspect "$image" --format '{{json .Config.Env}}' | python3 -c '
           import json,sys
           assert {"ALFRED_SHARED_MCP_ENABLED=1",
-                  "ALFRED_EMBEDDED_ATLAS_REVIEWED=1"} <= set(json.load(sys.stdin))
+                  "ALFRED_EMBEDDED_ATLAS_REVIEWED=1",
+                  "ALFRED_PEER_CHAT_MCP_ENABLED=1"} <= set(json.load(sys.stdin))
           '
-          bash .candidate-src/experiments/embedded_atlas/smoke.sh "$image"
+          bash .candidate-src/experiments/embedded_atlas/smoke.sh "truthrail-embedded-base:$GITHUB_SHA"
+          bash .candidate-src/experiments/embedded_atlas/smoke_peer.sh "$image"
       - name: Login only after smoke, with scoped short-lived GitHub token
         env:
           GHCR_TOKEN: ${{ github.token }}
@@ -137,6 +143,6 @@ jobs:
             echo "release_image=$image"
             echo "release_digest=$digest"
             echo "atlas_source=cb3c65853628607f2e03f30bc4e1a47063b13cd4"
-            echo "truthrail_source=93da45d9fe675d00cd02ef59c8b32054375dbba3"
-            echo "VPS_mutated=false; tunnel_unchanged=true; package=existing_atlas"
+            echo "truthrail_source=85c84dffaff2807d3af0c76f165fa205369903ad"
+            echo "VPS_mutated=false; tunnel_unchanged=true; package=existing_atlas; peer_chat_tools=opt_in"
           } >> "$GITHUB_STEP_SUMMARY"
