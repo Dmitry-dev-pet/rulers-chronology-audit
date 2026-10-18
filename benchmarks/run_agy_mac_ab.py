@@ -16,7 +16,7 @@ import shutil
 import subprocess
 import sys
 
-ALLOWED_MODEL = "gemini-3.1-pro-high"
+DEFAULT_MODEL = None  # Must be supplied explicitly after checking installed AGY models
 DENIED = [
     "read_file(*)", "write_file(*)", "list_dir(*)", "find_by_name(*)",
     "grep_search(*)", "run_command(*)", "command(*)", "unsandboxed(*)",
@@ -191,6 +191,7 @@ def evaluate(run: dict, expected: dict, powered: bool) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--model", required=True, help="Exact installed AGY model ID; no automatic fallback")
     ap.add_argument("--atlas", type=Path, required=True)
     ap.add_argument("--sqlite", type=Path, required=True)
     ap.add_argument("--archigos", type=Path, required=True)
@@ -200,6 +201,7 @@ def main() -> None:
     ap.add_argument("--work", type=Path, required=True)
     ap.add_argument("--output", type=Path, required=True)
     args = ap.parse_args()
+    require(bool(args.model.strip()), "Explicit AGY model ID is required")
     import stat
     require(args.auth_file.is_file() and not args.auth_file.is_symlink() and args.auth_file.stat().st_size > 0, "dedicated runner OAuth session not initialized")
     st = args.auth_file.stat()
@@ -262,12 +264,12 @@ def main() -> None:
             args.work, label, args.auth_file, args.atlas,
             args.sqlite, args.archigos, args.python,
         )
-        run = execution(args.agy, ALLOWED_MODEL, prompt, schemafile, workspace, home)
+        run = execution(args.agy, args.model, prompt, schemafile, workspace, home)
         run["evaluation"] = evaluate(run, expected, powered=(label == "with_mcp"))
         results[label] = run
     report = {
         "benchmark": goldfile["id"],
-        "model": ALLOWED_MODEL,
+        "model": args.model,
         "source_ref": "immutable_project_action_package",
         "archigos_sha256": digest,
         "same_question": True,
