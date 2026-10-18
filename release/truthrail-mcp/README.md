@@ -9,8 +9,8 @@ exposes the original five Atlas tools.
 ## Source-of-truth inputs
 
 - **NEW Truthrail generic MCP source:** exact public commit
-  `a39fabe803e3b6cf15831e1c8b38b3f4b4622e89`
-  (draft `Dmitry-dev-pet/truthrail-mcp PR #11`).
+  `85c84dffaff2807d3af0c76f165fa205369903ad`
+  (merged `Dmitry-dev-pet/truthrail-mcp PR #11`).
 - **UNCHANGED canonical Atlas data/query source:** exact original public commit
   `cb3c65853628607f2e03f30bc4e1a47063b13cd4`.
 - **Target:** existing GHCR package
